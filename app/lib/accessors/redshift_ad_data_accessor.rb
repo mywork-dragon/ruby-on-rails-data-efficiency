@@ -1,22 +1,24 @@
 class RedshiftAdDataAccessor
 
+  def initialize(connection: nil)
+    @connection = connection || RedshiftDbConnection.new
+  end
+
   def has_ad_spend_data(
     app_identifier,
     platform,
     source_ids: nil
     )
-
-    _sql = "
+    pb = RedshiftDbConnection::ParamsBuilder.new
+    sql = "
             SELECT 1
             FROM mobile_ad_data_summaries
-            WHERE mobile_ad_data_summaries.app_identifier = ?
-              AND mobile_ad_data_summaries.platform = ?
-              AND mobile_ad_data_summaries.ad_network in (?)
+            WHERE mobile_ad_data_summaries.app_identifier = #{pb.add_param(app_identifier)}
+              AND mobile_ad_data_summaries.platform = #{pb.add_param(platform)}
+              AND mobile_ad_data_summaries.ad_network in (#{pb.add_params(source_ids)})
             LIMIT 1
     "
-
-    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifier, platform, source_ids])
-    !RedshiftBase.query(sql, expires: 15.minutes).fetch.empty?
+    !@connection.query(sql, params: pb.params, expires: 15.minutes).fetch.empty?
   end
 
   def fetch_app_summaries(
@@ -24,8 +26,8 @@ class RedshiftAdDataAccessor
     platform,
     source_ids: nil
     )
-
-    _sql = "
+    pb = RedshiftDbConnection::ParamsBuilder.new
+    sql = "
             SELECT mobile_ad_data_summaries.app_identifier,
                    mobile_ad_data_summaries.platform,
                    min(first_seen_ads_date) AS first_seen_ads_date,
@@ -38,16 +40,15 @@ class RedshiftAdDataAccessor
             LEFT JOIN mobile_ad_creative_summaries ON mobile_ad_creative_summaries.platform = mobile_ad_data_summaries.platform
             AND mobile_ad_creative_summaries.app_identifier = mobile_ad_data_summaries.app_identifier
             AND mobile_ad_creative_summaries.ad_network = mobile_ad_data_summaries.ad_network
-            WHERE mobile_ad_data_summaries.app_identifier in (?)
-              AND mobile_ad_data_summaries.platform = ?
-              AND mobile_ad_data_summaries.ad_network in (?)
+            WHERE mobile_ad_data_summaries.app_identifier in (#{pb.add_params(app_identifiers)})
+              AND mobile_ad_data_summaries.platform = #{pb.add_param(platform)}
+              AND mobile_ad_data_summaries.ad_network in (#{pb.add_params(source_ids)})
             GROUP BY mobile_ad_data_summaries.app_identifier,
                      mobile_ad_data_summaries.platform,
                      mobile_ad_data_summaries.ad_network;
     "
 
-    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifiers, platform, source_ids])
-    RedshiftBase.query(sql, expires: 15.minutes).fetch
+    @connection.query(sql, params: pb.params, expires: 15.minutes).fetch
   end
 
   def fetch_creatives(
@@ -61,6 +62,8 @@ class RedshiftAdDataAccessor
     order_by: 'desc',
     page_size: 20,
     page_number:0)
+
+    pb = RedshiftDbConnection::ParamsBuilder.new
 
     if ![nil, 'count', 'first_seen_creative_date', 'last_seen_creative_date'].include? sort_by
       raise "Unsupported sort_by option"
@@ -83,19 +86,20 @@ class RedshiftAdDataAccessor
 
     first_seen_creative_date_sql = ""
     if !first_seen_creative_date.nil?
-      first_seen_creative_date_sql = RedshiftBase::sanitize_sql_statement(["AND first_seen_creative_date > ?", first_seen_creative_date])
+      first_seen_creative_date_sql = "AND first_seen_creative_date > #{pb.add_param(first_seen_creative_date)}"
     end
+
     last_seen_creative_date_sql = ""
     if !last_seen_creative_date.nil?
-      last_seen_creative_date_sql = RedshiftBase::sanitize_sql_statement(["AND last_seen_creative_date > ?", last_seen_creative_date])
+      last_seen_creative_date_sql = "AND last_seen_creative_date > #{pb.add_param(last_seen_creative_date)}"
     end
 
     format_sql = ""
     if !formats.nil?
-      format_sql = RedshiftBase::sanitize_sql_statement(["AND format in (?)", formats])
+      format_sql = "AND format in (#{pb.add_params(formats)})"
     end
 
-    _sql = "
+    sql = "
       SELECT last_seen_creative as first_seen_creative_date,
              first_seen_creative as last_seen_creative_date,
              app_identifier,
@@ -107,9 +111,9 @@ class RedshiftAdDataAccessor
              count(*) OVER() AS full_count
       FROM mobile_ad_creative_summaries
       WHERE 
-        app_identifier in (?)
-        AND platform = ?
-        AND ad_network in (?)
+        app_identifier in (#{pb.add_params(app_identifiers)})
+        AND platform = #{pb.add_param(platform)}
+        AND ad_network in (#{pb.add_params(source_ids)})
         #{format_sql}
         #{first_seen_creative_date_sql}
         #{last_seen_creative_date_sql}
@@ -117,9 +121,7 @@ class RedshiftAdDataAccessor
       #{limit_sql}
       #{offset_sql}
     "
-    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifiers, platform, source_ids])
-    
-    results = RedshiftBase.query(sql, expires: 15.minutes).fetch
+    results = @connection.query(sql, params: pb.params, expires: 15.minutes).fetch
     full_count = 0
     if results.count > 0
       full_count = results[0]['full_count']
@@ -150,20 +152,21 @@ class RedshiftAdDataAccessor
     #   source_ids: A list of source_ids from available_sources to which this query applies to nil => all supported.
     # Returns:
     # See AdDataAccessor
+    pb = RedshiftDbConnection::ParamsBuilder.new
 
     platforms_sql = nil
 
     if platforms.count != AdDataPermissions::APP_PLATFORMS.count
-      platforms_sql = "mobile_ad_data_summaries.platform in ('#{platforms.join("','")}')"
+      platforms_sql = "mobile_ad_data_summaries.platform in (#{pb.add_params(platforms)})"
     end
-    source_ids_sql = "mobile_ad_data_summaries.ad_network in ('#{source_ids.join("','")}')"
+    source_ids_sql = "mobile_ad_data_summaries.ad_network in (#{pb.add_params(source_ids)})"
 
     where_clauses = [platforms_sql, source_ids_sql]
     if ! first_seen_ads_date.nil?
-      where_clauses.append(RedshiftBase::sanitize_sql_statement(["first_seen_ads_date > ?", first_seen_ads_date]))
+      where_clauses.append("first_seen_ads_date > #{pb.add_params(first_seen_ads_date)}")
     end
     if ! last_seen_ads_date.nil?
-      where_clauses.append(RedshiftBase::sanitize_sql_statement(["last_seen_ads_date > ?", last_seen_ads_date]))
+      where_clauses.append("last_seen_ads_date > #{pb.add_params(last_seen_ads_date)}")
     end
 
     where_sql = where_clauses.compact.join(" AND ")
@@ -185,7 +188,7 @@ class RedshiftAdDataAccessor
       end
     end
 
-    enabled_network_sql = RedshiftBase::sanitize_sql_statement(["mobile_ad_data_summaries.ad_network in (?)", visible_source_ids])
+    enabled_network_sql = "mobile_ad_data_summaries.ad_network in (#{pb.add_params(visible_source_ids)})"
 
     limit_sql = "LIMIT #{page_size}"
     offset = page_size * page_number
@@ -236,7 +239,7 @@ class RedshiftAdDataAccessor
         #{limit_sql}
         #{offset_sql}
       "
-    results = RedshiftBase.query(sql, expires: 15.minutes).fetch
+    results = @connection.query(sql, params: pb.params, expires: 15.minutes).fetch
     full_count = 0
     if results.count > 0
       full_count = results[0]['full_count']

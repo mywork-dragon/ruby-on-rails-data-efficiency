@@ -1,5 +1,5 @@
 class CachedQuery
-  def initialize(sql, connection, expires: 12.hours, key: nil, force: false, compress: true, cache_prefix: "varys-query-cache")
+  def initialize(sql, connection, params: [], expires: 12.hours, key: nil, force: false, compress: true, cache_prefix: "varys-query-cache")
     @expires = expires
     @sql = sql
     @key = key || generate_key(sql)
@@ -7,10 +7,11 @@ class CachedQuery
     @compress = true
     @connection = connection
     @cache_prefix = cache_prefix
+    @params = params
   end
 
   def generate_key(sql)
-    digest = Digest::SHA1.hexdigest(sql)
+    digest = Digest::SHA1.hexdigest(sql + @params.to_json)
     "#{@cache_prefix}:#{digest}"
   end
 
@@ -25,7 +26,7 @@ class CachedQuery
   end
 
   def _get_response
-    res = @connection.get_connection {|conn| conn.exec(@sql) }
+    res = @connection.get_connection {|conn| conn.exec_params(@sql, @params) }
     res.to_a
   end
 end

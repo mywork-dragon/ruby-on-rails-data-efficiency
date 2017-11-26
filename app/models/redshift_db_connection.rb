@@ -5,6 +5,25 @@ class RedshiftDbConnection < DbConnection
     super(db_config: db_config, default_options: {:cache_prefix => "varys-redshift-cache"})
   end
 
+  class ParamsBuilder
+    def initialize
+      @param_number = 1
+      @params = []
+    end
+    def add_param(value)
+      @params.append(value)
+      reference = "$#{@param_number}"
+      @param_number += 1
+      reference
+    end
+    def add_params(values)
+      values.map {|value| add_param(value)}.join(",")
+    end
+    def params
+      @params
+    end
+  end
+
   # Lazily establish db connection.
   def get_connection
     if @@pool[@db_config].nil?
