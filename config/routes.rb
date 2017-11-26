@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   get 'lead-generation' => 'welcome#lead_generation', as: 'lead-generation'
   get 'business-intelligence' => 'welcome#business_intelligence', as: 'business-intelligence'
   get 'user-acquisition' => 'welcome#user_acquisition', as: 'user-acquisition'
+  get 'lead-generation-ad-affiliate-networks' => 'welcome#lead_generation_ad_affiliate_networks', as: 'lead-generation-ad-affiliate-networks'
 
   get 'well-be-in-touch' => 'welcome#well_be_in_touch', as: 'well-be-in-touch'
 

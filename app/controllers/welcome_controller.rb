@@ -28,7 +28,6 @@ class WelcomeController < ApplicationController
       {image: 'adobe.png', width: 160}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
 
-    icons_folder = '/lib/images/icons/'
     @funnel_icon = icons_folder + 'funnel.svg'
     @networking_icon = icons_folder + 'networking.svg'
     @team_icon = icons_folder + 'team.svg'
@@ -167,6 +166,20 @@ class WelcomeController < ApplicationController
     # @ad_network_graphic = graphics_folder + 'ad_network.png'
   end
 
+  def lead_generation_ad_affiliate_networks
+    @logos = [
+      {image: 'ironsrc_color.png', width: 200},
+      {image: 'taptica_color.png', width: 200},
+      {image: 'verizon_color.png', width: 200},
+      {image: 'appsflyer_color.png', width: 200}
+    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
+
+    @new_advertisers_graphic = graphics_folder + 'new_advertisers.png'
+    @ad_attribution_graphic = graphics_folder + 'ad_attribution.png'
+    @newcomers_graphic = graphics_folder + 'newcomers.png'
+    @funnel_icon = icons_folder + 'funnel.svg'
+  end
+
   def subscribe
     message = params[:message]
     if message == 'Timeline'
@@ -239,6 +252,10 @@ class WelcomeController < ApplicationController
 
   def graphics_folder
     '/lib/images/graphics/'
+  end
+
+  def icons_folder
+    '/lib/images/icons/'
   end
 
   def get_logos
