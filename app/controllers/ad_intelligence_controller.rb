@@ -51,6 +51,7 @@ class AdIntelligenceController < ApplicationController
     first_seen_date = params[:firstSeenCreative] ? DateTime.parse(params[:firstSeenCreative]) : nil
     last_seen_date = params[:lastSeenCreative] ? DateTime.parse(params[:lastSeenCreative]) : nil
     params[:sortBy] ||= 'first_seen_creative_date'
+    formats = params[:formats] ? JSON.parse(params[:formats]) : nil
     source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
     platform = _get_platform
@@ -68,7 +69,8 @@ class AdIntelligenceController < ApplicationController
       order_by: order_by,
       page_size: page_size,
       page_number: page_num,
-      group_by_app_id: false)
+      group_by_app_id: false,
+      formats: formats)
 
     respond_to do |format|
       format.json {
