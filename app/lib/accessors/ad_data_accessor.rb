@@ -34,7 +34,7 @@ class AdDataAccessor
     end
     source_ids = account.restrict_ad_sources(source_ids)
     if ! AdDataPermissions::APP_PLATFORMS.include? platform
-      raise "Unsupported platform" 
+      raise "Unsupported platform"
     end
 
     results = @delegate.fetch_app_summaries(
@@ -88,6 +88,8 @@ class AdDataAccessor
         app = app_model.find(app_id)
         record['ad_attribution_sdks'] = app.ad_attribution_sdks
         record['icon'] = app.icon_url
+        record['name'] = app.name
+        record['type'] = app.class.name
     end
 
     grouped_results
@@ -121,14 +123,14 @@ class AdDataAccessor
     #           "url": "[some url]",
     #           "count": 1,
     #           "suffix": "png",
-    #           "type": "image" => Us this to determine how to render. 
+    #           "type": "image" => Us this to determine how to render.
     #         },
     #         ...
     #       ],
     #       "full_count": 4 => number of creatives for app 86
     #     }
     #   },
-    #   46 => Number of total creatives available. 
+    #   46 => Number of total creatives available.
     # ]
 
     page_size = [page_size.to_i, MAX_PAGE_SIZE].min
@@ -138,7 +140,7 @@ class AdDataAccessor
     end
     source_ids = account.restrict_ad_sources(source_ids)
     if ! AdDataPermissions::APP_PLATFORMS.include? platform
-      raise "Unsupported platform" 
+      raise "Unsupported platform"
     end
 
     creatives, full_count = @delegate.fetch_creatives(
@@ -169,12 +171,12 @@ class AdDataAccessor
     creatives.each do |creative|
         parsed_url = URI.parse(creative['url'])
         if parsed_url.scheme == 's3'
-            # Expose S3 assets by creating presigned urls. 
+            # Expose S3 assets by creating presigned urls.
             # Cache these so we don't hit the AWS API every request.
             get_url_key = "AdDataAccessor:fetch_creatives:s3_get_key#{Digest::SHA1.hexdigest(creative['url'])}"
             new_url = Rails.cache.fetch(get_url_key, expires_in: 6.days, force: force_cache) do
                 params = {
-                    bucket: parsed_url.host, 
+                    bucket: parsed_url.host,
                     key: parsed_url.path[1..-1],
                     expires_in: 1.weeks
                 }
