@@ -3,11 +3,11 @@ class IosHeaderClassifier
     def sdks_from_classnames(classes:, remove_apple: true)
       classes -= AppleDoc.where(name: classes).pluck(:name) if remove_apple
 
-      # do the direct search against iOS table and remove the classes from future consideration
-      direct_match_info = direct_lookups(classes)
-      direct_match_sdk_ids = direct_match_info[:sdks].map(&:id)
+      # DEPRECATED
+      # direct_match_info = direct_lookups(classes)
+      # direct_match_sdk_ids = direct_match_info[:sdks].map(&:id)
 
-      classes -= direct_match_info[:matched_classes]
+      # classes -= direct_match_info[:matched_classes]
 
       # use the remaining classes and check the header tables
       matches = IosClassificationHeader.where(name: classes)
@@ -19,14 +19,14 @@ class IosHeaderClassifier
       collision_sdk_ids = matches.map do |ios_classification_header|
         if ios_classification_header.is_unique
           nil
-        elsif !(ios_classification_header.collision_sdk_ids & (direct_match_sdk_ids + unique_match_sdk_ids)).empty?
+        elsif (ios_classification_header.collision_sdk_ids & unique_match_sdk_ids).present?
           nil
         else
           ios_classification_header.ios_sdk_id
         end
       end.compact
 
-      ios_sdk_ids = (direct_match_sdk_ids + unique_match_sdk_ids + collision_sdk_ids).uniq
+      ios_sdk_ids = (unique_match_sdk_ids + collision_sdk_ids).uniq
 
       IosSdk.where(id: ios_sdk_ids)
     end

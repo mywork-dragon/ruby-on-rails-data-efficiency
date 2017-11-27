@@ -230,6 +230,11 @@ class IosSdk < ActiveRecord::Base
             kind: :native,
             summary: info['summary']
           )
+        elsif sdk.flagged || sdk.website != info['website'] # account for flagged/deleted SDKs
+          sdk.update!(
+            flagged: false,
+            website: info['website']
+          )
         end
         sdk.cocoapod_source_datas.where(flagged: false).update_all(flagged: true) # no longer use cocoapods info
         existing = sdk.ios_sdk_source_datas.pluck(:name)
