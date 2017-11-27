@@ -6,6 +6,22 @@ services:
       - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
+  dev_server:
+    build: .
+    working_dir: /varys/frontend
+    command: yarn start
+    volumes:
+      - ~/.aws:/root/.aws
+      - ~/.aws:/.aws
+      - ./deploy_keys:/root/.ssh
+      - ./:/varys
+      - ./.irbrc:/root/.irbrc
+    environment:
+      - DEV_SERVER_PROXY=http://varys:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - varys
   varys:
     build: .
     command: bundle exec unicorn_rails -c config/unicorn.rb
