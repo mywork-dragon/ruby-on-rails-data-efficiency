@@ -194,6 +194,15 @@ class WelcomeController < ApplicationController
       ad_source = params['ad_source']
       lead_data.merge!(ad_source: ad_source) if ad_source.present?
 
+      utm_source = params['utm_source']
+      lead_data.merge!(utm_source: utm_source) if utm_source.present?
+
+      utm_medium = params['utm_medium']
+      lead_data.merge!(utm_medium: utm_medium) if utm_medium.present?
+
+      utm_campaign = params['utm_campaign']
+      lead_data.merge!(utm_campaign: utm_campaign) if utm_campaign.present?
+
       Lead.create_lead(lead_data)
       flash[:success] = "We will be in touch soon!"
     else
@@ -239,8 +248,11 @@ class WelcomeController < ApplicationController
     sdk = params['sdk']
     message = params['message']
     ad_source = params['ad_source']
+    utm_source = params['utm_source']
+    utm_medium = params['utm_medium']
+    utm_campaign = params['utm_campaign']
 
-    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source)
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :utm_source, :utm_medium, :utm_campaign)
 
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i

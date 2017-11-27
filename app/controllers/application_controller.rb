@@ -32,7 +32,12 @@ class ApplicationController < ActionController::Base
 
   def default_url_options
     # the allowed parameters to pass around the app
-    allowed_params = ['ad_source']
+    allowed_params = %w(
+                      ad_source
+                      utm_source
+                      utm_medium
+                      utm_campaign
+                      )
 
     query_parameters = request.query_parameters
 
