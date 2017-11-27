@@ -167,6 +167,10 @@ class WelcomeController < ApplicationController
   end
 
   def lead_generation_ad_affiliate_networks
+    creative = params[:creative]
+
+    @creative = "/lib/images/creatives/#{creative}.png" if creative.present?
+
     @logos = [
       {image: 'ironsrc_color.png', width: 200},
       {image: 'taptica_color.png', width: 200},
