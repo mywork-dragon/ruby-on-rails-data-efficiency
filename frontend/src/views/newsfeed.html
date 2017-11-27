@@ -5,7 +5,7 @@
     </div>
   </h4>
   <div>
-    <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
+    <div class="row newsfeedPageRow" infinite-scroll-disabled="infiniteScrollDisabled()" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
         <div class="pull-right">
           <div class="btn-group" role="group" aria-label="followButtons">
             <button type="submit" ng-if="following.length" class="btn btn-bordered-info follow-btn" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>

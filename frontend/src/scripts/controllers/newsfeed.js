@@ -21,6 +21,8 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     $scope.locations = [];
     newsfeedCtrl.weeks = [];
 
+    // Disable infinite scroll when feed returns no data.
+    $scope.end_of_feed = false
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Timeline');
@@ -47,6 +49,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         newsfeedCtrl.weeks = [];
         $scope.initialPageLoadComplete = false;
         $scope.page = 1;
+        $scope.end_of_feed = false;
       }
       return $http({
         method: 'GET',
@@ -58,7 +61,9 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         } else {
           newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
         }
-
+        if (data.weeks.length == 0 && data.following.length == 0) {
+          $scope.end_of_feed = true;
+        }
         $scope.following = data.following
         $scope.initialPageLoadComplete = true;
       });
@@ -151,6 +156,10 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         $scope.page++;
         newsfeedCtrl.load();
       }
+    }
+
+    $scope.infiniteScrollDisabled = function() {
+      return $scope.end_of_feed;
     }
 
     $scope.locationAutocompleteUrl = function(status) {
