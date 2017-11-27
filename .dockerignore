@@ -6,3 +6,6 @@ tmp/*
 vendor/bundle/ruby
 .ruby-version
 .ruby-gemset
+log/*
+phantomjs
+frontend/node_modules
