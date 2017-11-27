@@ -100,8 +100,8 @@ class RedshiftAdDataAccessor
     end
 
     sql = "
-      SELECT last_seen_creative as first_seen_creative_date,
-             first_seen_creative as last_seen_creative_date,
+      SELECT last_seen_creative as last_seen_creative_date,
+             first_seen_creative as first_seen_creative_date,
              app_identifier,
              ad_network,
              platform,
