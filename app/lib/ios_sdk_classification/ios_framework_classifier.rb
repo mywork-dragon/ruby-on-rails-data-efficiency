@@ -1,14 +1,8 @@
 class IosFrameworkClassifier
   class << self
     def find_from_frameworks(frameworks)
-      sdks = []
-      frameworks.each do |fw_folder|
-        regex = convert_folder_to_regex(fw_folder)
-        match = IosSdk.where('name REGEXP ?', regex).first
-        sdks << match if match
-      end
-      
-      sdks
+      IosSdk.joins(:ios_classification_frameworks)
+        .where('ios_classification_frameworks.name in (?)', frameworks).to_a
     end
 
     # convert a folder name to a regex string (for running against sdk names)
