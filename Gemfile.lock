@@ -8,6 +8,14 @@ GIT
       sidekiq
 
 GIT
+  remote: git://github.com/yatish27/salesforce_bulk_api.git
+  revision: 3ff3f41ad7e5a5217b4c278ddb0343f4cb50b182
+  specs:
+    salesforce_bulk_api (0.0.13)
+      json
+      xml-simple
+
+GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git
   revision: 884cc27bb3e3b2c1f2679068d7b636dc2d256b0c
   specs:
@@ -450,9 +458,6 @@ GEM
     ruby-progressbar (1.8.1)
     ruby-protocol-buffers (1.6.1)
     rubyzip (1.1.7)
-    salesforce_bulk_api (0.0.12)
-      json
-      xml-simple
     sanitize (4.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
@@ -641,7 +646,7 @@ DEPENDENCIES
   ruby-protocol-buffers (~> 1.6.1)
   ruby_apk!
   rubyzip (= 1.1.7)
-  salesforce_bulk_api (~> 0.0.12)
+  salesforce_bulk_api!
   sanitize (= 4.0.0)
   sass-rails
   sdoc (~> 0.4.0)
