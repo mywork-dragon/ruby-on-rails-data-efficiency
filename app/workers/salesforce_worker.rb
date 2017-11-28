@@ -24,16 +24,29 @@ class SalesforceWorker
     end
   end
 
+  # imports is an array of android/ios publishers and salesforce objects to import into
+  def export_publishers(imports, user_id, model_name)
+    sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
+    imports.each do |import|
+      import['publisher'] = if import['platform'] == 'ios'
+        IosDeveloper.find(import['publisher_id'])
+      else
+        AndroidDeveloper.find(import['publisher_id'])
+      end
+    end
+    sf.import_publishers(imports)
+  end
+
   def export_ios_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
     app = IosApp.find(app_id)
-    sf.import_publisher(app.ios_developer, export_id)
+    sf.import_publishers([{publisher: app.ios_developer, export_id: export_id}])
   end
 
   def export_android_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
     app = AndroidApp.find(app_id)
-    sf.import_publisher(app.android_developer, export_id)
+    sf.import_publishers([{publisher: app.android_developer, export_id: export_id}])
   end
 
 end

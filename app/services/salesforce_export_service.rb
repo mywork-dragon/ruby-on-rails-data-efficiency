@@ -110,22 +110,32 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
-  def sync_all_objects
-    supported_models.each do |model|
+  def sync_all_objects(batch_size: 250, batch_limit: nil, models: ['Account', 'Lead'])
+    sync_models = models & supported_models
+    sync_models.each do |model|
       @model_name = model
       
       query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where (MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null)"
       query += " and IsConverted = false" if model == 'Lead'
+      query += " LIMIT #{batch_limit * batch_size}" if batch_limit
 
+      imports = []
       @client.query(query).each do |object|
         if object.MightySignal_iOS_Publisher_ID__c
           ios_publisher = IosDeveloper.find(object.MightySignal_iOS_Publisher_ID__c)
-          export(publisher: ios_publisher, object_id: object.Id)
+          export_id = export(publisher: ios_publisher, object_id: object.Id, export_apps: false)
+          imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: export_id}
         end
         if object.MightySignal_Android_Publisher_ID__c
           android_publisher = AndroidDeveloper.find(object.MightySignal_Android_Publisher_ID__c)
-          export(publisher: android_publisher, object_id: object.Id)
+          export_id = export(publisher: android_publisher, object_id: object.Id, export_apps: false)
+          imports << {publisher_id: android_publisher.id, platform: 'android', export_id: export_id}
         end
+      end
+
+      imports.each_slice(batch_size).with_index do |slice, i|
+        SalesforceWorker.perform_async(:export_publishers, slice, @user.id, @model_name)
+        break if batch_limit && ((i + 1) >= batch_limit)
       end
     end
   end
@@ -276,7 +286,7 @@ class SalesforceExportService
     data[field].blank? || (data[field][:data].blank? && map['data'].blank?)
   end
 
-  def export(app: nil, mapping: nil, object_id: nil, publisher: nil)
+  def export(app: nil, mapping: nil, object_id: nil, publisher: nil, export_apps: true)
     app ||= publisher.apps.first if publisher
     publisher ||=  app.publisher if app
 
@@ -324,10 +334,12 @@ class SalesforceExportService
 
     SalesforceLogger.new(@account, publisher, @model_name, object_id.blank?).send!
 
-    if app.is_a? IosApp
-      SalesforceWorker.perform_async(:export_ios_apps, app.id, export, @user.id, @model_name)
-    elsif app.is_a? AndroidApp
-      SalesforceWorker.perform_async(:export_android_apps, app.id, export, @user.id, @model_name)
+    if export_apps
+      if app.is_a? IosApp
+        SalesforceWorker.perform_async(:export_ios_apps, app.id, export, @user.id, @model_name)
+      elsif app.is_a? AndroidApp
+        SalesforceWorker.perform_async(:export_android_apps, app.id, export, @user.id, @model_name)
+      end
     end
 
     export
@@ -368,7 +380,9 @@ class SalesforceExportService
     new_app['Account__c'] = account_id if account_id && account_import?
 
     @upsert_records[@app_model] ||= []
-    @upsert_records[@app_model] << new_app
+    unless @upsert_records[@app_model].any?{|app| app['MightySignal_Key__c'] == new_app['MightySignal_Key__c']}
+      @upsert_records[@app_model] << new_app 
+    end
   end
 
   def import_android_app(app:, account_id: nil)
@@ -389,7 +403,9 @@ class SalesforceExportService
     new_app['Account__c'] = account_id if account_id && account_import?
 
     @upsert_records[@app_model] ||= []
-    @upsert_records[@app_model] << new_app
+    unless @upsert_records[@app_model].any?{|app| app['MightySignal_Key__c'] == new_app['MightySignal_Key__c']}
+      @upsert_records[@app_model] << new_app
+    end
   end
 
   def import_app_ownership(app_id, lead_id)
@@ -400,65 +416,94 @@ class SalesforceExportService
     }
 
     @upsert_records[@app_ownership_model] ||= []
-    @upsert_records[@app_ownership_model] << new_app_ownership
+    @upsert_records[@app_ownership_model] << new_app_ownership unless @upsert_records[@app_ownership_model].include?(new_app_ownership)
   end
 
-  def import_publisher(publisher, export_id)
-    publisher.apps.each do |app|
-      if publisher.ios?
-        import_ios_app(app: app, account_id: export_id)
-      else
-        import_android_app(app: app, account_id: export_id)
+  def import_publishers(imports)
+    app_export_id_map = {}
+    imports.each do |import|
+      import = import.with_indifferent_access
+      publisher = import[:publisher]
+      export_id = import[:export_id]
+
+      publisher.apps.each do |app|
+        app_key = "#{app.platform}_#{app.id}"
+        app_export_id_map[app_key] ||= []
+        app_export_id_map[app_key] << export_id
+        if publisher.ios?
+          import_ios_app(app: app, account_id: export_id)
+        else
+          import_android_app(app: app, account_id: export_id)
+        end
       end
     end
 
     sdk_app_map = {}
     results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
     results['batches'].first['response'].each_with_index do |app, i|
+      next unless app["id"] #record failed to import
       app_id = app["id"].first
+
+      record = @upsert_records[@app_model][i]
       
       # leads use app ownership, accounts have id directly on app object
-      import_app_ownership(app_id, export_id) if lead_import?
+      if lead_import?
+        export_ids = app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
+        export_ids.each do |export_id|
+          import_app_ownership(app_id, export_id)
+        end
+      end
       
-      record = @upsert_records[@app_model][i]
-      app = publisher.ios? ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
+      app = (record['Platform__c'] == 'ios') ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
 
       sdk_response = app.tagged_sdk_response
 
       sdk_response[:installed_sdks].each do |tag|
         tag[:sdks].each do |sdk|
+          sdk_id = "#{app.platform}_#{sdk['id']}"
           import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-          sdk_app_map[sdk['id']] ||= []
-          sdk_app_map[sdk['id']] << {app_id: app_id, installed: sdk['first_seen_date'].try(:to_date)}
+          sdk_app_map[sdk_id] ||= []
+          sdk_app_map[sdk_id] << {app_id: app_id, installed: sdk['first_seen_date'].try(:to_date)}
         end
       end
 
       sdk_response[:uninstalled_sdks].each do |tag|
         tag[:sdks].each do |sdk|
+          sdk_id = "#{app.platform}_#{sdk['id']}"
           import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-          sdk_app_map[sdk['id']] ||= []
-          sdk_app_map[sdk['id']] << {app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date)}
+          sdk_app_map[sdk_id] ||= []
+          sdk_app_map[sdk_id] << {app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date)}
         end
       end
     end
 
     results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
     results['batches'].first['response'].each_with_index do |sdk, i|
+      next unless sdk["id"] # failed to import
+
       sdk_id = sdk["id"].first
       record = @upsert_records[@sdk_model][i]
 
-      sdk_apps = sdk_app_map[record['MightySignal_SDK_ID__c']]
+      sdk_apps = sdk_app_map["#{record['Platform__c']}_#{record['MightySignal_SDK_ID__c']}"]
       sdk_apps.each do |sdk_app|
         sdk_app[:sdk_id] = sdk_id
         import_sdk_app(**sdk_app)
       end
     end
 
-    @bulk_client.upsert(@sdk_join_model, @upsert_records[@sdk_join_model], 'MightySignal_Key__c')
-    @bulk_client.upsert(@app_ownership_model, @upsert_records[@app_ownership_model], 'MightySignal_Key__c')
+    if @upsert_records[@sdk_join_model].try(:any?)
+      @upsert_records[@sdk_join_model].each_slice(10_000) do |slice|
+        @bulk_client.upsert(@sdk_join_model, slice, 'MightySignal_Key__c')
+      end
+    end
+
+    if @upsert_records[@app_ownership_model].try(:any?)
+      @upsert_records[@app_ownership_model].each_slice(10_000) do |slice|
+        @bulk_client.upsert(@app_ownership_model, slice, 'MightySignal_Key__c')
+      end
+    end
 
     reset_bulk_data
-
   end
 
   def import_sdk(platform:, sdk:, category:)
@@ -473,8 +518,7 @@ class SalesforceExportService
     }
     
     @upsert_records[@sdk_model] ||= []
-    @upsert_records[@sdk_model] << new_sdk
-    @upsert_records[@sdk_model] = @upsert_records[@sdk_model].uniq
+    @upsert_records[@sdk_model] << new_sdk unless @upsert_records[@sdk_model].include?(new_sdk)
   end
 
   def import_sdk_app(sdk_id:, app_id:, installed: nil, uninstalled: nil)
@@ -487,7 +531,7 @@ class SalesforceExportService
     }
     
     @upsert_records[@sdk_join_model] ||= []
-    @upsert_records[@sdk_join_model] << new_sdk_app
+    @upsert_records[@sdk_join_model] << new_sdk_app unless @upsert_records[@sdk_join_model].include?(new_sdk_app)
   end
 
   def object_has_field?(model, field)
@@ -529,6 +573,38 @@ class SalesforceExportService
   def self.sf_for(account_name, model_name = 'Account')
     account = Account.where(name: account_name).first
     SalesforceExportService.new(user: account.users.first, model_name: model_name)
+  end
+
+  def sync_domain_mapping
+    sf = SalesforceExportService.sf_for('Mixpanel')
+    update_records = {}
+    dl = DomainLinker.new
+    @client.query("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null").each do |record|
+      new_record = {Id: record.Id}
+      domain = UrlHelper.url_with_domain_only(record.Website)
+      publishers = dl.domain_to_publisher(domain)
+      ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
+      android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
+      if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
+        new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
+      end
+
+      if !record.MightySignal_Android_Publisher_ID__c && android_publisher
+        new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
+      end
+
+      puts "Domain is #{domain}"
+      puts new_record if new_record.size > 1
+
+      update_records["Account"] ||= []
+      update_records["Account"] << new_record if new_record.size > 1
+
+      if update_records["Account"].count >= 10_000
+        sf.bulk_client.update('Account', update_records["Account"])
+        update_records["Account"] = []
+      end
+    end
+
   end
 
   private
