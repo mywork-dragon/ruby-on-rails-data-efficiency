@@ -123,13 +123,13 @@ class SalesforceExportService
       @client.query(query).each do |object|
         if object.MightySignal_iOS_Publisher_ID__c
           ios_publisher = IosDeveloper.find(object.MightySignal_iOS_Publisher_ID__c)
-          export_id = export(publisher: ios_publisher, object_id: object.Id, export_apps: false)
-          imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: export_id}
+          SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher.id, object.Id, @user.id, @model_name)
+          imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: object.Id}
         end
         if object.MightySignal_Android_Publisher_ID__c
           android_publisher = AndroidDeveloper.find(object.MightySignal_Android_Publisher_ID__c)
-          export_id = export(publisher: android_publisher, object_id: object.Id, export_apps: false)
-          imports << {publisher_id: android_publisher.id, platform: 'android', export_id: export_id}
+          SalesforceWorker.perform_async(:export_android_publisher, android_publisher.id, object.Id, @user.id, @model_name)
+          imports << {publisher_id: android_publisher.id, platform: 'android', export_id: object.Id}
         end
       end
 

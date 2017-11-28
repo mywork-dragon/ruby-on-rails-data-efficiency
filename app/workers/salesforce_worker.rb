@@ -24,6 +24,19 @@ class SalesforceWorker
     end
   end
 
+  # for bulk exporting
+  def export_ios_publisher(publisher_id, export_id, user_id, model_name)
+    sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
+    dev = IosDeveloper.find(publisher_id)
+    sf.export(publisher: dev, object_id: export_id, export_apps: false)
+  end
+
+  def export_android_publisher(publisher_id, export_id, user_id, model_name)
+    sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
+    dev = AndroidDeveloper.find(publisher_id)
+    sf.export(publisher: dev, object_id: export_id, export_apps: false)
+  end
+
   # imports is an array of android/ios publishers and salesforce objects to import into
   def export_publishers(imports, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
