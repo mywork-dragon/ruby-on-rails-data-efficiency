@@ -36,6 +36,7 @@ class SalesforceExportService
                           host: host
                         )
     @bulk_client = SalesforceBulkApi::Api.new(@client)
+    @bulk_client.connection.set_status_throttle(30)
 
     reset_bulk_data
   end
