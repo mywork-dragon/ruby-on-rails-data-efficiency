@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114013605) do
+ActiveRecord::Schema.define(version: 20171122205154) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1554,6 +1554,16 @@ ActiveRecord::Schema.define(version: 20171114013605) do
 
   add_index "ios_classification_exceptions", ["ipa_snapshot_id"], name: "index_ios_classification_exceptions_on_ipa_snapshot_id", using: :btree
 
+  create_table "ios_classification_frameworks", force: :cascade do |t|
+    t.string   "name",       limit: 191, null: false
+    t.integer  "ios_sdk_id", limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "ios_classification_frameworks", ["ios_sdk_id", "name"], name: "index_ios_classification_frameworks_on_ios_sdk_id_and_name", using: :btree
+  add_index "ios_classification_frameworks", ["name"], name: "index_ios_classification_frameworks_on_name", unique: true, using: :btree
+
   create_table "ios_classification_headers", force: :cascade do |t|
     t.string   "name",              limit: 191
     t.integer  "ios_sdk_id",        limit: 4
@@ -1874,6 +1884,7 @@ ActiveRecord::Schema.define(version: 20171114013605) do
     t.integer  "ios_sdk_source_group_id", limit: 4
     t.integer  "source",                  limit: 4
     t.integer  "kind",                    limit: 4
+    t.string   "uid",                     limit: 191
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
@@ -1885,6 +1896,7 @@ ActiveRecord::Schema.define(version: 20171114013605) do
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
   add_index "ios_sdks", ["source"], name: "index_ios_sdks_on_source", using: :btree
+  add_index "ios_sdks", ["uid"], name: "index_ios_sdks_on_uid", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
   create_table "ios_sdks_ipa_snapshots", force: :cascade do |t|

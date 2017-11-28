@@ -17,6 +17,7 @@ class IosSdk < ActiveRecord::Base
   has_many :cocoapod_source_datas, through: :cocoapods
 
   has_many :ios_sdk_source_datas
+  has_many :ios_classification_frameworks
 
   has_many :dll_regexes
   has_many :js_tag_regexes
@@ -171,9 +172,10 @@ class IosSdk < ActiveRecord::Base
       IosApp.distinct.joins(:newest_ipa_snapshot).joins('inner join ios_sdks_ipa_snapshots on ipa_snapshots.id = ios_sdks_ipa_snapshots.ipa_snapshot_id').where('ios_sdks_ipa_snapshots.ios_sdk_id in (?)', cluster_ids)
     end
 
-    def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
+    def create_manual(name:, website:, kind:, uid:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
       attributes = {
           website: website,
+          uid: uid,
           favicon: favicon || FaviconService.get_favicon_from_url(url: website),
           open_source: open_source || !!/(?:bitbucket|github|sourceforge)/.match(website),
           summary: summary,
@@ -221,28 +223,8 @@ class IosSdk < ActiveRecord::Base
     end
 
     def sync_manual_data(model)
-      model.each do |name, info|
-        sdk = IosSdk.find_by_name(name)
-        if sdk.nil?
-          sdk = IosSdk.create_manual(
-            name: name,
-            website: info['website'],
-            kind: :native,
-            summary: info['summary']
-          )
-        elsif sdk.flagged || sdk.website != info['website'] # account for flagged/deleted SDKs
-          sdk.update!(
-            flagged: false,
-            website: info['website']
-          )
-        end
-        sdk.cocoapod_source_datas.where(flagged: false).update_all(flagged: true) # no longer use cocoapods info
-        existing = sdk.ios_sdk_source_datas.pluck(:name)
-        current = info['classes']
-        to_remove = existing - current
-        IosSdkSourceData.where(name: to_remove, ios_sdk_id: sdk.id).delete_all if to_remove.present?
-        to_add = (current - existing).map {|n| IosSdkSourceData.new(ios_sdk_id: sdk.id, name: n)}
-        IosSdkSourceData.import(to_add) if to_add.present?
+      model.each do |uid, info|
+        IosSdkSyncWorker.perform_async(uid, info)
       end
     end
   end

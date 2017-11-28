@@ -223,8 +223,9 @@ Rails.application.routes.draw do
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
   post 'jobs/ios/reclassify' => 'jobs#trigger_ios_reclassification'
 
-  post 'ios_sdk/new' => 'ios_sdk#create'
-  post 'ios_sdk/validate' => 'ios_sdk#validate'
+  # DEPRECATED
+  # post 'ios_sdk/new' => 'ios_sdk#create'
+  # post 'ios_sdk/validate' => 'ios_sdk#validate'
   post 'ios_sdk/sync' => 'ios_sdk#sync'
 
   put 'epf/incremental' => 'epf#load_incremental'
