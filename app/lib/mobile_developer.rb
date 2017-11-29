@@ -142,6 +142,7 @@ module MobileDeveloper
         tag_name = app_sdk.tags.first.try(:name) || 'Others'
         summary[sdk_type][tag_name] += [{id: app_sdk.id, name: app_sdk.name, favicon: app_sdk.favicon, count: sdk["doc_count"]}]
       end
+      summary[sdk_type] = summary[sdk_type].sort.to_h      
     end
 
     summary
