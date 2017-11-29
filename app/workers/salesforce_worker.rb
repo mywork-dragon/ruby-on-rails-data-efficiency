@@ -2,7 +2,7 @@ class SalesforceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :mailers
+  sidekiq_options retry: false, queue: :salesforce_syncer
 
   def perform(method, *args)
     self.send(method.to_sym, *args)
