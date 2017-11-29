@@ -200,6 +200,13 @@ class AdDataAccessor
                 delay: "1")
         end
         creative['suffix'] = parsed_url.path.split('.')[-1].downcase
+
+        # Temp wrap the ad network as a list and call it ad_networks.
+        # TODO properly aggregate creatives across ad networks.
+        # needs backend support for fuzzy matching videos,fb ad text, etc..
+        creative['ad_networks'] = [{"id" => creative['ad_network'], "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[creative['ad_network']]}]
+        creative.delete('ad_network')
+
         # Need to actually set the default value back to the original key.
         group = grouped_creatives[app_id_to_apps[creative['app_identifier']]]
         grouped_creatives[app_id_to_apps[creative['app_identifier']]] = group
