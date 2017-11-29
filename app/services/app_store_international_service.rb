@@ -108,7 +108,7 @@ class AppStoreInternationalService
           )
         end
 
-        IosApp.import!(
+        IosApp.import(
           missing_ios_app_entries,
           synchronize: missing_ios_app_entries,
           synchronize_keys: [:app_identifier]

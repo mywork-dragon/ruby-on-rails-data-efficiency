@@ -28,7 +28,7 @@ class GooglePlaySnapshotService
         missing = newcomer_app_identifiers - existing
         new_app_rows = missing.map { |ai| AndroidApp.new(app_identifier: ai, regions: []) }
 
-        AndroidApp.import!(
+        AndroidApp.import(
           new_app_rows,
           synchronize: new_app_rows,
           synchronize_keys: [:app_identifier]
