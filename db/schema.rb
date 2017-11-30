@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171122205154) do
+ActiveRecord::Schema.define(version: 20171130031649) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20171122205154) do
     t.boolean  "can_use_salesforce",                     default: false
     t.integer  "salesforce_status",        limit: 4,     default: 0
     t.text     "ad_data_permissions",      limit: 65535
+    t.boolean  "salesforce_syncing",                     default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
