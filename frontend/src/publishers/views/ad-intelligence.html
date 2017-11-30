@@ -1,1 +1,161 @@
-<h4>{{publisher.name}} Ad Intelligence!</h4>
+<div class="ad-intel-spinner-ctnr"  ng-if="!pubAdIntel.adDataFetchComplete">
+  <div id="loadingSpinnerContainer">
+    <div class="loading outer">
+      <div class="loading inner"></div>
+    </div>
+  </div>
+</div>
+<div ng-if="pubAdIntel.adDataFetchComplete">
+  <div class="empty-data-ctnr" ng-if="!pubAdIntel.hasAdData && !pubAdIntel.error">
+    <img ng-src="images/mighty_signal_elephant.png" alt="">
+    No Ad Data
+  </div>
+  <div class="empty-data-ctnr" ng-if="!pubAdIntel.hasAdData && pubAdIntel.error">
+    <img ng-src="images/mighty_signal_elephant.png" alt="">
+    Whoops! There was an error getting ad data for this publisher. Please try again.
+  </div>
+  <div ng-if="pubAdIntel.hasAdData">
+    <div class="ad-intel-row">
+      <div class="row-panel">
+        <ad-network-panel
+          networks="pubAdIntel.ad_networks"
+        ></ad-network-panel>
+      </div>
+      <div class="row-panel">
+        <ad-summary-panel
+          first-seen-date="pubAdIntel.first_seen_ads_date"
+          last-seen-date="pubAdIntel.last_seen_ads_date"
+          ad-sdks="publisher.installedSdks['Ad Attribution']"
+          platform="pubAdIntel.platform"
+          formats="pubAdIntel.creative_formats"
+          num-creatives="pubAdIntel.number_of_creatives"
+          item-id="pubAdIntel.id"
+          item-type="'publisher'"
+          total-apps="pubAdIntel.numApps"
+        ></ad-summary-panel>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <creative-gallery
+        get-creatives-callback="pubAdIntel.getCreatives"
+        page-size="pubAdIntel.creativePageSize"
+        networks="pubAdIntel.ad_networks"
+        formats="pubAdIntel.creative_formats"
+        total-creatives="pubAdIntel.number_of_creatives"
+        apps="pubAdIntel.apps"
+        track-app-click="publisher.trackAppClick"
+        publisher-name="publisher.name"
+        >
+      </creative-gallery>
+
+      <div class="row companyPageRow">
+        <div class="page-table" data-ng-controller="TableCtrl">
+          <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+            <div class="panel-heading" id="listViewTableHeading">
+              <strong><i class="fa fa-list panel-ico"></i>Advertising Apps</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="pubAdIntel.sortedApps">| {{pubAdIntel.numApps | number}} apps</span>
+              <span class="ui-select pull-right">
+                <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="publisher.addAppsToList(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
+                  <option value="">Add Selected to List</option>
+                  <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+                </select>
+              </span>
+            </div>
+            <div id="results-table-wrapper">
+              <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+                <thead>
+                  <tr>
+                    <th class="selectAllCheckboxHeader">
+                      <select-all-checkbox-two apps="pubAdIntel.sortedApps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
+                    </th>
+                    <th class="resultsTableAppIcon">
+                      <div class="th normal-right-padding">
+                        App Name
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        Networks
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        Ad Attribution SDKs
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        Formats
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        Total Creatives Seen
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        First Seen Ads
+                      </div>
+                    </th>
+                    <th>
+                      <div class="th normal-right-padding">
+                        Last Seen Ads
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody data-ng-if="pubAdIntel.adDataFetchComplete">
+                  <tr data-ng-repeat="app in pubAdIntel.sortedApps">
+                    <td class="dashboardTableDataCheckbox">
+                      <checkable-checkbox-two app="app" apps="pubAdIntel.sortedApps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
+                    </td>
+                    <td class="resultsTableAppIcon">
+                      <span>
+                        <a ui-sref="app.ad-intelligence({ id: app.id, platform: pubAdIntel.platform})" ng-click="publisher.trackAppClick(app, publisher.name, 'ad-intelligence')">
+                          <img ng-src="{{app.icon}}" />
+                          {{app.name}}
+                        </a>
+                      </span>
+                    </td>
+                    <td>
+                      <span ng-repeat="network in pubAdIntel.ad_networks" ng-init="isSource = pubAdIntel.checkIfAdSource(network.id, app.ad_networks)">
+                        <img
+                          ng-if="isSource"
+                          ng-src="{{'images/' + network.id + '.png'}}"
+                          width="16"
+                          height="16"
+                          uib-tooltip="{{network.name}}">
+                      </span>
+                    </td>
+                    <td>
+                      <a ng-repeat="sdk in app.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
+                        <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
+                      </a>
+                      <span ng-if="!app.ad_attribution_sdks.length">None</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="format in app.creative_formats" uib-tooltip="{{format | capitalize}}">
+                        <i class="fa fa-fw" ng-class="{'fa-picture-o': format === 'image', 'fa-film': format === 'video', 'fa-html5': format === 'html'}"></i>
+                      </span>
+                      <span ng-if="!app.creative_formats.length">None</span>
+                    </td>
+                    <td>
+                      {{app.number_of_creatives}}
+                    </td>
+                    <td>
+                      {{app.first_seen_ads_date | date: shortDate}}
+                    </td>
+                    <td>
+                      {{app.last_seen_ads_date | date: shortDate}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

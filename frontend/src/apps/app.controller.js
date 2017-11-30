@@ -1,12 +1,11 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
-import _ from 'lodash';
 
 import './appMixpanel.service.js';
 
 import '../components/export-permissions/export-permissions.directive'; // gross
 import '../components/list-create/list-create.directive'; // gross
-import '../components/creative-gallery/gallery.utils' // gross?
+import '../components/ad-intelligence/creative-gallery/gallery.utils' // gross?
 
 (function() {
   'use strict';

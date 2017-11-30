@@ -27,13 +27,21 @@
         </duv>
       </div>
     </header>
-    <!-- <ul class="nav nav-tabs nav-justified">
-      <li class="uib-tab nav-item" ng-repeat="tab in publisher.tabs" ui-sref="{{tab.route}}" ui-sref-active="active">
+    <ul class="nav nav-tabs nav-justified" ng-if="!publisher.facebookOnly">
+      <li class="uib-tab nav-item" ng-repeat="tab in publisher.tabs" ui-sref="{{tab.route}}" ui-sref-active="active" ng-click="publisher.trackTabClick(tab, publisher)">
         <a class="nav-link">
-          <uib-tab-heading>{{tab.title}}</uib-tab-heading>
+          <uib-tab-heading>
+            <span ng-bind-html="tab.title"></span>
+          </uib-tab-heading>
         </a>
       </li>
-    </ul> -->
+    </ul>
     <ui-view></ui-view>
   </div>
 </div>
+
+<!-- Modals -->
+<aside><list-create></list-create></aside>
+<aside><list-delete></list-delete></aside>
+<aside><list-delete-selected></list-delete-selected></aside>
+<aside><export-permissions></export-permissions></aside>

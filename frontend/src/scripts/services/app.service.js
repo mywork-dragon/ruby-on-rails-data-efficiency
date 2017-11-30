@@ -26,8 +26,6 @@ function appService ($http, loggitService) {
         appIds: JSON.stringify([id])
       }
     })
-    .then(response => response.data)
-    .catch(error => {})
   }
 
   function getApp (platform, id) {
@@ -61,14 +59,6 @@ function appService ($http, loggitService) {
       obj.pageSize = data.pageSize;
 
       return obj
-    })
-    .catch(error => {
-      return {
-        results: [],
-        resultsCount: 0,
-        pageNum,
-        pageSize
-      }
     })
   }
 

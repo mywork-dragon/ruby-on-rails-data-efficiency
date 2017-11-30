@@ -5,6 +5,7 @@ import '../components/list-create/list-create.directive'; // gross
 import '../components/list-delete/list-delete.directive'; // gross
 import '../components/list-delete-selected/list-delete-selected.directive'; // gross
 import '../components/export-permissions/export-permissions.directive'; // gross
+import './mixpanel.service'
 
 (function() {
   'use strict';
@@ -25,7 +26,9 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     '$rootScope',
     '$sce',
     'uniqueStringsFilter',
-    'csvUtils'
+    'csvUtils',
+    'adIntelService',
+    'publisherMixpanelService'
   ];
 
   function PublisherController (
@@ -40,12 +43,15 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     $rootScope,
     $sce,
     uniqueStringsFilter,
-    csvUtils
+    csvUtils,
+    adIntelService,
+    publisherMixpanelService
   ) {
     var publisher = this;
 
     publisher.appFetchComplete = false;
     publisher.apps = []
+    publisher.companyContactFilter = "";
     publisher.contactFetchComplete = false;
     publisher.currentContactsPage = 1;
     publisher.currentAppPage = 1;
@@ -55,8 +61,13 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     publisher.sdkFetchComplete = false;
     publisher.tabs = [
       { title: 'General Information', index: 0, route: 'publisher.info' },
-      { title: 'Ad Intelligence', index: 1, route: 'publisher.ad-intelligence'}
+      {
+        title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'),
+        index: 1,
+        route: 'publisher.ad-intelligence'
+      }
     ]
+
 
     // Bound Functions
     publisher.addAppsToList = addAppsToList;
@@ -68,27 +79,24 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     publisher.handleTagButtonClick = handleTagButtonClick;
     publisher.onLinkedinButtonClick = onLinkedinButtonClick;
     publisher.sortApps = sortApps;
-    publisher.trackAppClick = trackAppClick;
-    publisher.trackCompanyContactsRequest = trackCompanyContactsRequest;
-    publisher.trackCopiedEmail = trackCopiedEmail;
-    publisher.trackCrunchbaseClick = trackCrunchbaseClick;
+    publisher.trackAppClick = publisherMixpanelService.trackAppClick;
+    publisher.trackCompanyContactsRequest = publisherMixpanelService.trackCompanyContactsRequest;
+    publisher.trackCopiedEmail = publisherMixpanelService.trackCopiedEmail;
+    publisher.trackCrunchbaseClick = publisherMixpanelService.trackCrunchbaseClick;
+    publisher.trackTabClick = publisherMixpanelService.trackTabClick;
 
     activate();
 
     function activate() {
+      adIntelService.getAdSources().then(data => {
+        const adSources = Object.keys(data)
+        publisher.facebookOnly = adSources.length === 1 && adSources[0] === 'facebook'
+      })
       getPublisher()
         .then(function() {
           publisher.platform = $stateParams.platform;
           pageTitleService.setTitle(publisher.name)
-
-          return $stateParams.utm_source == 'salesforce' ? "Salesforce Publisher Page Viewed" : "Publisher Page Viewed"
-        })
-        .then(function(name) {
-          mixpanel.track(name, {
-            "publisherId": publisher.id,
-            "appPlatform": publisher.platform,
-            "publisherName": publisher.name
-          })
+          publisherMixpanelService.trackPublisherPageView(publisher)
         })
       getPublisherApps()
       getPublisherSdks()
@@ -201,7 +209,7 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     }
 
     function onLinkedinButtonClick (linkType) {
-      if (linkType == 'company' && publisher.linkedin) {
+      if (linkType === 'company' && publisher.linkedin) {
         contactService.goToLinkedIn('linkedin', publisher.linkedin, 'publisher');
       } else {
         contactService.goToLinkedIn(linkType, publisher.name, 'publisher');
@@ -212,46 +220,6 @@ import '../components/export-permissions/export-permissions.directive'; // gross
       getPublisherApps(category, order);
       var sign = order == 'desc' ? '-' : ''
       publisher.rowSort = sign + category;
-    }
-
-    function trackAppClick (app) {
-      mixpanel.track(
-        "App on Company Page Clicked", {
-          "companyName": publisher.name,
-          "appName": app.name,
-          "appId": app.id,
-          "appPlatform": app.type
-        }
-      );
-    }
-
-    function trackCompanyContactsRequest (filter) {
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'companyName': publisher.name,
-          'requestResultsCount': publisher.contactsCount,
-          'titleFilter': filter || '',
-          'Source Type': 'publisher'
-        }
-      );
-    }
-
-    function trackCopiedEmail (contact) {
-      mixpanel.track("Email Copied", {
-        "Email": contact.email,
-        "Company": publisher.name,
-        "Name": contact.fullName,
-        "Title": contact.title,
-        "Source Type": 'publisher'
-      })
-    }
-
-    function trackCrunchbaseClick () {
-      contactService.trackCrunchbaseClick(publisher.name, 'publisher')
-    }
-
-    function trackLinkedinContactClick (contact) {
-      contactService.trackLinkedinContactClick(contact, 'publisher')
     }
   }
 })();

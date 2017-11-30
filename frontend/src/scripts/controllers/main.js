@@ -1,6 +1,5 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
-import _ from 'lodash';
 
 import '../../components/navigation/navigation.directive.js'; // gross
 
@@ -25,7 +24,7 @@ angular.module('appApp')
       $rootScope.isAuthenticated = authToken.isAuthenticated();
 
       // If user not authenticated (and user not already on login page) redirect to login
-      if(!$rootScope.isAuthenticated && !_.contains(["/login"], $location.path())) {
+      if(!$rootScope.isAuthenticated && !["/login"].includes($location.path())) {
         authService.referrer($location.path());
         $window.location.href = "#/login";
       }

@@ -159,7 +159,8 @@ angular
     var publisherAdIntelState = {
       name: 'publisher.ad-intelligence',
       url: '/ad-intelligence',
-      template: require('../publishers/views/ad-intelligence.html')
+      template: require('../publishers/views/ad-intelligence.html'),
+      controller: 'PublisherAdIntelligenceController as pubAdIntel'
     }
 
     var publisherInfoState = {
@@ -226,13 +227,15 @@ angular
     $stateProvider.state(appAdIntelState)
     $stateProvider.state(publisherState)
     $stateProvider.state(publisherInfoState)
-    // $stateProvider.state(publisherAdIntelState)
+    $stateProvider.state(publisherAdIntelState)
     $stateProvider.state(sdkSearchState)
     $stateProvider.state(listState)
     $stateProvider.state(sdkState)
     $urlRouterProvider.otherwise('/timeline')
   }])
-  .run(['$http', '$rootScope', function ($http, $rootScope) {
+  .run(['$http', '$rootScope', '$state', '$stateParams', function ($http, $rootScope, $state, $stateParams) {
+    $rootScope.$state = $state
+    $rootScope.$stateParams = $stateParams
     $(document).ready(function(){
       /* Disables loading spinner */
       setTimeout(function(){

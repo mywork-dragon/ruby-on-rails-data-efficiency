@@ -55,7 +55,7 @@
             data-target="{{ network.can_access ? '' : '#newAdIntelModal'}}"
             >
             <div class="ad-network-btn-container">
-              <img ng-if="network.icon" ng-src="{{network.active && id == 'applovin' ? '/app/app/images/' + id + '_selected.png' : '/app/app/images/' + id + '.png'}}" fallback-src="{{network.icon}}">
+              <img ng-if="network.icon" ng-src="{{network.active && id == 'applovin' ? 'images/' + id + '_selected.png' : 'images/' + id + '.png'}}" fallback-src="{{network.icon}}">
               <div class="ad-network-btn-name">
                 {{network.name}}
               </div>
@@ -169,7 +169,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{app.platform}}/{{app.id}}{{adIntel.networkCount == 1 ? '' : '/ad-intelligence'}}" ng-click="adIntel.trackItemClick(app, 'app', app.platform)" target="_blank">
+                  <a href="#/app/{{app.platform}}/{{app.id}}{{adIntel.networkCount == 1 ? '' : '/ad-intelligence'}}" ng-click="adIntel.trackItemClick(app, 'app')" target="_blank">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -180,7 +180,7 @@
               <td ng-if="adIntel.platform == 'all'" class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntel.trackItemClick(app.publisher, 'publisher', app.platform)" href="#/publisher/{{app.platform}}/{{app.publisher.id}}" target="_blank">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntel.trackItemClick(app, 'publisher')" href="#/publisher/{{app.platform}}/{{app.publisher.id}}{{adIntel.networkCount == 1 ? '' : '/ad-intelligence'}}" target="_blank">{{app.publisher.name}}</a></td>
               <td class="resultsTableAppUserbase">
                 <span ng-if="app.platform != 'ios'">{{app.user_base | capitalize}}</span>
                 <span ng-if="app.platform == 'ios' && app.user_bases.length == 1">
@@ -210,7 +210,7 @@
                 <span ng-repeat="(id, network) in adIntel.adNetworks" ng-init="isSource = adIntel.checkIfAdSource(id, app.ad_sources)">
                   <img
                     ng-if="isSource && network.can_access"
-                    ng-src="{{'/app/app/images/' + id + '.png'}}"
+                    ng-src="{{'images/' + id + '.png'}}"
                     fallback-src="{{network.icon}}"
                     width="16"
                     height="16"
@@ -242,7 +242,8 @@
           </tbody>
         </table>
         <div id="dashboardTableStatusMessage" data-ng-show="!adIntel.numApps || !adIntel.appFetchComplete">
-          <h5 data-ng-show="adIntel.numApps == 0 && adIntel.appFetchComplete">No Results</h5>
+          <h5 data-ng-show="adIntel.numApps == 0 && adIntel.appFetchComplete && !adIntel.error">No Results</h5>
+          <h5 data-ng-show="adIntel.numApps == 0 && adIntel.appFetchComplete && adIntel.error">Error. Please try again.</h5>
           <div data-ng-show="!adIntel.appFetchComplete" id="wrap_spinner">
             <div class="loading outer">
               <div class="loading inner"></div>

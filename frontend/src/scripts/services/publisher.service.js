@@ -11,14 +11,24 @@ publisherService.$inject = ['$http']
 
 function publisherService ($http) {
   return {
+    getAdIntelData,
     getPublisher,
     getPublisherApps,
+    getPublisherCreatives,
     getPublisherSdks,
     getSdkCount,
     getSdkCategories,
     tagAsMajorPublisher,
     untagAsMajorPublisher
   };
+
+  function getAdIntelData (platform, id) {
+    return $http({
+      method: 'GET',
+      url: API_URI_BASE + 'api/ad_intelligence/v2/publisher_summary.json',
+      params: { publisher_id: id, platform }
+    })
+  }
 
   function getPublisher (platform, id) {
     return $http({
@@ -39,11 +49,23 @@ function publisherService ($http) {
       url: API_URI_BASE + 'api/get_developer_apps',
       params: { sortBy: category, orderBy: order, pageNum, platform, id }
     })
-    .then(getPublisherAppsComplete)
+    .then(response => response.data)
+  }
 
-    function getPublisherAppsComplete(response) {
-      return response.data;
-    }
+  function getPublisherCreatives (platform, id, pageNum, pageSize, networks, formats) {
+    return $http({
+      method: 'GET',
+      url: API_URI_BASE + 'api/ad_intelligence/v2/publisher_creatives.json',
+      params: {
+        platform,
+        publisher_id: id,
+        pageNum,
+        pageSize,
+        sourceIds: JSON.stringify(networks),
+        formats: JSON.stringify(formats)
+      }
+    })
+    .then(response => response.data)
   }
 
   function getPublisherSdks (platform, id) {
@@ -52,11 +74,7 @@ function publisherService ($http) {
       url: API_URI_BASE + 'api/' + platform + '_sdks_exist',
       params: { publisherId: id }
     })
-    .then(getPublisherSdksComplete)
-
-    function getPublisherSdksComplete(response) {
-      return response.data;
-    }
+    .then(response => response.data)
   }
 
   function getSdkCount (sdks) {
@@ -70,7 +88,7 @@ function publisherService ($http) {
   function getSdkCategories (sdks) {
     const categories = {}
     const categoryNames = Object.keys(sdks).sort()
-    const others = _.remove(categoryNames, x => x == "Others")
+    const others = _.remove(categoryNames, x => x === "Others")
     if (others.length) { categoryNames.push("Others") }
     categoryNames.forEach(name => categories[name] = true)
     return categories

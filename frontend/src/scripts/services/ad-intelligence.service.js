@@ -32,12 +32,6 @@ const API_URI_BASE = window.API_URI_BASE;
               platforms: JSON.stringify(platforms)
             }
           })
-          .then(function(response) {
-            return response;
-          })
-          .catch(function(error) {
-            return error;
-          })
         }
 
         function getAdSources () {

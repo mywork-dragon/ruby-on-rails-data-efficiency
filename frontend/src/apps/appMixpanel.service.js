@@ -15,9 +15,6 @@ import mixpanel from 'mixpanel-browser';
       trackAppPageView,
       trackCompanyContactsRequest,
       trackCopiedEmail,
-      trackCreativeClick,
-      trackCreativeFilterAdded,
-      trackCreativePageThrough,
       trackCrunchbaseClick,
       trackEmailRequest,
       trackLinkedinContactClick,
@@ -69,39 +66,6 @@ import mixpanel from 'mixpanel-browser';
           "Name": contact.fullName,
           "Title": contact.title,
           "Source Type": 'publisher'
-        }
-      )
-    }
-
-    function trackCreativeClick (creative) {
-      mixpanel.track(
-        "Creative Clicked", {
-          "type": creative.type,
-          "network": creative.ad_network,
-          "app_identifier": creative.app_identifier,
-          "platform": creative.platform,
-          "appId": $stateParams.id
-        }
-      )
-    }
-
-    function trackCreativeFilterAdded (filter) {
-      mixpanel.track(
-        "Creatives Filtered", {
-          "field": filter.field,
-          "value": filter.id,
-          "platform": $stateParams.platform,
-          "appId": $stateParams.id
-        }
-      )
-    }
-
-    function trackCreativePageThrough (page) {
-      mixpanel.track(
-        "Creatives Paged Through", {
-          "pageNum": page,
-          "appId": $stateParams.id,
-          "platform": $stateParams.platform
         }
       )
     }

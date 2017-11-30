@@ -48,6 +48,7 @@ const API_URI_BASE = window.API_URI_BASE;
     adIntel.csvUrl = '';
     adIntel.currentPage = 1;
     adIntel.enabledNetworkCount = 0;
+    adIntel.error = false;
     adIntel.modalNetwork;
     adIntel.networkCount = 0;
     adIntel.numApps = 0;
@@ -113,20 +114,21 @@ const API_URI_BASE = window.API_URI_BASE;
       const activeAdNetworks = getActiveAdNetworks()
       adIntelService.getAdIntelApps(adIntel.platform, page, order, category, activeAdNetworks)
         .then(function(response) {
-          if (response.status == 200) {
-            const data = response.data;
-            adIntel.apps = data.results;
-            adIntel.numApps = data.resultsCount;
-            adIntel.currentPage = data.pageNum;
-            $rootScope.currentPage = data.pageNum;
-            $rootScope.numApps = data.resultsCount;
-            $rootScope.numPerPage = data.pageSize;
-          } else {
-            adIntel.numApps = 0;
-            $rootScope.numApps = 0;
-          }
-
+          const data = response.data;
+          adIntel.apps = data.results;
+          adIntel.numApps = data.resultsCount;
+          adIntel.currentPage = data.pageNum;
+          $rootScope.currentPage = data.pageNum;
+          $rootScope.numApps = data.resultsCount;
+          $rootScope.numPerPage = data.pageSize;
           adIntel.appFetchComplete = true;
+          updateCSVUrl();
+        })
+        .catch(error => {
+          adIntel.numApps = 0;
+          $rootScope.numApps = 0;
+          adIntel.appFetchComplete = true;
+          adIntel.error = true;
           updateCSVUrl();
         })
     }

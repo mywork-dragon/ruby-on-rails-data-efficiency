@@ -22,17 +22,17 @@
                 </button>
               </div>
               <div class="control-wrapper" ng-if="gallery.creativesCount > 1">
-                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id - 1)">
+                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id - 1); gallery.trackCreativeScroll()" ng-disabled="!gallery.creativeFetchComplete">
                   <i class="fa fa-chevron-left"></i>
                 </button>
-                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id + 1)">
+                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id + 1); gallery.trackCreativeScroll()" ng-disabled="!gallery.creativeFetchComplete">
                   <i class="fa fa-chevron-right"></i>
                 </button>
               </div>
             </div>
           </div>
           <div ng-repeat="creative in gallery.creatives">
-            <div class="active-creative-media-ctnr" ng-if="creative.format != 'html'" ng-show="gallery.activeSlide == creative.id">
+            <div class="active-creative-media-ctnr" ng-if="creative.format != 'html'" ng-show="gallery.activeCreative.id == creative.id">
               <img ng-src="{{creative.url}}" ng-if="creative.format == 'image'" fallback-src="images/fallback-elephant.png">
               <video ng-class="'creative-video video-' + creative.id" controls ng-if="creative.format == 'video'">
                 <source ng-src="{{gallery.trustSrc(creative.url)}}" type="video/mp4">
@@ -54,7 +54,20 @@
               <li>
                 <span class="icon fa fa-cloud"></span>
                 <label>Network:</label>
-                {{gallery.activeCreative.ad_network | capitalize}}
+                <span ng-repeat="network in gallery.activeCreative.ad_networks">
+                  <img ng-src="{{'images/' + network.id + '.png'}}" width="16px" height="16px">
+                  <span ng-if="gallery.activeCreative.ad_networks.length <= 1">
+                    {{network.name}}
+                  </span>
+                </span>
+              </li>
+              <li ng-if="gallery.apps">
+                <span class="icon fa fa-fw" ng-class="{'fa-apple': gallery.platform === 'ios', 'fa-android': gallery.platform === 'android'}"></span>
+                <label>App:</label>
+                <a ui-sref="app.ad-intelligence({ platform: gallery.platform, id: gallery.activeCreative.app_id })" target="_blank" ng-click="gallery.trackAppClick(gallery.apps[gallery.activeCreative.app_id], gallery.publisherName, 'ad-intelligence')">
+                  <img ng-src="{{gallery.apps[gallery.activeCreative.app_id].icon}}" width="16px" height="16px"/>
+                  {{gallery.apps[gallery.activeCreative.app_id].name}}
+                </a>
               </li>
               <li>
                 <span class="icon fa fa-image"></span>
@@ -94,7 +107,8 @@
                 checkboxes="true"
                 extra-settings="gallery.dropdownSettings.format"
                 events="gallery.dropdownEvents"
-                translation-texts="gallery.dropdownText.format">
+                translation-texts="gallery.dropdownText.format"
+                disabled="!gallery.creativeFetchComplete">
               </div>
             </span>
             <span class="ui-select">
@@ -106,7 +120,8 @@
               checkboxes="true"
               extra-settings="gallery.dropdownSettings.network"
               events="gallery.dropdownEvents"
-              translation-texts="gallery.dropdownText.network">
+              translation-texts="gallery.dropdownText.network"
+              disabled="!gallery.creativeFetchComplete">
             </div>
           </span>
         </div>
@@ -122,41 +137,58 @@
             <div class="empty-data-ctnr" ng-if="!gallery.creativesCount">
               No Results
             </div>
-            <table class="table table-striped responsive table-hover" ng-if="gallery.creativesCount">
+            <table class="table table-striped responsive table-hover table-bordered" ng-if="gallery.creativesCount">
               <thead>
                 <tr>
                   <th>Preview</th>
-                  <th>Network</th>
+                  <th>Networks</th>
                   <th>First Seen</th>
                   <th>Last Seen</th>
+                  <th ng-if="gallery.apps">App</th>
                   <th>Format</th>
                 </tr>
               </thead>
               <tbody>
                 <tr ng-repeat="creative in gallery.creatives" ng-click="gallery.changeActiveSlide(creative.id); gallery.trackCreativeClick(creative)" class="creative-table-row" ng-class="{'active': gallery.activeSlide == creative.id}">
                   <td class="thumbnail-cell creative-cell" ng-if="creative.format != 'video'">
-                    <div class="play-button" ng-if="creative.format == 'html'">
-                      <i class="fa fa-play-circle-o"></i>
+                    <div class="thumbnail-ctnr">
+                      <div class="play-button" ng-if="creative.format == 'html'">
+                        <i class="fa fa-play-circle-o"></i>
+                      </div>
+                      <img class="creative-thumbnail" ng-src="{{creative.thumbnail ? creative.thumbnail : creative.url}}" fallback-src="images/fallback-elephant.png">
                     </div>
-                    <img class="creative-thumbnail" ng-src="{{creative.thumbnail ? creative.thumbnail : creative.url}}" fallback-src="images/fallback-elephant.png">
                   </td>
-                  <td class="creative-cell thumbnail-cell video-cell" ng-if="creative.format =='video'" ng-click="gallery.autoPlay(creative.id)">
-                    <div class="play-button">
-                      <i class="fa fa-play-circle-o"></i>
+                  <td class="creative-cell thumbnail-cell" ng-if="creative.format =='video'" ng-click="gallery.autoPlay(creative.id)">
+                    <div class="thumbnail-ctnr">
+                      <div class="play-button">
+                        <i class="fa fa-play-circle-o"></i>
+                      </div>
+                      <video ng-if="creative.format == 'video'" class="creative-thumbnail">
+                        <source ng-src="{{gallery.trustSrc(creative.url + '#t=6')}}" type="video/mp4">
+                      </video>
                     </div>
-                    <video ng-if="creative.format == 'video'" class="creative-thumbnail">
-                      <source ng-src="{{gallery.trustSrc(creative.url + '#t=6')}}" type="video/mp4">
-                    </video>
                   </td>
                   <td class="creative-cell">
-                    <img ng-src="{{'images/' + creative.ad_network + '.png'}}" width="16px" height="16px">
-                    {{creative.ad_network | capitalize}}
+                    <span ng-repeat="network in gallery.networks" ng-init="isSource = gallery.checkIfAdSource(network.id, creative.ad_networks)">
+                      <img
+                        ng-if="isSource"
+                        ng-src="{{'images/' + network.id + '.png'}}"
+                        width="16"
+                        height="16"
+                        uib-tooltip="{{network.name}}">
+                        <span ng-if="creative.ad_networks.length <= 1 && isSource">{{network.name}}</span>
+                    </span>
                   </td>
                   <td class="creative-cell">
                     {{creative.first_seen_creative_date | date : shortDate}}
                   </td>
                   <td class="creative-cell">
                     {{creative.last_seen_creative_date | date : shortDate}}
+                  </td>
+                  <td class="creative-cell" ng-if="gallery.apps">
+                    <a ui-sref="app.ad-intelligence({ platform: gallery.platform, id: creative.app_id })" target="_blank" ng-click="gallery.trackAppClick(gallery.apps[creative.app_id], gallery.publisherName, 'ad-intelligence')">
+                      <img ng-src="{{gallery.apps[creative.app_id].icon}}" class="app-icon" uib-tooltip="{{gallery.apps[creative.app_id].name}}"/>
+                    </a>
                   </td>
                   <td class="creative-cell">
                     {{creative.format | capitalize}}

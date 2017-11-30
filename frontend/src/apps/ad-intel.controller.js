@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import './appMixpanel.service.js';
 import '../scripts/directives/fallback-src.directive'
-import '../components/creative-gallery/creative-gallery.directive'
+import '../components/ad-intelligence/creative-gallery/creative-gallery.directive'
+import '../components/ad-intelligence/ad-network-panel/ad-network-panel.directive'
+import '../components/ad-intelligence/ad-summary-panel/ad-summary-panel.directive'
 import '../scripts/directives/format-icon.directive'
 
 angular
@@ -29,6 +31,7 @@ function AppAdIntelligenceController(
 
   appAdIntel.adDataFetchComplete = false;
   appAdIntel.creativePageSize = 8;
+  appAdIntel.error = false;
   appAdIntel.getCreatives = appService.getAppCreatives;
   appAdIntel.hasAdData = false;
 
@@ -47,11 +50,16 @@ function AppAdIntelligenceController(
 
   function getAdIntelData () {
     return appService.getAdIntelData($stateParams.platform, $stateParams.id)
-      .then(function(data) {
+      .then(function(response) {
+        const data = response.data;
         if (!_.isEmpty(data)) {
           Object.assign(appAdIntel, data[$stateParams.id])
           appAdIntel.hasAdData = true;
         }
+        appAdIntel.adDataFetchComplete = true;
+      })
+      .catch(error => {
+        appAdIntel.error = true;
         appAdIntel.adDataFetchComplete = true;
       })
   }

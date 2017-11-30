@@ -1,8 +1,9 @@
 import angular from 'angular';
 import $ from 'jquery'
+import mixpanel from 'mixpanel-browser'
 
 import './gallery.utils'
-import '../../apps/appMixpanel.service'
+import '../../../apps/appMixpanel.service'
 
 const template = require('./creative-gallery.html')
 
@@ -19,7 +20,10 @@ function creativeGallery() {
       pageSize: "=",
       networks: "=",
       formats: "=",
-      totalCreatives: "="
+      totalCreatives: "=",
+      apps: "=",
+      trackAppClick: "=",
+      publisherName: "="
     },
     controller: creativesController,
     controllerAs: 'gallery',
@@ -74,12 +78,13 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
 
   gallery.autoPlay = autoPlay;
   gallery.changeActiveSlide = changeActiveSlide;
-  // gallery.filterCreatives = filterCreatives;
+  gallery.checkIfAdSource = checkIfAdSource;
   gallery.getCreatives = getCreatives;
   gallery.getAltUrl = galleryUtils.getAltUrl;
   gallery.rotateIframe = galleryUtils.rotateIframe;
-  gallery.trackCreativeClick = appMixpanelService.trackCreativeClick;
-  gallery.trackCreativePageThrough = appMixpanelService.trackCreativePageThrough;
+  gallery.trackCreativeClick = trackCreativeClick;
+  gallery.trackCreativePageThrough = trackCreativePageThrough;
+  gallery.trackCreativeScroll = trackCreativeScroll;
   gallery.trustSrc = galleryUtils.trustSrc;
 
   activate();
@@ -124,17 +129,9 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
     }
   }
 
-  // function filterCreatives (filters) {
-  //   gallery.filters = galleryUtils.initializefilters(gallery.networks, gallery.formats)
-  //   filters.forEach(filter => {
-  //     const newFilter = gallery.filterOptions[filter.field].find(option => option.id === filter.id)
-  //     gallery.filters[filter.field].splice(0)
-  //     gallery.filters[filter.field].push(newFilter)
-  //     appMixpanelService.trackCreativeFilterAdded(filter)
-  //   })
-  //   gallery.activeSlide = 0
-  //   getCreatives()
-  // }
+  function checkIfAdSource (id, sources) {
+    return sources.some(source => source.id === id)
+  }
 
   function getCreatives (pageNum = gallery.currentPage) {
     gallery.creativeFetchComplete = false;
@@ -154,5 +151,39 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
   function initializeFilters () {
     gallery.filterOptions = galleryUtils.initializeCreativeFilters(gallery.networks, gallery.formats)
     gallery.filters = galleryUtils.initializeCreativeFilters(gallery.networks, gallery.formats)
+  }
+
+  function trackCreativeClick (creative) {
+    mixpanel.track(
+      "Creative Clicked", {
+        "format": creative.format,
+        "network": creative.ad_network,
+        "app_identifier": creative.app_identifier,
+        "platform": creative.platform,
+        "id": $stateParams.id,
+        "pageType": gallery.apps ? 'publisher' : 'app'
+      }
+    )
+  }
+
+  function trackCreativePageThrough (page) {
+    mixpanel.track(
+      "Creatives Paged Through", {
+        "pageNum": page,
+        "id": $stateParams.id,
+        "platform": $stateParams.platform,
+        "pageType": gallery.apps ? 'publisher' : 'app'
+      }
+    )
+  }
+
+  function trackCreativeScroll () {
+    mixpanel.track(
+      "Creatives Scrolled Through", {
+        "id": $stateParams.id,
+        "platform": $stateParams.platform,
+        "pageType": gallery.apps ? 'publisher' : 'app'
+      }
+    )
   }
 }

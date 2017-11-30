@@ -68,6 +68,7 @@ require('./apps/ad-intel.controller.js');
 
 /* Publisher Component Scripts */
 require('./publishers/publisher.controller.js');
+require('./publishers/ad-intel.controller.js');
 
 /* Directives */
 require('./scripts/directives/directives.js');

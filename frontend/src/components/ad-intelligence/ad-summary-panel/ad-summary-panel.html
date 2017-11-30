@@ -1,0 +1,53 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><strong>Summary</strong></div>
+  <div class="panel-body">
+    <div class="media">
+      <div class="media-body">
+        <ul class="list-unstyled list-info ad-intel-list">
+          <li>
+            <span class="icon fa fa-calendar-check-o"></span>
+            <label>First Seen Ads:</label>
+            {{firstSeenDate | date : shortDate}}
+          </li>
+          <li>
+            <span class="icon fa fa-calendar-plus-o"></span>
+            <label>Last Seen Ads:</label>
+            {{lastSeenDate | date : shortDate}}
+          </li>
+          <li>
+            <span class="icon fa fa-database"></span>
+            <label>Ad Attribution SDKs:</label>
+            <a ng-if="adSdks.length" ng-repeat="sdk in adSdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
+              <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
+            </a>
+            <span ng-if="!adSdks.length">None</span>
+            <a ng-if="itemType === 'app'" ui-sref="app.info({ id: itemId, platform: platform })" style="font-size: 12px; margin-left: 10px;">
+              See All SDKs
+            </a>
+            <a ng-if="itemType === 'publisher'" ui-sref="publisher.info({ id: itemId, platform: platform })" style="font-size: 12px; margin-left: 10px;">
+              See All SDKs
+            </a>
+          </li>
+          <li ng-if="totalApps">
+            <span class="icon fa fa-mobile" style="font-size: 20px;"></span>
+            <label>Total Advertising Apps:</label>
+            {{totalApps}}
+          </li>
+          <li>
+            <span class="icon fa fa-image"></span>
+            <label>Creative Formats:</label>
+            <span ng-if="formats.length" ng-repeat="format in formats">
+              <span format-icon format="format"></span>
+            </span>
+            <span ng-if="!formats.length">None</span>
+          </li>
+          <li>
+            <span class="icon fa fa-bar-chart"></span>
+            <label>Total Creatives:</label>
+            {{numCreatives}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

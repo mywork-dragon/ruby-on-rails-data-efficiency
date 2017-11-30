@@ -41,13 +41,15 @@ import mixpanel from 'mixpanel-browser';
       })
     }
 
-    function trackItemClick (item, type, platform) {
+    function trackItemClick (app, type) {
+      const item = type === 'app' ? app : app.publisher;
       mixpanel.track(
         "Ad Intelligence Item Clicked", {
           "name": item.name,
           "id": item.id,
-          platform,
-          type
+          "platform": app.platform,
+          type,
+          "networks": app.ad_sources.map(source => source.id)
         }
       )
     }

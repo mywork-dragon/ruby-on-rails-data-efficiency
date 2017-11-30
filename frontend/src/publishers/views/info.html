@@ -113,7 +113,7 @@
                     <a
                       ng-href="https://www.crunchbase.com/{{publisher.crunchbase}}"
                       target="_blank"
-                      ng-click="publisher.trackCrunchbaseClick()">
+                      ng-click="publisher.trackCrunchbaseClick(publisher.name)">
                       crunchbase.com/{{publisher.crunchbase}}
                     </a>
                   </li>
@@ -159,19 +159,19 @@
                     <div id="showCompanyEmailsContainer">
                       <div id="showCompanyEmailsTextField">
                         <input
-                          ng-model="companyContactFilter"
+                          ng-model="publisher.companyContactFilter"
                           type="text"
                           class="form-control"
                           ng-if="publisher.contactFetchComplete"
                           placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
-                          ng-enter="publisher.getCompanyContacts(companyContactFilter); publisher.trackCompanyContactsRequest(companyContactFilter)">
+                          ng-enter="publisher.getCompanyContacts(publisher.companyContactFilter); publisher.trackCompanyContactsRequest(publisher.companyContactFilter, publisher)">
                       </div>
                       <div id="showCompanyEmailsButton">
                         <button
                           ng-if="publisher.contactFetchComplete"
                           type="submit"
                           class="btn btn-primary btn-block"
-                          ng-click="publisher.getCompanyContacts(companyContactFilter); publisher.trackCompanyContactsRequest(companyContactFilter)">
+                          ng-click="publisher.getCompanyContacts(publisher.companyContactFilter); publisher.trackCompanyContactsRequest(publisher.companyContactFilter, publisher)">
                           Find Contacts
                         </button>
                       </div>
@@ -222,7 +222,7 @@
                                     uib-tooltip="{{ clicked ? 'Copied!' : 'Copy to clipboard' }}"
                                     tooltip-placement="auto top"
                                     ng-click-copy="{{contact.email}}"
-                                    ng-click="clicked = true; publisher.trackCopiedEmail(contact)"
+                                    ng-click="clicked = true; publisher.trackCopiedEmail(contact, publisher.name)"
                                     ng-mouseenter="clicked = false">
                                     {{contact.email}}
                                   </p>
@@ -311,6 +311,7 @@
                           data-ng-class="{active: publisher.rowSort == 'mobile_priority'}"></span>
                   </div></th>
                   <th><div class="th normal-right-padding">
+                    <i class="fa fa-facebook-official" style="color: #3b5998;"></i>
                     Ad Spend <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Based on Facebook ads seen"></span>
                     <span class="glyphicon glyphicon-chevron-up"
                           data-ng-click="publisher.sortApps('facebook_ads', 'asc') "
@@ -359,7 +360,7 @@
                   </td>
                   <td class="resultsTableAppIcon">
                     <span>
-                      <a ng-href="#/app/{{app.platform}}/{{app.id}}" ng-click="publisher.trackAppClick(app)">
+                      <a ng-href="#/app/{{app.platform}}/{{app.id}}" ng-click="publisher.trackAppClick(app, publisher.name, 'info')">
                         <img ng-src="{{app.icon}}" />
                         {{app.name}}
                         <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -439,14 +440,7 @@
           </footer>
         </section>
       </div>
-
       </div>
-
-      <!-- Modals -->
-      <aside><list-create></list-create></aside>
-      <aside><list-delete></list-delete></aside>
-      <aside><list-delete-selected></list-delete-selected></aside>
-      <aside><export-permissions></export-permissions></aside>
     </div>
   </div>
 </div>

@@ -6,112 +6,32 @@
   </div>
 </div>
 <div ng-if="appAdIntel.adDataFetchComplete">
-  <div class="empty-data-ctnr" ng-if="!appAdIntel.hasAdData">
+  <div class="empty-data-ctnr" ng-if="!appAdIntel.hasAdData && !appAdIntel.error">
     <img ng-src="images/mighty_signal_elephant.png" alt="">
     No Ad Data
+  </div>
+  <div class="empty-data-ctnr" ng-if="!appAdIntel.hasAdData && appAdIntel.error">
+    <img ng-src="images/mighty_signal_elephant.png" alt="">
+    Whoops! There was an error getting ad data for this app. Please try again.
   </div>
   <div ng-if="appAdIntel.hasAdData">
     <div class="ad-intel-row">
       <div class="row-panel">
-        <div class="panel panel-default">
-          <div class="panel-heading"><strong>Ad Networks</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <table class="table ad-network-table">
-                  <thead>
-                    <tr>
-                      <th>Network</th>
-                      <th>First Seen</th>
-                      <th>Last Seen</th>
-                      <th>Formats</th>
-                      <th>Total Creatives</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="source in appAdIntel.ad_networks">
-                      <td class="creative-cell">
-                        <img ng-src="{{'images/' + source.id + '.png'}}" width="16px" height="16px">
-                        {{source.name}}
-                      </td>
-                      <td class="creative-cell">
-                        {{source.first_seen_ads_date | date : shortDate}}
-                      </td>
-                      <td class="creative-cell">
-                        {{source.last_seen_ads_date | date : shortDate}}
-                      </td>
-                      <td>
-                        <span ng-if="source.creative_formats.length" ng-repeat="format in source.creative_formats">
-                          <span format-icon format="format"></span>
-                        </span>
-                        <span ng-if="!source.creative_formats.length">None</span>
-                      </td>
-                      <td>
-                        {{source.number_of_creatives}}
-                        <span
-                          ng-if="source.number_of_creatives == 0"
-                          class="fa fa-question-circle"
-                          popover-append-to-body="true"
-                          popover-placement="auto right"
-                          uib-popover="In some cases we detect an ad and identify the advertised app, but are unable to extract the creative."
-                          popover-title="Why no creatives?"
-                          popover-trigger="mouseenter">
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ad-network-panel
+          networks="appAdIntel.ad_networks"
+        ></ad-network-panel>
       </div>
       <div class="row-panel">
-        <div class="panel panel-default">
-          <div class="panel-heading"><strong>Summary</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info ad-intel-list">
-                  <li>
-                    <span class="icon fa fa-calendar-check-o"></span>
-                    <label>First Seen Ads:</label>
-                    {{appAdIntel.first_seen_ads_date | date : shortDate}}
-                  </li>
-                  <li>
-                    <span class="icon fa fa-calendar-plus-o"></span>
-                    <label>Last Seen Ads:</label>
-                    {{appAdIntel.last_seen_ads_date | date : shortDate}}
-                  </li>
-                  <li>
-                    <span class="icon fa fa-database"></span>
-                    <label>Ad Attribution SDKs:</label>
-                    <a ng-if="appAdIntel.ad_attribution_sdks.length" ng-repeat="sdk in appAdIntel.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
-                      <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
-                    </a>
-                    <span ng-if="!appAdIntel.ad_attribution_sdks.length">None</span>
-                    <a ui-sref="app.info({ id: appAdIntel.id, platform: appAdIntel.platform })" style="font-size: 12px; margin-left: 10px;">
-                      See All SDKs
-                    </a>
-                  </li>
-                  <li>
-                    <span class="icon fa fa-image"></span>
-                    <label>Creative Formats:</label>
-                    <span ng-if="appAdIntel.creative_formats.length" ng-repeat="format in appAdIntel.creative_formats">
-                      <span format-icon format="format"></span>
-                    </span>
-                    <span ng-if="!appAdIntel.creative_formats.length">None</span>
-                  </li>
-                  <li>
-                    <span class="icon fa fa-bar-chart"></span>
-                    <label>Total Creatives:</label>
-                    {{appAdIntel.number_of_creatives}}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ad-summary-panel
+          first-seen-date="appAdIntel.first_seen_ads_date"
+          last-seen-date="appAdIntel.last_seen_ads_date"
+          ad-sdks="appAdIntel.ad_attribution_sdks"
+          platform="appAdIntel.platform"
+          formats="appAdIntel.creative_formats"
+          num-creatives="appAdIntel.number_of_creatives"
+          item-id="appAdIntel.id"
+          item-type="'app'"
+        ></ad-summary-panel>
       </div>
     </div>
     <div class="col-md-12">
