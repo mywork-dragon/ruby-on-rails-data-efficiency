@@ -45,6 +45,18 @@ class AndroidAdController < ApplicationController
     end
     ad.target_proximity_to_business = params['target_proximity_to_business']
     ad.save!
+    imgs = []
+    s3 = Aws::S3::Client.new
+    begin
+        puts s3.head_object({ bucket: "ms-android-automation-outputs",  key: "#{ad.ad_id}/screenshot.png"})
+        imgs.append({
+                "url" => "s3://ms-android-automation-outputs/#{ad.ad_id}/screenshot.png",
+                "file_extension" => "png",
+                "filename" => "screenshot.png"
+            })
+    rescue Aws::S3::Errors::NotFound
+    end
+
     RedshiftLogger.new(records: [{
         id: "fb-#{ad.ad_id}",
         created_at: ad.date_seen,
@@ -57,13 +69,7 @@ class AndroidAdController < ApplicationController
         device_device_id: ad.android_device_sn,
         ad_network_config_identifier: "android-device-sn-#{ad.android_device_sn}",
         ad_text: ad.ad_text,
-        images: [
-            {
-                "url" => "s3://ms-android-automation-outputs/#{ad.ad_id}/screenshot.png",
-                "file_extension" => "png",
-                "filename" => "screenshot.png"
-            }
-        ].to_json,
+        images: imgs.to_json,
         }], table: 'mobile_ads').send!
     ElasticSearchWorker.new.perform(:index_android_apps, [ad.advertised_app.id])
 
