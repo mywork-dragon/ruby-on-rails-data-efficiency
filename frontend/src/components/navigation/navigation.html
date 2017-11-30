@@ -17,8 +17,12 @@
             <a class="nav-link" href="#/ad-intelligence" ng-click="ctrl.clickedNavLink('Ad Intelligence')"> <i class="fa fa-signal"></i> <span>Ad Intelligence</span>
             </a>
         </li>
-        <li>
-            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Popular Apps')"> <i class="fa fa-fire"></i><span>Popular Apps</span></a>
+        <li class="popularApps">
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Popular Apps')"> <i class="fa fa-fire"></i><span>Popular Apps</span>
+              <span class="label label-danger">
+                NEW
+              </span>
+            </a>
             <ul>
               <li><a ui-sref="newcomer-apps" ui-sref-active="active" ng-click="clickedNavLink('Newcomers')" href="#/popular-apps/newcomers"><i class="fa fa-angle-right"></i><span>Newcomers</span></a></li>
               <li><a ui-sref="trending-apps" ui-sref-active="active" ng-click="clickedNavLink('Trending')" href="#/popular-apps/trending"><i class="fa fa-angle-right"></i><span>Trending</span></a></li>

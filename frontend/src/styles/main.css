@@ -4051,6 +4051,10 @@ fieldset[disabled] .btn-danger.active {
   -webkit-overflow-scrolling: touch;
   -webkit-overflow-scrolling: -blackberry-touch; }
 
+#nav li.popularApps .fa-arrow-circle-o-right {
+  display: none;
+}
+
 #nav > li > a > i, #nav > li > a > .nav-icon {
   display: inline-block;
   margin-right: 10px;
