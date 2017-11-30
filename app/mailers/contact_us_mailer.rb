@@ -12,6 +12,9 @@ class ContactUsMailer < ActionMailer::Base
     @message = options[:message]
     @ad_source = options[:ad_source]
     @web_form_button_id = options[:web_form_button_id]
+    @utm_source = options[:utm_source]
+    @utm_medium = options[:utm_medium]
+    @utm_campaign = options[:utm_campaign]
     mail(to: "founders@mightysignal.com", bcc: "h1p1t0g3w9o9d5j9@mightysignal.slack.com", reply_to: @email, subject: 'MightySignal Interest')
   end
   
