@@ -252,11 +252,12 @@ class WelcomeController < ApplicationController
     sdk = params['sdk']
     message = params['message']
     ad_source = params['ad_source']
+    creative = params['creative']
     utm_source = params['utm_source']
     utm_medium = params['utm_medium']
     utm_campaign = params['utm_campaign']
 
-    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :utm_source, :utm_medium, :utm_campaign)
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative, :utm_source, :utm_medium, :utm_campaign)
 
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i

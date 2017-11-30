@@ -11,6 +11,7 @@ class ContactUsMailer < ActionMailer::Base
     @crm = options[:crm]
     @message = options[:message]
     @ad_source = options[:ad_source]
+    @creative = options[:creative]
     @web_form_button_id = options[:web_form_button_id]
     @utm_source = options[:utm_source]
     @utm_medium = options[:utm_medium]

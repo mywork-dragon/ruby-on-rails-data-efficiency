@@ -37,6 +37,7 @@ class ApplicationController < ActionController::Base
                       utm_source
                       utm_medium
                       utm_campaign
+                      creative
                       )
 
     query_parameters = request.query_parameters
