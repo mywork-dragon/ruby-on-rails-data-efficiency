@@ -29,6 +29,9 @@ class AdDataAccessor
     platform,
     source_ids: nil
     )
+    if apps == [] || source_ids == []
+        return [], 0
+    end
     if source_ids.nil?
     source_ids = account.available_ad_sources.values.map {|x| x[:id]}
     end
@@ -132,6 +135,13 @@ class AdDataAccessor
     #   },
     #   46 => Number of total creatives available.
     # ]
+    if apps == [] || formats == [] || source_ids == []
+        if group_by_app_id
+            return {}, 0
+        else
+            return [], 0
+        end
+    end
 
     page_size = [page_size.to_i, MAX_PAGE_SIZE].min
     page_number = [page_number.to_i, 0].max
@@ -233,6 +243,9 @@ class AdDataAccessor
     page_size: 20,
     page_number:0,
     extra_fields:[])
+    if platforms == [] || source_ids == []
+        return [], 0
+    end
     page_size = [page_size.to_i, MAX_PAGE_SIZE].min
     page_number = [page_number.to_i, 0].max
     visible_source_ids = account.available_ad_sources.values.map {|x| x[:id]}
