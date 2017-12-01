@@ -75,11 +75,14 @@ class WeeklyBatch < ActiveRecord::Base
 
   def major_activities
     major_activities = self.activities.where(major_app: true).map do |activity|
-      {
-        app: activity.other_owner(self.owner),
-        happened_at: activity.happened_at
-      }
-    end.sort_by { |activity|
+      app = activity.other_owner(self.owner)
+      if app
+        {
+          app: app,
+          happened_at: activity.happened_at
+        }
+      end
+    end.compact.sort_by { |activity|
       if is_ios?
         IosApp.user_bases[activity[:app].international_userbase[:user_base]] || 3
       else
