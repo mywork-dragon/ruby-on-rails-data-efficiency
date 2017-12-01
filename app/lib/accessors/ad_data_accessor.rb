@@ -93,6 +93,7 @@ class AdDataAccessor
         record['icon'] = app.icon_url
         record['name'] = app.name
         record['type'] = app.class.name
+        record['last_scanned'] = app.last_scanned
     end
 
     grouped_results
@@ -403,6 +404,7 @@ class AdDataAccessor
         {
         'id' => app_model.id,
         'name' =>  app_model.name,
+        'last_scanned' =>  app_model.last_scanned,
         'app_available' => app_available,
         'categories' => categories,
         'user_bases' =>  user_bases,
