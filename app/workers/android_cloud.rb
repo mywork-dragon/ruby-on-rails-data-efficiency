@@ -69,7 +69,7 @@ module AndroidCloud
 
   def handle_unavailable
     log_result(reason: :unavailable)
-    @android_app.update!(display_type: :foreign)
+    @android_app.update!(display_type: :taken_down)
     @apk_snapshot_job.update!(ls_lookup_code: :unavailable) if update_live_scan_job_codes?
   end
 

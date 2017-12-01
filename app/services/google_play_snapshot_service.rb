@@ -43,7 +43,7 @@ class GooglePlaySnapshotService
     def start_scrape(
       notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}",
       description: 'Run current Android apps',
-      query: { display_type: AndroidApp.display_types.values_at(:normal, :foreign) }
+      query: {}
       )
       # Scrape the GooglePlay store for android app info, by
       # default this function scrapes valid android apps. It
@@ -61,7 +61,7 @@ class GooglePlaySnapshotService
     def run(
       notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}",
       description: 'Run current Android apps',
-      query: { display_type: AndroidApp.display_types.values_at(:normal, :foreign) }
+      query: {}
       )
       # Scrape the GooglePlay store for android app info, by
       # default this function scrapes valid android apps. It
