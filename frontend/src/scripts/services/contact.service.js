@@ -29,10 +29,7 @@ const API_URI_BASE = window.API_URI_BASE;
 
       if (linkType == 'company') {
         linkedinLink = `https://www.linkedin.com/search/results/companies/?keywords=${company}&origin=SWITCH_SEARCH_VERTICAL`;
-      } else if (linkType == 'linkedin') {
-        linkedinLink = `https://www.linkedin.com/${company}`
-      }
-      else {
+      } else {
         linkedinLink = `https://www.linkedin.com/search/results/people/?keywords=title%3A%20(${linkType})%20AND%20company%3A%20${company}&origin=GLOBAL_SEARCH_HEADER`;
       }
 

@@ -263,8 +263,13 @@
                     <label>Crunchbase:</label>
                     <a href="https://www.crunchbase.com/{{app.publisher.crunchbase}}" target="_blank" ng-click="app.trackCrunchbaseClick(app)">crunchbase.com/{{app.publisher.crunchbase}}</a>
                   </li>
-                  <li id="linkedinLinksList">
+                  <li ng-if="app.publisher.linkedin">
                     <span class="icon fa fa-linkedin"></span>
+                    <label>LinkedIn:</label>
+                    <a href="https://www.linkedin.com/{{app.publisher.linkedin}}" target="_blank">linkedin.com/{{app.publisher.linkedin}}</a>
+                  </li>
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-search"></span>
                     <label>Search LinkedIn:</label>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="app.onLinkedinButtonClick('company')" ng-disabled="!app.publisher.id">Company</button>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="app.onLinkedinButtonClick('sales')" ng-disabled="!app.publisher.id">Sales Team</button>

@@ -216,11 +216,7 @@ import '../components/ad-intelligence/creative-gallery/gallery.utils' // gross?
     }
 
     function onLinkedinButtonClick (linkType) {
-      if (linkType == 'company' && app.publisher.linkedin) {
-        contactService.goToLinkedIn('linkedin', app.publisher.linkedin, 'app');
-      } else {
-        contactService.goToLinkedIn(linkType, app.publisher.name, 'app');
-      }
+      contactService.goToLinkedIn(linkType, app.publisher.name, 'app');
     }
 
     function openAppStorePage () {

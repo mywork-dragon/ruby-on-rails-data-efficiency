@@ -209,11 +209,7 @@ import './mixpanel.service'
     }
 
     function onLinkedinButtonClick (linkType) {
-      if (linkType === 'company' && publisher.linkedin) {
-        contactService.goToLinkedIn('linkedin', publisher.linkedin, 'publisher');
-      } else {
-        contactService.goToLinkedIn(linkType, publisher.name, 'publisher');
-      }
+      contactService.goToLinkedIn(linkType, publisher.name, 'publisher');
     }
 
     function sortApps (category, order) {
