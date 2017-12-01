@@ -302,6 +302,19 @@ class IosDownloadDeviceService
                        apps_after.select { |id| !prior_apps.include?(id) }.first
                      end
     @app_info = get_app_name_and_path(new_app_folder)
+    validate_correct_install!
+  end
+
+  # ensure IPA is the correct one
+  def validate_correct_install!
+    bundle_info = extract_bundle_info
+    ipa_bundle_id = bundle_info['CFBundleIdentifier']
+
+    lookup_bundle_id = @lookup_content['bundleId']
+    if ipa_bundle_id != lookup_bundle_id
+      message = "Mismatched bundles: #{ipa_bundle_id} != #{lookup_bundle_id}"
+      raise UnexpectedCondition, message
+    end
   end
 
   def ensure_not_imessage_only_app!
@@ -683,10 +696,10 @@ class IosDownloadDeviceService
   end
 
   def extract_bundle_info
-
+    
     return @bundle_info if @bundle_info
 
-    impt_keys = %w(CFBundleExecutable CFBundleShortVersionString)
+    impt_keys = %w(CFBundleExecutable CFBundleShortVersionString CFBundleIdentifier)
 
     run_command("find #{File.join(@app_info[:path], '*.app')} -maxdepth 1 -name 'Info.plist' -exec plutil -convert json '{}' \\\;", 'Converting plist to json', 'Converted 1 files to json format')
     begin
