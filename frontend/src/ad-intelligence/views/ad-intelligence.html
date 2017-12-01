@@ -217,11 +217,12 @@
                     uib-tooltip="{{network.name}}">
                 </span>
               </td>
-              <td ng-if="canViewAdAttribution && !app.ad_attribution_sdks.length">None</td>
-              <td ng-if="canViewAdAttribution && app.ad_attribution_sdks.length">
+              <td ng-if="canViewAdAttribution">
                 <a ng-repeat="sdk in app.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
                   <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
                 </a>
+                <span ng-if="!app.ad_attribution_sdks.length && app.last_scanned">None</span>
+                <span ng-if="!app.last_scanned">Not scanned</span>
               </td>
               <!-- <td>
                 <span ng-repeat="format in app.ad_formats" uib-tooltip="{{format.name}}">
