@@ -6,7 +6,6 @@ import '../../components/list-create/list-create.directive'; // gross
 import '../../components/list-delete/list-delete.directive'; // gross
 import '../../components/list-delete-selected/list-delete-selected.directive'; // gross
 import '../../components/export-permissions/export-permissions.directive'; // gross
-import '../../components/help-video/help-video.directive'; // gross
 
 const API_URI_BASE = window.API_URI_BASE;
 

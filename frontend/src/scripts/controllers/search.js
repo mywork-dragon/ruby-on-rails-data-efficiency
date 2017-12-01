@@ -7,18 +7,19 @@ import '../../components/list-create/list-create.directive'; // gross
 import '../../components/list-delete/list-delete.directive'; // gross
 import '../../components/list-delete-selected/list-delete-selected.directive'; // gross
 import '../../components/export-permissions/export-permissions.directive'; // gross
-import '../../components/help-video/help-video.directive'; // gross
 
 const API_URI_BASE = window.API_URI_BASE;
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService", "$q",
-    function ($scope, $timeout, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService, $q) {
+  .controller('SearchCtrl', ["$scope", '$timeout', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService", "$q", "$state",
+    function ($scope, $timeout, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService, $q, $state) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
 
-      pageTitleService.setTitle("MightySignal - Explore")
+      if ($state.is('explore')) {
+        pageTitleService.setTitle("MightySignal - Explore")
+      }
 
       $scope.refreshSlider = function () {
         $timeout(function () {

@@ -9,7 +9,12 @@
     <div class="row adminPageRow">
       <div ng-hide="accountId">
         {{$scope.accountId}}
-        <h4 class="page-title">Admin</h4>
+        <h4 class="page-title">
+          Admin
+          <div class="header-help-prompt">
+            <a href="http://support.mightysignal.com/article/60-admin-portal-basics" class="video-link" target="_blank">How to manage your account</a>
+          </div>
+        </h4>
         <div ng-if="$root.isAdminAccount" class="admin-setup">
           <strong>Setup new accounts</strong>
           <form id="create-account" class="form-inline" name="accountForm">

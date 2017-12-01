@@ -1,8 +1,6 @@
 import angular from 'angular';
 import $ from 'jquery';
 
-import '../components/help-video/help-video.directive'; // gross
-
 angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$stateParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
   function($scope, $http, $stateParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
 

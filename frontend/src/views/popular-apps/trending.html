@@ -5,7 +5,7 @@
 
       <header class="page-main-header ng-scope">
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-12">
             <h4>
                <span class="btn-group" id="dashboardPlatformSwitch">
                 <button type="button" ng-class="popularApps.platform == 'all' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="popularApps.togglePlatform('all')">All</button>
@@ -13,6 +13,9 @@
                 <button type="button" ng-class="popularApps.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="popularApps.togglePlatform('android')">Android</button>
               </span>
               Trending Apps
+              <div class="header-help-prompt popular-apps">
+                <a href="http://support.mightysignal.com/article/72-app-rankings" class="video-link" target="_blank">How to use Popular Apps</a>
+              </div>
             </h4>
           </div>
         </div>
@@ -108,7 +111,7 @@
                     data-ng-class="{active: popularApps.isActiveSort('weekly_change', 'desc')}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
-              1 Month Change 
+              1 Month Change
               <span class="glyphicon glyphicon-chevron-up"
                     data-ng-click="popularApps.sortApps('monthly_change', 'asc') "
                     data-ng-class="{active: popularApps.isActiveSort('monthly_change', 'asc')}"></span>
@@ -230,7 +233,5 @@
   <aside ng-include="'views/modals/location-filters.html'"></aside>
   <aside ng-include="'views/modals/search-create.html'"></aside>
   <aside ng-include="'views/modals/search-delete.html'"></aside>
-  <!-- Not Used -->
-  <!-- <aside ng-include="'/views/modals/help-video.html'"></aside> --> 
 
-</div>  
+</div>
