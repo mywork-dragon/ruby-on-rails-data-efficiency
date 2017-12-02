@@ -20,8 +20,10 @@
                     {{app.id}}
                   </li>
                   <li>
-                    <span class="icon glyphicon glyphicon-envelope"></span>
-                    <label>Ad Spend:</label>
+                    <span class="icon fa fa-facebook-official"></span>
+                    <label>
+                      Facebook Ad Spend:
+                    </label>
                     {{app.adSpend ? 'Yes' : 'No'}}
                   </li>
                   <li ng-if="app.mobilePriority">
@@ -48,7 +50,7 @@
           </div>
         </div>
 
-        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend && app.facebookOnly">
+        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend">
           <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
             <uib-carousel active="app.activeSlide" id="adIntelligenceCarousel">
