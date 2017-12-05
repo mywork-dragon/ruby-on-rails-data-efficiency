@@ -108,7 +108,7 @@
                   <input type="checkbox" ng-checked="account.can_use_salesforce" ng-click="settingChanged('can_use_salesforce', account)"> Salesforce
                 </label>
                 <label class="select">
-                  <select ng-model="account.seats_count" ng-options="i for i in range(50)" ng-change="settingChanged('seats_count', account, i)">
+                  <select ng-model="account.seats_count" ng-options="i for i in range(200)" ng-change="settingChanged('seats_count', account, i)">
                   </select>
                   Seats
                 </label>
