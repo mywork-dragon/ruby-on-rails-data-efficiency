@@ -1,16 +1,10 @@
-class ApplicationPublisherExportWorker
-  include Sidekiq::Worker
+class ApplicationPublisherExportWorker < ExportWorker
 
-  sidekiq_options queue: :application_export, retry: false
   def perform(platform, publisher_id)
-    s3_client = MightyAws::S3.new
     dumped_json = platform.to_s.classify.constantize.find(publisher_id).api_json.as_json
-    key = "#{dumped_json["platform"]}/#{dumped_json["platform"]}-#{dumped_json["id"]}.json.gz"
-    s3_client.store(
-      bucket: Rails.application.config.application_publisher_export_bucket,
-      key_path: key,
-      data_str: dumped_json.to_json
-    )
+    key = "#{platform}s:#{dumped_json["id"]}"
+    export_store.set(key, ActiveSupport::Gzip.compress(dumped_json.to_json))
+    export_store.sadd("#{platform}s:set", key)
   end
 
   def queue_ios
