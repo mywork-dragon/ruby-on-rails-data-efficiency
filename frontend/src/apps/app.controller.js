@@ -2,9 +2,9 @@ import angular from 'angular';
 
 import './appMixpanel.service.js';
 
-import '../components/export-permissions/export-permissions.directive'; // gross
-import '../components/list-create/list-create.directive'; // gross
-import '../components/ad-intelligence/creative-gallery/gallery.utils' // gross?
+import 'shared/export-permissions/export-permissions.directive';
+import 'shared/list-create/list-create.directive';
+import 'shared/ad-intelligence/creative-gallery/gallery.utils'
 import './app.utils'
 
 angular

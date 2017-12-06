@@ -9,7 +9,7 @@ angular.module('appApp')
         animation: true,
         ariaLabelledBy: 'videoModalTitle',
         ariaDescribedBy: 'videoModalBody',
-        template: require('../../components/help-video/help-video.html'), // this is messed up...two different places relying on same controller
+        template: require('shared/help-video/help-video.html'), // this is messed up...two different places relying on same controller
         controller: 'VideoInstanceCtrl',
         controllerAs: '$ctrl',
         size: 'lg',

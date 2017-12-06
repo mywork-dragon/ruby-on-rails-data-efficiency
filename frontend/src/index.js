@@ -73,6 +73,3 @@ require('./publishers/ad-intel.controller.js');
 /* Directives */
 require('./scripts/directives/directives.js');
 require('./scripts/directives/fallback-src.directive.js');
-
-/* Components */
-// require('./components/top-header/top-header.directive.js');

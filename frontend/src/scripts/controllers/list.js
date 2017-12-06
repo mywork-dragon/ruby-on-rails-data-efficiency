@@ -2,10 +2,10 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 import $ from 'jquery';
 
-import '../../components/list-create/list-create.directive'; // gross
-import '../../components/list-delete/list-delete.directive'; // gross
-import '../../components/list-delete-selected/list-delete-selected.directive'; // gross
-import '../../components/export-permissions/export-permissions.directive'; // gross
+import 'shared/list-create/list-create.directive';
+import 'shared/list-delete/list-delete.directive';
+import 'shared/list-delete-selected/list-delete-selected.directive';
+import 'shared/export-permissions/export-permissions.directive';
 
 angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$stateParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$state", "authService", "$location", "csvUtils",
   function($scope, $http, authToken, $stateParams, $rootScope, listApiService, searchService, pageTitleService, $state, authService, $location, csvUtils) {

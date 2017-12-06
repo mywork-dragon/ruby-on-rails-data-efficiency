@@ -12,10 +12,6 @@ RUN gem update bundler && bundle config build.nokogiri --use-system-libraries &&
 ADD . /varys
 
 # build web assets
-# RUN cd /varys/public/app && npm install --production &&\
-#   cd /varys/public/app && npm run bower-install &&\
-#   (cd /varys/ && npm install)&&\
-#   (cd /varys/ && npm run gulp-build)
 RUN cd frontend && yarn install && yarn build
 RUN mv frontend/build public/app/app
 

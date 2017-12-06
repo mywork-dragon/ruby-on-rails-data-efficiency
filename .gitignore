@@ -37,7 +37,7 @@ db.patch
 
 *.DS_Store
 
-.env
+/.env
 /public/system
 
 .irb_history

@@ -1,15 +1,7 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
-import '../../components/navigation/navigation.directive.js'; // gross
-
-/**
- * @ngdoc function
- * @name appApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the appApp
- */
+import 'shared/navigation/navigation.directive.js';
 
 angular.module('appApp')
   .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity', '$sce',

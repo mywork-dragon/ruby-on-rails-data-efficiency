@@ -1,8 +1,8 @@
 import angular from 'angular';
 
-import '../../components/list-create/list-create.directive'; // gross
-import '../../components/list-delete/list-delete.directive'; // gross
-import '../../components/list-delete-selected/list-delete-selected.directive'; // gross
+import 'shared/list-create/list-create.directive';
+import 'shared/list-delete/list-delete.directive';
+import 'shared/list-delete-selected/list-delete-selected.directive';
 
 angular.module('appApp')
   .controller('SdkSearchCtrl', ['$rootScope', 'sdkSearchService', '$httpParamSerializer', '$location', 'listApiService',

@@ -1,10 +1,10 @@
 import angular from 'angular';
 import _ from 'lodash';
 
+import 'shared/ad-intelligence/creative-gallery/creative-gallery.directive'
+import 'shared/ad-intelligence/ad-network-panel/ad-network-panel.directive'
+import 'shared/ad-intelligence/ad-summary-panel/ad-summary-panel.directive'
 import '../scripts/directives/fallback-src.directive'
-import '../components/ad-intelligence/creative-gallery/creative-gallery.directive'
-import '../components/ad-intelligence/ad-network-panel/ad-network-panel.directive'
-import '../components/ad-intelligence/ad-summary-panel/ad-summary-panel.directive'
 import '../scripts/directives/format-icon.directive'
 import './publisher.utils'
 
