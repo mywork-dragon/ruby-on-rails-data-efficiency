@@ -1,10 +1,6 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
-import 'shared/list-create/list-create.directive';
-import 'shared/list-delete/list-delete.directive';
-import 'shared/list-delete-selected/list-delete-selected.directive';
-
 const API_URI_BASE = window.API_URI_BASE;
 
 angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", "$stateParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService', 'slacktivity',

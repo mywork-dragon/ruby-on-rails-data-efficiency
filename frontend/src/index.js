@@ -53,7 +53,6 @@ require('./scripts/controllers/popular-apps.js');
 require('./scripts/controllers/top-chart.js');
 require('./scripts/controllers/modal-search.js');
 require('./scripts/controllers/search-delete.js');
-require('./scripts/controllers/help-video.js');
 require('./scripts/utils/csv.utils.js');
 
 /* App Component Scripts */

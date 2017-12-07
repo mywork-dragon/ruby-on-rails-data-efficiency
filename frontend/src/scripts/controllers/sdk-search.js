@@ -1,9 +1,5 @@
 import angular from 'angular';
 
-import 'shared/list-create/list-create.directive';
-import 'shared/list-delete/list-delete.directive';
-import 'shared/list-delete-selected/list-delete-selected.directive';
-
 angular.module('appApp')
   .controller('SdkSearchCtrl', ['$rootScope', 'sdkSearchService', '$httpParamSerializer', '$location', 'listApiService',
     function($rootScope, sdkSearchService, $httpParamSerializer, $location, listApiService) {

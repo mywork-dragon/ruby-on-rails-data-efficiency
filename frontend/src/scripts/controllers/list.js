@@ -2,7 +2,6 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 import $ from 'jquery';
 
-import 'shared/list-create/list-create.directive';
 import 'shared/list-delete/list-delete.directive';
 import 'shared/list-delete-selected/list-delete-selected.directive';
 import 'shared/export-permissions/export-permissions.directive';

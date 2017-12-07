@@ -1,5 +1,7 @@
 import angular from 'angular';
 
+import 'shared/list-create/list-create.directive';
+
 const template = require('./navigation.html')
 
 angular.module('appApp')

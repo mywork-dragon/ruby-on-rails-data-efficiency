@@ -1897,7 +1897,7 @@ ActiveRecord::Schema.define(version: 20171130031649) do
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
   add_index "ios_sdks", ["source"], name: "index_ios_sdks_on_source", using: :btree
-  add_index "ios_sdks", ["uid"], name: "index_ios_sdks_on_uid", using: :btree
+  add_index "ios_sdks", ["uid"], name: "index_ios_sdks_on_uid", unique: true, using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
   create_table "ios_sdks_ipa_snapshots", force: :cascade do |t|

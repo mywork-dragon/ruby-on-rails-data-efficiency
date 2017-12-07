@@ -2,9 +2,6 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
 import 'shared/top-header/top-header.directive.js';
-import 'shared/list-create/list-create.directive';
-import 'shared/list-delete/list-delete.directive';
-import 'shared/list-delete-selected/list-delete-selected.directive';
 
 const API_URI_BASE = window.API_URI_BASE;
 

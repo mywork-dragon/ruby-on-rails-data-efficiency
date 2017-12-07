@@ -8936,19 +8936,7 @@ h4.red {
   background-color: #49A771;
 }
 
-/* Video Guides */
-
-#videoModalBody {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  min-height: 450px;
-}
-
-.help-video {
-  width: 80%;
-}
-
+/* Video/Help Guides */
 .explore-video {
   height: 100%;
   display: flex;
@@ -8961,11 +8949,6 @@ h4.red {
 
 .header-help-prompt.popular-apps {
   margin-top: 10px;
-}
-
-.timeline-video {
-  padding-top: 10px;
-  float: right;
 }
 
 .video-link {
