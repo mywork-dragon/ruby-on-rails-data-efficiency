@@ -1,6 +1,8 @@
 import angular from 'angular';
 import _ from 'lodash';
 
+import './api-token.service'
+
 angular.module('appApp').controller('apiTokenInstanceCtrl', ["$uibModalInstance", "id", "apiTokenService", function ($uibModalInstance, id, apiTokenService) {
   var $ctrl = this;
   $ctrl.id = id;

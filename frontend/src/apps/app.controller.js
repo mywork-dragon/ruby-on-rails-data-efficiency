@@ -1,6 +1,7 @@
 import angular from 'angular';
 
-import './appMixpanel.service.js';
+import './appMixpanel.service';
+import './app.service'
 
 import 'shared/export-permissions/export-permissions.directive';
 import 'shared/list-create/list-create.directive';

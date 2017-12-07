@@ -4,6 +4,7 @@ class AdIntelligenceController < ApplicationController
 
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_ad_intelligence
+  before_action :authenticate_admin_account, only: [:get_account_settings, :update_account_settings]
 
   def _get_platform
     if ['ios', 'android'].include? params[:platform]
@@ -169,6 +170,41 @@ class AdIntelligenceController < ApplicationController
   def available_sources
     expires_in 1.minutes
     render json: @current_user.account.available_ad_sources
+  end
+
+  def get_account_settings
+    account = Account.find(params[:account_id])
+    render json: account.account_ad_data_settings
+  end
+
+  def update_account_settings
+    account = Account.find(params[:account_id])
+    settings = JSON.parse(params[:settings])
+    active_networks = []
+
+    account.clear_ad_permissions!
+
+    settings['ad_network_tiers'].each do |key, tier|
+      if tier['can_access']
+        account.enable_ad_network_tier!(key)
+        active_networks = tier['networks']
+      else
+        account.disable_ad_network_tier!(key)
+      end
+    end
+
+    settings['ad_networks'].each do |id, network|
+      included_in_tier = active_networks.include?(id)
+      if network['hidden']
+        account.hide_ad_network!(id)
+      elsif included_in_tier && !network['can_access']
+        account.disable_ad_network!(id)
+      elsif !included_in_tier && network['can_access']
+        account.enable_ad_network!(id)
+      end
+    end
+
+    render json: account.account_ad_data_settings
   end
 
   def ad_intelligence_query

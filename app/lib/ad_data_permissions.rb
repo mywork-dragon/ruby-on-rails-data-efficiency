@@ -65,6 +65,21 @@ module AdDataPermissions
       h
     end
 
+    def account_ad_data_settings
+      settings = { ad_networks: {}, ad_network_tiers: {} }
+      AdDataPermissions::AD_DATA_TIERS.each do |key, networks|
+        settings[:ad_network_tiers][key] = {}
+        settings[:ad_network_tiers][key][:networks] = networks
+        settings[:ad_network_tiers][key][:can_access] = ad_permissions['enabled_ad_network_tiers'].include?(key)
+      end
+      AdDataPermissions::AD_DATA_SOURCES.each do |source|
+        settings[:ad_networks][source[:id]] = source.clone
+        settings[:ad_networks][source[:id]][:can_access] = self.can_access_ad_network(source[:id])
+        settings[:ad_networks][source[:id]][:hidden] = hidden_ad_networks.include?(source[:id])
+      end
+      settings
+    end
+
     def can_access_ad_network(network)
       enabled_ad_networks.include? network
     end
@@ -89,10 +104,6 @@ module AdDataPermissions
 
     def hidden_ad_networks
       hidden = ad_permissions['hidden_ad_networks']
-      # AD_INTEL_TO_DO remove this and reenable account_test.rb tests.
-      if ad_permissions['enabled_ad_network_tiers'].include? 'tier-1'
-        hidden += (Set.new(AD_DATA_TIERS['tier-2']) - Set.new(AD_DATA_TIERS['tier-1'])).to_a
-      end
       hidden
     end
 
@@ -138,6 +149,16 @@ module AdDataPermissions
       save!
     end
 
+    def clear_ad_permissions!
+      self.ad_data_permissions = {
+        'enabled_ad_networks' => [],
+        'hidden_ad_networks' => [],
+        'disabled_ad_networks' => [],
+        'enabled_ad_network_tiers' => ['tier-1'] # Enable tier-1 by default
+      }
+      save!
+    end
+
     def ad_permissions
       if ad_data_permissions.nil?
         self.ad_data_permissions = {
@@ -156,4 +177,3 @@ module AdDataPermissions
   end
 
 end
-

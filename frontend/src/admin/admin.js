@@ -243,7 +243,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", '$stateParams', 'aut
         animation: true,
         ariaLabelledBy: 'apiTokenModalTitle',
         ariaDescribedBy: 'apiTokenModalBoday',
-        template: require('../../views/modals/api-token.html'),
+        template: require('./api-token/api-token.html'),
         // templateUrl: 'api-token.html',
         controller: 'apiTokenInstanceCtrl',
         controllerAs: '$ctrl',

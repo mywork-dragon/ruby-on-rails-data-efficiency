@@ -9,11 +9,11 @@
         <h3 class="modal-title network-modal-header" ng-if="adIntel.modalNetwork">
           Discover Apps Advertising on
         </h3>
-        <img class="network-full-logo" ng-if="adIntel.modalNetwork" ng-src="{{'/app/app/images/' + adIntel.modalNetwork.id + '-full.png'}}" fallback-src="{{adIntel.modalNetwork.icon}}">
+        <img class="network-full-logo" ng-if="adIntel.modalNetwork" ng-src="{{'images/' + adIntel.modalNetwork.id + '-full.png'}}" fallback-src="{{adIntel.modalNetwork.icon}}">
         <div class="row network-modal-list" ng-if="!adIntel.modalNetwork">
           <div ng-repeat="(id, network) in adIntel.adNetworks">
             <div class="modal-network-container">
-              <img ng-if="network.icon" ng-src="{{'/app/app/images/' + id + '.png'}}" fallback-src="{{network.icon}}">
+              <img ng-if="network.icon" ng-src="{{'images/' + id + '.png'}}" fallback-src="{{network.icon}}">
               <div class="network-modal-label">
                 <i class="fa" ng-class="network.can_access ? 'fa-check-square-o' : 'fa-square-o'"></i>
                 <span>{{network.name}}</span>

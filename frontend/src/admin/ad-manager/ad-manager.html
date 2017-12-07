@@ -1,0 +1,85 @@
+<div class="token-modal-wrapper">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title" id="apiTokenModalTitle">Ad Networks</h3>
+    </div>
+    <div class="modal-body" id="apiTokenModalBody">
+      <h4>{{isAdminAccount ? 'Manage Ad Intelligence permissions' : 'View your available ad networks'}}</h4>
+      <div>
+        Tiers:
+        <div class="network-controls">
+          <span class="btn-group">
+            <button
+              class="btn"
+              ng-repeat="(id, tier) in adManager.tiers"
+              ng-class="{'btn-primary': tier.can_access, 'btn-default': !tier.can_access}"
+              type="button"
+              uib-tooltip-html="tier.tooltip"
+              ng-click="adManager.updateTier(id)"
+              >
+              {{id | capitalize}}
+            </button>
+          </span>
+        </div>
+      </div>
+      Networks:
+      <div class="network-controls-ctnr">
+        <div class="network-controls" ng-repeat="(id, network) in adManager.networks">
+          <div>
+            <img
+            ng-src="{{'images/' + id + '.png'}}"
+            fallback-src="{{network.icon}}"
+            width="16"
+            height="16">
+            <span>{{network.name}}</span>
+          </div>
+          <span class="btn-group">
+            <button
+              class="btn"
+              ng-class="{'btn-primary': network.can_access, 'btn-default': !network.can_access}"
+              ng-click="adManager.updateNetwork('can_access', id)">
+              Enabled
+            </button>
+            <button
+              class="btn"
+              ng-class="{'btn-primary': network.hidden, 'btn-default': !network.hidden}"
+              ng-click="adManager.updateNetwork('hidden', id)">
+              Hidden
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="network-list-ctnr">
+        <div class="network-list">
+          Visible Networks:
+          <span ng-repeat="(id, network) in adManager.networks">
+            <img
+            ng-if="!network.hidden"
+            ng-src="{{'images/' + id + '.png'}}"
+            fallback-src="{{network.icon}}"
+            uib-tooltip="{{network.name}}">
+          </span>
+        </div>
+        <div class="network-list">
+          Enabled Networks:
+          <span ng-repeat="(id, network) in adManager.networks">
+            <img
+            ng-if="network.can_access && !network.hidden"
+            ng-src="{{'images/' + id + '.png'}}"
+            fallback-src="{{network.icon}}"
+            uib-tooltip="{{network.name}}">
+          </span>
+        </div>
+      </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="$dismiss()">Close</button>
+      <button
+        type="button"
+        class="btn"
+        ng-class="{'btn-default': !adManager.changesMade, 'btn-primary': adManager.changesMade}"
+        ng-disabled="!adManager.changesMade"
+        ng-click="adManager.saveSettings()">
+        Save
+      </button>
+    </div>
+</div>

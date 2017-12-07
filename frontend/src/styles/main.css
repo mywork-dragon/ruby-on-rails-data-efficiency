@@ -8982,7 +8982,7 @@ h4.red {
 
 /* API Tokens */
 
-.microsoft-btn {
+.admin-btn {
   margin-left: 10px;
 }
 
@@ -9671,4 +9671,46 @@ tr.creative-table-row.active > td {
 
 #topAppsPage #wrap_spinner {
   margin-top: 100px;
+}
+
+/* Ad Intel Permissions Modal */
+
+.network-controls-ctnr {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.network-controls {
+  margin: 10px;
+}
+
+.network-controls div {
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.network-controls > div > img {
+  margin-right: 5px;
+}
+
+.network-list-ctnr {
+  display: flex;
+}
+
+.network-list {
+  margin: 10px;
+  font-size: 16px;
+}
+
+.network-list img {
+  width: 16px;
+  height: 16px;
+}
+
+.tier-tooltip ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
 }

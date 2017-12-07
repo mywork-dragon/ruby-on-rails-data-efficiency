@@ -27,8 +27,6 @@ require('./scripts/services/newsfeed.js');
 require('./scripts/services/sdk-search.js');
 require('./scripts/services/sdk-live-scan.js');
 require('./scripts/services/saved-search.js');
-require('./scripts/services/api-token.js');
-require('./scripts/services/app.service.js');
 require('./scripts/services/publisher.service.js');
 require('./scripts/services/popular-apps.service.js');
 require('./scripts/services/click-copy.js');
@@ -48,7 +46,6 @@ require('./scripts/controllers/chart.js');
 require('./scripts/controllers/newsfeed.js');
 require('./scripts/controllers/company-details.js');
 require('./scripts/controllers/sdk-details.js');
-require('./scripts/controllers/admin.js');
 require('./scripts/controllers/charts.js');
 require('./scripts/controllers/table.controller.js');
 require('./ad-intelligence/ad-intelligence.controller.js');
@@ -57,7 +54,6 @@ require('./scripts/controllers/top-chart.js');
 require('./scripts/controllers/modal-search.js');
 require('./scripts/controllers/search-delete.js');
 require('./scripts/controllers/help-video.js');
-require('./scripts/controllers/api-token.js');
 require('./scripts/utils/csv.utils.js');
 
 /* App Component Scripts */
@@ -69,6 +65,12 @@ require('./apps/ad-intel.controller.js');
 /* Publisher Component Scripts */
 require('./publishers/publisher.controller.js');
 require('./publishers/ad-intel.controller.js');
+
+/* Admin Scripts */
+require('./admin/admin.js');
+require('./admin/admin.controller.js');
+require('./admin/api-token/api-token.js');
+require('./admin/ad-manager/ad-manager')
 
 /* Directives */
 require('./scripts/directives/directives.js');

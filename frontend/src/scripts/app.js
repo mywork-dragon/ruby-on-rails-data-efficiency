@@ -43,7 +43,8 @@ angular
     var adminState  = {
       name: 'admin',
       url: '/admin',
-      template: require('../views/admin.html')
+      template: require('../admin/views/admin.html'),
+      controller: 'AdminController as admin'
     }
 
     var androidSdksState = {
@@ -185,7 +186,8 @@ angular
     var singleAdminState = {
       name: 'single-admin',
       url: '/admin/:id',
-      template: require('../views/admin.html')
+      template: require('../admin/views/admin.html'),
+      controller: 'AdminController as admin'
     }
 
     var timelineState = {
