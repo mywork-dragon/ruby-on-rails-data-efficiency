@@ -33,7 +33,6 @@ function adManagerController(adManagerService, id, $sce, $scope) {
     adManagerService.getAccountSettings(adManager.id)
       .then(data => {
         setData(data)
-        setTierTooltips()
       })
       .then(() => {
       })
@@ -53,26 +52,28 @@ function adManagerController(adManagerService, id, $sce, $scope) {
   }
 
   function setData (data) {
+    const tiers = setTierTooltips(data.ad_network_tiers)
     adManager.networks = data.ad_networks
-    adManager.tiers = data.ad_network_tiers
+    adManager.tiers = tiers
     adManager.oldNetworks = _.cloneDeep(data.ad_networks)
-    adManager.oldTiers = _.cloneDeep(data.ad_network_tiers)
+    adManager.oldTiers = _.cloneDeep(tiers)
     adManager.changesMade = false;
   }
 
-  function setTierTooltips () {
-    Object.values(adManager.tiers).forEach(tier => {
+  function setTierTooltips (tiers) {
+    Object.values(tiers).forEach(tier => {
       const networks = tier.networks
       let template = '<div class="tier-tooltip"><ul>'
       networks.forEach(network => template += `<li>${network}</li>`)
       template += '</ul></div>'
       tier.tooltip = $sce.trustAsHtml(template)
     })
+
+    return tiers
   }
 
   function updateNetwork(setting, id) {
     const network = adManager.networks[id]
-    network[setting] = !network[setting]
     if (setting === 'hidden' && network.hidden) { network.can_access = false }
     if (setting === 'can_access' && network.can_access) { network.hidden = false }
   }

@@ -9664,7 +9664,9 @@ tr.creative-table-row.active > td {
 }
 
 .network-controls {
+  display: flex;
   margin: 10px;
+  flex-direction: column;
 }
 
 .network-controls div {
@@ -9674,8 +9676,16 @@ tr.creative-table-row.active > td {
   align-items: center;
 }
 
+.network-controls div:first-child {
+  font-size: 15px;
+}
+
 .network-controls > div > img {
   margin-right: 5px;
+}
+
+.network-controls input[type=checkbox] {
+  margin: 0px 5px;
 }
 
 .network-list-ctnr {
@@ -9690,6 +9700,7 @@ tr.creative-table-row.active > td {
 .network-list img {
   width: 16px;
   height: 16px;
+  margin: 0px 5px;
 }
 
 .tier-tooltip ul {

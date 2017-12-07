@@ -33,42 +33,58 @@
             height="16">
             <span>{{network.name}}</span>
           </div>
-          <span class="btn-group">
-            <button
-              class="btn"
-              ng-class="{'btn-primary': network.can_access, 'btn-default': !network.can_access}"
-              ng-click="adManager.updateNetwork('can_access', id)">
-              Enabled
-            </button>
-            <button
-              class="btn"
-              ng-class="{'btn-primary': network.hidden, 'btn-default': !network.hidden}"
-              ng-click="adManager.updateNetwork('hidden', id)">
-              Hidden
-            </button>
-          </span>
+          <div class="setting-toggle">
+            <input
+            type="checkbox"
+            ng-model="network.can_access"
+            ng-change="adManager.updateNetwork('can_access', id)">
+            Enabled
+          </div>
+          <div class="setting-toggle">
+            <input
+            type="checkbox"
+            ng-model="network.hidden"
+            ng-change="adManager.updateNetwork('hidden', id)">
+            Hidden
+          </div>
         </div>
       </div>
       <div class="network-list-ctnr">
         <div class="network-list">
-          Visible Networks:
-          <span ng-repeat="(id, network) in adManager.networks">
+          Enabled Networks
+          <span class="fa fa-question-circle-o" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="The networks whose data the user has access to"></span>
+          <div>
             <img
-            ng-if="!network.hidden"
-            ng-src="{{'images/' + id + '.png'}}"
-            fallback-src="{{network.icon}}"
-            uib-tooltip="{{network.name}}">
-          </span>
+              ng-repeat="(id, network) in adManager.networks"
+              ng-if="network.can_access && !network.hidden"
+              ng-src="{{'images/' + id + '.png'}}"
+              fallback-src="{{network.icon}}"
+              uib-tooltip="{{network.name}}">
+          </div>
         </div>
         <div class="network-list">
-          Enabled Networks:
-          <span ng-repeat="(id, network) in adManager.networks">
+          Visible Networks
+          <span class="fa fa-question-circle-o" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="The networks the user can see exist on the platform"></span>
+          <div>
             <img
-            ng-if="network.can_access && !network.hidden"
-            ng-src="{{'images/' + id + '.png'}}"
-            fallback-src="{{network.icon}}"
-            uib-tooltip="{{network.name}}">
-          </span>
+              ng-repeat="(id, network) in adManager.networks"
+              ng-if="!network.hidden"
+              ng-src="{{'images/' + id + '.png'}}"
+              fallback-src="{{network.icon}}"
+              uib-tooltip="{{network.name}}">
+          </div>
+        </div>
+        <div class="network-list">
+          Hidden Networks
+          <span class="fa fa-question-circle-o" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Networks that we do not want the user to know exist on the platform"></span>
+          <div>
+            <img
+              ng-repeat="(id, network) in adManager.networks"
+              ng-if="network.hidden"
+              ng-src="{{'images/' + id + '.png'}}"
+              fallback-src="{{network.icon}}"
+              uib-tooltip="{{network.name}}">
+          </div>
         </div>
       </div>
     <div class="modal-footer">
