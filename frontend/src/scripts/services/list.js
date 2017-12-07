@@ -35,11 +35,11 @@ angular.module("appApp")
           data: {listName: listName}
         });
       },
-      getList: function(listId) {
+      getList: function(listId, page) {
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/list/get_list',
-          params: {listId: listId}
+          params: {listId: listId, page: page}
         });
       },
       addSelectedTo: function(listId, selectedApps, appPlatform) {

@@ -89,15 +89,6 @@ Rails.application.routes.draw do
   get 'api/new_advertiser_counts' => 'api#new_advertiser_counts'
   get 'api/export_new_advertisers' => 'api#new_advertisers_csv'
 
-  get 'api/list/get_lists' => 'api#get_lists'
-  get 'api/list/get_list' => 'api#get_list'
-  get 'api/list/export_to_csv' => 'api#export_list_to_csv'
-  post 'api/list/create_new' => 'api#create_new_list'
-  put 'api/list/add' => 'api#add_to_list'
-  put 'api/list/add_mixed' => 'api#add_mixed_to_list'
-  put 'api/list/delete_items' => 'api#delete_from_list'
-  put 'api/list/delete' => 'api#delete_list'
-
   get 'api/sdk/android' => 'api#get_android_sdk'
   get 'api/sdk/ios' => 'api#get_ios_sdk'
   post 'api/sdk/:platform/tags' => 'api#update_sdk_tags'
@@ -188,6 +179,17 @@ Rails.application.routes.draw do
       post 'create' => 'saved_searches#create_new_saved_search'
       put 'edit' => 'saved_searches#edit_saved_search'
       put 'delete' => 'saved_searches#delete_saved_search'
+    end
+
+    scope '/list' do
+      get 'get_lists' => 'lists#get_lists'
+      get 'get_list' => 'lists#get_list'
+      get 'export_to_csv' => 'lists#export_list_to_csv'
+      post 'create_new' => 'lists#create_new_list'
+      put 'add' => 'lists#add_to_list'
+      put 'add_mixed' => 'lists#add_mixed_to_list'
+      put 'delete_items' => 'lists#delete_from_list'
+      put 'delete' => 'lists#delete_list'
     end
   end
 

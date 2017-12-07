@@ -11,6 +11,9 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     $scope.AllSelectedItems = false;
     $scope.NoSelectedItems = false;
 
+    $rootScope.numPerpage = 100;
+    $rootScope.currentPage = 1;
+
     if ($location.url().includes('custom')) {
       pageTitleService.setTitle("MightySignal - Search")
     }
@@ -18,7 +21,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     $scope.load = function() {
       if ($stateParams.listId) {
         $scope.queryInProgress = true;
-        listApiService.getList($stateParams.listId).success(function(data) {
+        listApiService.getList($stateParams.listId, $rootScope.currentPage).success(function(data) {
           $scope.queryInProgress = false;
           $rootScope.apps = data.results;
           $rootScope.numApps = data.resultsCount;
@@ -71,6 +74,10 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
       });
       return false;
     };
+
+    $scope.submitPageChange = function() {
+       $scope.load()
+    }
 
     $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
       return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
