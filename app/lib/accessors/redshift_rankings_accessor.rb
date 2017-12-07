@@ -10,7 +10,7 @@ class RedshiftRankingsAccessor
     # Validate parameters
 
     validate_parameters(platforms: platforms, countries: countries, categories: categories, rank_types: rank_types, size: size, page_num: page_num)
-    raise "Unsupported sort_by option" if !['weekly_change', 'monthly_change'].include? sort_by
+    raise "Unsupported sort_by option" if !['weekly_change', 'monthly_change', 'rank'].include? sort_by
 
     # Denormalize necessary parameters
 

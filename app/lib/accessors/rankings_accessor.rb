@@ -11,7 +11,7 @@ class RankingsAccessor
   # rank_types parameters are left out, it is treated as a wildcard.
   #
   # By default the list is sorted by the highest weekly change first. Sorting can be toggled via the sort_by
-  # ("weekly_change", "monthly_change") and desc parameters.
+  # ("weekly_change", "monthly_change", "rank") and desc parameters.
   # 
   #
   #
