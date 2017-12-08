@@ -1,5 +1,4 @@
 class Api::ListsController < ApplicationController
-  include ApiHelper
 
   skip_before_filter :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
