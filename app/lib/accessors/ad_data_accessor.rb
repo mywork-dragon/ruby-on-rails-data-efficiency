@@ -411,7 +411,8 @@ class AdDataAccessor
         'user_base' => app_model.user_base,
         'icon' => app_model.icon_url,
         'publisher' =>  publisher ? {"id" => publisher.id, "name" => publisher.name} : {},
-        'ad_attribution_sdks' => app_model.ad_attribution_sdks
+        'ad_attribution_sdks' => app_model.ad_attribution_sdks,
+        'type' => app_model.class.name
         }
       )
       output.append(app)
