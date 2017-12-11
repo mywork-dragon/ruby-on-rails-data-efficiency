@@ -128,7 +128,7 @@ module GooglePlaySnapshotModule
     end
 
     @android_app.newest_android_app_snapshot = @snapshot
-    if @snapshot.price > 0
+    if !@snapshot.price.nil? and @snapshot.price > 0
       @android_app.display_type = AndroidApp.display_types["paid"]
     else
       @android_app.display_type = AndroidApp.display_types["normal"]
