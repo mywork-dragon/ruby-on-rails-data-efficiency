@@ -11,13 +11,14 @@ function getParameterByName(name, url) {
 function render_plot() {
   if (window.fastest_growing_sdk_data) {
     var data = window.fastest_growing_sdk_data[window.fastest_growing_sdk_data_mode];
-
+    if (!window.fastest_growing_sdk_data_force_all_sdks) {
     data = _.filter(data, function(x) {
       return _.any(x['tags'], 
         function(y) {
           return window.fastest_growing_sdk_data_tag_filters[y];
         })
       });
+    }
 
     var layout = {
       title: "MightySignal Install Base",
@@ -63,6 +64,7 @@ function hide_non_active_tag_selectors() {
 function sdk_tag_toggle(button, should_update) {
   var tag = button.attr('data-sdk-tag');
   if (tag == 'All') {
+    window.fastest_growing_sdk_data_force_all_sdks = true;
     // Enable all tags.
     for (var key in window.fastest_growing_sdk_data_tag_filters) {
       window.fastest_growing_sdk_data_tag_filters[key] = true;
@@ -76,6 +78,7 @@ function sdk_tag_toggle(button, should_update) {
   all_selected = _.all(window.fastest_growing_sdk_data_tag_filters, function(x) {return x; });
   if (all_selected) {
     // Clear all selects.
+    window.fastest_growing_sdk_data_force_all_sdks = false;
     for (var key in window.fastest_growing_sdk_data_tag_filters) {
       window.fastest_growing_sdk_data_tag_filters[key] = false;
     }
@@ -114,6 +117,7 @@ function update_url() {
 function create_tag_selector() {
   var data = window.fastest_growing_sdk_data;
   window.fastest_growing_sdk_data_tag_filters = {};
+  window.fastest_growing_sdk_data_force_all_sdks = false;
   window.fastest_growing_sdk_data_visible_tags = {};
   var absolute_tags = Array.from(new Set(_.flatten(_.map(data['absolute'], function(x) { return x['tags']}))));
   var relative_tags = Array.from(new Set(_.flatten(_.map(data['relative'], function(x) { return x['tags']}))));
