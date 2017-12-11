@@ -151,6 +151,9 @@ gem 'diff_dirs', '0.1.2'
 
 gem 'seed_dump'
 
+# for browser detection
+gem 'browser', '2.5.2'
+
 gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
 

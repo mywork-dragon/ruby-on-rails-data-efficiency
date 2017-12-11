@@ -62,12 +62,26 @@ html lang="en"
               = link_to 'SOLUTIONS', root_path(anchor: 'solutions_anchor')
             li
               = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
-            /! <li><a href="/team.html">COMPANY</a></li
             li
               a href="http://blog.mightysignal.com" target="_blank"  BLOG
-            li
-              a href=top_ios_sdks_path
-                |TOP SDKS
+
+            - if browser.device.mobile?
+              li
+                = link_to 'Top SDKs', top_ios_sdks_path
+            - else
+              li.custom-menu-item
+                .dropdown.show
+                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
+                  .dropdown-menu aria-labelledby="dropdownMenuLink"
+                    a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
+                    a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
+                    a class="dropdown-item" href=top_android_sdks_path Top Android SDKs
+                    a class="dropdown-item" href=top_android_apps_path Top Android Apps
+                    a class="dropdown-item" href=timeline_path Timeline
+                  
+            / li
+            /   a href=top_ios_sdks_path
+            /     | TOP SDKS
             / li
             /   a href="http://www.angel.co/mightysignal/jobs" target="_blank"  JOBS
             li

@@ -1,0 +1,71 @@
+#sdk-tag-button-group {
+  text-align: center;
+}
+
+#sdk-tag-button-group button {
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#fastest-growing-sdk-chart .plotlyjsicon {
+  display: none;
+}
+
+.fastest-growing-sdks-page {
+  text-align: center;
+  font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
+}
+
+.fastest-growing-sdks-page #title {
+  font-size: 3.0rem;
+}
+
+.fastest-growing-sdks-page #container {
+  text-align: left; 
+  background-color: white; 
+  padding: 10px;
+
+  /*spoof height for design purposes*/
+  height: 766px;
+}
+
+.fastest-growing-sdks-page #inner {
+  margin-left: 14px; 
+  margin-top: 10px;
+}
+
+.fastest-growing-sdks-page #fastest-growing-sdk-chart {
+  display: inline-block; 
+  width: 80%; 
+  vertical-align: top;
+}
+
+.fastest-growing-sdks-page #explanations{
+}
+
+.fastest-growing-sdks-page .title h3{
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.fastest-growing-sdks-page .text {
+  font.size: 1.0rem;
+}
+
+.fastest-growing-sdks-page #blog-post-button {
+  background-color: #1F3E5D;
+}
+
+button:hover {
+  background-color: red;
+}
+
+#fastest-growing-sdk-table-container {
+  padding-left: 15px;
+}
+
+#fastest-growing-sdk-table_filter {
+  margin-right: 27px;
+}

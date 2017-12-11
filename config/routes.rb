@@ -20,8 +20,12 @@ Rails.application.routes.draw do
   get 'mighty_report' => 'mighty_report#index'
   post 'get_mighty_report' => 'mighty_report#get_report', as: :get_report
 
+  get 'fastest-growing-android-sdks' => 'fastest_growing_sdks#top_install_base', as: 'fastest-growing-android-sdks'
+
   get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
   get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
+
+  get 'fastest-growing-sdks' => 'welcome#fastest_growing_sdks', as: 'fastest-growing-sdks'
 
   get 'lead-generation' => 'welcome#lead_generation', as: 'lead-generation'
   get 'business-intelligence' => 'welcome#business_intelligence', as: 'business-intelligence'

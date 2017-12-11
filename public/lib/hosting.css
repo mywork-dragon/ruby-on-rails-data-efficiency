@@ -1121,6 +1121,78 @@ a.anchor{
   border-radius: 4px;
 }
 
+.custom-menu-item {
+	height: 50px;
+}
+
+.nav .dropdown a {
+	background-attachment: scroll;
+	background-clip: border-box;
+	background-color: rgba(0, 0, 0, 0);
+	background-image: none;
+	background-origin: padding-box;
+	background-position-x: 0px;
+	background-position-y: 0px;
+	background-size:auto;
+	border-bottom-color:rgba(0, 0, 0, 0);
+	border-width: 0px
+	box-sizing: border-box;
+	color: rgb(255, 255, 255);
+	cursor: pointer;
+	display: block;
+	font-family: Montserrat, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 400;
+	height: 42px;
+	line-height: 20px;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	outline-color: rgb(255, 255, 255);
+	outline-style: none;
+	outline-width: 0px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 14px;
+	position: relative;
+	text-align: center;
+	text-decoration-color: rgb(255, 255, 255);
+	text-decoration-line: none;
+	text-decoration-style: solid;
+	text-size-adjust: 100%;
+	text-transform: uppercase;
+	user-select: none;
+	vertical-align: middle;
+	white-space: nowrap;
+	height: 50px;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.nav .dropdown a:hover {
+	color: #CCC;
+}
+
+.nav .dropdown a:visited{
+	color: white;
+}
+
+.nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+	background-color: #428bca;
+	color: white;
+}
+
+.nav .dropdown-menu {
+	background-color: #428bca;
+}
+
+.nav .dropdown-item:hover {
+	background-color: #3A7CB4;
+}
+
 .landing-page {
 }
 
@@ -1187,9 +1259,9 @@ a.anchor{
 	margin-bottom: 15px;
 }
 
-
 /* ========= Modal Web Form ========= */
 .web-form-modal {
+	text-align: center;
 	font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
 }
 
