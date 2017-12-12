@@ -2,7 +2,7 @@ class GooglePlaySnapshotLiveWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
 
-  sidekiq_options queue: :google_play_live_scrape, retry: false
+  sidekiq_options queue: :live, retry: false
 
   def proxy_type
     :general

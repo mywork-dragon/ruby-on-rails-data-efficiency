@@ -1,7 +1,7 @@
 class EwokScrapeWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :ewok
+  sidekiq_options retry: false, queue: :live
 
   def perform(method, *args)
     self.send(method.to_sym, *args)

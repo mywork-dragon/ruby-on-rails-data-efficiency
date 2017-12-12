@@ -3,7 +3,7 @@ class IosLiveScanServiceWorker
   include Sidekiq::Worker
 
   # retrying the json lookup ourselves, so disable
-  sidekiq_options backtrace: true, retry: false, queue: :ios_live_lookup
+  sidekiq_options backtrace: true, retry: false, queue: :live
 
   def perform(ipa_snapshot_job_id, ios_app_id)
     options = {

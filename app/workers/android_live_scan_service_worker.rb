@@ -1,6 +1,6 @@
 class AndroidLiveScanServiceWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :android_live_lookup, retry: false
+  sidekiq_options queue: :live, retry: false
 
   include AndroidCloud
 
