@@ -1,6 +1,12 @@
 import angular from 'angular';
 
-angular.module('appApp').controller('ModalInstanceCtrl', function ($uibModalInstance, id) {
+angular
+  .module('appApp')
+  .controller('ModalInstanceCtrl', ModalInstanceCtrl)
+
+ModalInstanceCtrl.$inject = ['$uibModalInstance', 'id']
+
+function ModalInstanceCtrl ($uibModalInstance, id) {
   var $ctrl = this;
   $ctrl.id = id;
 
@@ -11,4 +17,4 @@ angular.module('appApp').controller('ModalInstanceCtrl', function ($uibModalInst
   $ctrl.cancel = function () {
     $uibModalInstance.dismiss('cancel');
   };
-});
+};
