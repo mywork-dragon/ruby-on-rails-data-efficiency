@@ -23,6 +23,7 @@ var Bugsnag = require('bugsnag-js');
 
 /* Previous Bower Components */
 window.$ = require('jquery');
+
 window.jQuery = window.$;
 require('toastr');
 require('angular');
@@ -59,4 +60,3 @@ if (window && window.location.hostname === 'localhost') {
 }
 
 mixpanel.init("6a96c6c2b8cb2ad6de06ad54957b2f2a");
-

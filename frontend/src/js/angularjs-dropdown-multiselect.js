@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /*
  * Version 1.11.8
  * Manual install because required node version == 0.10.10
@@ -622,3 +624,5 @@ function findIndex(collection, properties) {
 	return index;
 }
 })(angular);
+
+/* eslint-enable */
