@@ -91,6 +91,7 @@ module AppStoreSnapshotServiceWorkerModule
           
           if released = a[:released]
             days_ago = (Date.tomorrow - released).to_i
+            days_ago = 1 if days_ago < 1 # because of timezones...sometimes gets released next day
             ratings_per_day_current_release = ratings_current_count/(days_ago.to_f)
             s.ratings_per_day_current_release = ratings_per_day_current_release
           end
