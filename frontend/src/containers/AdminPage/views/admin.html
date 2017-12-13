@@ -70,7 +70,7 @@
       </div>
       <div data-ng-repeat="account in admin.accounts" ng-init="accountIndex = $index" class="panel panel-default">
         <div class="panel-heading" ng-click="admin.loadUsers($index); account.isCollapsed = !account.isCollapsed;">
-          <label ng-if="sdks.length > 0">
+          <label ng-if="admin.sdks.length > 0">
             <input type="checkbox" ng-click="admin.checkedSdkFollower(account); $event.stopPropagation();">
           </label>
           {{account.id}}. {{account.name}}
