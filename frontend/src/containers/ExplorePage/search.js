@@ -569,6 +569,7 @@ angular.module('appApp')
 
         const checkPlatform = $scope.checkPlatformPromise(platform.appPlatform);
         checkPlatform.then(() => {
+          searchCtrl.appPlatform.platform = window.APP_PLATFORM;
           $rootScope.tags = [];
           $scope.rebuildFiltersFromUrl(allParams);
           $rootScope.dashboardSearchButtonDisabled = true;
@@ -686,7 +687,6 @@ angular.module('appApp')
       $scope.checkPlatformPromise = function (newPlatform) {
         return $q((resolve, reject) => {
           if (window.APP_PLATFORM !== newPlatform) {
-            searchCtrl.appPlatform.platform = newPlatform;
             window.APP_PLATFORM = newPlatform;
             apiService.getSdkCategories().success((data) => {
               $rootScope.sdkCategories = data;
