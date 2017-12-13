@@ -14,6 +14,7 @@ class FastestGrowingSdkReportGenerator
          WHERE
             install_base_count > 10
             AND sdk_install_bases.month <= dateadd('month', -2, getdate())
+            AND sdk NOT IN ('Firebase')
          GROUP BY sdk
          ORDER BY max(derivative_of_install_base_count #{relative_clause}) DESC LIMIT 100)
       AND sdk_install_bases.month <= dateadd('month', -2, getdate())
@@ -23,7 +24,9 @@ class FastestGrowingSdkReportGenerator
   end
 
   def _transform(data)
+    # Group rows (sdk, sdk_install_bases.month,install_base_count, derivative_of_install_base_count) by sdk
     sdks = data.group_by {|x| x['sdk']}
+    # Aggregate rows into x,y arrays and synth. objects for frontend.
     sdks = sdks.map do |sdk, value|
       rows = value.map { |x| {'month' => x['month'], 'install_base_count' => x['install_base_count']} }
       max_sort = value.map {|x| x['derivative_of_install_base_count']}.max
@@ -31,9 +34,24 @@ class FastestGrowingSdkReportGenerator
       x = rows.map {|x| x['month'].iso8601.split("T")[0]}
       y = rows.map {|x| x['install_base_count']}
       sdk_obj = AndroidSdk.find_by_name(sdk)
-      {'name' => sdk, 'sdk_website' => sdk_obj.website, 'tags'=> sdk_obj.tags.map {|x| x.name},  'x' => x, 'y' => y, 'sort_by' => max_sort}
+      # Manipulate tags here, google requested we rename one
+      # but holding off on that for the moment.
+      if sdk_obj
+        tags = sdk_obj.tags.map {|x| x.name}
+      else
+        tags = []
+      end
+      {'name' => sdk, 'sdk_website' => sdk_obj.try(:website), 'tags'=> tags,  'x' => x, 'y' => y, 'sort_by' => max_sort}
     end
-    sdks
+
+    sdks.each do |sdk|
+      # Rename firebase-database (Google request)
+      if sdk['name'] == 'firebase-database'
+        sdk['name'] = 'firebase-realtime-database'
+      end
+    end
+
+    sdks[0..99]
   end
 
   # Don't run without refectoring to account for date window.
