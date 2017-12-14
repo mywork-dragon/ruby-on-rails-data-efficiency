@@ -35,7 +35,21 @@ class IpaSnapshot < ActiveRecord::Base
   def invalidate
     self.update(scan_status: :invalidated)
 
+    invalidate_activities if self.ios_app_id
     IosApp.find(self.ios_app_id).update_newest_ipa_snapshot if self.ios_app_id
+  end
+
+  def invalidate_activities
+    app = self.ios_app
+    happened_at_date = self.first_valid_date
+    activities = Activity.where(happened_at: happened_at_date)
+
+    # ensure these activities are from this iOS app
+    activities = activities.select do |a|
+      a.weekly_batches.select { |b| b.owner == app }.present?
+    end
+
+    activities.each { |a| a.invalidate! }
   end
   
 end

@@ -90,4 +90,17 @@ class Activity < ActiveRecord::Base
       @other_owner
     end
   end
+
+  def invalidate!
+    batches = self.weekly_batches
+    self.destroy
+    batches.each do |batch|
+      WeeklyBatch.reset_counters(batch.id, :activities)
+    end
+
+    batches.each do |b|
+      b.reload
+      b.destroy if b.activities_count == 0
+    end
+  end
 end
