@@ -13,4 +13,8 @@ class FastestGrowingSdksController < ApplicationController
     render json: data
   end
 
+  def blog_post_redirect
+    redirect_to "https://blog.mightysignal.com"
+  end
+
 end
