@@ -50,7 +50,7 @@ def redeploy(event, context):
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key'].encode('utf8'))
 
-    services = [('ANDROID_CLASSIFICATION', 'spot', 0), ('ANDROID_MASS_SCAN', 'spot', 0), ('LIVE', 'default', 5)]
+    services = [('ANDROID_CLASSIFICATION', 'spot', 0), ('ANDROID_MASS_SCAN', 'spot', 0), ('LIVELY_JOBS', 'default', 5)]
 
     slack_msg("Android classification model updated. Rolling services...", channel, username)
 
