@@ -832,13 +832,21 @@ class IosDownloadDeviceService
 
   def upload_decrypted_execs
     decrypted_dir = get_decrypted_execs
-    Dir.glob(File.join(decrypted_dir, '*.decrypted')).each do |file|
+    key_paths = Dir.glob(File.join(decrypted_dir, '*.decrypted')).map do |file|
+      key_path = File.join('decrypted_binaries', @classdump_id.to_s, file.split('/').last)
       MightyAws::S3.new(Rails.application.config.ipa_bucket_region).upload_file(
         bucket: Rails.application.config.ipa_bucket,
-        key_path: File.join('decrypted_binaries', @classdump_id.to_s, file.split('/').last),
+        key_path: key_path,
         file_path: file
       )
+      key_path
     end
+    index_file = { decrypted_binary_paths: key_paths }
+    MightyAws::S3.new(Rails.application.config.ipa_bucket_region).store(
+      bucket: Rails.application.config.ipa_bucket,
+      key_path: File.join('binaries_index', "#{@classdump_id.to_s}.json.gz"),
+      data_str: index_file.to_json
+    )
   end
 
   class << self

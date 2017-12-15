@@ -55,9 +55,13 @@ class ClassDumpTest < ActiveSupport::TestCase
   end
 
   test 'list decrypted binaries' do
+    @s3.store(
+      bucket: Rails.application.config.ipa_bucket,
+      key_path: "binaries_index/#{@classdump.id}.json.gz",
+      data_str: { 'decrypted_binary_paths' => ['asdf', '123', 'qwer'] }.to_json)
     res = @classdump.list_decrypted_binaries
-    assert res.contents.class == Array
-    assert_equal "decrypted_binaries/#{@classdump.id}", @s3.key_returned_from
+    assert res.class == Array
+    assert_equal "binaries_index/#{@classdump.id}.json.gz", @s3.key_returned_from
   end
 
   test 'check processed' do

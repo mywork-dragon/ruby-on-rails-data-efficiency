@@ -141,10 +141,10 @@ class ClassDump < ActiveRecord::Base
   end
 
   def list_decrypted_binaries
-    s3_client.list(
+    JSON.parse(s3_client.retrieve(
       bucket: Rails.application.config.ipa_bucket,
-      prefix: "decrypted_binaries/#{id}"
-    )
+      key_path: "binaries_index/#{id}.json.gz"
+    ))['decrypted_binary_paths']
   end
 
   def download_binary(key, file_path)

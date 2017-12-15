@@ -38,10 +38,10 @@ GIT
 
 GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git
-  revision: 0f80a30262f5cec520299d95febd41a764cf62c7
-  tag: 0.8.11
+  revision: b71d0480476fbea1a35f4e67a51fe6a7b4d1cdea
+  tag: 0.8.12
   specs:
-    mighty_aws (0.8.11)
+    mighty_aws (0.8.12)
       aws-sdk (~> 2.3, >= 2.3.7)
 
 GIT
@@ -110,14 +110,14 @@ GEM
     autoprefixer-rails (6.7.7.2)
       execjs
     awesome_print (1.6.1)
-    aws-sdk (2.9.40)
-      aws-sdk-resources (= 2.9.40)
-    aws-sdk-core (2.9.40)
+    aws-sdk (2.10.102)
+      aws-sdk-resources (= 2.10.102)
+    aws-sdk-core (2.10.102)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.9.40)
-      aws-sdk-core (= 2.9.40)
-    aws-sigv4 (1.0.0)
+    aws-sdk-resources (2.10.102)
+      aws-sdk-core (= 2.10.102)
+    aws-sigv4 (1.0.2)
     backports (3.8.0)
     bcrypt (3.1.10)
     bootstrap-sass (3.2.0.0)

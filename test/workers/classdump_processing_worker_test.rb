@@ -27,6 +27,12 @@ class ClassdumpProcessingWorkerTest < ActiveSupport::TestCase
   end
 
   test 'combines classes and library data' do
+    # store binaries index
+    @s3.store(
+      bucket: Rails.application.config.ipa_bucket,
+      key_path: "binaries_index/#{@classdump.id}.json.gz",
+      data_str: { 'decrypted_binary_paths' => ['asdf', '123', 'qwer'] }.to_json)
+
     binary_data_stub = Proc.new do |classdump, binary_key| 
       {
         classes: 2.times.map { |x| Digest::SHA1.hexdigest(rand.to_s) },

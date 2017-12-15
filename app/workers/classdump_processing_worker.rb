@@ -109,9 +109,9 @@ class ClassdumpProcessingWorker
   end
 
   def combined_binary_data(classdump)
-    binaries = classdump.list_decrypted_binaries.contents
+    binaries = classdump.list_decrypted_binaries
     summaries = binaries.map do |binary|
-      binary_data(classdump, binary.key)
+      binary_data(classdump, binary)
     end
 
     classes = summaries.map { |s| s[:classes] }.flatten.uniq
