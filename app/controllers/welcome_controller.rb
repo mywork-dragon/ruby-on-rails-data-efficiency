@@ -146,6 +146,7 @@ class WelcomeController < ApplicationController
   end
 
   def lead_generation
+    get_creative
     get_logos
 
     @live_scan_graphic = graphics_folder + 'live_scan.png'
@@ -173,9 +174,7 @@ class WelcomeController < ApplicationController
   end
 
   def lead_generation_ad_affiliate_networks
-    creative = params[:creative]
-
-    @creative = "/lib/images/creatives/#{creative}.png" if creative.present?
+    get_creative
 
     @logos = [
       {image: 'ironsrc_color.png', width: 200},
@@ -290,6 +289,12 @@ class WelcomeController < ApplicationController
       {image: 'amplitude_color.png', width: 170},
       {image: 'verizon_color.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
+  end
+
+  def get_creative
+    creative = params[:creative]
+
+    @creative = "/lib/images/creatives/#{creative}.png" if creative.present?
   end
 
 end
