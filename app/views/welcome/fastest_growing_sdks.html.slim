@@ -64,7 +64,7 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
         .title 
           h3 About This Chart
         .text
-          | Here you can view the top 100 Android SDKs ordered by their maximum growth rates during the last 12 months. We allow you to sort them by their absolute growth rate as well as their relative growth rate.
+          | Here you can view the top 100 Android SDKs ordered by their maximum monthly growth rates during the last 12 months. We allow you to sort them by their absolute growth rate as well as their relative growth rate.
       .column.medium-4
         .title 
           h3 Absolute vs. Relative?
@@ -91,7 +91,12 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
       .title 
         h3 What does MightySignal do?
       .text
-        ' MightySignal makes sense of the nebulous mobile app ecosystem by providing the most accurate data on every mobile app. Developers can use our 
+        ' MightySignal makes sense of the nebulous mobile app ecosystem by providing the most accurate data on every mobile app. This data includes the SDKs inside every app, which apps are shooting up the charts, and intelligence on how apps are advertising.
+    .column.medium-4
+      .title 
+        h3 What other resources are there?
+      .text
+        | Developers can use our 
         a href=top_ios_sdks_path target="_blank" free SDK data
         '
         | to see how other apps are built. Sales, marketing, and business development people can use our
@@ -99,11 +104,6 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
         a href=root_path(anchor: 'solutions_anchor') target="_blank" advanced solutions
         '
         | for lead generation and business intelligence.
-    .column.medium-4
-      .title 
-        h3 How do I stay updated?
-      .text
-        | This page will be kept fresh, so the data will always be up-to-date and change over time as the mobile ecosystem changes. Also, follow us on Twitter.
 
   - 2.times 
     .row 
