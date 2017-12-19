@@ -14,7 +14,13 @@ class FastestGrowingSdksController < ApplicationController
   end
 
   def blog_post_redirect
-    redirect_to "https://medium.com/@champagneshane/838657d3457a"
+    link = Rails.cache.fetch('fastest_growing_sdk_report_2017_link', expires: 30.days, compress: false) do
+       MightyAws::S3.new.retrieve(
+        bucket: 'mightysignal-sdk-install-base-data',
+        key_path: 'fastest_growing_sdk_report_2017_link'
+      )
+    end
+    redirect_to link
   end
 
 end
