@@ -3,8 +3,6 @@ class WelcomeController < ApplicationController
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
 
-  http_basic_authenticate_with name: "", password: "MightySignal70214", only: :fastest_growing_sdks
-
   layout "marketing"
 
   def index
