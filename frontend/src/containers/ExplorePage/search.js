@@ -121,7 +121,7 @@ angular.module('appApp')
       };
 
       $scope.hasCustomDateRange = function (filter) {
-        return filter.date === 7;
+        return filter.date === '7';
       };
 
       $scope.hasInvalidDateRange = function (filter) {
