@@ -168,6 +168,20 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
     assert_equal result["apps"][2]["rank"], 2020
   end
 
+  test 'get_newcomers_sort_by_rank_test' do
+    @connection_mock.set_result("SELECT *, count(*) OVER() FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free') AND created_at > '#{5.days.ago.strftime("%Y-%m-%d")}' AND rank < 50 ORDER BY rank ASC OFFSET 580 LIMIT 20", @mock_newcomer_apps_response)
+    
+    result = @accessor.get_newcomers(rank_types:["free"], lookback_time: 5.days.ago, max_rank: 50, page_num: 30, sort_by: 'rank', desc: false)
+
+    assert_equal result["total"], 10
+    assert_equal result["apps"][0]["app_identifier"], "com.terran.marine"
+    assert_equal result["apps"][0]["rank"], 3
+    assert_equal result["apps"][1]["app_identifier"], "123456"
+    assert_equal result["apps"][1]["rank"], 100
+    assert_equal result["apps"][2]["app_identifier"], "com.zerg.overlord"
+    assert_equal result["apps"][2]["rank"], 2020
+  end
+
   test 'get_newcomers_validate_params_test' do
     assert_raise do
       @accessor.get_newcomers(platforms:["Zerg"], lookback_time: 5.days.ago, max_rank: 50, page_num: 30)
@@ -175,6 +189,10 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
 
     assert_raise do
       @accessor.get_newcomers(rank_types:["2v2 Noobs Only"], lookback_time: 5.days.ago, max_rank: 50, page_num: 30)
+    end
+
+    assert_raise do
+      @accessor.get_newcomers(sort_by:"1v1 NO RUSH 10", lookback_time: 5.days.ago, max_rank: 50, page_num: 30)
     end
   end
 

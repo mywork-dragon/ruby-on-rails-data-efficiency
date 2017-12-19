@@ -79,8 +79,8 @@ class RankingsAccessor
   #            ...
   #       ]
   #   }
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types: ["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: 500)
-    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num, max_rank: max_rank)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types: ["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, sort_by: "created_at", desc: true, max_rank: 500)
+    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num, sort_by: sort_by, desc: desc, max_rank: max_rank)
   end
 
   # Returns the raw chart with the give parameters.

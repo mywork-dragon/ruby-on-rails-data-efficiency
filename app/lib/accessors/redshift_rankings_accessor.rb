@@ -29,12 +29,13 @@ class RedshiftRankingsAccessor
     counts_extracted
   end
 
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: 500)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, sort_by: "created_at", desc: true, max_rank: 500)
 
     # Validate parameters
 
     validate_parameters(platforms: platforms, countries: countries, categories: categories, rank_types: rank_types, size: size, page_num: page_num)
-    raise "Unsupported sort_by option" if !lookback_time.is_a? ActiveSupport::TimeWithZone
+    raise "Unsupported sort_by option" if !['created_at', 'rank'].include? sort_by
+    raise "Unsupported lookback_time option" if !lookback_time.is_a? ActiveSupport::TimeWithZone
 
     # Denormalize necessary parameters
 
@@ -44,7 +45,7 @@ class RedshiftRankingsAccessor
     # Perform queries
 
     where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, lookback_time: lookback_time, max_rank: max_rank)
-    order_by_clause = "ORDER BY created_at DESC"
+    order_by_clause = desc ? "ORDER BY #{sort_by} DESC" : "ORDER BY #{sort_by} ASC"
 
     get_newcomers_query = "SELECT *, count(*) OVER() FROM daily_newcomers #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
     raw_result = @connection.query(get_newcomers_query, expires: 30.minutes).fetch()
