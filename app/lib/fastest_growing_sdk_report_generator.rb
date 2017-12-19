@@ -13,23 +13,27 @@ class FastestGrowingSdkReportGenerator
          FROM sdk_install_bases
          WHERE
             install_base_count > 10
-            AND sdk_install_bases.month <= dateadd('month', -2, getdate())
+            AND sdk_install_bases.month <= dateadd('month', -2, '2017-12-12')
             AND sdk NOT IN ('Firebase')
          GROUP BY sdk
          ORDER BY max(derivative_of_install_base_count #{relative_clause}) DESC LIMIT 100)
-      AND sdk_install_bases.month <= dateadd('month', -2, getdate())
+      AND sdk_install_bases.month <= dateadd('month', -2, '2017-12-12')
       ORDER BY month;
     "
     RedshiftDbConnection.new.query(sql).fetch
   end
 
-  def _transform(data)
+  def _transform(data, relative)
     # Group rows (sdk, sdk_install_bases.month,install_base_count, derivative_of_install_base_count) by sdk
     sdks = data.group_by {|x| x['sdk']}
     # Aggregate rows into x,y arrays and synth. objects for frontend.
     sdks = sdks.map do |sdk, value|
       rows = value.map { |x| {'month' => x['month'], 'install_base_count' => x['install_base_count']} }
-      max_sort = value.map {|x| x['derivative_of_install_base_count']}.max
+      if relative
+        max_sort = value.map {|x| x['derivative_of_install_base_count'] / x['install_base_count']}.max
+      else
+        max_sort = value.map {|x| x['derivative_of_install_base_count']}.max
+      end
       rows.sort_by! {|x| x['month']}
       x = rows.map {|x| x['month'].iso8601.split("T")[0]}
       y = rows.map {|x| x['install_base_count']}
@@ -60,8 +64,8 @@ class FastestGrowingSdkReportGenerator
       bucket: 'mightysignal-sdk-install-base-data',
       key_path: 'fastest_growing_sdk_report_2017.json.gz',
       data_str: {
-        "absolute" => _transform(_fetch(false)),
-        "relative" => _transform(_fetch(true))
+        "absolute" => _transform(_fetch(false), false),
+        "relative" => _transform(_fetch(true), true)
       }.to_json
     )
   end
