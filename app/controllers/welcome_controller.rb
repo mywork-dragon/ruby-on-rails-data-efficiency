@@ -140,7 +140,7 @@ class WelcomeController < ApplicationController
   end
 
   def fastest_growing_sdks
-    @blog_post = 'https://blog.mightysignal.com'
+    @blog_post = "https://medium.com/@champagneshane/838657d3457a"
   end
 
   def lead_generation
