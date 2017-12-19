@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Follower
+  include EncryptedAttributes
 
   belongs_to :account
 
@@ -18,6 +19,10 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   after_create :seed_timeline
+
+  @@kms_key = ENV["SALESFORCE_KMS_KEY_ID"]
+
+  encrypt_attribute(:salesforce_token, @@kms_key)
 
   # email/pw login
   EMAIL_USERS = [498, 794]

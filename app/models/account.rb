@@ -1,6 +1,7 @@
 class Account < ActiveRecord::Base
   include Follower
   include AdDataPermissions
+  include EncryptedAttributes
   has_many :users
 
   has_many :api_keys
@@ -12,6 +13,11 @@ class Account < ActiveRecord::Base
   enum salesforce_status: [:setup, :ready]
 
   serialize :ad_data_permissions, JSON
+
+  @@kms_key = ENV["SALESFORCE_KMS_KEY_ID"]
+
+  encrypt_attribute(:salesforce_token, @@kms_key)
+  encrypt_attribute(:salesforce_refresh_token, @@kms_key)
 
   def active_users
     self.users.where(access_revoked: false).size
@@ -58,12 +64,32 @@ class Account < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super().merge(
-                  type: self.class.name,
-                  active_users: active_users,
-                  salesforce_connected: salesforce_uid.present?,
-                  api_tokens: self.api_tokens
-                  )
+    {
+      id:  id,
+      name:  name,
+      created_at:  created_at,
+      updated_at:  updated_at,
+      can_view_support_desk:  can_view_support_desk,
+      can_view_ad_spend:  can_view_ad_spend,
+      can_view_sdks:  can_view_sdks,
+      can_view_storewide_sdks:  can_view_storewide_sdks,
+      can_view_exports:  can_view_exports,
+      is_admin_account:  is_admin_account,
+      can_view_ios_live_scan:  can_view_ios_live_scan,
+      seats_count:  seats_count,
+      can_view_ad_attribution:  can_view_ad_attribution,
+      salesforce_uid:  salesforce_uid,
+      salesforce_settings:  salesforce_settings,
+      mightysignal_id:  mightysignal_id,
+      can_use_salesforce:  can_use_salesforce,
+      salesforce_status:  salesforce_status,
+      ad_data_permissions:  ad_data_permissions,
+      salesforce_syncing:  salesforce_syncing,
+      type: self.class.name,
+      active_users: active_users,
+      salesforce_connected: salesforce_uid.present?,
+      api_tokens: self.api_tokens
+    }
   end
 
 end
