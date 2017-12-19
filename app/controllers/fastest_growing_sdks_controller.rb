@@ -14,7 +14,7 @@ class FastestGrowingSdksController < ApplicationController
   end
 
   def blog_post_redirect
-    redirect_to "https://blog.mightysignal.com"
+    redirect_to "https://medium.com/@champagneshane/838657d3457a"
   end
 
 end
