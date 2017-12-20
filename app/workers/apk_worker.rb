@@ -55,7 +55,7 @@ module ApkWorker
       filepath
     )
   rescue MightyApk::MarketApi::NotFound => e
-    android_app.update!(display_type: :taken_down)
+    #android_app.update!(display_type: :taken_down)
     raise e
   rescue MightyApk::MarketApi::UnsupportedCountry => e
     #android_app.update!(display_type: :foreign)
