@@ -109,7 +109,6 @@ function AdminController(
         account.users.push(data.user);
         form.$setPristine();
         admin.user = {};
-        alert(`We have sent ${user.email} an email with instructions for getting set up`);
         adminService.trackUserCreate(account, user);
       });
   }

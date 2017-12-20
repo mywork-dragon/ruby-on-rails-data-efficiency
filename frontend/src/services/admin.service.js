@@ -38,7 +38,13 @@ function adminService($http, loggitService) {
       url: `${API_URI_BASE}api/admin/create_user`,
       data: { email, account_id: accountId },
     })
-      .then(response => response.data);
+      .then((response) => {
+        loggitService.logSuccess(`Success! We have sent ${email} an email with instructions for getting set up`);
+        return response.data;
+      })
+      .catch(() => {
+        loggitService.logError('There was a problem inviting the user.');
+      });
   }
 
   function followSdks(userIds, sdks, accountIds) {
