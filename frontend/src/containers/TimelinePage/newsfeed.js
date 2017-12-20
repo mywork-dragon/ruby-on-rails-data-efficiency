@@ -55,7 +55,7 @@ angular.module('appApp').controller('NewsfeedCtrl', ['$scope', 'authService', '$
         } else {
           newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
         }
-        if (data.weeks.length == 0 && data.following.length == 0) {
+        if (data.weeks.length == 0) {
           $scope.end_of_feed = true;
         }
         $scope.following = data.following;
