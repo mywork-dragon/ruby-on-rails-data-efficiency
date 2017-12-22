@@ -625,7 +625,7 @@ class ApiController < ApplicationController
 
   def android_sdks_exist
     if params['appId']
-      render json: AndroidSdkService::App.get_tagged_sdk_response(params['appId'], force_live_scan_enabled: logged_into_admin_account?).to_json
+      render json: AndroidSdkService.get_tagged_sdk_response(params['appId'], force_live_scan_enabled: logged_into_admin_account?).to_json
     elsif params['publisherId']
       render json: AndroidDeveloper.find(params['publisherId']).tagged_sdk_summary
     end

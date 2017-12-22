@@ -411,20 +411,16 @@ class IosApp < ActiveRecord::Base
     url = url.gsub(/http:\/\/is([0-9]+).mzstatic/, 'https://is\1-ssl.mzstatic') if url.present?
   end
 
-  def sdk_response
-    IosSdkService.get_sdk_response(self.id)
-  end
-
   def tagged_sdk_response(only_show_tagged=false)
-    IosSdkService.get_tagged_sdk_response(self.id, only_show_tagged)
+    self.tagged_sdk_history(only_show_tagged)
   end
 
   def installed_sdks
-    self.sdk_response[:installed_sdks]
+    self.sdk_history[:installed_sdks]
   end
 
   def uninstalled_sdks
-    self.sdk_response[:uninstalled_sdks]
+    self.sdk_history[:uninstalled_sdks]
   end
 
   def fortune_rank

@@ -162,9 +162,33 @@ class WeeklyBatch < ActiveRecord::Base
       activities = activities.limit(per_page).offset((page_num - 1) * per_page) if page_num && per_page
     else
       activities = activities.select("activities.*, op.flagged, op.favicon, op.name").order("op.name ASC")
-      activities = IosSdkService.partition_sdks(ios_sdks: activities)
+      activities = partition_sdks(sdks: activities)
       activities = activities[((page_num - 1) * per_page), per_page] if page_num && per_page
     end
     activities
+  end
+
+  # moved here for legacy, but activities should probably use the tagged sdk history going forward
+  def partition_sdks(sdks:)
+    partitions = sdks.reduce({os: [], non_os: []}) do |memo, sdk|
+      if sdk.present? && (!sdk.flagged || sdk.flagged == 0)
+        if FaviconHelper.has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
+          memo[:os].push(sdk)
+        elsif !memo[:non_os].include?(sdk)
+          memo[:non_os].push(sdk)
+        end
+      end
+
+      memo
+    end
+
+    %i(os non_os).each do |property|
+      # use sort_by because it's an expensive operation and it's more efficient than sort for this type
+      partitions[property] = partitions[property].sort_by do |sdk|
+        sdk.name.downcase
+      end
+    end
+
+    (partitions[:non_os] + partitions[:os]).uniq
   end
 end

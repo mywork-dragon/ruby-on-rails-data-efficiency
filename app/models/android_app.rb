@@ -421,12 +421,8 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
-  def sdk_response
-    AndroidSdkService::App.get_sdk_response(id)
-  end
-
   def tagged_sdk_response(only_show_tagged=false)
-    AndroidSdkService::App.get_tagged_sdk_response(self.id, only_show_tagged)
+    self.tagged_sdk_history(only_show_tagged)
   end
 
   def google_play_link
@@ -434,11 +430,11 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def installed_sdks
-    self.sdk_response[:installed_sdks]
+    self.sdk_history[:installed_sdks]
   end
 
   def uninstalled_sdks
-    self.sdk_response[:uninstalled_sdks]
+    self.sdk_history[:uninstalled_sdks]
   end
 
   def icon_url(size='300x300') # size should be string eg '350x350'
