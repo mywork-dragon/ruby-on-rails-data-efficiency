@@ -34,7 +34,6 @@ require('bootstrap/dist/js/bootstrap');
 require('angular-sanitize');
 require('jquery-slimscroll');
 require('angular-encode-uri');
-require('slacktivity');
 require('iso-currency');
 require('@uirouter/angularjs');
 require('angular-bootstrap-lightbox'); // was listed in wrong section
@@ -50,6 +49,7 @@ var mixpanel = require('mixpanel-browser');
 
 /* Custom Scripts */
 require('./js/angularjs-dropdown-multiselect.js'); // added
+require('./js/slacktivity.js')
 
 
 /* Custom configuration */

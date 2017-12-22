@@ -6246,10 +6246,6 @@ sitemap@~0.7.3:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/sitemap/-/sitemap-0.7.4.tgz#df5fb44ea061ccd5e03eae5a7271b77228ed8eff"
 
-slacktivity@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/slacktivity/-/slacktivity-1.1.1.tgz#43b2fd3aa9db7df812545626590863040e2f2529"
-
 slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
