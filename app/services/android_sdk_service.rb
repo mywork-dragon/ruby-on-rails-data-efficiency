@@ -31,7 +31,6 @@ module AndroidSdkService
       display_type = display_type.try(:to_sym)
       mapping = {
         taken_down: 0,
-        #foreign: 1,
         paid: 2
       }
       mapping[display_type] if display_type

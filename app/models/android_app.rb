@@ -45,6 +45,7 @@ class AndroidApp < ActiveRecord::Base
 
   enum user_base: [:elite, :strong, :moderate, :weak]
 
+  # Do not use the foreign type!
   enum display_type: [:normal, :taken_down, :foreign, :paid]
 
   serialize :regions, JSON
