@@ -43,7 +43,7 @@ class WelcomeController < ApplicationController
       return redirect_to action: :index
     else
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
-      sdk_response = @app.sdk_response
+      sdk_response = @app.sdk_history
       @installed_sdks = sdk_response[:installed_sdks]
       @uninstalled_sdks = sdk_response[:uninstalled_sdks]
       # remove pinterest from Etsy's uninstalled
