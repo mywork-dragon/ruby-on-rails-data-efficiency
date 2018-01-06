@@ -175,7 +175,6 @@ class WelcomeController < ApplicationController
     get_creative
 
     @logos = [
-      {image: 'ironsrc_color.png', width: 200},
       {image: 'taptica_color.png', width: 200},
       {image: 'verizon_color.png', width: 200},
       {image: 'appsflyer_color.png', width: 200}
@@ -280,8 +279,8 @@ class WelcomeController < ApplicationController
 
   def get_logos
     @logos = [
-      {image: 'ironsrc_color.png', width: 170},
       {image: 'appsflyer_color.png', width: 170},
+      {image: 'taptica_color.png', width: 170},
       {image: 'zendesk_color.png', width: 170},
       {image: 'adobe_color.png', width: 170},
       {image: 'amplitude_color.png', width: 170},
