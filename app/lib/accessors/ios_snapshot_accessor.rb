@@ -62,8 +62,8 @@ class IosSnapshotAccessor
     @delegate.category_details_from_ios_apps(ios_apps)
   end
 
-  def categories_from_ios_app(ios_app)
-    @delegate.categories_from_ios_app(ios_app)
+  def categories_from_ios_app(ios_app, with_category_id: false)
+    @delegate.categories_from_ios_app(ios_app, with_category_id: with_category_id)
   end
 
   def app_ids_with_latest_snapshot(ios_app_ids)

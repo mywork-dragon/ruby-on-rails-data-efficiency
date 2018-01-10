@@ -22,10 +22,12 @@ class DiffSnapshotTableAccessor
     ios_app.ios_app_current_snapshots.where(latest: true).joins(:ios_app_categories).pluck("ios_app_categories.name").uniq
   end
 
-  def categories_from_ios_app(ios_app)
+  def categories_from_ios_app(ios_app, with_category_id: false)
     (ios_app.ios_app_current_snapshots.where(latest: true).flat_map do |snap|
       snap.ios_app_categories_current_snapshots.map do |cat_snap|
-          { "name" => cat_snap.ios_app_category[:name], "type" => cat_snap.kind}
+          cat_details = { "name" => cat_snap.ios_app_category[:name], "type" => cat_snap.kind }
+          cat_details["id"] = cat_snap.ios_app_category[:category_identifier] if with_category_id
+          cat_details
       end
     end).uniq
   end

@@ -572,32 +572,34 @@ class IosApp < ActiveRecord::Base
     AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
   end
 
-  def as_external_dump_json
+  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [])
       app = self
 
       # Only these attributes will be output in the final response.
       white_list = [
-        'last_seen_ads_date', 'last_updated',
-        'seller_url',
-        'current_version', 'has_in_app_purchases',
-        'id', 'first_seen_ads_date', 'platform',
-        'support_url', 'seller',
-        'original_release_date',
-        'uninstalled_sdks', 'all_version_rating',
-        'description', 'price',
-        'has_ad_spend',
-        'categories', 'name', 'installed_sdks',
-        'publisher', 'content_rating',
-        'mobile_priority',
-        'user_base', 'app_store_id', 'last_scanned_date',
-        'current_version_ratings_count',
-        'current_version_rating', 'all_version_ratings_count',
-        'first_scanned_date',
-        'ratings_history', 'versions_history', 'bundle_identifier',
-        'countries_available_in',
-        'taken_down',
-        'icon_url'
-         ]
+          'last_seen_ads_date', 'last_updated',
+          'seller_url',
+          'current_version', 'has_in_app_purchases',
+          'id', 'first_seen_ads_date', 'platform',
+          'support_url', 'seller',
+          'original_release_date',
+          'uninstalled_sdks', 'all_version_rating',
+          'description', 'price',
+          'has_ad_spend',
+          'categories', 'name', 'installed_sdks',
+          'publisher', 'content_rating',
+          'mobile_priority',
+          'user_base', 'app_store_id', 'last_scanned_date',
+          'current_version_ratings_count',
+          'current_version_rating', 'all_version_ratings_count',
+          'first_scanned_date',
+          'ratings_history', 'versions_history', 'bundle_identifier',
+          'countries_available_in',
+          'taken_down',
+          'icon_url',
+          "current_version_release_date",
+          'first_scraped' 
+          ] + extra_white_list + extra_from_app
 
       rename = [
           ['ratings_all_stars', 'all_version_rating'],
@@ -605,8 +607,8 @@ class IosApp < ActiveRecord::Base
           ['version', 'current_version'],
           ['app_identifier', 'app_store_id'],
           ['ratings_current_count', 'current_version_ratings_count'],
-          ['ratings_current_stars', 'current_version_rating']
-
+          ['ratings_current_stars', 'current_version_rating'],
+          ['released', 'current_version_release_date']
           ]
 
       fields_from_app = [
@@ -614,30 +616,43 @@ class IosApp < ActiveRecord::Base
           ['id', 'id'],
           ['user_base', 'user_base'],
           ['last_updated', 'last_updated'],
-          ['released', 'original_release_date'],
+          ['released', 'original_release_date'], # This "released" that comes from IosApp is original version release
           ['ratings_history', 'ratings_history'],
           ['versions_history', 'versions_history'],
           ['icon_url', 'icon_url']
-          ]
+          ] + (extra_from_app.map { |field| [ field, field ] })
+
+      sdk_fields = [
+          "id",
+          "name",
+          "last_seen_date",
+          "first_seen_date"
+          ] + extra_sdk_fields
+
+      publisher_fields = [
+          "name",
+          "id",
+          "identifier"
+          ] + extra_publisher_fields
 
       app_obj = app.newest_ios_app_snapshot.as_json || {}
       app_obj.merge!(app.first_international_snapshot.as_json || {})
 
       app_obj['mightysignal_app_version'] = '1'
-      app_obj.merge!(app.sdk_response)
-      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+      app_obj.merge!(app.sdk_history)
+      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
       app_obj["installed_sdks"].map do |sdk|
         sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
       end
-      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date", "first_unseen_date")}
+      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
       app_obj["uninstalled_sdks"].map do |sdk|
         sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
       end
-      app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self)
+      app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self, with_category_id: true)
       app_obj["countries_available_in"] = app.app_stores.pluck(:country_code)
 
       if app.ios_developer
-        app_obj['publisher'] = app.ios_developer.as_json.slice("name", "id", "identifier")
+        app_obj['publisher'] = app.ios_developer.as_json.slice(*publisher_fields)
         app_obj['publisher']['app_store_id'] = app_obj['publisher']["identifier"]
         app_obj['publisher'].delete("identifier")
         app_obj['publisher']['platform'] = platform
@@ -655,6 +670,10 @@ class IosApp < ActiveRecord::Base
       rename.map do |field, new_name|
           app_obj[new_name] = app_obj[field]
           app_obj.delete(field)
+      end
+
+      if app_obj['versions_history'] and app_obj['versions_history'].any?
+        app_obj['first_scraped'] = app_obj['versions_history'][0]["released"]
       end
 
       app_obj['last_seen_ads_date'] = app.last_seen_ads_date

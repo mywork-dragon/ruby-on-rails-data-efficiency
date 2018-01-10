@@ -112,6 +112,9 @@ services:
       - REDSHIFT_DATABASE_PASSWORD=root
       - REDSHIFT_DATABASE_HOST=redshift
       - REDSHIFT_DATABASE_PORT=5432
+      - HOT_STORE_REDIS_URL=dummy
+      - HOT_STORE_REDIS_PORT=6379
+      - HOT_STORE_REDIS_MAX_CONNECTIONS=6
     depends_on:
       - db
       - redis

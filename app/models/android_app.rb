@@ -486,12 +486,12 @@ class AndroidApp < ActiveRecord::Base
     run_length_encode_app_snapshot_fields(android_app_snapshots, [:downloads_min, :downloads_max])
   end
 
-  def as_external_dump_json
+  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [])
       app = self
 
       # Only these attributes will be output in the final response.
       white_list = ["id", "name", "price", "seller_url",
-          "current_version", "released", "top_dev",
+          "current_version", "released",
           "in_app_purchases", "required_android_version",
           "content_rating", "seller", "in_app_purchase_min",
           "in_app_purchase_max", "downloads_min", "downloads_max",
@@ -503,8 +503,8 @@ class AndroidApp < ActiveRecord::Base
           "ratings_history", "versions_history", "downloads_history",
           "taken_down", "last_seen_ads_date", "first_seen_ads_date",
           "last_scanned_date", "first_scanned_date",
-          "download_regions"
-        ]
+          "download_regions", "first_scraped"
+          ] + extra_white_list + extra_from_app
 
       rename = [
           ['ratings_all_stars', 'all_version_rating'],
@@ -523,17 +523,29 @@ class AndroidApp < ActiveRecord::Base
           ['downloads_history', 'downloads_history'],
           ['ratings_history', 'ratings_history'],
           ['versions_history', 'versions_history']
-          ]
+          ] + (extra_from_app.map { |field| [ field, field ] })
+
+      sdk_fields = [
+          "id",
+          "name",
+          "last_seen_date",
+          "first_seen_date"
+          ] + extra_sdk_fields
+
+      publisher_fields = [
+          "name",
+          "id"
+          ] + extra_publisher_fields
 
       app_obj = app.newest_android_app_snapshot.as_json || {}
       app_obj['mightysignal_app_version'] = '1'
-      app_obj.merge!(app.sdk_response)
+      app_obj.merge!(app.sdk_history)
 
-      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
       app_obj["installed_sdks"].map do |sdk|
         sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
       end
-      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date", "first_unseen_date")}
+      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
       app_obj["uninstalled_sdks"].map do |sdk|
         sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
       end
@@ -543,7 +555,7 @@ class AndroidApp < ActiveRecord::Base
       end
 
       if app.android_developer
-        app_obj['publisher'] = app.android_developer.as_json.slice("name", "id")
+        app_obj['publisher'] = app.android_developer.as_json.slice(*publisher_fields)
         app_obj['publisher']['platform'] = platform
       end
       app_obj["platform"] = platform
@@ -552,6 +564,10 @@ class AndroidApp < ActiveRecord::Base
 
       fields_from_app.map do |field, new_name|
           app_obj[new_name] = app.send(field).as_json
+      end
+
+      if app_obj['versions_history'] and app_obj['versions_history'].any?
+        app_obj['first_scraped'] = app_obj['versions_history'][0]["released"]
       end
 
       app_obj['last_seen_ads_date'] = app.last_seen_ads_date
