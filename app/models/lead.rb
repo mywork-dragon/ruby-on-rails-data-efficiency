@@ -16,7 +16,12 @@ class Lead < ActiveRecord::Base
     lead.save
 
     unless Rails.env.development?
-      EmailWorker.perform_async(:contact_us, data)
+
+      if (data[:first_name].present? || data[:last_name].present?) && (data[:email].present? || data[:phone].present?)
+        EmailWorker.perform_async(:contact_us, data)
+      end
+      
+      
       SalesforceWorker.perform_async(:add_lead, data)
     end
 
