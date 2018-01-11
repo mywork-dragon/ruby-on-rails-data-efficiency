@@ -9,7 +9,7 @@ services:
   dev_server:
     build: .
     working_dir: /varys/frontend
-    command: yarn start
+    command: bash -c "yarn install --production=false && yarn start"
     volumes:
       - ~/.aws:/root/.aws
       - ~/.aws:/.aws
