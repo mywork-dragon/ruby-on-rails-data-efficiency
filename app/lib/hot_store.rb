@@ -17,7 +17,7 @@ private
   end
 
   def key(type, platform, application_id)
-    "#{type}:#{platform}s:#{application_id}"
+    "#{type}:#{platform}:#{application_id}"
   end
 
   def write_entry(type, platform, id, attributes)

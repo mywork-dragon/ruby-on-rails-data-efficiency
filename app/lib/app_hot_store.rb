@@ -16,6 +16,8 @@ class AppHotStore < HotStore
     "android" => [ "first_seen_ads_date", "last_seen_ads_date" ]
   }
 
+  @@REQUIRED_FIELDS = [ "app_identifier" ]
+
   def initialize()
     super
 
@@ -31,7 +33,6 @@ class AppHotStore < HotStore
     app_key = key("app", platform, app_id)
     extra_fields = extra_app_fields(platform)
 
-    # TODO: Change to use to_class helper once platform is changed to "ios" and "android"
     app_attributes = to_class(platform).find(app_id).as_external_dump_json(extra_fields)
 
     # Merge uninstalled_sdks and installed_sdks into sdk_activity
@@ -51,7 +52,7 @@ class AppHotStore < HotStore
     normalize_app_fields(platform, app_attributes)
     delete_app_fields(platform, app_attributes)
 
-    write_entry("app", platform, app_id, app_attributes)
+    write_entry("app", platform, app_id, app_attributes) if all_required_fields_exist?(app_attributes)
   end
 
   def read(platform, app_id)
@@ -63,6 +64,13 @@ class AppHotStore < HotStore
   end
 
 private
+
+  def all_required_fields_exist?(app_attributes)
+    @@REQUIRED_FIELDS.each do |field|
+      return false if app_attributes[field].nil?
+    end
+    true
+  end
 
   def normalize_app_fields(platform, app_attributes)
     normalized_fields = @@APP_FIELDS_TO_NORMALIZE[platform]
