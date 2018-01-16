@@ -12,21 +12,25 @@
         <div class="container">
             <div class="form-container">
                 <h4 ng-if="message" ng-bind-html="message" class="message {{redMessage ? 'red' : nil}}"></h4>
-                <div class="google social-button">
+                <div class="google social-button" ng-if="!showEmailLogin">
                     <a ng-click="authenticate('google')" class="btn btn-primary">
                         <i class="fa fa-google-plus" aria-hidden="true"></i>
                         Log In Using Google
                     </a>
                 </div>
-                <div class="linkedin social-button">
+                <div class="linkedin social-button" ng-if="!showEmailLogin">
                     <a ng-click="authenticate('linkedin')" class="btn btn-primary">
                         <i class="fa fa-linkedin" aria-hidden="true"></i>
                         Log In Using LinkedIn
                     </a>
                 </div>
-                <div ng-if="!token">
-                    <br>
-                    <h4 class="message">OR email/password if you have not logged in with Google / LinkedIn before.</h4>
+                <div class="email-login-prompt" ng-if="!showEmailLogin">
+                  <a ng-click="toggleEmailLogin()">
+                    <i class="fa fa-envelope"></i>
+                    Log In With E-mail
+                  </a>
+                </div>
+                <div ng-if="!token && showEmailLogin">
                     <form class="form-horizontal" ng-enter="onLoginButtonClick()">
                         <fieldset>
                             <div class="form-group">
@@ -55,14 +59,15 @@
                             </div>
                             <div class="form-group">
                             </div>
-                            <div class="form-group">
-                                <a id="user-login-button" class="btn btn-primary btn-lg btn-block" ng-click="onLoginButtonClick()">Log in</a>
-                                <div class="login-helper">
-                                  Trouble logging in?&nbsp<a class="login-email-link" href="mailto:support@mightysignal.com">E-mail us</a>
-                                </div>
+                            <div class="form-group btn-row">
+                              <button ng-click="toggleEmailLogin()" class="btn btn-primary btn-lg">Go Back</button>
+                              <button id="user-login-button" class="btn btn-primary btn-lg" ng-click="onLoginButtonClick()">Log in</button>
                             </div>
                         </fieldset>
                     </form>
+                </div>
+                <div class="login-helper">
+                  Trouble logging in?&nbsp<a class="login-email-link" href="mailto:support@mightysignal.com">E-mail us</a>
                 </div>
             </div>
         </div>

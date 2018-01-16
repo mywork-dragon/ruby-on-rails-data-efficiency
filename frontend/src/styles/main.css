@@ -8697,6 +8697,27 @@ span.ad_seen {
   margin-right: 10px;
 }
 
+.email-login-prompt {
+  text-align: center;
+}
+
+.email-login-prompt a {
+  color: #0393dd;
+}
+
+.email-login-prompt a:hover {
+  cursor: pointer;
+}
+
+.btn-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-row button {
+  width: 48%;
+}
+
 h4.message {
   margin: 30px 0;
   border: none;
@@ -9081,9 +9102,8 @@ h4.red {
 }
 
 .login-helper {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
+  margin-top: 15px;
+  text-align: center;
 }
 
 .login-email-link {

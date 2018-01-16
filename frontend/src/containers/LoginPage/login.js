@@ -7,6 +7,16 @@ angular.module('appApp')
       $scope.user = {};
       $scope.token = $stateParams.token;
       $scope.redMessage = false;
+      $scope.showEmailLogin = false;
+
+      $scope.toggleEmailLogin = function() {
+        $scope.showEmailLogin = !$scope.showEmailLogin;
+        if ($scope.showEmailLogin) {
+          $scope.message = 'Log In With E-mail';
+        } else {
+          $scope.message = 'Log in using Google or LinkedIn';
+        }
+      };
 
       if ($scope.token) {
         $scope.message = 'Please link either your Google or LinkedIn account now. You will use that account to login in the future.';
