@@ -23,6 +23,62 @@ class AdDataAccessor
     )
   end
 
+  def fetch_all_app_summaries(
+    account,
+    page_size: 20,
+    page_number:0
+    )
+    # The account must have access to all ad sources to use this api.
+    all_source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+    raise "Unauthorized" if (all_source_ids - account.restrict_ad_sources(all_source_ids)).any?
+
+    results, full_count = @delegate.fetch_all_app_summaries(
+      page_size: page_size,
+      page_number: page_number
+    )
+
+    grouped_results = Hash.new{{
+        "ad_networks" => [],
+        "creative_formats" =>  Set.new,
+        "first_seen_ads_date" => nil,
+        "last_seen_ads_date" => nil,
+        "number_of_creatives" => 0
+        }}
+
+    # Build the app_identifier => id map for each of the results.
+    # Optimized into two queries (one for IosApp and AndroidApp).
+    app_identifier_to_id = {}
+    ["ios", "android"].each do |platform|
+      platform_results = results.select { |result| result["platform"] == platform }
+      platform_app_identifiers = platform_results.map { |platform_result| platform_result["app_identifier"] }
+      next if platform_app_identifiers.empty?
+      platform_map = "#{platform}_app".classify.constantize.where(:app_identifier => platform_app_identifiers).pluck(:id, :app_identifier)
+      platform_map.each do |app|
+        app_identifier_to_id[app[1].to_s] = app[0] if app[0] and app[1]
+      end
+    end
+
+    results.each do |result|
+      id = app_identifier_to_id[result["app_identifier"]]
+      app_record = grouped_results[id]
+      grouped_results[id] = app_record
+      app_record['app_identifier'] = result["app_identifier"]
+      app_record['platform'] = result["platform"]
+      app_record['ad_networks'].append(
+      {
+          "id" => result['ad_network'],
+          "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[result['ad_network']],
+          "ad_formats" => _process_ad_formats(result['ad_formats']),
+          "creative_formats" => result['creative_formats'] ? result['creative_formats'].split(',').uniq : [],
+          "number_of_creatives" => result['number_of_creatives'] ? result['number_of_creatives'] : 0,
+          "first_seen_ads_date" => result['first_seen_ads_date'],
+          "last_seen_ads_date" => result['last_seen_ads_date']
+      })
+    end
+
+    return grouped_results, full_count
+  end
+
   def fetch_app_summaries(
     account,
     apps,

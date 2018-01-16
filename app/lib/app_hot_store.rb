@@ -22,7 +22,7 @@ class AppHotStore < HotStore
     super
 
     @key_set = "app_keys"
-    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description" ]
+    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries" ]
     @platform_to_class = {
       "ios" => IosApp,
       "android" => AndroidApp
@@ -55,6 +55,20 @@ class AppHotStore < HotStore
     write_entry("app", platform, app_id, app_attributes) if all_required_fields_exist?(app_attributes)
   end
 
+  def write_ad_summary(app_id, app_identifier, platform, ad_summary)
+    existing_entry = read(platform, app_id)
+
+    attributes = { "ad_summaries" => ad_summary }
+
+    # Add in required params if the app entry has not yet been
+    # imported into the hotstore.
+    attributes["id"] = app_id if existing_entry["id"].nil?
+    attributes["platform"] = platform if existing_entry["platform"].nil?
+    attributes["app_identifier"] = app_identifier if existing_entry["app_identifier"].nil?
+
+    write_entry("app", platform, app_id, attributes)
+  end
+
   def read(platform, app_id)
     read_entry("app", platform, app_id)
   end
@@ -64,6 +78,13 @@ class AppHotStore < HotStore
   end
 
 private
+  
+  def all_required_fields_exist?(app_attributes)
+    @@REQUIRED_FIELDS.each do |field|
+      return false if app_attributes[field].nil?
+    end
+    true
+  end
 
   def all_required_fields_exist?(app_attributes)
     @@REQUIRED_FIELDS.each do |field|

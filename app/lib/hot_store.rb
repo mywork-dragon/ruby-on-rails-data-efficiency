@@ -37,7 +37,7 @@ private
       end
     end
     
-    @redis_store.hmset(entry_key, attributes_array)
+    @redis_store.hmset(entry_key, attributes_array) if attributes_array.any?
 
     compressed_attributes.each do |key, value|
       @redis_store.hset(entry_key, key, value)

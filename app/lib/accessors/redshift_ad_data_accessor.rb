@@ -21,6 +21,55 @@ class RedshiftAdDataAccessor
     !@connection.query(sql, params: pb.params, expires: 15.minutes).fetch.empty?
   end
 
+  def fetch_all_app_summaries(
+    platforms: nil,
+    source_ids: nil,
+    sort_by: 'app_identifier',
+    order_by: 'desc',
+    page_size: 20,
+    page_number:0
+    )
+    pb = RedshiftDbConnection::ParamsBuilder.new
+
+    where_clauses = []
+    where_clauses << "mobile_ad_data_summaries.platform in (#{pb.add_params(platforms)})" if platforms && platforms.any?
+    where_clauses << "mobile_ad_data_summaries.ad_network in (#{pb.add_params(source_ids)})" if source_ids && source_ids.any?
+    where_clause_string = where_clauses.any? ? " WHERE #{where_clauses.compact.join(' AND ')} " : ""
+
+    sql = "
+            SELECT mobile_ad_data_summaries.app_identifier,
+                   mobile_ad_data_summaries.platform,
+                   min(first_seen_ads_date) AS first_seen_ads_date,
+                   max(last_seen_ads_date) AS last_seen_ads_date,
+                   LISTAGG(DISTINCT mobile_ad_creative_summaries.format, ',') AS creative_formats,
+                   LISTAGG(DISTINCT mobile_ad_data_summaries.ad_formats, ',') AS ad_formats,
+                   count(mobile_ad_creative_summaries.url) AS number_of_creatives,
+                   mobile_ad_data_summaries.ad_network AS ad_network,
+                   count(*) OVER() AS full_count
+            FROM mobile_ad_data_summaries
+            LEFT JOIN mobile_ad_creative_summaries ON mobile_ad_creative_summaries.platform = mobile_ad_data_summaries.platform
+            AND mobile_ad_creative_summaries.app_identifier = mobile_ad_data_summaries.app_identifier
+            AND mobile_ad_creative_summaries.ad_network = mobile_ad_data_summaries.ad_network
+            #{where_clause_string}
+            GROUP BY mobile_ad_data_summaries.app_identifier,
+                     mobile_ad_data_summaries.platform,
+                     mobile_ad_data_summaries.ad_network
+            ORDER BY #{sort_by}
+            LIMIT #{page_size}
+            OFFSET #{page_number * page_size};
+    "
+
+    results = @connection.query(sql, params: pb.params, expires: 15.minutes).fetch
+    full_count = 0
+    if results.count > 0
+      full_count = results[0]['full_count']
+    end
+    results.each do |result|
+      result.delete('full_count')
+    end
+    return results, full_count
+  end
+
   def fetch_app_summaries(
     app_identifiers,
     platform,
