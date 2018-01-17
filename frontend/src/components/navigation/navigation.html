@@ -1,6 +1,6 @@
 <!-- Logo -->
 <div class="logo">
-    <a href="#/" ng-click="ctrl.clickedNavLink('Home')">
+    <a href="#/" ng-click="clickedNavLink('Home')">
         <img ng-src="images/mighty_signal_logo_white.png" height="50px"/>
     </a>
 </div>
@@ -8,13 +8,13 @@
     <ul id="nav"
         data-slim-scroll data-collapse-nav>
         <li ui-sref="timeline" ui-sref-active="active">
-            <a class="nav-link" href="#/timeline" ng-click="ctrl.clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
+            <a class="nav-link" href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
         </li>
         <li ui-sref="explore" ui-sref-active="active">
-            <a class="nav-link" href="#/search" ng-click="ctrl.clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
+            <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
         <li ng-if="canViewAdSpend" ui-sref="ad-intelligence" ui-sref-active="active">
-            <a class="nav-link" href="#/ad-intelligence" ng-click="ctrl.clickedNavLink('Ad Intelligence')"> <i class="fa fa-signal"></i> <span>Ad Intelligence</span>
+            <a class="nav-link" href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-signal"></i> <span>Ad Intelligence</span>
             </a>
         </li>
         <li class="popularApps">
@@ -30,7 +30,7 @@
             </ul>
         </li>
         <!-- <li ui-sref="charts" ui-sref-active="active"> -->
-        <!--     <a class="nav-link" href="#/charts" ng-click="ctrl.clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span></a> -->
+        <!--     <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span></a> -->
         <!-- </li> -->
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a class="nav-link" href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
@@ -45,10 +45,10 @@
             </ul>
         </li>
         <li>
-            <a class="nav-link" href="http://api.mightysignal.com/docs" ng-click="ctrl.clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
+            <a class="nav-link" href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
         </li>
         <li>
-            <a class="nav-link" href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="ctrl.clickedNavLink('Chrome App')" target="_blank">
+            <a class="nav-link" href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="clickedNavLink('Chrome App')" target="_blank">
                 <i class="fa fa-chrome"></i><span>Chrome App</span>
             </a>
         <li data-ng-controller="BlogCtrl">
@@ -76,19 +76,19 @@
           </div>
         </script>
   		<li>
-                <a class="nav-link" href="http://support.mightysignal.com/" ng-click="ctrl.clickedNavLink('Support')" target="_blank">
+                <a class="nav-link" href="http://support.mightysignal.com/" ng-click="clickedNavLink('Support')" target="_blank">
                         <i class="fa fa-support"></i>
                         <span>Support</span>
                 </a>
   		</li>
       <li ng-if="$root.isAdmin" ui-sref="admin" ui-sref-active="active">
-          <a class="nav-link" href="#/admin" ng-click="ctrl.clickedNavLink('Admin')">
+          <a class="nav-link" href="#/admin" ng-click="clickedNavLink('Admin')">
                   <i class="fa fa-cog"></i>
                   <span>Admin</span>
           </a>
       </li>
       <li ng-click="logUserOut()">
-          <a class="nav-link" href="#/logout" ng-click="event.preventDefault()" ng-click="ctrl.clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
+          <a class="nav-link" href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
       </li>
     </ul>
 
