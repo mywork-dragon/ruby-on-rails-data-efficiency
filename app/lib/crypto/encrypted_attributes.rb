@@ -30,6 +30,13 @@ module EncryptedAttributes
       end
     end
 
+    def disable_attribute_encryption(attribute_name)
+      self.instance_eval do
+        remove_method "#{attribute_name.to_s}=".to_sym
+        remove_method attribute_name
+      end
+    end
+
     def kms_encrypt(key_id, value)
       resp = Aws::KMS::Client.new.encrypt({
             key_id: key_id, 
