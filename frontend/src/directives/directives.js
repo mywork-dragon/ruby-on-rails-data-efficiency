@@ -297,7 +297,7 @@ angular.module('app.directives', []).directive('imgHolder', [
 
           $scope.$watch('$root.selectedAppsForList', () => {
             /* Controls 'checked' status of master checkbox (top checkbox). Two states: [ ] and [X] */
-            if ($rootScope.selectedAppsForList.length == $rootScope.numPerPage || $rootScope.selectedAppsForList.length == $scope.numApps) {
+            if ($rootScope.selectedAppsForList.length == $rootScope.numPerPage || $rootScope.selectedAppsForList.length == $scope.numApps || $rootScope.selectedAppsForList.length === $scope.apps.length) {
               $element.prop('checked', true);
             } else {
               $element.prop('checked', false);
