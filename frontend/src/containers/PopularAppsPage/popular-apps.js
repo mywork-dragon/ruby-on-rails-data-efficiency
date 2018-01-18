@@ -1,7 +1,7 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
-import 'services/popular-apps.service';
+import 'AngularService/popular-apps.service';
 import 'components/export-permissions/export-permissions.directive';
 import './components/country-select/country-select.directive';
 import './components/category-select/category-select.directive';

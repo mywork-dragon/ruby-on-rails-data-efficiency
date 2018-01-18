@@ -1,7 +1,7 @@
 import angular from 'angular';
 
-import 'services/admin.service';
-import 'utils/admin.utils';
+import 'AngularService/admin.service';
+import 'AngularUtils/admin.utils';
 
 import './components/ad-manager/ad-manager';
 import './components/api-token/api-token';

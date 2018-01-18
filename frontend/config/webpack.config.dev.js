@@ -88,7 +88,16 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
-      Mixpanel: path.resolve(paths.appSrc, 'services/mixpanel')
+      AngularMixpanel: path.resolve(paths.appSrc, 'services/angular/mixpanel'),
+      AngularService: path.resolve(paths.appSrc, 'services/angular'),
+      AngularUtils: path.resolve(paths.appSrc, 'utils/angular'),
+      Mixpanel: path.resolve(paths.appSrc, 'services/mixpanel'),
+      Icons: path.resolve(paths.appSrc, 'components/icons'),
+      AppTable: path.resolve(paths.appSrc, 'components/app-table'),
+      Table: path.resolve(paths.appSrc, 'components/table'),
+      Links: path.resolve(paths.appSrc, 'components/links'),
+      Buttons: path.resolve(paths.appSrc, 'components/buttons'),
+      Messaging: path.resolve(paths.appSrc, 'components/messaging'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).

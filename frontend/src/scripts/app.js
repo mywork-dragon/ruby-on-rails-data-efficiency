@@ -50,8 +50,7 @@ angular
     const appAdIntelState = {
       name: 'app.ad-intelligence',
       url: '/ad-intelligence',
-      controller: 'AppAdIntelligenceController as appAdIntel',
-      template: require('containers/AppPage/components/ad-intelligence/ad-intelligence.html'),
+      template: require('containers/AppPage/views/ad-intelligence.html'),
     };
 
     const appInfoState = {
@@ -116,8 +115,7 @@ angular
     const publisherAdIntelState = {
       name: 'publisher.ad-intelligence',
       url: '/ad-intelligence',
-      template: require('containers/PublisherPage/components/ad-intelligence/ad-intelligence.html'),
-      controller: 'PublisherAdIntelligenceController as pubAdIntel',
+      template: require('containers/PublisherPage/views/ad-intelligence.html'),
     };
 
     const publisherInfoState = {

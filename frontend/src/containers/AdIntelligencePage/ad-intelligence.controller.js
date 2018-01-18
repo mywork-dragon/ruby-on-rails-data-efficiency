@@ -2,7 +2,7 @@ import angular from 'angular';
 import $ from 'jquery';
 
 import 'directives/fallback-src.directive';
-import 'Mixpanel/ad-intelligence.mixpanel.service';
+import 'AngularMixpanel/ad-intelligence.mixpanel.service';
 import 'components/export-permissions/export-permissions.directive';
 import './components/new-ad-intel-modal/new-ad-intel.directive';
 

@@ -20,18 +20,18 @@ require('./styles/ng-tags-input.css');
 require('./scripts/app.js');
 
 /* Service Scripts */
-require('services/api.js');
-require('services/auth.js');
-require('services/general.js');
-require('services/filter.js');
-require('services/search.js');
-require('services/sdk-search.js');
-require('services/sdk-live-scan.js');
-require('services/saved-search.js');
-require('services/click-copy.js');
-require('services/contact.service.js');
-require('services/custom-search.js');
-require('services/list.js');
+require('AngularService/api.js');
+require('AngularService/auth.js');
+require('AngularService/general.js');
+require('AngularService/filter.js');
+require('AngularService/search.js');
+require('AngularService/sdk-search.js');
+require('AngularService/sdk-live-scan.js');
+require('AngularService/saved-search.js');
+require('AngularService/click-copy.js');
+require('AngularService/contact.service.js');
+require('AngularService/custom-search.js');
+require('AngularService/list.js');
 
 /* Controller Scripts */
 require('./scripts/controllers/main.js');
@@ -45,7 +45,6 @@ require('./scripts/controllers/search-delete.js');
 require('containers/AppPage/app.controller.js');
 require('containers/AppPage/components/android-live-scan/android-live-scan.js');
 require('containers/AppPage/components/ios-live-scan/ios-live-scan.js');
-require('containers/AppPage/components/ad-intelligence/ad-intel.controller.js');
 
 /* Admin Scripts */
 require('containers/AdminPage/admin.controller.js');
@@ -69,7 +68,6 @@ require('containers/PopularAppsPage/top-chart.js');
 
 /* Publisher Component Scripts */
 require('containers/PublisherPage/publisher.controller.js');
-require('containers/PublisherPage/components/ad-intelligence/ad-intel.controller.js');
 
 /* SDK Page Scripts */
 require('containers/SdkPage/sdk-details');
@@ -81,4 +79,4 @@ require('containers/TimelinePage/newsfeed');
 require('directives/directives.js');
 
 /* Utils */
-require('utils/csv.utils.js');
+require('AngularUtils/csv.utils.js');

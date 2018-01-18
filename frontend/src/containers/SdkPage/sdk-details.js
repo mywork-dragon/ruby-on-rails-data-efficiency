@@ -1,7 +1,7 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
-import 'services/newsfeed';
+import 'AngularService/newsfeed';
 
 const API_URI_BASE = window.API_URI_BASE;
 

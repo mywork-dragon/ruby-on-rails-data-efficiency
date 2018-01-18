@@ -1,7 +1,7 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
-import 'services/popular-apps.service';
+import 'AngularService/popular-apps.service';
 
 angular
   .module('appApp')

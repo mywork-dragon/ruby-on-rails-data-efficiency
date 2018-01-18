@@ -3,7 +3,7 @@ import mixpanel from 'mixpanel-browser';
 import _ from 'lodash';
 
 import 'components/export-permissions/export-permissions.directive';
-import 'services/newsfeed';
+import 'AngularService/newsfeed';
 
 const API_URI_BASE = window.API_URI_BASE;
 

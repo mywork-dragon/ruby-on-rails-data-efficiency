@@ -192,7 +192,6 @@ Rails.application.routes.draw do
       get 'export_to_csv' => 'lists#export_list_to_csv'
       post 'create_new' => 'lists#create_new_list'
       put 'add' => 'lists#add_to_list'
-      put 'add_mixed' => 'lists#add_mixed_to_list'
       put 'delete_items' => 'lists#delete_from_list'
       put 'delete' => 'lists#delete_list'
     end

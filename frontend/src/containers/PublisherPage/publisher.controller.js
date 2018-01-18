@@ -2,9 +2,10 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 
 import 'components/export-permissions/export-permissions.directive';
-import 'Mixpanel/publisher.mixpanel.service';
-import 'services/publisher.service';
-import 'services/ad-intelligence.service';
+import 'AngularMixpanel/publisher.mixpanel.service';
+import 'AngularService/publisher.service';
+import 'AngularService/ad-intelligence.service';
+import 'components/ad-intel-tab/ad-intel-tab.directive';
 
 angular
   .module('appApp')
@@ -91,6 +92,7 @@ function PublisherController (
     getPublisher()
       .then(() => {
         publisher.platform = $stateParams.platform;
+        publisher.id = $stateParams.id;
         pageTitleService.setTitle(publisher.name);
         publisherMixpanelService.trackPublisherPageView(publisher);
       });
@@ -100,7 +102,7 @@ function PublisherController (
   }
 
   function addAppsToList (list, selectedApps) {
-    listApiService.addMixedSelectedTo(list, selectedApps)
+    listApiService.addSelectedTo(list, selectedApps)
       .success(() => {
         loggitService.logSuccess('Items were added successfully.');
         publisher.selectedAppsForList = [];

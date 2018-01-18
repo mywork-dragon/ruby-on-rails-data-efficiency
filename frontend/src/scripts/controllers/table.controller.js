@@ -21,7 +21,7 @@ angular.module('appApp')
       });
       $rootScope.selectedAppsForList = [];
       $scope.addSelectedTo = function (list, selectedApps) {
-        listApiService.addMixedSelectedTo(list, selectedApps).success(() => {
+        listApiService.addSelectedTo(list, selectedApps).success(() => {
           $scope.notify('add-selected-success');
           $rootScope.selectedAppsForList = [];
         }).error(() => {

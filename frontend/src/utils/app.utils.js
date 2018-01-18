@@ -1,28 +1,20 @@
-import angular from 'angular'
-import _ from 'lodash'
+export function formatAppAdData (data) {
+  return Object.values(data)[0];
+}
 
-angular
-  .module('appApp')
-  .service('appUtils', appUtils);
+export function formatAppCreatives (data) {
+  const result = Object.assign({}, data);
+  const results = Object.values(data.results);
+  result.results = results.length ? results[0].creatives : [];
+  return result;
+}
 
-appUtils.$inject = [];
-
-function appUtils() {
-  return {
-    filterUnavailableCountries,
-    formatRatings
-  }
-
-  function filterUnavailableCountries(list, countries) {
-    const countryCodes = countries.map(country => country.country_code)
-    return list.filter(item => countryCodes.includes(item.country_code))
-  }
-
-  function formatRatings (ratings) {
-    if (ratings.length) {
-      const maxRating = _.max(ratings, rating => rating.ratings_count)
-      maxRating.count = maxRating.ratings_count
-      return maxRating
+export function addAdIds (ads) {
+  if (ads) {
+    for (let i = 0; i < ads.length; i++) {
+      const ad = ads[i];
+      ad.id = i;
     }
   }
+  return ads;
 }

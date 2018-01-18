@@ -1,12 +1,15 @@
 import angular from 'angular';
 
 import 'components/export-permissions/export-permissions.directive';
-import 'utils/app.utils';
-import 'utils/creative-gallery.utils';
-import 'Mixpanel/app.mixpanel.service';
-import 'services/app.service';
-import 'services/ad-intelligence.service';
-import 'services/newsfeed';
+import 'components/ad-intel-tab/ad-intel-tab.directive';
+import 'AngularUtils/app.utils';
+import 'AngularUtils/creative-gallery.utils';
+import 'AngularMixpanel/app.mixpanel.service';
+import 'AngularService/app.service';
+import 'AngularService/ad-intelligence.service';
+import 'AngularService/newsfeed';
+
+import { addAdIds } from 'utils/app.utils';
 
 angular
   .module('appApp')
@@ -31,7 +34,6 @@ AppController.$inject = [
   '$timeout',
   '$scope',
   'appMixpanelService',
-  'galleryUtils',
   'csvUtils',
   'adIntelService',
   'appUtils',
@@ -56,7 +58,6 @@ function AppController (
   $timeout,
   $scope,
   appMixpanelService,
-  galleryUtils,
   csvUtils,
   adIntelService,
   appUtils,
@@ -119,9 +120,9 @@ function AppController (
   function addToList (list) {
     const selectedApp = [{
       id: app.id,
-      type: app.platform,
+      type: app.type,
     }];
-    listApiService.addSelectedTo(list, selectedApp, app.platform)
+    listApiService.addSelectedTo(list, selectedApp)
       .success(() => {
         loggitService.logSuccess('App was added to list successfully.');
         $rootScope.selectedAppsForList = [];
@@ -173,7 +174,7 @@ function AppController (
     return appService.getApp($stateParams.platform, $stateParams.id)
       .then((data) => {
         Object.assign(app, data);
-        app.facebookAds = galleryUtils.addAdIds(data.facebookAds);
+        app.facebookAds = addAdIds(data.facebookAds);
         app.appFetchComplete = true;
         if ($stateParams.platform === 'ios') {
           app.ratings = appUtils.filterUnavailableCountries(data.ratings, data.appStores.availableIn);

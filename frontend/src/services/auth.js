@@ -1,178 +1,88 @@
-import angular from 'angular';
-import mixpanel from 'mixpanel-browser';
+/* global window */
+import hello from 'hellojs';
+import axios from 'axios';
 
-// Manual auth based off guide: http://adamalbrecht.com/2014/12/04/add-json-web-token-authentication-to-your-angular-rails-app/
+const JWT_TOKEN = 'ms_jwt_auth_token';
 
-const JWT_TOKEN_NAME = window.JWT_TOKEN_NAME;
-const API_URI_BASE = window.API_URI_BASE;
+export const getToken = (w = window) => (
+  w.localStorage.getItem(JWT_TOKEN)
+);
 
-angular.module('appApp')
-  .factory('authToken', ['$window', function ($window) {
-    return {
-      setToken(payload) {
-        localStorage.setItem(JWT_TOKEN_NAME, payload);
-      },
-      isAuthenticated() {
-        return localStorage.getItem(JWT_TOKEN_NAME) != null;
-      },
-      get() {
-        return localStorage.getItem(JWT_TOKEN_NAME);
-      },
-      deleteToken(message) {
-        localStorage.removeItem(JWT_TOKEN_NAME);
-        let location = '#/login';
-        if (message) {
-          location += `?msg=${message}`;
-        }
-        $window.location.href = location;
-      },
-    };
-  }])
-  .factory('authEvents', [function () {
-    return {
-      loginSuccess: 'STRING_REPRESENTS_EVENT_SUCCESS',
-      loginFailed: 'STRING_REPRESENTS_EVENT_FAILED_LOGIN',
-      notAuthenticated: 'STRING_REPRESENTS_EVENT_FAILED_AUTH',
-      notAuthorized: 'STRING_REPRESENTS_EVENT_FAILURE_NOT_AUTHORIZED',
-      sharedAuthentication: 'STRING_REPRESENTS_AUTHENTICATION_SHARED',
-      sessionTimeout: 'STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT',
-      authRevoked: 'STRING_REPRESENTS_AUTHORIZATION_REVOKED',
-    };
-  }])
-  .factory('authService', ['$http', '$q', '$rootScope', 'authToken', 'authEvents', function ($http, $q, $rootScope, authToken, authEvents) {
-    let ref = '';
-    return {
-      login(email, password) {
-        const d = $q.defer();
-        $http.post('/auth/login', {
-          email,
-          password,
-        }).success((resp) => {
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.identify(email);
-          mixpanel.people.set({
-            $email: email,
-            jwtToken: resp.auth_token,
-          });
-          // If on production
-          if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
-            mixpanel.track(
-              'Login Success',
-              {
-                provider: 'email',
-              },
-            );
-            /* -------- Mixpanel Analytics End -------- */
-            /* -------- Slacktivity Alerts -------- */
-            window.Slacktivity.send({
-              title: 'User Login Success',
-              fallback: 'User Login Success',
-              'Login Status': 'Success',
-              'User Email': email,
-              Provider: 'email',
-            });
-          }
-          /* -------- Slacktivity Alerts End -------- */
+// Do not use shared http to prevent circular dependency
+const http = axios.create({
+  headers: { Authorization: getToken() },
+});
 
-          authToken.setToken(resp.auth_token);
-          $rootScope.$broadcast(authEvents.loginSuccess);
-          d.resolve(resp.user);
-        }).error((resp) => {
-          $rootScope.$broadcast(authEvents.loginFailed);
-          d.reject(resp.error);
-        });
-        return d.promise;
-      },
-      loginWithToken(auth_token, email, provider) {
-        // const d = $q.defer();
-        mixpanel.identify(email);
-        mixpanel.people.set({
-          $email: email,
-          jwtToken: auth_token,
-        });
-        // If on production
-        if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
-          mixpanel.track(
-            'Login Success',
-            {
-              provider,
-              email,
-            },
-          );
-          /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          window.Slacktivity.send({
-            title: 'User Login Success',
-            fallback: 'User Login Success',
-            'Login Status': 'Success',
-            'User Email': email,
-            Provider: provider,
-          });
-        }
-        /* -------- Slacktivity Alerts End -------- */
+const setToken = (payload, w = window) => (
+  w.localStorage.setItem(JWT_TOKEN, payload)
+);
 
-        authToken.setToken(auth_token);
-        $rootScope.$broadcast(authEvents.loginSuccess);
-      },
-      loginFailed(message, provider, email) {
-        mixpanel.track(
-          'Login Failed',
-          {
-            provider,
-            message,
-            email,
-          },
-        );
-        window.Slacktivity.send({
-          title: 'User Login Failed',
-          fallback: 'User Login Failed',
-          'Login Status': 'Failed',
-          color: '#E82020',
-          'User Email': email,
-          Provider: provider,
-        });
-      },
-      permissions() {
-        return $http.get('/auth/permissions');
-      },
-      userInfo() {
-        return $http.get('/auth/user/info');
-      },
-      accountInfo() {
-        return $http.get('/auth/account/info');
-      },
-      referrer(path) {
-        if (path) { ref = path; }
-        return ref;
-      },
-    };
-  }])
-  .factory('authInterceptor', ['$q', '$injector', function ($q, $injector) {
-    return {
-      // This will be called on every outgoing http request
-      request(config) {
-        const authToken = $injector.get('authToken');
-        const token = authToken.get();
-        config.headers = config.headers || {};
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config || $q.when(config);
-      },
-      // This will be called on every incoming response that has en error status code
-      responseError(response) {
-        const authEvents = $injector.get('authEvents');
-        const matchesAuthenticatePath = response.config && response.config.url.match(new RegExp('/api/auth'));
-        if (!matchesAuthenticatePath) {
-          $injector.get('$rootScope').$broadcast({
-            401: authEvents.notAuthenticated,
-            403: authEvents.notAuthorized,
-            409: authEvents.sharedAuthentication,
-            418: authEvents.authRevoked,
-            419: authEvents.sessionTimeout,
-          }[response.status], response);
-        }
-        return $q.reject(response);
-      },
-    };
-  }]);
+const cleanupHello = (w = window) => (
+  w.localStorage.removeItem('hello')
+);
+
+const initializeOauth = () => {
+  hello.init({
+    google: '341121226980-egcfb2qebu8skkjq63i1cdfpvahrcuak.apps.googleusercontent.com',
+    linkedin: '755ulzsox4aboj',
+  }, {
+    scope: ['email'],
+    oauth_proxy: '/auth/oauth_proxy', // TODO: This breaks LinkedIn auth in local development because it doesn't use react-scripts development proxy. Fix is http://localhost:3000/auth/oauth_proxy
+  });
+};
+
+initializeOauth();
+
+/* Public Methods */
+
+export const isAuthenticated = () => (
+  getToken() !== null
+);
+
+export const loginProvider = (provider, inviteCode) => {
+  const options = {
+    state: JSON.stringify({
+      token: inviteCode,
+    }),
+    redirect_uri: '/app/login',
+  };
+
+  return hello.login(provider, options).then((auth) => {
+    cleanupHello();
+    return auth;
+  });
+};
+
+export const authenticateWithProviderToken = (provider, accessToken, inviteCode) => (
+  http.post(
+    `/auth/${provider}`,
+    {
+      access_token: accessToken,
+      token: getToken() || inviteCode,
+      redirectUri: '/app/login',
+    },
+  ).then((response) => {
+    setToken(response.data.auth_token);
+    return response.data.auth_token;
+  })
+);
+
+  // if (this.permissions) {
+  //   return Promise.resolve(this.permissions);
+  // }
+
+  // if (!this.isAuthenticated()) {
+  //   // TODO: should redirect to login page
+  //   // Maybe return a rejected Promise that caller can then redirect?
+  //   this.permissions = null;
+  //   return Promise.reject(new Error('Not Authenticated'));
+  // }
+
+  // return this.http.get('/auth/permissions')
+  //   .then((response) => {
+  //     this.permissions = response;
+  //     return Promise.resolve(this.permissions);
+  //   })
+  //   .catch((error) => {
+  //     throw error;
+  //   });

@@ -140,7 +140,7 @@ angular.module('appApp')
       };
 
       customSearchCtrl.addSelectedTo = function(list, selectedApps) {
-        listApiService.addSelectedTo(list, selectedApps, customSearchCtrl.platform).success(() => {
+        listApiService.addSelectedTo(list, selectedApps).success(() => {
           customSearchCtrl.notify('add-selected-success');
           $rootScope.selectedAppsForList = [];
         }).error(() => {

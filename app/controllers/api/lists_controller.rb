@@ -69,34 +69,15 @@ class Api::ListsController < ApplicationController
   def add_to_list
     list_id = params['listId']
     apps = params['apps']
-    app_platform = params['appPlatform']
 
-    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
-      render json: {:error => "not user's list"}
+    if apps.blank?
+      render json: { :error => "No apps selected" }, status: 400
       return
-    end
-
-    if app_platform == 'ios'
-      listable_type = 'IosApp'
-    else
-      listable_type = 'AndroidApp'
-    end
-
-    apps.each { |app|
-      if ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: listable_type).nil?
-        ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: listable_type)
-      end
-    }
-
-    render json: {:status => 'success'}
-  end
-
-  def add_mixed_to_list
-    list_id = params['listId']
-    apps = params['apps']
-
-    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
-      render json: {:error => "not user's list"}
+    elsif list_id.nil?
+      render json: { :error => "No list provided" }, status: 400
+      return
+    elsif ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}, status: 401
       return
     end
 

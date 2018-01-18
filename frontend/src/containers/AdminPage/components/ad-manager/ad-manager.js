@@ -1,7 +1,7 @@
 import angular from 'angular';
 import _ from 'lodash';
 
-import 'services/ad-manager.service';
+import 'AngularService/ad-manager.service';
 import 'directives/fallback-src.directive';
 
 angular
