@@ -6,6 +6,7 @@ import 'AngularMixpanel/ad-intelligence.mixpanel.service';
 import 'components/export-permissions/export-permissions.directive';
 import './components/new-ad-intel-modal/new-ad-intel.directive';
 
+
 const API_URI_BASE = window.API_URI_BASE;
 
 angular
@@ -81,6 +82,9 @@ function AdIntelligenceController(
 
   function formatCategories (app) {
     let categoryString = '';
+    if (app.categories.length === 0) {
+      return 'Not available';
+    }
     if (app.platform === 'android') {
       categoryString = app.categories[0].name || '';
     } else if (app.platform === 'ios' && app.categories.length) {
