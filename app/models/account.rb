@@ -63,6 +63,37 @@ class Account < ActiveRecord::Base
     ap token
   end
 
+  def sync_domain_mapping?
+    (salesforce_settings.try(:with_indifferent_access) || {})[:sync_domain_mapping]
+  end
+
+  def salesforce_sandbox?
+    (salesforce_settings.try(:with_indifferent_access) || {})[:is_sandbox]
+  end
+
+  def domain_mapping_query(model)
+    settings =  salesforce_settings.try(:with_indifferent_access)
+    settings.try(:[], :domain_mapping_queries).try(:[], model)
+  end
+
+  def set_domain_mapping_query(model:, query:)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    settings[:domain_mapping_queries] ||= {}
+    settings[:domain_mapping_queries][model] = query
+    self.update_attributes(salesforce_settings: settings)
+  end
+
+  def toggle_domain_syncing(on = nil)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    if on
+      settings[:sync_domain_mapping] = on 
+    else
+      settings[:sync_domain_mapping] = !settings[:sync_domain_mapping]
+    end
+    
+    self.update_attributes(salesforce_settings: settings)
+  end
+
   def as_json(options={})
     {
       id:  id,

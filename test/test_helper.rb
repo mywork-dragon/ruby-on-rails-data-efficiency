@@ -5,6 +5,9 @@ require 'rspec/mocks/standalone'
 require 'minitest/mock'
 require 'byebug'
 
+Account.disable_attribute_encryption(:salesforce_token)
+Account.disable_attribute_encryption(:salesforce_refresh_token)
+
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all

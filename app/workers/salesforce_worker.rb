@@ -17,49 +17,101 @@ class SalesforceWorker
     SalesforceExportService.new(user: user).install
   end
 
-  def sync_all_objects
-    Account.where.not(salesforce_refresh_token: nil).where(salesforce_status: :ready).each do |account|
+  def sync_all_accounts
+    Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.each do |account|
       sf = SalesforceExportService.new(user: account.users.first)
       sf.sync_all_objects
+    end
+  end
+
+  def sync_domain_mapping_all_accounts
+    Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.each do |account|
+      SalesforceWorker.perform_async(:sync_domain_mapping, account.id) if account.sync_domain_mapping?
+    end
+  end
+
+  def sync_domain_mapping(account_id)
+    account = Account.find(account_id)
+    sf = SalesforceExportService.new(user: account.users.first)
+
+    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+      sf.sync_domain_mapping
+    else
+      SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id)
     end
   end
 
   # for bulk exporting
   def export_ios_publisher(publisher_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    dev = IosDeveloper.find(publisher_id)
-    sf.export(publisher: dev, object_id: export_id, export_apps: false)
+
+    if under_api_limit(limits: sf.client.limits)
+      dev = IosDeveloper.find(publisher_id)
+      sf.export(publisher: dev, object_id: export_id, export_apps: false)
+    else
+      SalesforceWorker.perform_in(6.hours, :export_ios_publisher, publisher_id, export_id, user_id, model_name)
+    end
   end
 
   def export_android_publisher(publisher_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    dev = AndroidDeveloper.find(publisher_id)
-    sf.export(publisher: dev, object_id: export_id, export_apps: false)
+
+    if under_api_limit(limits: sf.client.limits)
+      dev = AndroidDeveloper.find(publisher_id)
+      sf.export(publisher: dev, object_id: export_id, export_apps: false)
+    else
+      SalesforceWorker.perform_in(6.hours, :export_android_publisher, publisher_id, export_id, user_id, model_name)
+    end
   end
 
   # imports is an array of android/ios publishers and salesforce objects to import into
   def export_publishers(imports, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    imports.each do |import|
-      import['publisher'] = if import['platform'] == 'ios'
-        IosDeveloper.find(import['publisher_id'])
-      else
-        AndroidDeveloper.find(import['publisher_id'])
+
+    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+      imports.each do |import|
+        import['publisher'] = if import['platform'] == 'ios'
+          IosDeveloper.find(import['publisher_id'])
+        else
+          AndroidDeveloper.find(import['publisher_id'])
+        end
       end
+
+      sf.import_publishers(imports)
+    else
+      SalesforceWorker.perform_in(6.hours, :export_publishers, imports, user_id, model_name)
     end
-    sf.import_publishers(imports)
   end
 
   def export_ios_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    app = IosApp.find(app_id)
-    sf.import_publishers([{publisher: app.ios_developer, export_id: export_id}])
+    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+      app = IosApp.find(app_id)
+      sf.import_publishers([{publisher: app.ios_developer, export_id: export_id}])
+    else
+      SalesforceWorker.perform_in(6.hours, :export_ios_apps, app_id, export_id, user_id, model_name)
+    end
   end
 
   def export_android_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    app = AndroidApp.find(app_id)
-    sf.import_publishers([{publisher: app.android_developer, export_id: export_id}])
+
+    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+      app = AndroidApp.find(app_id)
+      sf.import_publishers([{publisher: app.android_developer, export_id: export_id}])
+    else
+      SalesforceWorker.perform_in(6.hours, :export_android_apps, app_id, export_id, user_id, model_name)
+    end
+  end
+
+  private 
+
+  def under_api_limit(limits:, uses_bulk_api: false)
+    threshold = 0.6
+    under_api_limit = limits["DailyApiRequests"]["Remaining"]/limits["DailyApiRequests"]["Max"].to_f >= threshold
+    under_bulk_api_limit = limits["DailyBulkApiRequests"]["Remaining"]/limits["DailyBulkApiRequests"]["Max"].to_f >= threshold
+
+    under_api_limit && (under_bulk_api_limit || !uses_bulk_api)
   end
 
 end

@@ -543,10 +543,10 @@ angular.module('app.directives', []).directive('imgHolder', [
             params,
           }).success((data) => {
             $scope.isExporting = false;
-            $scope.exportId = data.success;
+            $scope.exportId = data.id;
           }).error((data) => {
             $scope.isExporting = false;
-            alert(`There was an error exporting your ${$scope.sfObject}. Please try again.`);
+            alert(`There was an error exporting your ${$scope.sfObject}. ${data.error_message}.`);
             mixpanel.track('Exported App to Salesforce Failed', {
               publisherName: $scope.app.publisher.name,
               appName: $scope.app.name,

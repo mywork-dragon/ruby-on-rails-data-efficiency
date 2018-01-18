@@ -18,13 +18,18 @@ class Api::SalesforceController < ApplicationController
       AndroidApp.find(params[:android_app_id])
     end
     
-    response = SalesforceExportService.new(user: @current_user, 
+    begin
+      response = SalesforceExportService.new(user: @current_user, 
                                 model_name: params[:model])
                                .export(
                                 app: app, 
                                 mapping: params[:mapping], 
                                 object_id: params[:objectId]) 
-    render json: {success: response}
+    rescue StandardError => e
+      render json: {error_class: e.class.name, error_message: e.message}, status: 400
+    else
+      render json: {id: response}
+    end
   end
 
 end

@@ -186,6 +186,7 @@ gem 'addressable', '~>2.4'
 group :development, :test do
   gem 'rspec-mocks', '~> 3.5'
   gem 'minitest', '~> 5.1'
+  gem "mocha", '~> 1.3.0'
 end
 
 # for manipulate IPA plists

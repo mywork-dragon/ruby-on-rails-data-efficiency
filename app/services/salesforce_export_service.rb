@@ -5,7 +5,7 @@ class SalesforceExportService
     @user = user
     @account = @user.account
     @model_name = model_name
-    @is_sandbox = @account.salesforce_settings.with_indifferent_access[:is_sandbox]
+    @is_sandbox = @account.salesforce_sandbox?
 
     @app_model = 'MightySignal_App__c'
     @sdk_model = 'MightySignal_SDK__c'
@@ -28,6 +28,7 @@ class SalesforceExportService
       api_version: '39.0',
       host: host
     )
+
     @metadata_client ||= Metaforce.new(
                           session_id: @account.salesforce_token, 
                           authentication_handler: method(:update_metadata_token),
@@ -35,6 +36,7 @@ class SalesforceExportService
                           server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
                           host: host
                         )
+
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
 
@@ -111,7 +113,7 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
-  def sync_all_objects(batch_size: 250, batch_limit: nil, models: ['Account', 'Lead'])
+  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
@@ -122,15 +124,14 @@ class SalesforceExportService
 
       imports = []
       @client.query(query).each do |object|
-        if object.MightySignal_iOS_Publisher_ID__c
-          ios_publisher = IosDeveloper.find(object.MightySignal_iOS_Publisher_ID__c)
-          SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher.id, object.Id, @user.id, @model_name)
-          imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: object.Id}
+        salesforce_id = object.Id
+        if ios_publisher_id = object.MightySignal_iOS_Publisher_ID__c
+          SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher_id, salesforce_id, @user.id, @model_name)
+          imports << {publisher_id: ios_publisher_id, platform: 'ios', export_id: salesforce_id}
         end
-        if object.MightySignal_Android_Publisher_ID__c
-          android_publisher = AndroidDeveloper.find(object.MightySignal_Android_Publisher_ID__c)
-          SalesforceWorker.perform_async(:export_android_publisher, android_publisher.id, object.Id, @user.id, @model_name)
-          imports << {publisher_id: android_publisher.id, platform: 'android', export_id: object.Id}
+        if android_publisher_id = object.MightySignal_Android_Publisher_ID__c
+          SalesforceWorker.perform_async(:export_android_publisher, android_publisher_id, salesforce_id, @user.id, @model_name)
+          imports << {publisher_id: android_publisher_id, platform: 'android', export_id: salesforce_id}
         end
       end
 
@@ -220,7 +221,6 @@ class SalesforceExportService
     search_queries = {
       Account: "select Id, Name from Account where Name LIKE '%#{query}%'",
       Lead: "select Id, Company, FirstName, LastName, Title, Email from Lead where Company LIKE '%#{query}%'",
-      Opportunity: "select Account.Id, Account.Name from Opportunity where Account.Name LIKE #{query}",
     }.with_indifferent_access
 
     results = @client.query(search_queries[@model_name])
@@ -230,10 +230,13 @@ class SalesforceExportService
       when 'Account'
         object[:name] = result.Name
       when 'Lead'
-        object[:name] = "#{result.FirstName} #{result.LastName} - #{result.Title}\n#{result.Company}"
-        object[:title] = result.Title
-        object[:first_name] = result.FirstName
-        object[:last_name] = result.LastName
+        title = result.Title
+        first_name = result.FirstName
+        last_name = result.LastName
+        object[:name] = "#{first_name} #{last_name} - #{title}\n#{result.Company}"
+        object[:title] = title
+        object[:first_name] = first_name
+        object[:last_name] = last_name
         object[:email] = result.Email
       end
 
@@ -347,8 +350,7 @@ class SalesforceExportService
   end
 
   def update_default_mapping(mapping)
-    account = @user.account
-    current_settings = account.salesforce_settings.try(:with_indifferent_access) || {}
+    current_settings = @account.salesforce_settings.try(:with_indifferent_access) || {}
     current_settings[:default_object] = @model_name
     current_settings[:default_mapping] ||= {}
 
@@ -358,8 +360,8 @@ class SalesforceExportService
     current_settings[:default_mapping][@model_name] ||= {}
     current_settings[:default_mapping][@model_name].merge!(new_mapping)
 
-    account.salesforce_settings = current_settings
-    account.save
+    @account.salesforce_settings = current_settings
+    @account.save
   end
 
   def import_ios_app(app:, account_id: nil)
@@ -576,36 +578,43 @@ class SalesforceExportService
     SalesforceExportService.new(user: account.users.first, model_name: model_name)
   end
 
-  def sync_domain_mapping
-    sf = SalesforceExportService.sf_for('Mixpanel')
-    update_records = {}
+  def sync_domain_mapping(models: supported_models)
     dl = DomainLinker.new
-    @client.query("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null").each do |record|
-      new_record = {Id: record.Id}
-      domain = UrlHelper.url_with_domain_only(record.Website)
-      publishers = dl.domain_to_publisher(domain)
-      ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
-      android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
-      if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
-        new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
+    models.each do |model|
+      model_query = @account.domain_mapping_query(model)
+
+      query = "select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where Website != null and (MightySignal_iOS_Publisher_ID__c = null or  MightySignal_Android_Publisher_ID__c = null)"
+      query += " and where #{model_query}" if model_query
+      query += " and IsConverted = false" if model == 'Lead'
+
+      @client.query(query).each do |record|
+        new_record = {Id: record.Id}
+        domain = UrlHelper.url_with_domain_only(record.Website)
+        publishers = dl.domain_to_publisher(domain)
+        ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
+        android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
+        if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
+          new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
+        end
+
+        if !record.MightySignal_Android_Publisher_ID__c && android_publisher
+          new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
+        end
+
+        puts "Domain is #{domain}"
+        puts new_record if new_record.size > 1
+
+        @update_records[model] ||= []
+        @update_records[model] << new_record if new_record.size > 1
       end
 
-      if !record.MightySignal_Android_Publisher_ID__c && android_publisher
-        new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
-      end
-
-      puts "Domain is #{domain}"
-      puts new_record if new_record.size > 1
-
-      update_records["Account"] ||= []
-      update_records["Account"] << new_record if new_record.size > 1
-
-      if update_records["Account"].count >= 10_000
-        sf.bulk_client.update('Account', update_records["Account"])
-        update_records["Account"] = []
+      if @update_records[model].try(:any?)
+        @update_records[model].each_slice(10_000) do |slice|
+          @bulk_client.update(model, slice)
+        end
       end
     end
-
+    reset_bulk_data
   end
 
   private
