@@ -447,7 +447,7 @@ class AdDataAccessor
         app_available = app_model.app_store_available
         user_bases = app_model.scored_user_bases
       elsif app['platform'] == 'android'
-        if app_model.newest_apk_snapshot_id.nil?
+        if app_model.newest_android_app_snapshot.nil?
           next
         end
         app_available = app_model.app_available?
