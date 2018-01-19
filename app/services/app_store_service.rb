@@ -282,8 +282,13 @@ class AppStoreService
 
   # HTML only
   def in_app_purchases_html
-    lis = @html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
-    lis.map{ |li| {name: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
+    node = @html.xpath('//dt[contains(text(), "In-App Purchases")]')[0]
+
+    items = node.parent.css('.list-with-numbers__item').map do |item|
+      text =item.css('.list-with-numbers__item__title').text
+      price = (item.css('.list-with-numbers__item__price').text.gsub("$", "").to_f*100).to_i
+      {name: text, price: price}
+    end
   end
 
   def ratings_json
