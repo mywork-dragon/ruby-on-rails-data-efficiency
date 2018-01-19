@@ -1,16 +1,5 @@
 class AppHotStore < HotStore
 
-  @@APP_FIELDS_TO_NORMALIZE = {
-    "ios" => {
-      "app_store_id" => "app_identifier",
-      "has_in_app_purchases" => "in_app_purchases"
-    },
-    "android" => {
-      "google_play_id" => "app_identifier",
-      "released" => "current_version_release_date"
-    }
-  }
-
   @@APP_FIELDS_TO_DELETE = {
     "ios" => [ "first_seen_ads_date", "last_seen_ads_date", "has_ad_spend" ],
     "android" => [ "first_seen_ads_date", "last_seen_ads_date" ]
@@ -26,6 +15,17 @@ class AppHotStore < HotStore
     @platform_to_class = {
       "ios" => IosApp,
       "android" => AndroidApp
+    }
+
+    @fields_to_normalize = {
+      "ios" => {
+        "app_store_id" => "app_identifier",
+        "has_in_app_purchases" => "in_app_purchases"
+      },
+      "android" => {
+        "google_play_id" => "app_identifier",
+        "released" => "current_version_release_date"
+      }
     }
   end
 
@@ -49,7 +49,6 @@ class AppHotStore < HotStore
     app_attributes.delete("installed_sdks")
     app_attributes.delete("uninstalled_sdks")
 
-    normalize_app_fields(platform, app_attributes)
     delete_app_fields(platform, app_attributes)
 
     write_entry("app", platform, app_id, app_attributes) if all_required_fields_exist?(app_attributes)
@@ -91,17 +90,6 @@ private
       return false if app_attributes[field].nil?
     end
     true
-  end
-
-  def normalize_app_fields(platform, app_attributes)
-    normalized_fields = @@APP_FIELDS_TO_NORMALIZE[platform]
-
-    normalized_fields.each do |from, to|
-      if not app_attributes.key?(to)
-        app_attributes[to] = app_attributes[from]
-        app_attributes.delete(from)
-      end
-    end
   end
 
   def delete_app_fields(platform, app_attributes)

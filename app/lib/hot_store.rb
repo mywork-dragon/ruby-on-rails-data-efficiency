@@ -23,6 +23,16 @@ private
   def write_entry(type, platform, id, attributes)
     entry_key = key(type, platform, id)
 
+    if @fields_to_normalize
+      normalized_fields = @fields_to_normalize[platform]
+      normalized_fields.each do |from, to|
+        if not attributes.key?(to)
+          attributes[to] = attributes[from]
+          attributes.delete(from)
+        end
+      end
+    end
+
     attributes_array = []
     compressed_attributes = {} # Save the compressed attributes seperately since hmset doesn't handle compressed encodings.
 

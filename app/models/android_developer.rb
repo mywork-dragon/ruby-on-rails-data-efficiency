@@ -34,7 +34,8 @@ class AndroidDeveloper < ActiveRecord::Base
     {
       id: id,
       name: name,
-      platform: :android
+      platform: :android,
+      identifier: identifier
     }
   end
 

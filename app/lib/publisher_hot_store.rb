@@ -9,6 +9,15 @@ class PublisherHotStore < HotStore
       "ios" => IosDeveloper,
       "android" => AndroidDeveloper
     }
+
+    @fields_to_normalize = {
+      "ios" => {
+        :app_store_id => "publisher_identifier"
+      },
+      "android" => {
+        :identifier => "publisher_identifier",
+      }
+    }
   end
 
   def write(platform, publisher_id)
