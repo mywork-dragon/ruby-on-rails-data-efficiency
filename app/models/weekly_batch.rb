@@ -27,12 +27,17 @@ class WeeklyBatch < ActiveRecord::Base
       activity_type: self.activity_type,
       owner: self.owner
     }
+    sdk_activities_by_countries = nil
     if options[:country_codes] && is_sdk?
-      batch_json[:activities_count] = self.sorted_activities(country_codes: options[:country_codes]).try(:count).try(:size)
+      sdk_activities_by_countries = self.sorted_activities(country_codes: options[:country_codes])
+      batch_json[:activities_count] = sdk_activities_by_countries.try(:count).try(:size)
     end
 
     if is_sdk?
       batch_json[:major_activities] = major_activities
+      if !sdk_activities_by_countries.nil?
+        batch_json[:major_activities] = batch_json[:major_activities].select {|x| sdk_activities_by_countries.include? x}
+      end
     end
 
     batch_json[:activities_count] ||= is_app? ? self.sorted_activities.count : self.activities.count
