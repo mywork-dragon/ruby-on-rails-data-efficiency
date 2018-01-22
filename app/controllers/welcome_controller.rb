@@ -150,6 +150,7 @@ class WelcomeController < ApplicationController
     @live_scan_graphic = graphics_folder + 'live_scan.png'
     @explore_graphic = graphics_folder + 'explore.png'
     @new_advertisers_graphic = graphics_folder + 'new_advertisers.png'
+    @newcomers_graphic = graphics_folder + 'newcomers.png'
   end
 
   def business_intelligence

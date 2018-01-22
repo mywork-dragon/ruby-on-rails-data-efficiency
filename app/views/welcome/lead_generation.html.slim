@@ -48,8 +48,21 @@
       p
   .row
     .column.medium-5.medium-offset-1.graphic
-        img src=@explore_graphic width=1500
+        img src=@newcomers_graphic width=1500
     .column.medium-5.end.about-graphic
+      .name
+        | Track the Hottest Apps
+      .description
+        | We show you apps that are taking off or about to take off in the rankings. You can slice this data by country, app category, and more. The ability to identify new entrants, big movers, and market leaders is at your fingertips. 
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'View 🔥 Apps', button_id: 'lead-generation-popular-apps'
+  - 4.times do 
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
       .name
         | Sales-Centric Interface
       .description
@@ -58,6 +71,8 @@
         p
       row
         = render 'contact_us_button', title: 'Explore Mighty Data', button_id: 'lead-generation-interface'
+    .column.medium-5.end.graphic
+      img src=@explore_graphic width=1500
   - 4.times do
     .row 
       p
