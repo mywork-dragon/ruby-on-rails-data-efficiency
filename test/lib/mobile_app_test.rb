@@ -151,4 +151,9 @@ class MobileAppTest < ActiveSupport::TestCase
        end
      end
    end
+
+   test 'sdk history returns valid response when no snapshots but latest is set erroneously' do
+     @ipa_snapshot.update!(scan_status: IpaSnapshot.scan_statuses[:invalidated])
+     @ios_app.sdk_history
+   end
 end

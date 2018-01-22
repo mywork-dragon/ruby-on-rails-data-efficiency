@@ -95,6 +95,8 @@ module MobileApp
                       ).order(:good_as_of_date).to_a
                     end
 
+      return resp if snapshots.empty?
+
       previous_sdk_info = {}
       previous_sdks = []
       sdk_info = nil
