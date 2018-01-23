@@ -113,23 +113,35 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
-  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models)
+  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'])
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
       
-      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where (MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null)"
+      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where"
+
+      if platforms.include?('ios') && platforms.include?('android')
+        query += " (MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null)"
+      elsif platforms.include?('ios')
+        query += " MightySignal_iOS_Publisher_ID__c != null"
+      elsif platforms.include?('android')
+        query += " MightySignal_Android_Publisher_ID__c != null"
+      end
+
       query += " and IsConverted = false" if model == 'Lead'
       query += " LIMIT #{batch_limit * batch_size}" if batch_limit
 
       imports = []
       @client.query(query).each do |object|
         salesforce_id = object.Id
-        if ios_publisher_id = object.MightySignal_iOS_Publisher_ID__c
+        ios_publisher_id = object.MightySignal_iOS_Publisher_ID__c
+        android_publisher_id = object.MightySignal_Android_Publisher_ID__c
+
+        if platforms.include?('ios') && ios_publisher_id
           SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher_id, salesforce_id, @user.id, @model_name)
           imports << {publisher_id: ios_publisher_id, platform: 'ios', export_id: salesforce_id}
         end
-        if android_publisher_id = object.MightySignal_Android_Publisher_ID__c
+        if platforms.include?('android') && android_publisher_id
           SalesforceWorker.perform_async(:export_android_publisher, android_publisher_id, salesforce_id, @user.id, @model_name)
           imports << {publisher_id: android_publisher_id, platform: 'android', export_id: salesforce_id}
         end
