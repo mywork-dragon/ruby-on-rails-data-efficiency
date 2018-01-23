@@ -8987,6 +8987,7 @@ h4.red {
   text-decoration: underline;
   padding-left: 10px;
   float: right;
+  margin-right: 10px;
 }
 
 #showSdksButtonHelper .video-link {

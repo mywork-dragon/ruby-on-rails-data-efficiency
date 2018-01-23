@@ -58,6 +58,7 @@ require('containers/CustomSearchPage/sdk-search');
 
 /* Explore Scripts */
 require('containers/ExplorePage/search');
+require('containers/ExplorePage/explore-page.directive');
 
 /* Login Scripts */
 require('containers/LoginPage/login');

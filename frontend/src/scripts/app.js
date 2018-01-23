@@ -79,6 +79,12 @@ angular
       template: require('containers/ExplorePage/views/dashboard.html'),
     };
 
+    const explorev2State = {
+      name: 'explore-v2',
+      url: '/search/v2',
+      template: '<explore />',
+    };
+
     const listState = {
       name: 'list',
       url: '/lists/{listId}',
@@ -166,6 +172,7 @@ angular
     $stateProvider.state(loginState);
     $stateProvider.state(timelineState);
     $stateProvider.state(exploreState);
+    $stateProvider.state(explorev2State);
     $stateProvider.state(customSearchState);
     $stateProvider.state(trendingState);
     $stateProvider.state(newcomerState);
