@@ -50,6 +50,7 @@ class IosDeveloper < ActiveRecord::Base
 
   class << self
     def find_by_domain(domain)
+      domain = UrlHelper.url_with_domain_only(domain)
       publishers = DomainDataHotStore.new.read(domain)["publishers"]
       if publishers
         publishers.select {|x| x['platform'] == 'ios'}.map {|publisher| IosDeveloper.find_by_id(publisher['publisher_id'])}.compact
