@@ -223,6 +223,14 @@ class SalesforceExportService
     end
   end
 
+  def limits
+    remaining_limits = @client.limits
+    {
+      daily_api_calls: remaining_limits["DailyApiRequests"]["Remaining"],
+      daily_bulk_api_calls: remaining_limits["DailyBulkApiRequests"]["Remaining"]
+    }
+  end
+
   def uninstall
     @metadata_client.delete(:custom_object, 
       @app_model, 
