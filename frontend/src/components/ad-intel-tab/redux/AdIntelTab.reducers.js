@@ -79,14 +79,21 @@ function adIntelTab(actionTypes, tableActionTypes) {
       type,
       data,
     } = action.payload;
-    const newState = {
+    if (data == null) {
+      return {
+        ...initialInfoState,
+        id,
+        platform,
+        type,
+      };
+    }
+    return {
       ...initialInfoState,
       ...data,
       id,
       platform,
       type,
     };
-    return newState;
   }
 
   function loadAdFetchError(action) {
@@ -117,6 +124,12 @@ function adIntelTab(actionTypes, tableActionTypes) {
 
   function initializeCreativeFilters(state, action) {
     const { id, data } = action.payload;
+    if (data == null) {
+      return {
+        ...state,
+        id: itemId,
+      };
+    }
     const activeFormats = data.creative_formats || [];
     const activeNetworks = data.ad_networks ? data.ad_networks.map(network => network.id) : [];
     const itemId = data.number_of_creatives === 0 ? id : '';

@@ -22,7 +22,7 @@ function* requestAppAdIntelInfo(action) {
   try {
     yield put({ type: appTypes.CLEAR_AD_INTEL_INFO });
     const res = yield call(AppService().getAdIntelInfo, id, platform);
-    const data = formatAppAdData(res.data);
+    const data = res.data ? formatAppAdData(res.data) : null;
     yield put(appActions.loadAdIntelInfo(id, platform, data));
   } catch (error) {
     console.log(error);
@@ -35,9 +35,9 @@ function* requestPublisherAdIntelInfo(action) {
   try {
     yield put({ type: pubTypes.CLEAR_AD_INTEL_INFO });
     const res = yield call(PublisherService().getAdIntelInfo, id, platform);
-    const data = formatPublisherAdData(res.data);
+    const data = res.data ? formatPublisherAdData(res.data) : null;
     yield put(pubActions.loadAdIntelInfo(id, platform, data));
-    yield put(appTable.loadApps(data.advertising_apps));
+    if (data != null) yield put(appTable.loadApps(data.advertising_apps));
   } catch (error) {
     console.log(error);
     yield put(pubActions.adIntelError(id, platform));
