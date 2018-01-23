@@ -79,9 +79,9 @@ private
     cursor, attributes = @redis_store.hscan(entry_key, entry_cursor)
     attributes.each do |attribute_tuple|
       if @compressed_fields.include? attribute_tuple[0]
-        entry_attributes[attribute_tuple[0]] = ActiveSupport::Gzip.decompress(attribute_tuple[1])
+        entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(ActiveSupport::Gzip.decompress(attribute_tuple[1]))
       else
-        entry_attributes[attribute_tuple[0]] = attribute_tuple[1]
+        entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(attribute_tuple[1])
       end
     end
     cursor

@@ -48,10 +48,12 @@ class AndroidDeveloper < ActiveRecord::Base
 
   class << self
     def find_by_domain(domain)
-      AndroidDeveloper
-        .joins(:websites)
-        .where('websites.domain = ?', domain)
-        .where('android_developers_websites.is_valid = ?', true).distinct
+      publishers = DomainDataHotStore.new.read(domain)["publishers"]
+      if publishers
+        publishers.select {|x| x['platform'] == 'android'}.map {|publisher| AndroidDeveloper.find_by_id(publisher['publisher_id'])}.compact
+      else
+        return []
+      end
     end
   end
 end

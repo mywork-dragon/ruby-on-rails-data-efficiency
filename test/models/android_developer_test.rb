@@ -30,25 +30,12 @@ class AndroidDeveloperTest < ActiveSupport::TestCase
   end
 
   test 'finds developer by domain' do
-    x = AndroidDevelopersWebsite.create!(
-      android_developer_id: @developer.id,
-      website_id: @website.id,
-      is_valid: true
-    )
-    x.update!(is_valid: true) # override activerecord callback
+    ENV['HOT_STORE_REDIS_URL'] = ENV['VARYS_REDIS_URL']
+    ENV['HOT_STORE_REDIS_PORT'] = ENV['VARYS_REDIS_PORT']
+    DomainDataHotStore.new.write({'domain' => 'mightysignal.com', 'publishers' => [{'publisher_id' => @developer.id, 'platform' => 'android'}]})
     res = AndroidDeveloper.find_by_domain('mightysignal.com')
     assert_equal 1, res.count
     assert_equal @developer.identifier, res.first.identifier
   end
 
-  test 'finds developer by domain ignoring flagged associations' do
-    x = AndroidDevelopersWebsite.create!(
-      android_developer_id: @developer.id,
-      website_id: @website.id,
-      is_valid: false
-    )
-    x.update!(is_valid: false) # override activerecord callback
-    res = AndroidDeveloper.find_by_domain('mightysignal.com')
-    assert_equal 0, res.count
-  end
 end
