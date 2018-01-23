@@ -20,8 +20,8 @@ private
     "#{type}:#{platform}:#{application_id}"
   end
 
-  def write_entry(type, platform, id, attributes)
-    entry_key = key(type, platform, id)
+  def write_entry(type, platform, id, attributes, override_key: nil)
+    entry_key = override_key || key(type, platform, id)
 
     if @fields_to_normalize
       normalized_fields = @fields_to_normalize[platform]
@@ -56,8 +56,8 @@ private
     @redis_store.sadd(@key_set, entry_key)
   end
 
-  def read_entry(type, platform, id)
-    entry_key = key(type, platform, id)
+  def read_entry(type, platform, id, override_key: nil)
+    entry_key = override_key || key(type, platform, id)
 
     attributes = {}
     
@@ -69,8 +69,8 @@ private
     attributes
   end
 
-  def delete_entry(type, platform, id)
-    entry_key = key(type, platform, id)
+  def delete_entry(type, platform, id, override_key: nil)
+    entry_key = override_key || key(type, platform, id)
     @redis_store.srem(@key_set, entry_key)
     @redis_store.del(entry_key)
   end
