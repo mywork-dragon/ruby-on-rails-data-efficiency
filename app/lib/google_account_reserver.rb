@@ -94,7 +94,7 @@ class GoogleAccountReserver
 
   def try_reserve(scrape_type, requirements)
     query = build_query(scrape_type, requirements, available_only: false)
-    g = query.order(:last_used).limit(1).take
+    g = query.order(:device).limit(1).take
 
     if g
       g.last_used = DateTime.now
