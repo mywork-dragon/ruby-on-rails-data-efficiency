@@ -71,6 +71,25 @@ module MobileApp
       output
     end
 
+    def filter_older_versions_from_android_apk_snapshots(snaps)
+      snaps = snaps.sort_by {|x| x.good_as_of_date}
+      latest_app_versions = []
+      max_versioncode = 0
+      snaps.each do |snap|
+        # Only include app versions which are incrementing on
+        # the highest version_code
+        if snap.scan_status == "scan_success"
+          if snap.version_code.nil? or (snap.version_code >= max_versioncode)
+            latest_app_versions.append(snap)
+            if !snap.version_code.nil?
+              max_versioncode = snap.version_code
+            end
+          end
+        end
+      end
+      latest_app_versions
+    end
+
     def sdk_history
       resp = {
         installed_sdks: [],
@@ -86,14 +105,18 @@ module MobileApp
       return resp if snap.nil?
 
       snapshots = if ios?
-                    ipa_snapshots.includes(:ios_sdks).where(
-                      scan_status: IpaSnapshot.scan_statuses[:scanned],
-                    ).order(:good_as_of_date).to_a
+                      ipa_snapshots.includes(:ios_sdks).where(
+                        scan_status: IpaSnapshot.scan_statuses[:scanned],
+                      ).order(:good_as_of_date).to_a
                     else
                       apk_snapshots.includes(:android_sdks).where(
                         scan_status: ApkSnapshot.scan_statuses['scan_success']
                       ).order(:good_as_of_date).to_a
                     end
+
+      if android? and newest_android_app_snapshot.try(:version) == "Varies with device"
+        snapshots = filter_older_versions_from_android_apk_snapshots(snapshots)
+      end
 
       return resp if snapshots.empty?
 

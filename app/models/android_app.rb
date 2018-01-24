@@ -352,6 +352,10 @@ class AndroidApp < ActiveRecord::Base
     display_type != 'taken_down'
   end
 
+  def current_version_code
+    self.newest_apk_snapshot.version_code
+  end
+
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
   end

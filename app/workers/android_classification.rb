@@ -11,7 +11,7 @@ module AndroidClassification
 
     classify
     update_scan_status(:scan_success)
-    log_activities if Rails.env.production? and not rescan
+    log_activities if should_log_activities
     log "Completed classification for snapshot #{@apk_snapshot.id}"
 
   rescue => e
@@ -89,6 +89,18 @@ module AndroidClassification
     AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id).delete_all
     AndroidSdksApkSnapshot.import rows
     @apk_snapshot.store_classification_summary(paths)
+  end
+
+  def should_log_activities
+    return
+      (
+        Rails.env.production? and not rescan
+      ) and
+      (
+        @apk_snapshot.version_code.nil? or
+        @apk_snapshot.android_app.current_version_code.nil? or
+        @apk_snapshot.version_code > @apk_snapshot.android_app.current_version_code
+      )
   end
 
   def log_activities
