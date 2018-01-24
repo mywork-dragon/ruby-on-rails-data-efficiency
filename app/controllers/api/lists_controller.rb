@@ -112,7 +112,7 @@ class Api::ListsController < ApplicationController
       return
     end
 
-    List.find(list_id).destroy
+    ListsUser.where(user_id: @current_user.id, list_id: list_id).map {|list_user| list_user.destroy}
 
     render json: {:status => 'success'}
   end
