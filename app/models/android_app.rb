@@ -610,6 +610,34 @@ class AndroidApp < ActiveRecord::Base
   end
 
   class << self
+    def validate_snapshot_history(app_id)
+      # Function to cleanup install events associated with apk scan system ping ponging between
+      # device specific APK version.
+      app = AndroidApp.find(app_id)
+      snaps = app.apk_snapshots
+      good_snaps = app.filter_older_versions_from_android_apk_snapshots(snaps)
+      bad_snaps = Set.new(snaps) - Set.new(good_snaps)
+      last_snap_was_bad = false
+      snaps.each do |snap|
+        if bad_snaps.include?(snap)
+          puts "invalidate because bad id: #{snap.id} version: #{snap.version}, #{snap.version_code}"
+          snap.invalidate_activities!
+          last_snap_was_bad = true
+        elsif last_snap_was_bad and good_snaps.include?(snap)
+          # Invalidate the next good snapshot's activities after
+          # a bad snapshot. This potentially removes good activities
+          # as well, but I think it's the best we can without getting really
+          # complicated.
+          puts "invalidate because after bad id: #{snap.id} version: #{snap.version}, #{snap.version_code}"
+          snap.invalidate_activities!
+        end
+
+        if !bad_snaps.include?(snap)
+          last_snap_was_bad = false
+        end
+      end
+    end
+
 
     def dedupe
       # find all models and group them on keys which should be common

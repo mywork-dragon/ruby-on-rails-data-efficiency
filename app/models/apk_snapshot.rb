@@ -91,4 +91,16 @@ class ApkSnapshot < ActiveRecord::Base
       key_path: classification_summary_s3_key)
   end
 
+  def invalidate_activities!
+    app = self.android_app
+    happened_at_date = self.first_valid_date
+    activities = Activity.where(happened_at: happened_at_date)
+
+    # ensure these activities are from this app
+    activities = activities.select do |a|
+      a.weekly_batches.select { |b| b.owner == app }.present?
+    end
+
+    activities.each { |a| a.invalidate! }
+  end
 end
