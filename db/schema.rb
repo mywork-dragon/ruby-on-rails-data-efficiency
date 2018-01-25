@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171130031649) do
+ActiveRecord::Schema.define(version: 20180125182218) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20171130031649) do
     t.boolean  "major_app",   default: false
   end
 
+  add_index "activities", ["happened_at"], name: "index_activities_on_happened_at", using: :btree
   add_index "activities", ["major_app"], name: "index_activities_on_major_app", using: :btree
 
   create_table "ad_platforms", force: :cascade do |t|
