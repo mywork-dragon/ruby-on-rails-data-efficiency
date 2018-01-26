@@ -11,7 +11,7 @@ class AppHotStore < HotStore
     super
 
     @key_set = "app_keys"
-    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries" ]
+    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries", "rankings" ]
     @platform_to_class = {
       "ios" => IosApp,
       "android" => AndroidApp
