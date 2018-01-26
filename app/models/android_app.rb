@@ -471,7 +471,7 @@ class AndroidApp < ActiveRecord::Base
   # @author Jason Lew
   # @note Used right now in PackageSearchWorker
   def newest_successful_apk_snapshot
-    apk_snapshots.where(scan_status: ApkSnapshot.scan_statuses[:scan_success]).order(:good_as_of_date).last
+    filter_older_versions_from_android_apk_snapshots(apk_snapshots.where(scan_status: ApkSnapshot.scan_statuses[:scan_success]).order(:good_as_of_date)).last
   end
 
   def user_base_display_score
