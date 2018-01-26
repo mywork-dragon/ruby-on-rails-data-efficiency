@@ -66,6 +66,9 @@ Rails.application.configure do
   config.itunes_scrape_bucket = 'ms-ios-scrapes-dev'
   config.ios_classification_models_bucket = 'ms-scratch'
 
+  # Used to store snapshot data. Currently only pulls the screenshots fields
+  config.app_snapshots_bucket = 'ms-scratch'
+
   config.application_export_bucket = 'mightysignal-applications-dev'
   config.application_publisher_export_bucket = 'ms-scratch'
 

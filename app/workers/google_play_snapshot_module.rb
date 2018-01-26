@@ -82,7 +82,7 @@ module GooglePlaySnapshotModule
 
   def create_join_columns_for_snapshot
     create_category_joins
-    create_screenshot_joins
+    store_screenshot_urls
   end
 
   def create_category_joins
@@ -99,17 +99,19 @@ module GooglePlaySnapshotModule
     end
   end
 
-  def create_screenshot_joins
+  def store_screenshot_urls
     if screenshot_urls = @attributes[:screenshot_urls]
       rows = screenshot_urls.map.with_index do |url, index|
-        AndroidAppSnapshotsScrSht.new(
-          url: url,
-          position: index,
-          android_app_snapshot_id: @snapshot.id
-        )
+        {
+          url: url
+        }
       end
 
-      AndroidAppSnapshotsScrSht.import rows
+      MightyAws::S3.new.store(
+        bucket: Rails.application.config.app_snapshots_bucket,
+        key_path: "googleplay/snapshots/#{@snapshot.id}/screenshots.json.gz",
+        data_str: rows.to_json
+      )
     end
   end
 
