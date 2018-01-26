@@ -5,7 +5,7 @@ class ApkSnapshotCleanupWorker
   sidekiq_options retry: false, queue: :apk_snapshot_cleanup
 
   def perform(ids)
-    ids.each |id|
+    ids.each do |id|
       AndroidApp::validate_snapshot_history(id)
     end
   end
