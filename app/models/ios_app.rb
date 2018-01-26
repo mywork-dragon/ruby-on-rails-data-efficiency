@@ -597,7 +597,6 @@ class IosApp < ActiveRecord::Base
           'countries_available_in',
           'taken_down',
           'icon_url',
-          "current_version_release_date",
           'first_scraped' 
           ] + extra_white_list + extra_from_app
 
@@ -607,8 +606,7 @@ class IosApp < ActiveRecord::Base
           ['version', 'current_version'],
           ['app_identifier', 'app_store_id'],
           ['ratings_current_count', 'current_version_ratings_count'],
-          ['ratings_current_stars', 'current_version_rating'],
-          ['released', 'current_version_release_date']
+          ['ratings_current_stars', 'current_version_rating']
           ]
 
       fields_from_app = [

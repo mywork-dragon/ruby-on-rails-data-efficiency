@@ -20,7 +20,8 @@ class AppHotStore < HotStore
     @fields_to_normalize = {
       "ios" => {
         "app_store_id" => "app_identifier",
-        "has_in_app_purchases" => "in_app_purchases"
+        "has_in_app_purchases" => "in_app_purchases",
+        "last_updated" => "current_version_release_date"
       },
       "android" => {
         "google_play_id" => "app_identifier",
