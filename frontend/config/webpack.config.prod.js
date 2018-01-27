@@ -99,7 +99,6 @@ module.exports = {
       AngularUtils: path.resolve(paths.appSrc, 'utils/angular'),
       Mixpanel: path.resolve(paths.appSrc, 'services/mixpanel'),
       Icons: path.resolve(paths.appSrc, 'components/icons'),
-      AppTable: path.resolve(paths.appSrc, 'components/app-table'),
       Table: path.resolve(paths.appSrc, 'components/table'),
       Links: path.resolve(paths.appSrc, 'components/links'),
       Buttons: path.resolve(paths.appSrc, 'components/buttons'),
@@ -176,7 +175,7 @@ module.exports = {
           // use the "style" loader inside the async code so CSS from them won't be
           // in the main CSS file.
           {
-            test: /\.css$/,
+            test: /\.(css|scss)$/,
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -194,6 +193,9 @@ module.exports = {
                         minimize: true,
                         sourceMap: shouldUseSourceMap,
                       },
+                    },
+                    {
+                      loader: require.resolve('sass-loader'),
                     },
                     {
                       loader: require.resolve('postcss-loader'),

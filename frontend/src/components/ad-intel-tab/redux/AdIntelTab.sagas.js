@@ -6,7 +6,7 @@ import PublisherService from 'services/publisher.service';
 import {
   PUBLISHER_AD_INTEL_ACTION_TYPES as pubTypes,
   publisherAdIntelActions as pubActions,
-  pubAdIntelAppTableActions as appTable,
+  pubAdIntelTableActions as appTable,
 } from 'containers/PublisherPage/redux/Publisher.actions';
 
 import {
@@ -37,7 +37,7 @@ function* requestPublisherAdIntelInfo(action) {
     const res = yield call(PublisherService().getAdIntelInfo, id, platform);
     const data = res.data ? formatPublisherAdData(res.data) : null;
     yield put(pubActions.loadAdIntelInfo(id, platform, data));
-    if (data != null) yield put(appTable.loadApps(data.advertising_apps));
+    if (data != null) yield put(appTable.loadResults(data.advertising_apps));
   } catch (error) {
     console.log(error);
     yield put(pubActions.adIntelError(id, platform));

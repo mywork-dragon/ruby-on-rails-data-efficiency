@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import appTable from 'components/app-table/redux/AppTable.reducers';
+import { table, headerNames } from 'Table/redux/Table.reducers';
 
 function adIntelTab(actionTypes, tableActionTypes) {
   const initialInfoState = {
@@ -14,17 +14,22 @@ function adIntelTab(actionTypes, tableActionTypes) {
     total_apps: 0,
     advertising_apps: [],
     loadError: false,
-    appTableHeaders: [
-      'checkbox',
-      'App',
-      'Networks',
-      'Ad Attribution SDKs',
-      'Formats',
-      'Total Creatives Seen',
-      'First Seen Ads',
-      'Last Seen Ads',
-    ],
-    tableHeader: 'Advertising Apps',
+    tableOptions: {
+      appTableHeaders: [
+        headerNames.APP,
+        headerNames.AD_NETWORKS,
+        headerNames.AD_SDKS,
+        headerNames.CREATIVE_FORMATS,
+        headerNames.TOTAL_CREATIVES_SEEN,
+        headerNames.FIRST_SEEN_ADS,
+        headerNames.LAST_SEEN_ADS,
+      ],
+      defaultSort: {
+        id: headerNames.LAST_SEEN_ADS,
+        desc: true,
+      },
+      tableHeader: 'Advertising Apps',
+    },
   };
 
   const initialCreativesState = {
@@ -162,7 +167,7 @@ function adIntelTab(actionTypes, tableActionTypes) {
   };
 
   if (tableActionTypes) {
-    reducers.appTable = appTable(tableActionTypes);
+    reducers.appTable = table(tableActionTypes);
   }
 
   const reducer = combineReducers(reducers);

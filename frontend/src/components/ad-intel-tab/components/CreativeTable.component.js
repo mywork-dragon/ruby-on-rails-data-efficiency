@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CreativeMixpanelService from 'Mixpanel/creative.mixpanel';
-import AdNetworkCell from 'AppTable/components/cells/AdNetworkCell.component';
+import AdNetworkCellContainer from 'Table/containers/AdNetworkCell.container';
 import { longDate, capitalize } from 'utils/format.utils';
 import LoadingSpinner from 'Messaging/LoadingSpinner.component';
-import TableHeader from 'components/table/TableHeader.component';
+import TableHeader from 'Table/components/TableHeader.component';
 import ThumbnailCell from './ThumbnailCell.component';
 import AppLogo from './AppLogo.component';
 import PaginationContainer from '../containers/CreativePagination.container';
@@ -64,7 +64,9 @@ const CreativeTableComponent = ({
           { results.map((creative, index) => (
             <tr key={creative.url} className={`creative-table-row ${activeIndex === index ? 'active' : ''}`} onClick={() => handleCreativeClick(creative, index)}>
               <ThumbnailCell creative={creative} />
-              <AdNetworkCell networks={creative.ad_networks} overallNetworks={networks} showName />
+              <td className="creative-cell">
+                <AdNetworkCellContainer networks={creative.ad_networks} showName />
+              </td>
               <td className="creative-cell">
                 {longDate(creative.first_seen_creative_date)}
               </td>

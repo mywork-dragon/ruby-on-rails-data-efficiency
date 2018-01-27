@@ -93,7 +93,6 @@ module.exports = {
       AngularUtils: path.resolve(paths.appSrc, 'utils/angular'),
       Mixpanel: path.resolve(paths.appSrc, 'services/mixpanel'),
       Icons: path.resolve(paths.appSrc, 'components/icons'),
-      AppTable: path.resolve(paths.appSrc, 'components/app-table'),
       Table: path.resolve(paths.appSrc, 'components/table'),
       Links: path.resolve(paths.appSrc, 'components/links'),
       Buttons: path.resolve(paths.appSrc, 'components/buttons'),
@@ -167,7 +166,7 @@ module.exports = {
           // In production, we use a plugin to extract that CSS to a file, but
           // in development "style" loader enables hot editing of CSS.
           {
-            test: /\.css$/,
+            test: /\.(css|scss)$/,
             use: [
               require.resolve('style-loader'),
               {
@@ -175,6 +174,9 @@ module.exports = {
                 options: {
                   importLoaders: 1,
                 },
+              },
+              {
+                loader: require.resolve('sass-loader'),
               },
               {
                 loader: require.resolve('postcss-loader'),

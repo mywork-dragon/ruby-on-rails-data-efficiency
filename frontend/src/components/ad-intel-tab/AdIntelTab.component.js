@@ -3,25 +3,22 @@ import PropTypes from 'prop-types';
 
 import NoDataMessage from 'Messaging/NoData.component';
 import LoadingSpinner from 'Messaging/LoadingSpinner.component';
-import AppTableComponent from 'components/app-table/AppTable.component';
+import Table from 'Table/Table.component';
 import AdNetworkPanelComponent from './components/AdNetworkPanel.component';
 import AdSummaryPanelComponent from './components/AdSummaryPanel.component';
 import CreativeGalleryContainer from './containers/CreativeGallery.container';
 
 const AdIntelTabComponent = ({
   adIntel,
-  apps,
+  results,
   isLoaded,
   itemId,
-  listsFetching,
-  listsLoaded,
   loadError,
   noData,
   platform,
   requestInfo,
-  requestLists,
   requestCreatives,
-  selectedApps,
+  selectedItems,
   showAppsTable,
   toggleAll,
   toggleItem,
@@ -29,10 +26,6 @@ const AdIntelTabComponent = ({
   type,
   updateIndex,
 }) => {
-  if (!listsLoaded && !listsFetching && showAppsTable) {
-    requestLists();
-  }
-
   if (loadError) {
     return (
       <NoDataMessage>
@@ -54,6 +47,8 @@ const AdIntelTabComponent = ({
       </NoDataMessage>
     );
   }
+
+  const tableOptions = adIntel.info.tableOptions;
 
   return (
     <div>
@@ -87,15 +82,16 @@ const AdIntelTabComponent = ({
         {
           showAppsTable ? (
             <div className="row companyPageRow">
-              <AppTableComponent
-                apps={apps}
-                columnHeaders={adIntel.info.appTableHeaders}
-                networks={adIntel.info.ad_networks}
-                platform={platform}
-                selectedApps={selectedApps}
-                tableHeader={adIntel.info.tableHeader}
+              <Table
+                defaultSort={tableOptions.defaultSort}
+                headers={tableOptions.appTableHeaders}
+                results={results}
+                selectedItems={selectedItems}
+                showControls={false}
+                title={tableOptions.tableHeader}
                 toggleAll={toggleAll}
                 toggleItem={toggleItem}
+                totalCount={results.length}
               />
             </div>
           ) : null
@@ -110,18 +106,15 @@ AdIntelTabComponent.propTypes = {
     info: PropTypes.object,
     creatives: PropTypes.object,
   }),
-  apps: PropTypes.arrayOf(PropTypes.object),
+  results: PropTypes.arrayOf(PropTypes.object),
   isLoaded: PropTypes.bool.isRequired,
   itemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  listsFetching: PropTypes.bool,
-  listsLoaded: PropTypes.bool,
   loadError: PropTypes.bool,
   noData: PropTypes.bool,
   platform: PropTypes.string.isRequired,
   requestCreatives: PropTypes.func.isRequired,
   requestInfo: PropTypes.func.isRequired,
-  requestLists: PropTypes.func.isRequired,
-  selectedApps: PropTypes.arrayOf(PropTypes.object),
+  selectedItems: PropTypes.arrayOf(PropTypes.object),
   showAppsTable: PropTypes.bool,
   toggleAll: PropTypes.func,
   toggleItem: PropTypes.func,
@@ -132,12 +125,10 @@ AdIntelTabComponent.propTypes = {
 
 AdIntelTabComponent.defaultProps = {
   adIntel: {},
-  apps: [],
-  listsFetching: false,
-  listsLoaded: false,
+  results: [],
   loadError: false,
   noData: true,
-  selectedApps: [],
+  selectedItems: [],
   showAppsTable: false,
   toggleAll: null,
   toggleItem: null,

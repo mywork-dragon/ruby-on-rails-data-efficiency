@@ -1,7 +1,18 @@
-import React from 'react';
+import { connect } from 'react-redux';
 
-const Explore = () => (
-  <h1>NEW EXPLORE</h1>
-);
+import Explore from './Explore.component';
 
-export default Explore;
+const mapStateToProps = (store) => {
+  const explore = store.explore;
+
+  return {
+    apps: explore.apps,
+    tableOptions: explore.tableOptions,
+  };
+};
+
+const ExploreContainer = connect(
+  mapStateToProps,
+)(Explore);
+
+export default ExploreContainer;

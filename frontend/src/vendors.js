@@ -8,6 +8,7 @@
  * CSS
  *
 */
+import 'react-table/react-table.css';
 require('./styles/google-fonts.css'); // This should not be here but migrating and afraid of precedence
 require('bootstrap/dist/css/bootstrap.min.css');
 require('bootstrap/dist/css/bootstrap-theme.min.css');

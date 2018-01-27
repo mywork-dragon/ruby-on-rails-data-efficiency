@@ -51,6 +51,7 @@
     "ng-infinite-scroll": "1.2.1",
     "ng-tags-input": "~2.0.2",
     "ng-token-auth": "^0.0.30",
+    "node-sass": "^4.7.2",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
@@ -62,9 +63,11 @@
     "react-dev-utils": "^4.2.1",
     "react-dom": "^16.1.0",
     "react-redux": "^5.0.6",
+    "react-table": "^6.7.6",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
+    "sass-loader": "^6.0.6",
     "satellizer": "0.14.0",
     "simple-react-bootstrap": "^0.2.7",
     "slacktivity": "^1.1.1",
@@ -106,7 +109,9 @@
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web"
+      "^react-native$": "react-native-web",
+      "Table(.*)$": "<rootDir>/src/components/table/$1",
+      "Icons(.*)$": "<rootDir>/src/components/icons/$1"
     },
     "moduleFileExtensions": [
       "web.js",

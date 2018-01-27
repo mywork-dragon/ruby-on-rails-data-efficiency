@@ -1,0 +1,64 @@
+@import '../../../styles/colors';
+
+$border-color: #ddd;
+
+.ReactTable {
+  border-color: $border-color;
+  color: $main-font;
+  .rt-thead {
+    &.-header {
+      border-bottom: 2px solid $border-color;
+      box-shadow: none;
+    }
+
+    .rt-th {
+      align-items: center;
+      border-color: $border-color;
+      display: flex;
+      font-size: 12px;
+      font-weight: bold;
+      height: 50px;
+      justify-content: flex-start;
+      white-space: normal;
+
+      &.-sort-desc {
+        box-shadow: inset 0 -3px 0 0 $primary-blue;
+      }
+
+      &.-sort-asc {
+        box-shadow: inset 0 3px 0 0 $primary-blue;
+      }
+
+      &.checkbox-cell {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        max-width: 40px;
+      }
+    }
+  }
+
+  .rt-tbody {
+    .rt-tr-group {
+      border-color: $border-color;
+    }
+
+    .rt-td {
+      align-items: center;
+      border-color: $border-color;
+      display: flex;
+      font-size: 12px;
+      justify-content: flex-start;
+      padding: 3px 10px;
+      white-space: pre-line;
+
+      &.checkbox-cell {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        max-width: 40px;
+      }
+    }
+  }
+
+}

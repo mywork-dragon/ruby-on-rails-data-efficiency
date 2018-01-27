@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
-import { fetchLists } from 'actions/List.actions';
 import AdIntelTabComponent from 'components/ad-intel-tab/AdIntelTab.component';
-import { publisherAdIntelActions, pubAdIntelAppTableActions } from '../redux/Publisher.actions';
+import { publisherAdIntelActions, pubAdIntelTableActions } from '../redux/Publisher.actions';
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   requestCreatives: params => dispatch(publisherAdIntelActions.requestCreatives(
@@ -13,11 +12,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     ownProps.itemId,
     ownProps.platform,
   )),
-  requestLists: () => dispatch(fetchLists()),
   toggleFilter: (value, type) => dispatch(publisherAdIntelActions.toggleCreativeFilter(value, type)),
   updateIndex: index => dispatch(publisherAdIntelActions.updateActiveCreativeIndex(index)),
-  toggleItem: (id, type) => dispatch(pubAdIntelAppTableActions.toggleItem({ id, type })),
-  toggleAll: () => dispatch(pubAdIntelAppTableActions.toggleAllItems()),
+  toggleItem: (id, type) => dispatch(pubAdIntelTableActions.toggleItem({ id, type })),
+  toggleAll: () => dispatch(pubAdIntelTableActions.toggleAllItems()),
 });
 
 const mapStateToProps = (store, ownProps) => {
@@ -26,8 +24,6 @@ const mapStateToProps = (store, ownProps) => {
   const isLoaded = info.id === ownProps.itemId && info.platform === ownProps.platform;
   const noData = isLoaded && info.ad_networks.length === 0;
   const loadError = info.loadError;
-  const listsLoaded = store.lists.loaded;
-  const listsFetching = store.lists.fetching;
   const appTable = store.publisher.adIntelligence.appTable;
 
   if (isLoaded === false) {
@@ -40,8 +36,6 @@ const mapStateToProps = (store, ownProps) => {
     isLoaded,
     noData,
     loadError,
-    listsLoaded,
-    listsFetching,
     adIntel,
     type: 'publisher',
     ...appTable,

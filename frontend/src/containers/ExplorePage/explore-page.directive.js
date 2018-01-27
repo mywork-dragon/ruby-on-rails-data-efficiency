@@ -46,7 +46,7 @@ function ExploreController($rootScope, $state) {
 
   function activate () {
     if (!$rootScope.isAdminAccount) {
-      $state.go('timeline');
+      $state.go('search');
     }
   }
 }

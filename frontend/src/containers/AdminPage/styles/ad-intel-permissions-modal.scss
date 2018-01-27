@@ -1,0 +1,52 @@
+/* Ad Intel Permissions Modal */
+
+.network-controls-ctnr {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.network-controls {
+  display: flex;
+  margin: 10px;
+  flex-direction: column;
+}
+
+.network-controls div {
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.network-controls div:first-child {
+  font-size: 15px;
+}
+
+.network-controls > div > img {
+  margin-right: 5px;
+}
+
+.network-controls input[type=checkbox] {
+  margin: 0px 5px;
+}
+
+.network-list-ctnr {
+  display: flex;
+}
+
+.network-list {
+  margin: 10px;
+  font-size: 16px;
+}
+
+.network-list img {
+  width: 16px;
+  height: 16px;
+  margin: 0px 5px;
+}
+
+.tier-tooltip ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}

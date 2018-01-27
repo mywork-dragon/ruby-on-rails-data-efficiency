@@ -1,0 +1,120 @@
+/* Popular Apps */
+
+#trendingPage .app-rank .black {
+  color: #006600;
+}
+
+#trendingPage .app-rank .light-green {
+  color: #009900;
+}
+
+#trendingPage .app-rank .green {
+  color: #00cc00;
+}
+
+#trendingPage .app-rank .light-red {
+  color: orangered;
+}
+
+#trendingPage .app-rank .dark-red {
+  color: red;
+}
+
+
+#trendingPage .ui-select-fake span {
+  z-index: 99;
+  display: block;
+  position: relative;
+  padding: 5px 33px 5px 8px;
+  max-width: 160px;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: bold;
+  text-indent: 0.01px;
+  text-overflow: '';
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.select-modal.popover {
+  max-width: 600px;
+  width: 600px;
+  min-height: 300px;
+}
+
+.select-modal #wrap_spinner {
+  padding-top: 80px;
+}
+
+.select-modal .tab-content {
+  float: right;
+  width: 460px;
+  padding: 0 10px 10px 10px;
+}
+
+#categorySelect, #countrySelect {
+  font-weight: normal !important;
+  text-transform: none !important;
+}
+
+.select-modal .tab-content ul {
+  list-style: none;
+  -moz-column-count: 3;
+  -moz-column-gap: 1em;
+  -webkit-column-count: 3;
+  -webkit-column-gap: 1em;
+  column-count: 3;
+  column-gap: 1em;
+  padding-left: 0;
+  margin-top: 15px;
+}
+
+.select-modal .tab-content input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.select-modal .fa {
+  margin-right: 2px;
+}
+
+.select-modal.country-select .fa {
+  margin-right: 0px;
+}
+
+.select-modal .fa-apple {
+  color: #999999;
+}
+
+.select-modal .fa-android {
+  color: #A4C639;
+}
+
+.select-modal .check-options {
+  margin-left: 118px;
+}
+
+.select-modal .nav.nav-pills {
+  float: left;
+  width: 100px;
+}
+
+#chartFilters {
+  float: right;
+}
+
+#topAppsPage h4 {
+  margin: 20px;
+}
+
+#topAppsPage .pagination-container ul {
+  margin-right: 20px;
+}
+
+#topAppsPage #wrap_spinner {
+  margin-top: 100px;
+}

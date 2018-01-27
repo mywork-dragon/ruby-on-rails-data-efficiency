@@ -1,0 +1,29 @@
+@import './colors';
+
+.dotted-link {
+  color: $link;
+
+  &:focus {
+    text-decoration-style: dotted;
+  }
+
+  &:visited {
+    color: $visited-link;
+  }
+
+  &:hover {
+    color: $link;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+}
+
+.tooltip-item {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+
+  &:hover {
+    text-decoration-style: dotted;
+    cursor: default;
+  }
+}

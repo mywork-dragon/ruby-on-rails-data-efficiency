@@ -6,10 +6,12 @@ require('./vendors');
  *
 */
 
-require('./styles/font-awesome/css/font-awesome.css');
-require('./styles/main.css');
-require('./styles/flags.css');
-require('./styles/ng-tags-input.css');
+require('styles/styles');
+
+// require('./styles/font-awesome/css/font-awesome.css');
+// require('./styles/main.css');
+// require('./styles/flags.css');
+// require('./styles/ng-tags-input.css');
 
 /*
  * JS
