@@ -83,11 +83,11 @@ const AdIntelTabComponent = ({
           showAppsTable ? (
             <div className="row companyPageRow">
               <Table
-                defaultSort={tableOptions.defaultSort}
                 headers={tableOptions.appTableHeaders}
                 results={results}
                 selectedItems={selectedItems}
                 showControls={false}
+                sort={tableOptions.defaultSort}
                 title={tableOptions.tableHeader}
                 toggleAll={toggleAll}
                 toggleItem={toggleItem}

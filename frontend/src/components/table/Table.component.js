@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import { generateColumns } from 'utils/table.utils';
-import ListDropdownContainer from 'Table/containers/ListDropdown.container';
+import { headerNames } from './redux/column.models';
+import ListDropdownContainer from './containers/ListDropdown.container';
 
 const Table = ({
-  defaultSort,
+  sort,
   headers,
   loadMockData,
   results,
@@ -39,7 +40,7 @@ const Table = ({
         className="-striped"
         columns={columns}
         data={results}
-        defaultSorted={[defaultSort]}
+        defaultSorted={[sort]}
         minRows={0}
         resizable={false}
         showPaginationBottom={false}
@@ -50,7 +51,7 @@ const Table = ({
 };
 
 Table.propTypes = {
-  defaultSort: PropTypes.shape({
+  sort: PropTypes.shape({
     id: PropTypes.string,
     desc: PropTypes.bool,
   }),
@@ -69,7 +70,10 @@ Table.propTypes = {
 };
 
 Table.defaultProps = {
-  defaultSort: null,
+  sort: {
+    id: headerNames.LAST_UPDATED,
+    desc: true,
+  },
   loadMockData: null,
   selectedItems: [],
   showControls: false,

@@ -13,6 +13,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = (store) => {
   const {
     activeColumns,
+    sort,
   } = store.explore.tableOptions;
 
   const {
@@ -22,6 +23,7 @@ const mapStateToProps = (store) => {
 
   return {
     headers: activeColumns,
+    sort,
     results,
     selectedItems,
     showControls: true,

@@ -34,7 +34,7 @@ const initialTableOptionsState = {
     headerNames.CATEGORY,
     headerNames.LAST_UPDATED,
   ],
-  sort: { name: 'asc' },
+  sort: { id: headerNames.LAST_UPDATED, desc: true },
 };
 
 function searchForm (state = initialFormState, action) {
