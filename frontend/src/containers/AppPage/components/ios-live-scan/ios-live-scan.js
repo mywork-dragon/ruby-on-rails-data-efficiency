@@ -94,7 +94,6 @@ angular.module('appApp').controller('IosLiveScanCtrl', ['$scope', '$http', '$win
       // Reset all view-changing vars
       iosLiveScanCtrl.sdkQueryInProgress = true;
       iosLiveScanCtrl.failedLiveScan = false;
-      iosLiveScanCtrl.errorCodeMessage = null;
       iosLiveScanCtrl.sdkData = null;
       iosLiveScanCtrl.hideLiveScanButton = false;
       iosLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
@@ -179,7 +178,14 @@ angular.module('appApp').controller('IosLiveScanCtrl', ['$scope', '$http', '$win
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosAppId, data.status); // Failed analytics response - MixPanel & Slacktivity
+
+                if (iosLiveScanCtrl.errorCodeMessage != null) {
+                  iosLiveScanCtrl.scanErrorMessage = iosLiveScanCtrl.errorCodeMessage;
+                } else {
+                  iosLiveScanCtrl.scanErrorMessage = "Error - Please Try Again";
+                  sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosAppId, data.status); // Failed analytics response - MixPanel & Slacktivity
+                }
+
                 break;
             }
 
