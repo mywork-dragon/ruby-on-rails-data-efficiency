@@ -141,15 +141,17 @@ angular.module('appApp')
           const value = tag1.value;
           return (value === tag2) || (typeof value.id !== 'undefined' && typeof tag2.id !== 'undefined' && value.id === tag2.id && value.status === tag2.status && value.date === tag2.date && value.state === tag2.state);
         },
-        addFilter(parameter, value, displayName, limitToOneFilter, customName) {
+        addFilter(parameter, value, displayName, limitToOneFilter, customName, trackInMixpanel = true) {
           /* -------- Mixpanel Analytics Start -------- */
-          const mixpanelProperties = {};
-          mixpanelProperties.parameter = parameter;
-          mixpanelProperties[parameter] = value;
-          mixpanel.track(
-            'Filter Added',
-            mixpanelProperties,
-          );
+          if (trackInMixpanel) {
+            const mixpanelProperties = {};
+            mixpanelProperties.parameter = parameter;
+            mixpanelProperties[parameter] = value;
+            mixpanel.track(
+              'Filter Added',
+              mixpanelProperties,
+            );
+          }
           /* -------- Mixpanel Analytics End -------- */
 
           let duplicateTag = false;

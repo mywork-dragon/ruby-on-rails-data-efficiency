@@ -102,13 +102,13 @@ angular
           }
         }
 
-        function checkCategory(category) {
+        function checkCategory(category, trackInMixpanel = true) {
           if (filterService.hasFilter($scope.filterKey, category.id)) {
             $scope.categoryModel[category.id] = false;
             filterService.removeFilter($scope.filterKey, category.id);
           } else {
             $scope.categoryModel[category.id] = true;
-            filterService.addFilter($scope.filterKey, category.id, 'Category', false, categoryDisplayName(category));
+            filterService.addFilter($scope.filterKey, category.id, 'Category', false, categoryDisplayName(category), trackInMixpanel);
           }
         }
 
@@ -118,7 +118,7 @@ angular
 
         function setDefaultCategories() {
           for (const category of $scope.categories.filter(category => category.id == 36 || category.id == 'OVERALL')) {
-            checkCategory(category);
+            checkCategory(category, false);
           }
         }
 

@@ -94,13 +94,13 @@ angular
           }
         }
 
-        function checkCountry(country) {
+        function checkCountry(country, trackInMixpanel = true) {
           if (filterService.hasFilter($scope.filterKey, country.id)) {
             $scope.countryModel[country.id] = false;
             filterService.removeFilter($scope.filterKey, country.id);
           } else {
             $scope.countryModel[country.id] = true;
-            filterService.addFilter($scope.filterKey, country.id, 'Country', false, countryDisplayName(country));
+            filterService.addFilter($scope.filterKey, country.id, 'Country', false, countryDisplayName(country), trackInMixpanel);
           }
         }
 
@@ -114,7 +114,7 @@ angular
 
         function setDefaultCountries() {
           for (const country of $scope.countries.filter(country => country.id == 'US')) {
-            checkCountry(country);
+            checkCountry(country, false);
           }
         }
 

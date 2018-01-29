@@ -594,7 +594,7 @@ angular.module('appApp')
               const submitSearchEndTime = new Date().getTime();
               const submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
 
-              if (data.pageNum === 1) { $scope.trackFilterQueryAnalytics(submitSearchElapsedTime, data.resultsCount); }
+              if (data.pageNum == '1') { $scope.trackFilterQueryAnalytics(submitSearchElapsedTime, data.resultsCount); }
             })
             .error((data, status) => {
               $rootScope.dashboardSearchButtonDisabled = false;
