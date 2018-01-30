@@ -175,6 +175,14 @@ class ApplicationController < ActionController::Base
   def append_info_to_payload(payload)
     super
     payload[:request_id] = request.uuid
+    payload[:headers] = request.headers.env.select{|k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/}
+
+    payload[:headers].delete('HTTP_COOKIE')
+    payload[:headers].delete('HTTP_VERSION')
+    payload[:headers].delete('SERVER_PROTOCOL')
+    payload[:headers].delete('CONTENT_LENGTH')
+    payload[:headers].delete('HTTP_CONNECTION')
+    payload[:headers].delete('HTTP_X_AMZN_TRACE_ID')
   end
 
 end
