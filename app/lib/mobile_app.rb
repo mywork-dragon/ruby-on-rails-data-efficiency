@@ -196,7 +196,10 @@ module MobileApp
         sdks = history[type]
         sdks.each do |sdk|
           sdk_model = ios? ? IosSdk.find(sdk['id']) : AndroidSdk.find(sdk['id'])
-          tag_name = sdk_model.tags.first.try(:name) || untagged_name
+          
+          tag = sdk_model.tags.first
+          tag_name = tag.try(:name) || untagged_name
+
           next if tag_name == untagged_name && only_show_tagged
 
           existing = tagged_data[type].find { |x| x[:name] == tag_name }
@@ -204,6 +207,7 @@ module MobileApp
             existing[:sdks] << sdk
           else
             tagged_data[type] << {
+              id: tag.try(:id),
               name: tag_name,
               sdks: [sdk]
             }

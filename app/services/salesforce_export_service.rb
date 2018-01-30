@@ -148,7 +148,7 @@ class SalesforceExportService
       end
 
       imports.each_slice(batch_size).with_index do |slice, i|
-        SalesforceWorker.perform_async(:export_publishers, slice, @user.id, @model_name)
+        SalesforceWorker.perform_async(:export_publishers_apps, slice, @user.id, @model_name)
         break if batch_limit && ((i + 1) >= batch_limit)
       end
     end
@@ -181,7 +181,8 @@ class SalesforceExportService
       {label: 'MightySignal Link', type: 'Url'},
       {label: 'Website', type: 'Url'},
       {label: 'Platform', type: 'Text', length: 255},
-      {label: 'Category', type: 'Picklist', picklist: {picklistValues: [{fullName: 'Analytics'}]}}
+      {label: 'Category', type: 'Picklist', picklist: {picklistValues: [{fullName: 'Analytics'}]}},
+      {label: 'Category ID', type: 'Text', length: 255}
     ]
     new_fields.each do |field|
       add_custom_field(@sdk_model, field)
@@ -202,7 +203,6 @@ class SalesforceExportService
   end
 
   def create_app_ownership_fields
-    puts 'create appownership fields'
     new_fields = [
       {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
       {label: 'Lead', type: 'Lookup', referenceTo: 'Lead', relationshipName: 'Lead'},
@@ -296,6 +296,7 @@ class SalesforceExportService
   end
 
   def should_skip_field?(field, map, data, existing_object)
+
     default_fields = if account_import?
       ['Website', 'Name']
     else
@@ -322,7 +323,7 @@ class SalesforceExportService
       custom_mapping = JSON.parse(mapping).with_indifferent_access 
       custom_mapping = initial_mapping.merge(custom_mapping)
       custom_mapping
-    else
+    else 
       initial_mapping 
     end
 
@@ -337,7 +338,7 @@ class SalesforceExportService
 
       # Skip if is 
       next if should_skip_field?(field, map, data, existing_object)
-      
+
       add_custom_field(@model_name, data[field].except(:data)) if data[field][:type]
       
       new_object[map["id"]] = if map['data']
@@ -442,8 +443,9 @@ class SalesforceExportService
     @upsert_records[@app_ownership_model] << new_app_ownership unless @upsert_records[@app_ownership_model].include?(new_app_ownership)
   end
 
-  def import_publishers(imports)
-    app_export_id_map = {}
+  def import_publishers_apps(imports)
+    @app_export_id_map = {}
+    
     imports.each do |import|
       import = import.with_indifferent_access
       publisher = import[:publisher]
@@ -451,8 +453,8 @@ class SalesforceExportService
 
       publisher.apps.each do |app|
         app_key = "#{app.platform}_#{app.id}"
-        app_export_id_map[app_key] ||= []
-        app_export_id_map[app_key] << export_id
+        @app_export_id_map[app_key] ||= []
+        @app_export_id_map[app_key] << export_id
         if publisher.ios?
           import_ios_app(app: app, account_id: export_id)
         else
@@ -461,17 +463,28 @@ class SalesforceExportService
       end
     end
 
-    sdk_app_map = {}
+    run_app_imports
+
+    run_sdk_imports
+
+    run_sdk_app_imports
+
+    run_app_ownership_imports
+
+    reset_bulk_data
+  end
+
+  def run_app_imports
+    @sdk_app_map = {}
     results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
     results['batches'].first['response'].each_with_index do |app, i|
       next unless app["id"] #record failed to import
       app_id = app["id"].first
-
       record = @upsert_records[@app_model][i]
       
       # leads use app ownership, accounts have id directly on app object
       if lead_import?
-        export_ids = app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
+        export_ids = @app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
         export_ids.each do |export_id|
           import_app_ownership(app_id, export_id)
         end
@@ -479,27 +492,31 @@ class SalesforceExportService
       
       app = (record['Platform__c'] == 'ios') ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
 
-      sdk_response = app.tagged_sdk_response
+      sdk_response = app.tagged_sdk_response.with_indifferent_access
 
       sdk_response[:installed_sdks].each do |tag|
+        next if should_skip_sdk_tag?(tag)
         tag[:sdks].each do |sdk|
           sdk_id = "#{app.platform}_#{sdk['id']}"
-          import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-          sdk_app_map[sdk_id] ||= []
-          sdk_app_map[sdk_id] << {app_id: app_id, installed: sdk['first_seen_date'].try(:to_date)}
+          import_sdk(platform: app.platform, sdk: sdk, category: tag.except(:sdks))
+          @sdk_app_map[sdk_id] ||= []
+          @sdk_app_map[sdk_id] << {app_id: app_id, installed: sdk['first_seen_date'].try(:to_date)}
         end
       end
 
       sdk_response[:uninstalled_sdks].each do |tag|
+        next if should_skip_sdk_tag?(tag)
         tag[:sdks].each do |sdk|
           sdk_id = "#{app.platform}_#{sdk['id']}"
-          import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-          sdk_app_map[sdk_id] ||= []
-          sdk_app_map[sdk_id] << {app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date)}
+          import_sdk(platform: app.platform, sdk: sdk, category: tag.except(:sdks))
+          @sdk_app_map[sdk_id] ||= []
+          @sdk_app_map[sdk_id] << {app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date)}
         end
       end
     end
+  end
 
+  def run_sdk_imports
     results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
     results['batches'].first['response'].each_with_index do |sdk, i|
       next unless sdk["id"] # failed to import
@@ -507,26 +524,36 @@ class SalesforceExportService
       sdk_id = sdk["id"].first
       record = @upsert_records[@sdk_model][i]
 
-      sdk_apps = sdk_app_map["#{record['Platform__c']}_#{record['MightySignal_SDK_ID__c']}"]
+      sdk_apps = @sdk_app_map["#{record['Platform__c']}_#{record['MightySignal_SDK_ID__c']}"]
       sdk_apps.each do |sdk_app|
         sdk_app[:sdk_id] = sdk_id
         import_sdk_app(**sdk_app)
       end
     end
+  end
 
+  def run_sdk_app_imports
     if @upsert_records[@sdk_join_model].try(:any?)
       @upsert_records[@sdk_join_model].each_slice(10_000) do |slice|
         @bulk_client.upsert(@sdk_join_model, slice, 'MightySignal_Key__c')
       end
     end
+  end
 
+  def run_app_ownership_imports
     if @upsert_records[@app_ownership_model].try(:any?)
       @upsert_records[@app_ownership_model].each_slice(10_000) do |slice|
         @bulk_client.upsert(@app_ownership_model, slice, 'MightySignal_Key__c')
       end
     end
+  end
 
-    reset_bulk_data
+  def should_skip_sdk_tag?(tag)
+    if @account.blacklisted_sdk_tags.present?
+      return @account.blacklisted_sdk_tags.include? tag[:id]
+    end
+
+    false
   end
 
   def import_sdk(platform:, sdk:, category:)
@@ -537,7 +564,8 @@ class SalesforceExportService
       'MightySignal_Link__c' => "https://mightysignal.com/app/app#/sdk/ios/#{sdk['id']}",
       'Platform__c' => platform,
       'Website__c' => sdk['website'],
-      'Category__c' => category
+      'Category__c' => category[:name],
+      'Category_ID__c' => category[:id]
     }
     
     @upsert_records[@sdk_model] ||= []
@@ -598,14 +626,15 @@ class SalesforceExportService
     SalesforceExportService.new(user: account.users.first, model_name: model_name)
   end
 
-  def sync_domain_mapping(models: supported_models)
+  def sync_domain_mapping(models: supported_models, date: nil)
     dl = DomainLinker.new
     models.each do |model|
       model_query = @account.domain_mapping_query(model)
 
-      query = "select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where Website != null and (MightySignal_iOS_Publisher_ID__c = null or  MightySignal_Android_Publisher_ID__c = null)"
+      query = "select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
       query += " and where #{model_query}" if model_query
       query += " and IsConverted = false" if model == 'Lead'
+      query += " and CreatedDate > #{date}" if date
 
       @client.query(query).each do |record|
         new_record = {Id: record.Id}
@@ -654,12 +683,10 @@ class SalesforceExportService
     fields = { 
       PUBLISHER_NAME => {length: 255, type: 'Text', label: "MightySignal Publisher Name"},
       WEBSITE => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
-
       IOS_PUB_ID => {type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
       #APP_STORE_PUB_ID => {length: 255, type: 'Text', label: "App Store Publisher ID"},
       IOS_LINK => {type: 'Url', label: "MightySignal iOS Link"},
       IOS_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
-      
       ANDROID_PUB_ID => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
       #GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
       ANDROID_LINK => {type: 'Url', label: "MightySignal Android Link"},

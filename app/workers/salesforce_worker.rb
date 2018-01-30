@@ -24,20 +24,23 @@ class SalesforceWorker
     end
   end
 
-  def sync_domain_mapping_all_accounts
+  def sync_domain_mapping_all_accounts(frequency: '1w')
+    return unless frequency
     Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.each do |account|
-      SalesforceWorker.perform_async(:sync_domain_mapping, account.id) if account.sync_domain_mapping?
+      if account.domain_syncing_frequency == frequency
+        SalesforceWorker.perform_async(:sync_domain_mapping, account.id, frequency_to_relative_time(frequency))
+      end
     end
   end
 
-  def sync_domain_mapping(account_id)
+  def sync_domain_mapping(account_id, date = nil)
     account = Account.find(account_id)
     sf = SalesforceExportService.new(user: account.users.first)
 
     if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
-      sf.sync_domain_mapping
+      sf.sync_domain_mapping(date: date)
     else
-      SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id)
+      SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id, date)
     end
   end
 
@@ -65,7 +68,7 @@ class SalesforceWorker
   end
 
   # imports is an array of android/ios publishers and salesforce objects to import into
-  def export_publishers(imports, user_id, model_name)
+  def export_publishers_apps(imports, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
 
     if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
@@ -77,9 +80,9 @@ class SalesforceWorker
         end
       end
 
-      sf.import_publishers(imports)
+      sf.import_publishers_apps(imports)
     else
-      SalesforceWorker.perform_in(6.hours, :export_publishers, imports, user_id, model_name)
+      SalesforceWorker.perform_in(6.hours, :export_publishers_apps, imports, user_id, model_name)
     end
   end
 
@@ -87,7 +90,7 @@ class SalesforceWorker
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
     if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
       app = IosApp.find(app_id)
-      sf.import_publishers([{publisher: app.ios_developer, export_id: export_id}])
+      sf.import_publishers_apps([{publisher: app.ios_developer, export_id: export_id}])
     else
       SalesforceWorker.perform_in(6.hours, :export_ios_apps, app_id, export_id, user_id, model_name)
     end
@@ -98,13 +101,21 @@ class SalesforceWorker
 
     if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
       app = AndroidApp.find(app_id)
-      sf.import_publishers([{publisher: app.android_developer, export_id: export_id}])
+      sf.import_publishers_apps([{publisher: app.android_developer, export_id: export_id}])
     else
       SalesforceWorker.perform_in(6.hours, :export_android_apps, app_id, export_id, user_id, model_name)
     end
   end
 
   private 
+
+  def frequency_to_relative_time(frequency)
+    mapping = {
+      '5m' => 'TODAY'
+    }
+
+    mapping[frequency]
+  end
 
   def under_api_limit(limits:, uses_bulk_api: false)
     threshold = 0.6

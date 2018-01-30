@@ -11,7 +11,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       salesforce_token: salesforce_token, 
       salesforce_refresh_token: salesforce_refresh_token,
       salesforce_uid: '0050a00000ForTZAAZ',
-      salesforce_settings: {"is_sandbox"=>true, 'sync_domain_mapping' => true},
+      salesforce_settings: {"is_sandbox"=>true, 'sync_domain_mapping' => '1w'},
       salesforce_instance_url: 'https://cs17.salesforce.com',
       salesforce_syncing: true,
       salesforce_status: :ready
@@ -26,11 +26,24 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       salesforce_instance_url: 'https://cs17.salesforce.com',
     ) 
 
+    @account3 = Account.create!(
+      name: 'Coinbuddy', 
+      salesforce_token: salesforce_token, 
+      salesforce_refresh_token: salesforce_refresh_token,
+      salesforce_uid: '0050a00000ForTZAAZ',
+      salesforce_settings: {"is_sandbox"=>true, 'sync_domain_mapping' => '5m'},
+      salesforce_instance_url: 'https://cs17.salesforce.com',
+      salesforce_syncing: true,
+      salesforce_status: :ready
+    ) 
+
     @user = User.create!(account_id: @account.id, email: 'matt@mightysignal.com', password: '12345')
     @user2 = User.create!(account_id: @account2.id, email: 'bob@mightysignal.com', password: '12345')
+    @user3 = User.create!(account_id: @account3.id, email: 'jesuschrist@mightysignal.com', password: '12345')
     
     @sf = SalesforceExportService.sf_for('MightySignal')
     @sf2 = SalesforceExportService.sf_for('3 Comma')
+    @sf3 = SalesforceExportService.sf_for('Coinbuddy')
 
     @ios_developer = IosDeveloper.create!(name: '3 Comma Studio LLC', identifier: '12345')
     @android_developer = AndroidDeveloper.create!(name: '3 Comma Studio LLC', identifier: '12345')
@@ -58,18 +71,29 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
   def test_that_sync_all_accounts_runs_sync
     SalesforceExportService.stubs(:new).with(user: @user).returns(@sf)
     SalesforceExportService.stubs(:new).with(user: @user2).returns(@sf2)
+    SalesforceExportService.stubs(:new).with(user: @user3).returns(@sf3)
     
     @sf.expects(:sync_all_objects)
+    @sf3.expects(:sync_all_objects)
     @sf2.expects(:sync_all_objects).never
 
     SalesforceWorker.new.perform(:sync_all_accounts)
   end
 
   def test_that_sync_all_domain_mapping_runs_sync
-    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id)
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id, nil)
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account2.id).never
 
     SalesforceWorker.new.perform(:sync_domain_mapping_all_accounts)
+  end
+
+  def test_that_sync_all_domain_mapping_runs_sync_with_frequency
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id).never
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account3.id, 'TODAY')
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account2.id).never
+
+    SalesforceWorker.new.perform(:sync_domain_mapping_all_accounts, frequency: 
+      '5m')
   end
 
   def test_that_sync_domain_mapping_runs_sync
@@ -90,6 +114,24 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     SalesforceWorker.new.perform(:sync_domain_mapping, @account.id)
   end
 
+  def test_that_sync_domain_mapping_runs_sync_with_date
+    SalesforceExportService.stubs(:new).with(user: @user).returns(@sf)
+    @sf.client.stubs(:limits).returns({
+      'DailyApiRequests' => {
+        'Remaining' => 1000,
+        'Max' => 1100
+      },
+      'DailyBulkApiRequests' => {
+        'Remaining' => 1000,
+        'Max' => 1100
+      }
+    })
+
+    @sf.expects(:sync_domain_mapping).with(date: 'TODAY')
+
+    SalesforceWorker.new.perform(:sync_domain_mapping, @account.id, 'TODAY')
+  end
+
   def test_that_sync_domain_mapping_runs_sync_rate_limit
     SalesforceExportService.stubs(:new).with(user: @user).returns(@sf)
     @sf.client.stubs(:limits).returns({
@@ -104,7 +146,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     })
 
     @sf.expects(:sync_domain_mapping).never
-    SalesforceWorker.expects(:perform_in).with(6.hours, :sync_domain_mapping, @account.id)
+    SalesforceWorker.expects(:perform_in).with(6.hours, :sync_domain_mapping, @account.id, nil)
 
     SalesforceWorker.new.perform(:sync_domain_mapping, @account.id)
   end
@@ -197,9 +239,9 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:import_publishers).with(@formatted_imports)
+    @sf.expects(:import_publishers_apps).with(@formatted_imports)
 
-    SalesforceWorker.new.perform(:export_publishers, @raw_imports, @user.id, 'Account')
+    SalesforceWorker.new.perform(:export_publishers_apps, @raw_imports, @user.id, 'Account')
   end
 
   def test_that_export_publishers_runs_export_rate_limit
@@ -216,10 +258,10 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    SalesforceWorker.expects(:perform_in).with(6.hours, :export_publishers, @raw_imports, @user.id, 'Account')
+    SalesforceWorker.expects(:perform_in).with(6.hours, :export_publishers_apps, @raw_imports, @user.id, 'Account')
 
   
-    SalesforceWorker.new.perform(:export_publishers, @raw_imports, @user.id, 'Account')
+    SalesforceWorker.new.perform(:export_publishers_apps, @raw_imports, @user.id, 'Account')
   end
 
   def test_that_export_ios_apps_runs_export
@@ -236,7 +278,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:import_publishers).with([{publisher: @ios_developer, export_id: '12345'}])
+    @sf.expects(:import_publishers_apps).with([{publisher: @ios_developer, export_id: '12345'}])
 
     SalesforceWorker.new.perform(:export_ios_apps, @ios_app.id, '12345', @user.id, 'Account')
   end
@@ -255,7 +297,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:import_publishers).with([{publisher: @ios_developer, export_id: '12345'}]).never
+    @sf.expects(:import_publishers_apps).with([{publisher: @ios_developer, export_id: '12345'}]).never
     SalesforceWorker.expects(:perform_in).with(6.hours, :export_ios_apps, @ios_app.id, '12345', @user.id, 'Account')
 
     SalesforceWorker.new.perform(:export_ios_apps, @ios_app.id, '12345', @user.id, 'Account')
@@ -275,7 +317,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:import_publishers).with([{publisher: @android_developer, export_id: '12345'}])
+    @sf.expects(:import_publishers_apps).with([{publisher: @android_developer, export_id: '12345'}])
 
     SalesforceWorker.new.perform(:export_android_apps, @android_app.id, '12345', @user.id, 'Account')
   end
@@ -294,7 +336,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:import_publishers).with([{publisher: @android_developer, export_id: '12345'}]).never
+    @sf.expects(:import_publishers_apps).with([{publisher: @android_developer, export_id: '12345'}]).never
     SalesforceWorker.expects(:perform_in).with(6.hours, :export_android_apps, @android_app.id, '12345', @user.id, 'Account')
 
     SalesforceWorker.new.perform(:export_android_apps, @android_app.id, '12345', @user.id, 'Account')

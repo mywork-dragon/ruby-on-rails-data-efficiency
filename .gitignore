@@ -35,6 +35,8 @@ db.patch
 /public/app/dist
 /public/app/app/index.html
 
+/coverage
+
 *.DS_Store
 
 /.env

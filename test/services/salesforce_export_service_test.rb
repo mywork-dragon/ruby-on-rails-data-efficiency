@@ -30,6 +30,96 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
    
   end
 
+  def test_create_app_fields
+    new_fields = [
+      {label: 'MightySignal App ID', type: 'Text', length: 255},
+      {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
+      {label: 'MightySignal Link', type: 'Url'},
+      {label: 'Platform', type: 'Text', length: 255},
+      {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
+      {label: 'Mobile Priority', type: 'Text', length: 255},
+      {label: 'User Base', type: 'Text', length: 255},
+      {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
+      {label: 'Release Date', type: 'Date'},
+      {label: 'Last Scanned Date', type: 'Date'},
+      {label: 'Account Name', type: 'Lookup', fullName: "MightySignal_App__c.Account__c", referenceTo: 'Account', relationshipName: 'Apps'}
+    ]
+
+    new_fields.each do |field|
+      @sf.expects(:add_custom_field).with('MightySignal_App__c', field)
+    end
+
+    @sf.create_app_fields
+  end
+
+  def test_create_sdk_fields
+    new_fields = [
+      {label: 'MightySignal SDK ID', type: 'Text', length: 255},
+      {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
+      {label: 'MightySignal Link', type: 'Url'},
+      {label: 'Website', type: 'Url'},
+      {label: 'Platform', type: 'Text', length: 255},
+      {label: 'Category', type: 'Picklist', picklist: {picklistValues: [{fullName: 'Analytics'}]}},
+      {label: 'Category ID', type: 'Text', length: 255},
+    ]
+
+    new_fields.each do |field|
+      @sf.expects(:add_custom_field).with('MightySignal_SDK__c', field)
+    end
+
+    @sf.create_sdk_fields
+  end
+
+  def test_create_app_ownership_fields
+    new_fields = [
+      {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
+      {label: 'Lead', type: 'Lookup', referenceTo: 'Lead', relationshipName: 'Lead'},
+      {label: 'Account', type: 'Lookup', referenceTo: 'Account', relationshipName: 'Account'},
+      {label: 'MightySignal App', type: 'MasterDetail', referenceTo: 'MightySignal_App__c', relationshipName: 'Lead_App'},
+    ]
+
+    new_fields.each do |field|
+      @sf.expects(:add_custom_field).with('MightySignal_App_Ownership__c', field)
+    end
+
+    @sf.create_app_ownership_fields
+  end
+
+  def test_create_sdk_app_fields
+    new_fields = [
+      {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
+      {label: 'MightySignal SDK', type: 'MasterDetail', referenceTo: 'MightySignal_SDK__c', relationshipName: 'SDK'},
+      {label: 'MightySignal App', type: 'MasterDetail', referenceTo: 'MightySignal_App__c', relationshipName: 'App'},
+      {label: 'Installed', type: 'Date'},
+      {label: 'Uninstalled', type: 'Date'},
+    ]
+
+    new_fields.each do |field|
+      @sf.expects(:add_custom_field).with('MightySignal_SDK_App__c', field)
+    end
+
+    @sf.create_sdkapp_fields
+  end
+
+  def test_create_main_fields
+    fields = { 
+      "Publisher Name" => {length: 255, type: 'Text', label: "MightySignal Publisher Name"},
+      "Website" => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
+      "MightySignal iOS Publisher ID" => {type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
+      "MightySignal iOS Link" => {type: 'Url', label: "MightySignal iOS Link"},
+      "MightySignal iOS SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
+      "MightySignal Android Publisher ID" => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
+      "MightySignal Android Link" => {type: 'Url', label: "MightySignal Android Link"},
+      "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
+    }
+    fields.each do |field_key, field|
+      @sf.expects(:add_custom_field).with('Account', field)
+      @sf.expects(:add_custom_field).with('Lead', field)
+    end
+
+    @sf.create_main_fields
+  end
+
   def test_that_domain_mapping_updates_salesforce
     DomainLinker.any_instance.stub(:domain_to_publisher) { [@ios_developer, @android_developer] }
     mock = Minitest::Mock.new
@@ -43,12 +133,18 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
     mock.expect(:MightySignal_Android_Publisher_ID__c, nil)
     mock.expect(:MightySignal_iOS_Publisher_ID__c, nil)
 
-    @sf.client.stub(:query, [mock]) do
-      #assert_send([@sf.bulk_client, :update, 'Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id}]])
-      @sf.bulk_client.expects(:update).with('Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
-      @sf.bulk_client.expects(:update).with('Lead', [{Id: '123456789', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
-      @sf.sync_domain_mapping
-    end
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)").returns([mock])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and IsConverted = false").returns([mock])
+    #assert_send([@sf.bulk_client, :update, 'Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id}]])
+    @sf.bulk_client.expects(:update).with('Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
+    @sf.bulk_client.expects(:update).with('Lead', [{Id: '123456789', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
+    @sf.sync_domain_mapping
+end
+
+  def test_that_domain_mapping_date_works
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and CreatedDate > TODAY").returns([])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and IsConverted = false and CreatedDate > TODAY").returns([])
+    @sf.sync_domain_mapping(date: 'TODAY')
   end
 
   def test_that_sync_all_objects_queues_jobs
@@ -102,8 +198,8 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
         {publisher_id: @android_developer.id, platform: 'android', export_id: '57645645'},
       ]
 
-      SalesforceWorker.expects(:perform_async).with(:export_publishers, account_publisher_array, @user.id, 'Account')
-      SalesforceWorker.expects(:perform_async).with(:export_publishers, lead_publisher_array, @user.id, 'Lead')
+      SalesforceWorker.expects(:perform_async).with(:export_publishers_apps, account_publisher_array, @user.id, 'Account')
+      SalesforceWorker.expects(:perform_async).with(:export_publishers_apps, lead_publisher_array, @user.id, 'Lead')
 
       @sf.sync_all_objects     
     end
@@ -172,18 +268,33 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
     mock = Minitest::Mock.new
     mock.expect(:send!, nil)
 
-    @sf.stubs(:developer_sdk_summary).returns("")
+    @sf.stubs(:developer_sdk_summary).returns("123")
     @sf.stubs(:object_has_field?).returns(true)
     SalesforceLogger.stubs(:new).returns(mock)
-    @sf.stubs(:sdk_display).returns("")
+    @sf.stubs(:sdk_display).returns("123")
 
     new_object = {"MightySignal_iOS_Publisher_ID__c" => @ios_developer.id, 
                   "MightySignal_iOS_Link__c" => "https://mightysignal.com/app/app#/publisher/ios/#{@ios_developer.id}?utm_source=salesforce",
+                  "MightySignal_iOS_SDK_Summary__c" => "123",
                   "Name" => "3 Comma Studio LLC",
                   "AccountSource" => "MightySignal"}
 
     SalesforceWorker.expects(:perform_async)
     @sf.client.expects(:create!).with('Account', new_object)
+
+    puts @sf.default_mapping(app: @ios_app)
+
+    fields = { 
+      "Publisher Name" => {data: '123', length: 255, type: 'Text', label: "MightySignal Publisher Name"},
+      "MightySignal iOS Publisher ID" => {data: '123', type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
+      "MightySignal iOS Link" => {data: '123', type: 'Url', label: "MightySignal iOS Link"},
+      "MightySignal iOS SDK Summary" => {data: '123', length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
+    }
+
+    fields.each do |field_key, field|
+      @sf.expects(:add_custom_field).with('Account', field.except(:data))
+    end
+
     @sf.export(app: @ios_app)
   end
 
@@ -194,9 +305,81 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
     assert_equal @sf.should_skip_field?('Name', map, data, nil), false
   end
 
+  def test_that_blacklisting_sdk_tags_works
+    @sf.instance_variable_set(:@upsert_records, {MightySignal_App__c: [{Platform__c: 'ios', MightySignal_App_ID__c: @ios_app.id}]}.with_indifferent_access)
+      
+    Account.any_instance.stub(:blacklisted_sdk_tags) {
+      [1]
+    }
 
+    @sf.bulk_client.stubs(:upsert).returns({
+      'batches' => [
+        {'response' => [{'id' => '123'}]}
+      ]
+    })
 
+    @sf.expects(:import_sdk).with(
+      platform: 'ios',
+      sdk: {
+        "id"=>92, 
+        "name"=>"Amplitude-iOS", 
+        "website"=>"https://amplitude.com", 
+        "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com", 
+        "first_seen_date"=>"2015-12-01T18:14:43.000-08:00", 
+        "last_seen_date"=>"2018-01-25T13:04:23.000-08:00"
+      },
+      category: {
+        "name"=>"Analytics", 
+        "id"=>1
+      } 
+    ).never
+    @sf.expects(:import_sdk).with(
+      platform: 'ios',
+      sdk: {
+        "id"=>1648,
+        "name"=>"KVOController",
+        "website"=>"https://github.com/facebook/KVOController",
+        "favicon"=>"https://www.google.com/s2/favicons?domain=code.facebook.com",
+        "first_seen_date"=>"2015-12-01T18:14:43.000-08:00",
+        "last_seen_date"=>"2017-02-02T15:05:56.000-08:00",
+      },
+      category: {
+        "name"=>"Infrastructure", 
+        "id"=>5
+      } 
+    )
 
+    IosApp.any_instance.stub(:tagged_sdk_response) {
+      {
+        "installed_sdks" => [{
+          "name"=>"Analytics",
+          "id"=>1, 
+          "sdks"=>[{
+            "id"=>92, 
+            "name"=>"Amplitude-iOS", 
+            "website"=>"https://amplitude.com", 
+            "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com", 
+            "first_seen_date"=>"2015-12-01T18:14:43.000-08:00", 
+            "last_seen_date"=>"2018-01-25T13:04:23.000-08:00"
+          }]
+        }],
+        "uninstalled_sdks" => [{
+          "name"=>"Infrastructure", 
+          "id"=>5, 
+          "sdks"=>[{
+            "id"=>1648,
+            "name"=>"KVOController",
+            "website"=>"https://github.com/facebook/KVOController",
+            "favicon"=>"https://www.google.com/s2/favicons?domain=code.facebook.com",
+            "first_seen_date"=>"2015-12-01T18:14:43.000-08:00",
+            "last_seen_date"=>"2017-02-02T15:05:56.000-08:00",
+          }]
+        }]
+      }.with_indifferent_access
+    }
+
+    @sf.run_app_imports
+  end
 
   
 end

@@ -182,6 +182,8 @@ gem 'mixpanel_client', '4.1.5'
 # for customer success url generation
 gem 'addressable', '~>2.4'
 
+gem 'simplecov', '~>0.15.1', :require => false, :group => :test
+
 
 group :development, :test do
   gem 'rspec-mocks', '~> 3.5'
