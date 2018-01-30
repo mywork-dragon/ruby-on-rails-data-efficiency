@@ -57,10 +57,6 @@ class AppStoreService
         languages_html
         in_app_purchases_html
         editors_choice_html
-        copywright_html
-        seller_url_text_html
-        support_url_text_html
-        icon_urls_html
       )
 
     end
@@ -215,8 +211,7 @@ class AppStoreService
 
   # Only available in HTML 
   def support_url_html
-    children = @html.css(".app-links").children
-    children.select{ |c| c.text.match(/Support\z/) }.first['href']
+    @html.at('a:contains("App Support")')['href']
   end
 
   def categories_json
@@ -252,8 +247,8 @@ class AppStoreService
 
   # Only using HTML (abbreviations available in JSON)
   def languages_html
-    languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
-    languages_text.split(', ')
+    language_label = @html.at('dt:contains("Languages")')
+    language_label.next_element.text.strip.split(',').map(&:strip)
   end
 
   def seller_json
@@ -422,30 +417,6 @@ class AppStoreService
   def editors_choice_html
     @html.css(".editorial-badge").present?
   end
-  
-  def icon_urls_html
-    node = @html.css('#left-stack').css('.artwork').css('div > img').first
-    
-    ret = {size_350x350: nil, size_175x175: nil}
-    
-    ret = {size_350x350: node['src-swap-high-dpi'], size_175x175: node['src-swap']} if node
-    
-    ret
-  end
-  
-  def copywright_html
-    @html.css('li.copyright').text
-  end
-  
-  def seller_url_text_html
-    children = @html.css(".app-links").children
-    children.select{ |c| c.text.match(/Site\z/) }.first.text
-  end
-  
-  def support_url_text_html
-    children = @html.css(".app-links").children
-    children.select{ |c| c.text.match(/Support\z/) }.first.text
-  end
 
   def dom_valid?
     attributes = self.attributes(368677368)
@@ -471,14 +442,16 @@ class AppStoreService
         screenshot_urls: -> (x) { x.first.include?('Purple') },
         support_url: -> (x) { x.include?('help.uber') },
         released: -> (x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2016 },
-        languages: -> (x) { (['English', 'Japanese', 'Italian'] - x).empty? },
-        icon_urls: -> (x) { x.values.first.include?('Purple') },
-        copywright: -> (x) { x.include?('©') }, 
-        seller_url_text: -> (x) { x.include?('Uber Technologies') },
-        support_url_text: -> (x) { x.include?('Support') }
+        languages: -> (x) { (['English', 'Japanese', 'Italian'] - x).empty? }
       }    
 
-    all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
+    # If one of the expected attributes is nil, we receive "undefined method for nil:NilClass" error.
+    # Catch these and return false to the caller so we return a more descriptive error.
+    begin
+      return all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
+    rescue Exception => e
+      return false
+    end
   end
   
   # 3 and a half stars --> 3.5
