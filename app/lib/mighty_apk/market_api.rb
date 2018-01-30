@@ -21,7 +21,7 @@ module MightyApk
     def validate(httparty_res)
       raise Unauthorized if httparty_res.code == 401
       handle_forbidden(httparty_res) if httparty_res.code == 403
-      raise NotFound if httparty_res.code == 404
+      handle_not_found(httparty_res) if httparty_res.code == 404
       raise RateLimited if httparty_res.code == 429
       raise InternalError if httparty_res.code == 500
       unless httparty_res.code / 200 == 1 # non-200 level code
@@ -138,6 +138,16 @@ module MightyApk
         'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.1.1; Nexus 9 Build/LMY48M)',
         'Cookie' => "#{cookie_name}=#{cookie_value}"
       }
+    end
+
+    def handle_not_found(res)
+      if res.nil?
+        return
+      end
+      body = res.body
+      raise ProxyParty::UnsupportedRegion if body.match(/not.*supported.*country/i)
+      raise IncompatibleDevice if body.match(/Your device is not compatible with this item/i)
+      raise NotFound
     end
 
     def handle_forbidden(res)

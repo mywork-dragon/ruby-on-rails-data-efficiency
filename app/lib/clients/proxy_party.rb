@@ -64,6 +64,8 @@ module ProxyParty
         begin
           return yield region
         rescue ProxyParty::UnsupportedRegion
+        rescue Errno::ECONNREFUSED
+          Slackiq.message("Connection to proxy in #{region} failed.", webhook_name: :automated_alerts)
         end
       end
       raise ProxyParty::AllRegionsFailed
