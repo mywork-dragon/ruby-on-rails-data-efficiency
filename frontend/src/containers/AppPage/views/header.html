@@ -67,7 +67,7 @@
       </div>
     </div>
   </header>
-  <ul class="nav nav-tabs nav-justified" ng-if="!app.facebookOnly">
+  <ul class="nav nav-tabs nav-justified" ng-if="canViewAdSpend">
     <li class="uib-tab nav-item" ng-repeat="tab in app.tabs" ui-sref="{{tab.route}}" ui-sref-active="active" ng-click="app.trackTabClick(tab, app)">
       <a class="nav-link">
         <uib-tab-heading>

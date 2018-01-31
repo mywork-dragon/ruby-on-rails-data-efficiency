@@ -27,7 +27,7 @@
         </duv>
       </div>
     </header>
-    <ul class="nav nav-tabs nav-justified" ng-if="!publisher.facebookOnly">
+    <ul class="nav nav-tabs nav-justified" ng-if="canViewAdSpend">
       <li class="uib-tab nav-item" ng-repeat="tab in publisher.tabs" ui-sref="{{tab.route}}" ui-sref-active="active" ng-click="publisher.trackTabClick(tab, publisher)">
         <a class="nav-link">
           <uib-tab-heading>

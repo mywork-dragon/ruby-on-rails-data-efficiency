@@ -69,7 +69,6 @@ function AppController (
   app.companyContactFilter = '';
   app.contactFetchComplete = false;
   app.currentContactsPage = 1;
-  app.facebookOnly = true;
   app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class="fa fa-external-link"></span>');
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
@@ -103,10 +102,6 @@ function AppController (
   activate();
 
   function activate() {
-    adIntelService.getAdSources().then((data) => {
-      const adSources = Object.keys(data);
-      app.facebookOnly = adSources.length === 1 && adSources[0] === 'facebook';
-    });
     getApp()
       .then(() => {
         getCompanyContacts();

@@ -85,10 +85,6 @@ function PublisherController (
   activate();
 
   function activate() {
-    adIntelService.getAdSources().then((data) => {
-      const adSources = Object.keys(data);
-      publisher.facebookOnly = adSources.length === 1 && adSources[0] === 'facebook';
-    });
     getPublisher()
       .then(() => {
         publisher.platform = $stateParams.platform;

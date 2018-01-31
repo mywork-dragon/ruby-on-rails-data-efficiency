@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { getMaxDate, getMinDate } from './format.utils';
 
-export function formatPublisherAdData (data) {
+export function formatPublisherAdData (data, platform) {
   const result = {
     number_of_creatives: 0,
     creative_formats: [],
@@ -31,7 +31,7 @@ export function formatPublisherAdData (data) {
     app.ad_attribution_sdks.forEach((sdk) => {
       if (!result.ad_attribution_sdks.some(x => x.id === sdk.id)) { result.ad_attribution_sdks.push(sdk); }
     });
-    result.advertising_apps.push(Object.assign(app, { id: key }));
+    result.advertising_apps.push(Object.assign(app, { id: key, platform }));
   });
 
   result.advertising_apps = _.sortBy(result.advertising_apps, app => app.last_seen_ads_date).reverse();
