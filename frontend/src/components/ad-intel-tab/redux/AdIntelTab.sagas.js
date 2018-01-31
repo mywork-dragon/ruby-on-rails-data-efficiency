@@ -35,7 +35,7 @@ function* requestPublisherAdIntelInfo(action) {
   try {
     yield put({ type: pubTypes.CLEAR_AD_INTEL_INFO });
     const res = yield call(PublisherService().getAdIntelInfo, id, platform);
-    const data = res.data ? formatPublisherAdData(res.data) : null;
+    const data = res.data ? formatPublisherAdData(res.data, platform) : null;
     yield put(pubActions.loadAdIntelInfo(id, platform, data));
     if (data != null) yield put(appTable.loadResults(data.advertising_apps));
   } catch (error) {
