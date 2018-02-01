@@ -111,7 +111,7 @@ class SalesforceWorker
 
   def frequency_to_relative_time(frequency)
     mapping = {
-      '5m' => 'TODAY'
+      '5m' => 'YESTERDAY'
     }
 
     mapping[frequency]

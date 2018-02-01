@@ -124,9 +124,22 @@ class Account < ActiveRecord::Base
     self.update_attributes(salesforce_settings: settings)
   end
 
+  def custom_website_fields(model)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    settings.try(:[], :custom_website_fields).try(:[], model)
+  end
+
+  def set_custom_website_fields(model:, fields:)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    settings[:custom_website_fields] ||= {}
+    settings[:custom_website_fields][model] = fields
+
+    self.update_attributes(salesforce_settings: settings)
+  end
+
   def set_domain_syncing(frequency:)
     # Syncs run every week or every 5 min
-    raise "Unsupported frequency option" unless ['1w', '5m'].include?(frequency)
+    raise "Unsupported frequency option" unless ['1w', '5m', nil].include?(frequency)
     settings = salesforce_settings.try(:with_indifferent_access) || {}  
     settings[:sync_domain_mapping] = frequency
     

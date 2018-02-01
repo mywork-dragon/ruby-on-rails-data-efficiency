@@ -16,8 +16,20 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       salesforce_instance_url: 'https://cs17.salesforce.com',
     ) 
 
+    @account2 = Account.create!(
+      name: 'Adjust', 
+      salesforce_token: salesforce_token, 
+      salesforce_refresh_token: salesforce_refresh_token,
+      salesforce_uid: '0050a00000ForTZAAZ',
+      salesforce_settings: {"is_sandbox"=>true, 'custom_website_fields' => {'Lead' => ['Email_Domain__c']}},
+      salesforce_instance_url: 'https://cs17.salesforce.com',
+    ) 
+
     @user = User.create!(account_id: @account.id, email: 'matt@mightysignal.com', password: '12345')
+    @user2 = User.create!(account_id: @account2.id, email: 'bob@mightysignal.com', password: '12345')
+
     @sf = SalesforceExportService.sf_for('MightySignal')
+    @sf2 = SalesforceExportService.sf_for('Adjust')
 
     @ios_developer = IosDeveloper.create!(name: '3 Comma Studio LLC', identifier: '12345')
     @android_developer = AndroidDeveloper.create!(name: '3 Comma Studio LLC', identifier: '12345')
@@ -133,8 +145,8 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
     mock.expect(:MightySignal_Android_Publisher_ID__c, nil)
     mock.expect(:MightySignal_iOS_Publisher_ID__c, nil)
 
-    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)").returns([mock])
-    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and IsConverted = false").returns([mock])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null").returns([mock])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and IsConverted = false").returns([mock])
     #assert_send([@sf.bulk_client, :update, 'Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id}]])
     @sf.bulk_client.expects(:update).with('Account', [{Id: '12345', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
     @sf.bulk_client.expects(:update).with('Lead', [{Id: '123456789', MightySignal_iOS_Publisher_ID__c: @ios_developer.id, MightySignal_Android_Publisher_ID__c: @android_developer.id}])
@@ -142,9 +154,15 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
 end
 
   def test_that_domain_mapping_date_works
-    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and CreatedDate > TODAY").returns([])
-    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and IsConverted = false and CreatedDate > TODAY").returns([])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and CreatedDate > TODAY").returns([])
+    @sf.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Lead where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and IsConverted = false and CreatedDate > TODAY").returns([])
     @sf.sync_domain_mapping(date: 'TODAY')
+  end
+
+  def test_that_domain_mapping_custom_website_field_works
+    @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and CreatedDate > TODAY").returns([])
+    @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c, Email_Domain__c from Lead where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and (Website != null or Email_Domain__c != null) and IsConverted = false and CreatedDate > TODAY").returns([])
+    @sf2.sync_domain_mapping(date: 'TODAY')
   end
 
   def test_that_sync_all_objects_queues_jobs

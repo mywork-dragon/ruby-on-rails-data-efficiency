@@ -630,24 +630,39 @@ class SalesforceExportService
     dl = DomainLinker.new
     models.each do |model|
       model_query = @account.domain_mapping_query(model)
+      custom_website_fields = @account.custom_website_fields(model)
 
-      query = "select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where Website != null and (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
+      select_fields = "Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c"
+      website_filter = " and Website != null"
+
+      if custom_website_fields.present?
+        select_fields += ", " + custom_website_fields.join(', ') 
+        website_filter = " and (Website != null or #{custom_website_fields.join(' != null or ')} != null)"
+      end
+
+      query = "select #{select_fields} from #{model} where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
+      query += website_filter
       query += " and where #{model_query}" if model_query
       query += " and IsConverted = false" if model == 'Lead'
       query += " and CreatedDate > #{date}" if date
 
+      imports = []
+
       @client.query(query).each do |record|
-        new_record = {Id: record.Id}
+        record_id = record.Id
+        new_record = {Id: record_id}
         domain = UrlHelper.url_with_domain_only(record.Website)
         publishers = dl.domain_to_publisher(domain)
         ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
         android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
         if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
+          imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: record_id}
         end
 
         if !record.MightySignal_Android_Publisher_ID__c && android_publisher
           new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
+          imports << {publisher_id: android_publisher.id, platform: 'android', export_id: record_id}
         end
 
         puts "Domain is #{domain}"
@@ -660,6 +675,12 @@ class SalesforceExportService
       if @update_records[model].try(:any?)
         @update_records[model].each_slice(10_000) do |slice|
           @bulk_client.update(model, slice)
+        end
+      end
+
+      if date
+        imports.each_slice(100).with_index do |slice, i|
+          SalesforceWorker.perform_async(:export_publishers_apps, slice, @user.id, model)
         end
       end
     end

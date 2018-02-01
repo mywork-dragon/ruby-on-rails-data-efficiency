@@ -89,7 +89,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
 
   def test_that_sync_all_domain_mapping_runs_sync_with_frequency
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id).never
-    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account3.id, 'TODAY')
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account3.id, 'YESTERDAY')
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account2.id).never
 
     SalesforceWorker.new.perform(:sync_domain_mapping_all_accounts, frequency: 
