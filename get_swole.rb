@@ -119,7 +119,7 @@ IO.popen(test_cmd).each do |line|
 end.close # Without close, you won't be able to access $?
  
 second_last_line.split(", ")
-if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
+if !(second_last_line.include?('0 failures') && second_last_line.include?('0 errors'))
   abort
 end
 
