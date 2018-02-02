@@ -8,9 +8,13 @@ class ApplicationController < ActionController::Base
   class AuthenticationExpiredError < StandardError; end
   class AuthenticationSharedError < StandardError; end
   class AuthenticationRevokedError < StandardError; end
+  class ForbiddenError < StandardError; end
 
   rescue_from NotAuthenticatedError do
     render json: { error: 'Not Authorized' }, status: :unauthorized
+  end
+  rescue_from ForbiddenError do
+    render json: { error: 'Forbidden' }, status: 403
   end
   rescue_from AuthenticationExpiredError do
     render json: { error: 'Auth token is expired' }, status: 419 # unofficial timeout status code
@@ -73,7 +77,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_storewide_sdks
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
@@ -82,7 +86,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !user.is_admin? && !account.is_admin_account?
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
@@ -94,7 +98,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_admin_account
     if !logged_into_admin_account?
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
@@ -103,7 +107,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_exports
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
@@ -112,7 +116,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_ad_spend
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
@@ -121,7 +125,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_ios_live_scan
-      fail NotAuthenticatedError
+      fail ForbiddenError
     end
   end
 
