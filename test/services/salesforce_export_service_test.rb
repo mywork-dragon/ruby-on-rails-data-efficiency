@@ -165,6 +165,32 @@ end
     @sf2.sync_domain_mapping(date: 'TODAY')
   end
 
+  def test_that_custom_website_field_works
+    mock = Minitest::Mock.new
+    mock2 = Minitest::Mock.new
+    
+    mock.expect(:Id, '12345')
+    mock2.expect(:Id, '123456789')
+    
+    mock.expect(:Website, 'https://3comma.studio')
+    
+    mock2.expect(:[], 'https://test2.23', ['Email_Domain__c'])
+    mock2.expect(:[], 'https://3comma2.studio', ['Website'])
+    
+    mock.expect(:MightySignal_Android_Publisher_ID__c, nil)
+    mock.expect(:MightySignal_iOS_Publisher_ID__c, nil)
+
+    mock2.expect(:MightySignal_Android_Publisher_ID__c, nil)
+    mock2.expect(:MightySignal_iOS_Publisher_ID__c, nil)
+
+    @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and CreatedDate > TODAY").returns([mock])
+    @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c, Email_Domain__c from Lead where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and (Website != null or Email_Domain__c != null) and IsConverted = false and CreatedDate > TODAY").returns([mock2])
+    
+    UrlHelper.expects(:url_with_domain_only).with('https://3comma.studio')
+    UrlHelper.expects(:url_with_domain_only).with('https://test2.23')
+    @sf2.sync_domain_mapping(date: 'TODAY')
+  end
+
   def test_that_sync_all_objects_queues_jobs
     mock1 = Minitest::Mock.new
     

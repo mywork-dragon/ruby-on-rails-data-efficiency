@@ -652,7 +652,14 @@ class SalesforceExportService
       @client.query(query).each do |record|
         record_id = record.Id
         new_record = {Id: record_id}
-        domain = UrlHelper.url_with_domain_only(record.Website)
+
+        website = if custom_website_fields.present?
+          (custom_website_fields + ['Website']).map{|field| record[field]}.compact.first
+        else
+          record.Website
+        end
+
+        domain = UrlHelper.url_with_domain_only(website)
         publishers = dl.domain_to_publisher(domain)
         ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
         android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
