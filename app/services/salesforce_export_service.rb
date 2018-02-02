@@ -113,7 +113,7 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
-  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'])
+  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
@@ -129,6 +129,7 @@ class SalesforceExportService
       end
 
       query += " and IsConverted = false" if model == 'Lead'
+      query += " and CreatedDate > #{date}" if date
       query += " LIMIT #{batch_limit * batch_size}" if batch_limit
 
       imports = []
