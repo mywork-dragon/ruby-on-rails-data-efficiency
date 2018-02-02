@@ -188,6 +188,9 @@ end
     
     UrlHelper.expects(:url_with_domain_only).with('https://3comma.studio')
     UrlHelper.expects(:url_with_domain_only).with('https://test2.23')
+
+    DomainLinker.any_instance.stub(:domain_to_publisher) { [] }
+
     @sf2.sync_domain_mapping(date: 'TODAY')
   end
 
