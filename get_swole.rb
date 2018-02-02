@@ -111,12 +111,14 @@ puts ''
 puts 'Running rake tests'.light_yellow
 test_cmd = 'bundle exec rake test'
 last_line = nil
+second_last_line = nil
 IO.popen(test_cmd).each do |line|
   puts line
+  second_last_line = last_line
   last_line = line
 end.close # Without close, you won't be able to access $?
  
-last_line.split(", ")
+second_last_line.split(", ")
 if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
