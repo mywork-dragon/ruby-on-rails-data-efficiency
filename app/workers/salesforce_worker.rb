@@ -24,23 +24,23 @@ class SalesforceWorker
     end
   end
 
-  def sync_domain_mapping_all_accounts(frequency: '1w')
+  def sync_domain_mapping_all_accounts(frequency: '1w', queue: :salesforce_syncer)
     return unless frequency
     Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.each do |account|
       if account.domain_syncing_frequency == frequency
-        SalesforceWorker.perform_async(:sync_domain_mapping, account.id, frequency_to_relative_time(frequency))
+        SalesforceWorker.set(queue: queue).perform_async(:sync_domain_mapping, account.id, frequency_to_relative_time(frequency), queue)
       end
     end
   end
 
-  def sync_domain_mapping(account_id, date = nil)
+  def sync_domain_mapping(account_id, date = nil, queue = :salesforce_syncer)
     account = Account.find(account_id)
     sf = SalesforceExportService.new(user: account.users.first)
 
     if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
-      sf.sync_domain_mapping(date: date)
+      sf.sync_domain_mapping(date: date, queue: queue)
     else
-      SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id, date)
+      SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id, date, queue)
     end
   end
 
@@ -118,7 +118,7 @@ class SalesforceWorker
   end
 
   def under_api_limit(limits:, uses_bulk_api: false)
-    threshold = 0.6
+    threshold = 0.4
     under_api_limit = limits["DailyApiRequests"]["Remaining"]/limits["DailyApiRequests"]["Max"].to_f >= threshold
     under_bulk_api_limit = limits["DailyBulkApiRequests"]["Remaining"]/limits["DailyBulkApiRequests"]["Max"].to_f >= threshold
 

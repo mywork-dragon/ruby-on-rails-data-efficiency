@@ -627,7 +627,7 @@ class SalesforceExportService
     SalesforceExportService.new(user: account.users.first, model_name: model_name)
   end
 
-  def sync_domain_mapping(models: supported_models, date: nil)
+  def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer)
     dl = DomainLinker.new
     models.each do |model|
       model_query = @account.domain_mapping_query(model)
@@ -688,7 +688,7 @@ class SalesforceExportService
 
       if date
         imports.each_slice(100).with_index do |slice, i|
-          SalesforceWorker.perform_async(:export_publishers_apps, slice, @user.id, model)
+          SalesforceWorker.set(queue: queue).perform_async(:export_publishers_apps, slice, @user.id, model)
         end
       end
     end

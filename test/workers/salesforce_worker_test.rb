@@ -81,7 +81,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
   end
 
   def test_that_sync_all_domain_mapping_runs_sync
-    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id, nil)
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id, nil, :salesforce_syncer)
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account2.id).never
 
     SalesforceWorker.new.perform(:sync_domain_mapping_all_accounts)
@@ -89,7 +89,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
 
   def test_that_sync_all_domain_mapping_runs_sync_with_frequency
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account.id).never
-    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account3.id, 'YESTERDAY')
+    SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account3.id, 'YESTERDAY', :salesforce_syncer)
     SalesforceWorker.expects(:perform_async).with(:sync_domain_mapping, @account2.id).never
 
     SalesforceWorker.new.perform(:sync_domain_mapping_all_accounts, frequency: 
@@ -127,7 +127,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
       }
     })
 
-    @sf.expects(:sync_domain_mapping).with(date: 'TODAY')
+    @sf.expects(:sync_domain_mapping).with(date: 'TODAY', queue: :salesforce_syncer)
 
     SalesforceWorker.new.perform(:sync_domain_mapping, @account.id, 'TODAY')
   end
@@ -146,7 +146,7 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     })
 
     @sf.expects(:sync_domain_mapping).never
-    SalesforceWorker.expects(:perform_in).with(6.hours, :sync_domain_mapping, @account.id, nil)
+    SalesforceWorker.expects(:perform_in).with(6.hours, :sync_domain_mapping, @account.id, nil, :salesforce_syncer)
 
     SalesforceWorker.new.perform(:sync_domain_mapping, @account.id)
   end
