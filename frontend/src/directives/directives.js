@@ -4,6 +4,7 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 import $ from 'jquery';
 import Holder from 'holderjs';
+import { $localStorage } from 'utils/localStorage.utils';
 
 /*
  App custom Directives
@@ -74,31 +75,44 @@ angular.module('app.directives', []).directive('imgHolder', [
     function($rootScope) {
       return {
         link(scope, ele) {
-          let $content;
-          let $nav;
-          let $window;
-          let Timer;
-          let app;
-          let updateClass;
+          const app = $('#app');
+          const $window = $(window);
 
-          return app = $('#app'), $window = $(window), $nav = $('#nav-container'), $content = $('#content'), ele.on('click', (e) => {
+          ele.on('click', (e) => {
             if (app.hasClass('nav-min')) {
               app.removeClass('nav-min');
+              $localStorage.set('navBar', '');
             } else {
               app.addClass('nav-min');
+              $localStorage.set('navBar', 'nav-min');
               $rootScope.$broadcast('minNav:enabled');
               e.preventDefault();
             }
-          }), Timer = void 0, updateClass = function() {
-            let width;
-            return width = $window.width(), width < 980 ? app.addClass('nav-min') : void 0;
-          }, window.initResize = function() {
-            let width;
-            return width = $window.width(), width < 980 ? app.addClass('nav-min') : app.removeClass('nav-min');
-          }, $window.resize(() => {
+          });
+
+          const isMinimized = function () {
+            return $window.width() < 980 || $localStorage.get('navBar') === 'nav-min';
+          };
+
+          const minimizeNavBar = function () {
+            app.addClass('nav-min');
+            $rootScope.$broadcast('minNav:enabled');
+          }
+
+          const updateClass = function() {
+            isMinimized() ? minimizeNavBar() : app.removeClass('nav-min');
+          };
+
+          window.initResize = function() {
+            isMinimized() ? minimizeNavBar() : app.removeClass('nav-min');
+          };
+
+          $window.resize(() => {
             let t;
             return clearTimeout(t), t = setTimeout(updateClass, 300);
-          }), window.initResize(); // not sure if correct but not used
+          });
+
+          return window.initResize(); // not sure if correct but not used
         },
       };
     },

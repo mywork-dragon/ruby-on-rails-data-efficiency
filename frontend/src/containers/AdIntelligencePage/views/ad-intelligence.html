@@ -131,7 +131,7 @@
                 Ad Networks
               </div>
             </th>
-            <th ng-if="canViewAdAttribution">
+            <th>
               <div class="th normal-right-padding">
               Ad Attribution SDKs
               </div>
@@ -217,7 +217,7 @@
                     uib-tooltip="{{network.name}}">
                 </span>
               </td>
-              <td ng-if="canViewAdAttribution">
+              <td>
                 <a ng-repeat="sdk in app.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
                   <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
                 </a>

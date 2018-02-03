@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { shortDate } from 'utils/format.utils';
+import { longDate } from 'utils/format.utils';
 
 import SdkLogo from 'Icons/SdkLogo.component';
 import CreativeFormatList from './CreativeFormatList.component';
@@ -37,12 +37,12 @@ const AdSummaryPanelComponent = ({
               <li>
                 <span className="icon fa fa-calendar-check-o" />
                 <label>First Seen Ads:</label>
-                {shortDate(firstSeenDate)}
+                {longDate(firstSeenDate)}
               </li>
               <li>
                 <span className="icon fa fa-calendar-plus-o" />
                 <label>Last Seen Ads:</label>
-                {shortDate(lastSeenDate)}
+                {longDate(lastSeenDate)}
               </li>
               <li>
                 <span className="icon fa fa-database" />

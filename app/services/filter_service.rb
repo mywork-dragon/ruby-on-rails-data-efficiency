@@ -4,7 +4,7 @@ class FilterService
     def order_helper(apps_index, sort_by, order_by)
       if sort_by == 'mobile_priority'
         mapping = IosApp.mobile_priorities
-        apps_index.order(
+        apps_index = apps_index.order(
                           {
                             "_script" => {
                               "script" => "doc['#{sort_by}'].empty ? 3 : factor[doc['#{sort_by}'].value]",
@@ -18,12 +18,13 @@ class FilterService
                         )
 
       elsif sort_by == 'name'
-        apps_index.order('name.lowercase' => {'order' => order_by, "missing" => "_last"})
+        apps_index = apps_index.order('name.lowercase' => {'order' => order_by, "missing" => "_last"})
       elsif sort_by == 'publisher_name'
-        apps_index.order('publisher_name.lowercase' => {'order' => order_by, "missing" => "_last"})
+        apps_index = apps_index.order('publisher_name.lowercase' => {'order' => order_by, "missing" => "_last"})
       else
-        apps_index.order(sort_by => {'order' => order_by, "missing" => "_last"})
+        apps_index = apps_index.order(sort_by => {'order' => order_by, "missing" => "_last"})
       end
+      apps_index.order('last_updated' => {'order' => 'desc'})
     end
 
     def date_filter(filter)

@@ -78,6 +78,7 @@
       "no-restricted-globals": "off",
       "no-restricted-properties": "warn",
       "no-continue": "warn",
-      "no-debugger": "warn"
+      "no-debugger": "warn",
+      "prefer-const": "warn"
     }
 }

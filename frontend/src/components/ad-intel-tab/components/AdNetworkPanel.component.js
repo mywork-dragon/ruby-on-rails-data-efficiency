@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { shortDate } from 'utils/format.utils';
+import { longDate } from 'utils/format.utils';
 import NoCreativesPopover from './NoCreativesPopover.component';
 import CreativeFormatList from './CreativeFormatList.component';
 import NetworkName from './NetworkName.component';
@@ -30,10 +30,10 @@ const AdNetworkPanelComponent = ({ networks }) => (
                         <NetworkName network={source} />
                       </td>
                       <td className="creative-cell">
-                        {shortDate(source.first_seen_ads_date)}
+                        {longDate(source.first_seen_ads_date)}
                       </td>
                       <td className="creative-cell">
-                        {shortDate(source.last_seen_ads_date)}
+                        {longDate(source.last_seen_ads_date)}
                       </td>
                       <td>
                         <CreativeFormatList formats={source.creative_formats} />

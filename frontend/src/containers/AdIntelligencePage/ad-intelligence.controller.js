@@ -1,5 +1,6 @@
 import angular from 'angular';
 import $ from 'jquery';
+import { $localStorage } from 'utils/localStorage.utils';
 
 import 'directives/fallback-src.directive';
 import 'AngularMixpanel/ad-intelligence.mixpanel.service';
@@ -94,13 +95,24 @@ function AdIntelligenceController(
   }
 
   function getActiveAdNetworks () {
-    return Object.values(adIntel.adNetworks).filter(network => network.active).map(network => network.id);
+    const activeNetworks = Object.values(adIntel.adNetworks).filter(network => network.active).map(network => network.id);
+    $localStorage.set('activeAdNetworks', activeNetworks);
+    return activeNetworks;
   }
 
   function getAdNetworks () {
     return adIntelService.getAdSources()
       .then((data) => {
         adIntel.adNetworks = data;
+        const activeNetworks = $localStorage.get('activeAdNetworks');
+        if (activeNetworks) {
+          for (let key in adIntel.adNetworks) {
+            if (Object.prototype.hasOwnProperty.call(adIntel.adNetworks, key)) {
+              const network = adIntel.adNetworks[key];
+              network.active = activeNetworks.includes(network.id) && network.can_access;
+            }
+          }
+        }
         adIntel.enabledNetworkCount = Object.values(data).filter(network => network.can_access).length;
         adIntel.networkCount = Object.values(data).length;
       });

@@ -1,8 +1,8 @@
 import moment from 'moment';
 
-export const shortDate = date => moment(date).format('MM/DD/YYYY');
+export const shortDate = date => moment(date).format('L');
 
-export const longDate = date => moment(date).format('MMM DD, YYYY');
+export const longDate = date => moment(date).format('ll');
 
 export const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 

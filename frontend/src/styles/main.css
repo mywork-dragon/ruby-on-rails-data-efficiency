@@ -3629,7 +3629,10 @@ fieldset[disabled] .btn-danger.active {
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   text-decoration: none;
   color: #fff;
-  background-color: #0393dd; }
+  background-color: #0393dd;
+  background-image: none;
+  cursor: pointer;
+}
 
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
   color: #fff;
