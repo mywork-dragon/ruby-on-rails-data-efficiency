@@ -92,7 +92,6 @@ module AndroidClassification
   end
 
   def should_log_activities
-    return
       (
         Rails.env.production? and not rescan
       ) and
