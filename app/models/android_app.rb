@@ -353,7 +353,10 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def current_version_code
-    self.newest_apk_snapshot.version_code
+    newest = self.newest_apk_snapshot
+    if newest && !newest.version_code.nil?
+      newest.version_code
+    end
   end
 
   def get_newest_apk_snapshot
