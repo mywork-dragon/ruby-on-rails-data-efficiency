@@ -5,13 +5,13 @@ class AppHotStore < HotStore
     "android" => [ "first_seen_ads_date", "last_seen_ads_date" ]
   }
 
-  @@REQUIRED_FIELDS = [ "app_identifier" ]
-
   def initialize()
     super
 
     @key_set = "app_keys"
     @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries", "rankings" ]
+    @required_fields = [ "app_identifier" ]
+
     @platform_to_class = {
       "ios" => IosApp,
       "android" => AndroidApp
@@ -52,7 +52,7 @@ class AppHotStore < HotStore
 
     delete_app_fields(platform, app_attributes)
 
-    write_entry("app", platform, app_id, app_attributes) if all_required_fields_exist?(app_attributes)
+    write_entry("app", platform, app_id, app_attributes)
   end
 
   def write_ad_summary(app_id, app_identifier, platform, ad_summary)
@@ -78,20 +78,7 @@ class AppHotStore < HotStore
   end
 
 private
-  
-  def all_required_fields_exist?(app_attributes)
-    @@REQUIRED_FIELDS.each do |field|
-      return false if app_attributes[field].nil?
-    end
-    true
-  end
 
-  def all_required_fields_exist?(app_attributes)
-    @@REQUIRED_FIELDS.each do |field|
-      return false if app_attributes[field].nil?
-    end
-    true
-  end
 
   def delete_app_fields(platform, app_attributes)
     @@APP_FIELDS_TO_DELETE[platform].each do |field|

@@ -1,4 +1,6 @@
 class HotStore
+  
+  class MissingHotStoreField < RuntimeError; end
 
   @@STARTUP_NODES = [
     {:host => ENV['HOT_STORE_REDIS_URL'], :port => ENV['HOT_STORE_REDIS_PORT'] }
@@ -33,26 +35,22 @@ private
       end
     end
 
+    raise MissingHotStoreField unless all_required_fields_exist?(attributes)
+
     attributes_array = []
-    compressed_attributes = {} # Save the compressed attributes seperately since hmset doesn't handle compressed encodings.
 
     attributes.each do |key, value|
-      if @compressed_fields.include? key.to_s
-        compressed_attributes[key] = ActiveSupport::Gzip.compress(value.to_json)
-      else
-        if value
-          attributes_array << key.to_s
+      if value != nil
+        attributes_array << key.to_s
+        if @compressed_fields.include? key.to_s
+          attributes_array << ActiveSupport::Gzip.compress(value.to_json)
+        else
           attributes_array << value.to_json
         end
       end
     end
     
     @redis_store.hmset(entry_key, attributes_array) if attributes_array.any?
-
-    compressed_attributes.each do |key, value|
-      @redis_store.hset(entry_key, key, value)
-    end
-
     @redis_store.sadd(@key_set, entry_key)
   end
 
@@ -85,6 +83,15 @@ private
       end
     end
     cursor
+  end
+
+  def all_required_fields_exist?(app_attributes)
+    if @required_fields
+      @required_fields.each do |field|
+        return false if app_attributes[field].nil?
+      end
+    end
+    true
   end
 
 end
