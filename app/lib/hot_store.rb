@@ -22,7 +22,7 @@ private
     "#{type}:#{platform}:#{application_id}"
   end
 
-  def write_entry(type, platform, id, attributes, override_key: nil)
+  def write_entry(type, platform, id, attributes, override_key: nil, async: true)
     entry_key = override_key || key(type, platform, id)
 
     if @fields_to_normalize
@@ -50,8 +50,19 @@ private
       end
     end
     
-    @redis_store.hmset(entry_key, attributes_array) if attributes_array.any?
-    @redis_store.sadd(@key_set, entry_key)
+    return if attributes_array.empty?
+    
+    if async
+      HotStoreThreadPool.instance.post do
+        HotStoreThreadPool.connection_pool.with do |connection|
+          connection.hmset(entry_key, attributes_array)
+          connection.sadd(@key_set, entry_key)
+        end
+      end
+    else
+      @redis_store.hmset(entry_key, attributes_array)
+      @redis_store.sadd(@key_set, entry_key)
+    end
   end
 
   def read_entry(type, platform, id, override_key: nil)
