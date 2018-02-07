@@ -55,18 +55,15 @@ class AppHotStore < HotStore
     write_entry("app", platform, app_id, app_attributes)
   end
 
-  def write_ad_summary(app_id, app_identifier, platform, ad_summary)
-    existing_entry = read(platform, app_id)
-
+  def write_ad_summary(app_id, app_identifier, platform, ad_summary, async: false)
     attributes = { "ad_summaries" => ad_summary }
 
-    # Add in required params if the app entry has not yet been
-    # imported into the hotstore.
-    attributes["id"] = app_id if existing_entry["id"].nil?
-    attributes["platform"] = platform if existing_entry["platform"].nil?
-    attributes["app_identifier"] = app_identifier if existing_entry["app_identifier"].nil?
+    # Add in required params to the app entry.
+    attributes["id"] = app_id
+    attributes["platform"] = platform
+    attributes["app_identifier"] = app_identifier
 
-    write_entry("app", platform, app_id, attributes)
+    write_entry("app", platform, app_id, attributes, async)
   end
 
   def read(platform, app_id)

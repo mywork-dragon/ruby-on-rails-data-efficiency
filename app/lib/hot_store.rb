@@ -1,6 +1,7 @@
 class HotStore
   
   class MissingHotStoreField < RuntimeError; end
+  class MalformedHotStoreField < RuntimeError; end
 
   @@STARTUP_NODES = [
     {:host => ENV['HOT_STORE_REDIS_URL'], :port => ENV['HOT_STORE_REDIS_PORT'] }
@@ -35,7 +36,7 @@ private
       end
     end
 
-    raise MissingHotStoreField unless all_required_fields_exist?(attributes)
+    raise MissingHotStoreField.new("Type: #{type} Platform: #{platform} Id: #{id}") unless all_required_fields_exist?(attributes)
 
     attributes_array = []
 
@@ -87,10 +88,14 @@ private
   def read_scanned_attributes(type, entry_key, entry_cursor, entry_attributes)
     cursor, attributes = @redis_store.hscan(entry_key, entry_cursor)
     attributes.each do |attribute_tuple|
-      if @compressed_fields.include? attribute_tuple[0]
-        entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(ActiveSupport::Gzip.decompress(attribute_tuple[1]))
-      else
-        entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(attribute_tuple[1])
+      begin
+        if @compressed_fields.include? attribute_tuple[0]
+          entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(ActiveSupport::Gzip.decompress(attribute_tuple[1]))
+        else
+          entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(attribute_tuple[1])
+        end
+      rescue JSON::ParserError, Zlib::GzipFile::Error => e
+        Bugsnag.notify(MalformedHotStoreField.new("Key: #{entry_key} Attribute: #{attribute_tuple[0]}"))
       end
     end
     cursor
