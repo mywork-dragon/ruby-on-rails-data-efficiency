@@ -6,10 +6,30 @@
   <body>
     <h3>Great News!</h3>
 
-    <p>You've been invited to join MightySignal. MightySignal provides you with hard-to-get mobile app data right at your fingertips! Simply click the link below and connect through LinkedIn or Google to get started.</p>
+    <p>You've been invited to join MightySignal! MightySignal provides you with hard-to-get mobile app data right at your fingertips.</p>
 
-    <p><a href="https://mightysignal.com/app/app#/login?token=<%= @user.generate_auth_token %>">Activate your MightySignal Account</a></p>
+    <h4>Setup your Account</h4>
 
+    You'll first need to create an account on our system. You can either:
+
+    <ol>
+        <li><a href="<%= @link_url %>">Click this link to go to the sign up page</a></li>
+        <p>OR</p>
+        <li>
+            <div>
+                <p>Copy and paste the following address into your browser's address bar:</p>
+                <code><a><%= @link_url %></a></code>
+            </div>
+        </li>
+    </ol>
+
+    <p>You should see a page with a login invitation in red text that says "Please link either your Google or LinkedIn account now.". If you do not, please check the Troubleshooting section below.</p>
+
+    <h4>Troubleshooting</h4>
+
+    <p>Some people have reported sign up issues when clicking the signin link above as email clients can modify links. Please try both clicking the link and manually copy and pasting the url. If that does not work, please reach out to us at <a href="mailto:support@mightysignal.com">support@mightysignal.com</a><p>
+
+    <h4>More Information</h4>
     <p>To learn how to use the MightySignal platform watch our <a href="https://www.youtube.com/channel/UCXODM_TzoAJscyBeEIqR2og">training videos on YouTube</a>. If you have any questions, please reach out to your MightySignal contact or email us at <a href="mailto:support@mightysignal.com">support@mightysignal.com</a></p>
 
     <p>Thanks,</p>
