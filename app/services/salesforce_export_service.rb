@@ -26,6 +26,7 @@ class SalesforceExportService
       client_id: client_id,
       client_secret: ENV['SALESFORCE_AUTH_CLIENT_SECRET'],
       api_version: '39.0',
+      request_headers: { 'sforce-auto-assign' => 'FALSE' },
       host: host
     )
 
