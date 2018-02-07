@@ -7,11 +7,11 @@ class DomainDataHotStore < HotStore
     @compressed_fields = [ "description", "tags", "tech_used" ]
   end
 
-  def write(domain_datum)
+  def write(domain_datum, async: false)
     domain = domain_datum["domain"]
     return if domain.nil?
 
-    write_entry(nil, nil, nil, domain_datum, override_key: domain_data_key(domain))
+    write_entry(nil, nil, nil, domain_datum, override_key: domain_data_key(domain), async: async)
   end
 
   def read(domain)
