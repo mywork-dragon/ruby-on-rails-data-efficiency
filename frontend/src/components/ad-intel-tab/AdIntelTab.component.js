@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 
 import NoDataMessage from 'Messaging/NoData.component';
 import LoadingSpinner from 'Messaging/LoadingSpinner.component';
-import Table from 'Table/Table.component';
+import AppTableContainer from './containers/AppTable.container';
 import AdNetworkPanelComponent from './components/AdNetworkPanel.component';
 import AdSummaryPanelComponent from './components/AdSummaryPanel.component';
 import CreativeGalleryContainer from './containers/CreativeGallery.container';
 
 const AdIntelTabComponent = ({
   adIntel,
-  results,
   isLoaded,
   itemId,
   loadError,
@@ -18,10 +17,7 @@ const AdIntelTabComponent = ({
   platform,
   requestInfo,
   requestCreatives,
-  selectedItems,
   showAppsTable,
-  toggleAll,
-  toggleItem,
   toggleFilter,
   type,
   updateIndex,
@@ -47,8 +43,6 @@ const AdIntelTabComponent = ({
       </NoDataMessage>
     );
   }
-
-  const tableOptions = adIntel.info.tableOptions;
 
   return (
     <div>
@@ -80,21 +74,12 @@ const AdIntelTabComponent = ({
           updateIndex={updateIndex}
         />
         {
-          showAppsTable ? (
-            <div className="row companyPageRow">
-              <Table
-                headers={tableOptions.appTableHeaders}
-                results={results}
-                selectedItems={selectedItems}
-                showControls={false}
-                sort={tableOptions.defaultSort}
-                title={tableOptions.tableHeader}
-                toggleAll={toggleAll}
-                toggleItem={toggleItem}
-                totalCount={results.length}
-              />
-            </div>
-          ) : null
+          showAppsTable &&
+          <div className="row companyPageRow">
+            <AppTableContainer
+              title="Advertising Apps"
+            />
+          </div>
         }
       </div>
     </div>
@@ -106,7 +91,6 @@ AdIntelTabComponent.propTypes = {
     info: PropTypes.object,
     creatives: PropTypes.object,
   }),
-  results: PropTypes.arrayOf(PropTypes.object),
   isLoaded: PropTypes.bool.isRequired,
   itemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   loadError: PropTypes.bool,
@@ -114,10 +98,7 @@ AdIntelTabComponent.propTypes = {
   platform: PropTypes.string.isRequired,
   requestCreatives: PropTypes.func.isRequired,
   requestInfo: PropTypes.func.isRequired,
-  selectedItems: PropTypes.arrayOf(PropTypes.object),
   showAppsTable: PropTypes.bool,
-  toggleAll: PropTypes.func,
-  toggleItem: PropTypes.func,
   toggleFilter: PropTypes.func.isRequired,
   type: PropTypes.string,
   updateIndex: PropTypes.func.isRequired,
@@ -125,13 +106,9 @@ AdIntelTabComponent.propTypes = {
 
 AdIntelTabComponent.defaultProps = {
   adIntel: {},
-  results: [],
   loadError: false,
   noData: true,
-  selectedItems: [],
   showAppsTable: false,
-  toggleAll: null,
-  toggleItem: null,
   type: 'app',
 };
 

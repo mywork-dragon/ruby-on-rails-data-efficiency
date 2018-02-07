@@ -1,19 +1,17 @@
 @import '../../../styles/colors';
 
-$border-color: #ddd;
-
 .ReactTable {
-  border-color: $border-color;
+  border-color: $table-border;
   color: $main-font;
   .rt-thead {
     &.-header {
-      border-bottom: 2px solid $border-color;
+      border-bottom: 2px solid $table-border;
       box-shadow: none;
     }
 
     .rt-th {
       align-items: center;
-      border-color: $border-color;
+      border-color: $table-border;
       display: flex;
       font-size: 12px;
       font-weight: bold;
@@ -40,12 +38,12 @@ $border-color: #ddd;
 
   .rt-tbody {
     .rt-tr-group {
-      border-color: $border-color;
+      border-color: $table-border;
     }
 
     .rt-td {
       align-items: center;
-      border-color: $border-color;
+      border-color: $table-border;
       display: flex;
       font-size: 12px;
       justify-content: flex-start;

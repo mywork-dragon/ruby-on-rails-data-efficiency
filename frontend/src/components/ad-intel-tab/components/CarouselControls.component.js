@@ -16,7 +16,7 @@ const CarouselControlsComponent = ({
   return (
     <div>
       <div className="carousel-controls">
-        { format === 'html' ? <RotateButtonComponent /> : null }
+        { format === 'html' && <RotateButtonComponent /> }
         <div className="control-wrapper">
           <button className="btn btn-bordered-info" onClick={() => updateIndex(activeIndex - 1)}>
             <i className="fa fa-chevron-left" />

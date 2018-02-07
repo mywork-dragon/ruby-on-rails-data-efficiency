@@ -54,9 +54,8 @@ const CreativeGalleryComponent = ({
                   <div className="col-md-6">
                     <div>
                       {
-                        totalCount <= 1 && activeCreative.format !== 'html' ? (
+                        totalCount <= 1 && activeCreative.format !== 'html' &&
                           <div className="single-creative-pad" />
-                        ) : null
                       }
                       <CarouselControlsContainer
                         activeIndex={activeIndex}

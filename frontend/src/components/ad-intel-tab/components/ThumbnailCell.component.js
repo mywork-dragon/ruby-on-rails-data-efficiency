@@ -27,7 +27,7 @@ const ThumbnailCell = ({ creative }) => {
     thumbnail = (
       <td className="thumbnail-cell creative-cell">
         <div className="thumbnail-ctnr">
-          { creative.format === 'html' ? <PlayButton /> : null }
+          { creative.format === 'html' && <PlayButton /> }
           <img className="creative-thumbnail" src={creative.thumbnail || creative.url} />
         </div>
       </td>

@@ -1,14 +1,31 @@
-export { headerNames } from './column.models';
+import { headerNames } from './column.models';
 
-export function table(actionTypes) {
+export { headerNames };
+export { initializeColumns } from 'utils/table.utils';
+
+export function table(actionTypes, tableOptions) {
   const initialState = {
+    columns: {},
+    loaded: false,
+    loading: false,
+    pageNum: 0,
+    pageSize: 20,
     results: [],
+    resultType: 'app',
     selectedItems: [],
+    sort: [{ id: headerNames.APP, desc: false }],
+    resultsCount: 0,
+    ...tableOptions,
   };
 
   function reducer(state = initialState, action) {
     switch (action.type) {
-      case actionTypes.LOAD_RESULTS:
+      case actionTypes.ALL_ITEMS.REQUEST:
+        return {
+          ...state,
+          loading: true,
+        };
+      case actionTypes.ALL_ITEMS.SUCCESS:
         return loadResults(state, action);
       case actionTypes.CLEAR_RESULTS:
         return {
@@ -18,15 +35,38 @@ export function table(actionTypes) {
         return toggleAll(state);
       case actionTypes.TOGGLE_ITEM:
         return toggleItemSelect(state, action);
+      case actionTypes.UPDATE_COLUMNS:
+        return {
+          ...state,
+          columns: action.payload.columns,
+        };
       default:
         return state;
     }
   }
 
-  function loadResults(state, action) {
+  function loadResults(state, { payload: { data } }) {
+    const {
+      results,
+      resultsCount,
+      pageSize,
+      pageNum,
+      sort,
+      order,
+    } = data;
+    const sortVal = {
+      id: sort,
+      desc: order === 'desc',
+    };
     return {
       ...state,
-      results: action.payload.results,
+      pageSize,
+      pageNum,
+      results,
+      resultsCount: resultsCount || results.length,
+      sort: [sortVal],
+      loading: false,
+      loaded: true,
     };
   }
 

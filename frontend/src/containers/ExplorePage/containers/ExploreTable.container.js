@@ -1,36 +1,21 @@
 import { connect } from 'react-redux';
-import { exploreResults } from 'utils/mock-data.utils';
 import Table from 'Table/Table.component';
-import { exploreTableActions } from '../redux/Explore.actions';
-
+import { tableActions } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
-  loadMockData: () => dispatch(exploreTableActions.loadResults(exploreResults.results)),
-  toggleItem: (id, type) => dispatch(exploreTableActions.toggleItem({ id, type })),
-  toggleAll: () => dispatch(exploreTableActions.toggleAllItems()),
+  requestResults: params => dispatch(tableActions.allItems.request(params)),
+  toggleItem: (id, type) => () => dispatch(tableActions.toggleItem({ id, type })),
+  toggleAll: () => dispatch(tableActions.toggleAllItems()),
+  updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
 });
 
-const mapStateToProps = (store) => {
-  const {
-    activeColumns,
-    sort,
-  } = store.explore.tableOptions;
-
-  const {
-    results,
-    selectedItems,
-  } = store.explore.resultsTable;
-
-  return {
-    headers: activeColumns,
-    sort,
-    results,
-    selectedItems,
-    showControls: true,
-    title: 'Results',
-    totalCount: results.length,
-  };
-};
+const mapStateToProps = ({ explorePage: { resultsTable } }) => ({
+  isManual: true,
+  ...resultsTable,
+  showControls: true,
+  showColumnDropdown: true,
+  title: 'Results',
+});
 
 const ExploreTableContainer = connect(
   mapStateToProps,

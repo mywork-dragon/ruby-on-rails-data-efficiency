@@ -1,30 +1,26 @@
 import { connect } from 'react-redux';
-import { fetchLists } from 'actions/List.actions';
 import AdIntelTabComponent from 'components/ad-intel-tab/AdIntelTab.component';
-import { appAdIntelActions } from '../redux/App.actions';
+import { adIntelActions } from '../redux/App.actions';
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  requestCreatives: params => dispatch(appAdIntelActions.requestCreatives(
-    ownProps.itemId,
-    ownProps.platform,
+const mapDispatchToProps = (dispatch, { itemId, platform }) => ({
+  requestCreatives: params => dispatch(adIntelActions.creatives.request(
+    itemId,
+    platform,
     params,
   )),
-  requestInfo: () => dispatch(appAdIntelActions.requestAdIntelInfo(
-    ownProps.itemId,
-    ownProps.platform,
+  requestInfo: () => dispatch(adIntelActions.adIntelInfo.request(
+    itemId,
+    platform,
   )),
-  requestLists: () => dispatch(fetchLists()),
-  toggleFilter: (value, type) => dispatch(appAdIntelActions.toggleCreativeFilter(value, type)),
-  updateIndex: index => dispatch(appAdIntelActions.updateActiveCreativeIndex(index)),
+  toggleFilter: (value, type) => dispatch(adIntelActions.toggleCreativeFilter(value, type)),
+  updateIndex: index => dispatch(adIntelActions.updateActiveCreativeIndex(index)),
 });
 
-const mapStateToProps = (store, ownProps) => {
-  const adIntel = store.app.adIntelligence;
-  const info = adIntel.info;
-  const isLoaded = info.id === ownProps.itemId && info.platform === ownProps.platform;
+const mapStateToProps = ({ appPage: { adIntelligence } }, { itemId, platform }) => {
+  const info = adIntelligence.info;
+  const isLoaded = info.id === itemId && info.platform === platform;
   const noData = isLoaded && info.ad_networks.length === 0;
   const loadError = info.loadError;
-  const listsLoaded = store.lists.loaded;
 
   if (isLoaded === false) {
     return {
@@ -36,8 +32,7 @@ const mapStateToProps = (store, ownProps) => {
     isLoaded,
     noData,
     loadError,
-    listsLoaded,
-    adIntel,
+    adIntel: adIntelligence,
     type: 'app',
   };
   return res;

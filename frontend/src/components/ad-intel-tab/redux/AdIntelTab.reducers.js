@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { table, headerNames } from 'Table/redux/Table.reducers';
+import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
 
 function adIntelTab(actionTypes, tableActionTypes) {
   const initialInfoState = {
@@ -14,22 +14,24 @@ function adIntelTab(actionTypes, tableActionTypes) {
     total_apps: 0,
     advertising_apps: [],
     loadError: false,
-    tableOptions: {
-      appTableHeaders: [
-        headerNames.APP,
-        headerNames.AD_NETWORKS,
-        headerNames.AD_SDKS,
-        headerNames.CREATIVE_FORMATS,
-        headerNames.TOTAL_CREATIVES_SEEN,
-        headerNames.FIRST_SEEN_ADS,
-        headerNames.LAST_SEEN_ADS,
-      ],
-      defaultSort: {
+  };
+
+  const tableOptions = {
+    columns: initializeColumns([
+      headerNames.APP,
+      headerNames.AD_NETWORKS,
+      headerNames.AD_SDKS,
+      headerNames.CREATIVE_FORMATS,
+      headerNames.TOTAL_CREATIVES_SEEN,
+      headerNames.FIRST_SEEN_ADS,
+      headerNames.LAST_SEEN_ADS,
+    ]),
+    sort: [
+      {
         id: headerNames.LAST_SEEN_ADS,
         desc: true,
       },
-      tableHeader: 'Advertising Apps',
-    },
+    ],
   };
 
   const initialCreativesState = {
@@ -48,9 +50,9 @@ function adIntelTab(actionTypes, tableActionTypes) {
     switch (action.type) {
       case actionTypes.CLEAR_AD_INTEL_INFO:
         return { ...initialInfoState };
-      case actionTypes.AD_INTEL_INFO_SUCCESS:
+      case actionTypes.AD_INTEL_INFO.SUCCESS:
         return loadAdIntelInfo(action);
-      case actionTypes.AD_INTEL_INFO_FAILURE:
+      case actionTypes.AD_INTEL_INFO.FAILURE:
         return loadAdFetchError(action);
       default:
         return state;
@@ -59,15 +61,15 @@ function adIntelTab(actionTypes, tableActionTypes) {
 
   function creatives(state = initialCreativesState, action) {
     switch (action.type) {
-      case actionTypes.CREATIVES_SUCCESS:
+      case actionTypes.CREATIVES.SUCCESS:
         return loadCreatives(state, action);
       case actionTypes.UPDATE_ACTIVE_CREATIVE_INDEX:
         return updateActiveIndex(state, action);
-      case actionTypes.AD_INTEL_INFO_SUCCESS:
+      case actionTypes.AD_INTEL_INFO.SUCCESS:
         return initializeCreativeFilters(initialCreativesState, action);
       case actionTypes.TOGGLE_CREATIVE_FILTER:
         return toggleFilter(state, action);
-      case actionTypes.CREATIVES_REQUEST:
+      case actionTypes.CREATIVES.REQUEST:
         return {
           ...state,
           fetching: true,
@@ -95,6 +97,7 @@ function adIntelTab(actionTypes, tableActionTypes) {
     return {
       ...initialInfoState,
       ...data,
+      advertising_apps: data.advertising_apps ? data.advertising_apps.results : [],
       id,
       platform,
       type,
@@ -167,7 +170,7 @@ function adIntelTab(actionTypes, tableActionTypes) {
   };
 
   if (tableActionTypes) {
-    reducers.appTable = table(tableActionTypes);
+    reducers.appTable = table(tableActionTypes, tableOptions);
   }
 
   const reducer = combineReducers(reducers);

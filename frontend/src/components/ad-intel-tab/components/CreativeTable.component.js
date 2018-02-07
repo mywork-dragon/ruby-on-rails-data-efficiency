@@ -73,11 +73,11 @@ const CreativeTableComponent = ({
               <td className="creative-cell">
                 {longDate(creative.last_seen_creative_date)}
               </td>
-              { showApps ? (
+              { showApps &&
                 <td className="creative-cell">
                   <AppLogo adIntel app={apps.find(app => parseInt(app.id, 10) === creative.app_id)} platform={platform} />
                 </td>
-              ) : null}
+              }
               <td className="creative-cell">
                 {capitalize(creative.format)}
               </td>
@@ -85,7 +85,7 @@ const CreativeTableComponent = ({
           ))}
         </tbody>
       </table>
-      { showPagination ? (
+      { showPagination &&
         <PaginationContainer
           activeFormats={activeFormats}
           activeNetworks={activeNetworks}
@@ -97,7 +97,7 @@ const CreativeTableComponent = ({
           resultsCount={totalCount}
           type={type}
         />
-      ) : null }
+      }
     </div>
   ) : (
     <div className="empty-data-ctnr">

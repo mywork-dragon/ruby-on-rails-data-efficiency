@@ -1,8 +1,17 @@
-export function createRequestTypes(base) {
-  const res = [];
-  ['REQUEST', 'SUCCESS', 'FAILURE'].forEach((type) => {
-    res.push(`${base}_${type}`);
-  });
+export const REQUEST = 'REQUEST'
+export const SUCCESS = 'SUCCESS'
+export const FAILURE = 'FAILURE'
+
+function createRequestTypes(base, name) {
+  const root = name ? `${name}/${base}` : `${base}`;
+  const res = {};
+  [REQUEST, SUCCESS, FAILURE].forEach(type => res[type] = `${root}_${type}`);
+  return res;
+}
+
+export function buildBaseRequestTypes (name, types) {
+  const res = {};
+  types.forEach(type => res[type] = createRequestTypes(type, name));
   return res;
 }
 

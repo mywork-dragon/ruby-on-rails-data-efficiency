@@ -1,19 +1,35 @@
-.large-cell {
-  max-width: 200px;
-}
+.ReactTable {
+  .large-cell {
+    max-width: 200px;
+  }
 
-.med-cell {
-  max-width: 150px;
-}
+  .med-cell {
+    max-width: 150px;
+  }
 
-.med-small-cell {
-  max-width: 125px;
-}
+  .med-small-cell {
+    max-width: 125px;
+  }
 
-.small-cell {
-  max-width: 100px;
-}
+  .small-cell {
+    max-width: 100px;
+  }
 
-.name-cell {
-  min-width: 200px;
+  .rt-td {
+    &.platform-cell {
+      font-size: 16px;
+      justify-content: center;
+      max-width: 50px;
+    }
+  }
+
+  .rt-th {
+    &.platform-cell {
+      max-width: 50px;
+    }
+  }
+
+  .name-cell {
+    min-width: 150px;
+  }
 }

@@ -2,14 +2,10 @@ import { connect } from 'react-redux';
 
 import Explore from './Explore.component';
 
-const mapStateToProps = (store) => {
-  const explore = store.explore;
-
-  return {
-    apps: explore.apps,
-    tableOptions: explore.tableOptions,
-  };
-};
+const mapStateToProps = ({ explorePage }) => ({
+  apps: explorePage.apps,
+  tableOptions: explorePage.tableOptions,
+});
 
 const ExploreContainer = connect(
   mapStateToProps,

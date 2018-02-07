@@ -14,6 +14,7 @@ import AppNameCell from '../components/cells/AppNameCell.component';
 import CreativeFormatCell from '../components/cells/CreativeFormatCell.component';
 import LastUpdatedCell from '../components/cells/LastUpdatedCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
+import PlatformCell from '../components/cells/PlatformCell.component';
 import PublisherCell from '../components/cells/PublisherCell.component';
 import UserBaseCell from '../components/cells/UserBaseCell.component';
 
@@ -29,6 +30,7 @@ export const headerNames = {
   LAST_SEEN_ADS: 'Last Seen Ads',
   LAST_UPDATED: 'Last Updated',
   MOBILE_PRIORITY: 'Mobile Priority',
+  PLATFORM: 'Platform',
   PUBLISHER: 'Publisher',
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
   USER_BASE: 'User Base',
@@ -95,6 +97,13 @@ export const columnModels = [
     Cell: d => longDate(d.value),
   },
   {
+    Header: headerNames.FORTUNE_RANK,
+    id: headerNames.FORTUNE_RANK,
+    accessor: 'fortuneRank',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+  },
+  {
     Header: headerNames.LAST_SEEN_ADS,
     id: headerNames.LAST_SEEN_ADS,
     accessor: 'last_seen_ads_date',
@@ -117,6 +126,15 @@ export const columnModels = [
     headerClassName: 'med-small-cell',
     className: 'med-small-cell',
     Cell: cell => <MobilePriorityCell mobilePriority={cell.value} />,
+  },
+  {
+    Header: 'App Type',
+    id: headerNames.PLATFORM,
+    accessor: 'platform',
+    headerClassName: 'platform-cell',
+    className: 'platform-cell',
+    sortable: false,
+    Cell: cell => <PlatformCell platform={cell.value} />,
   },
   {
     Header: headerNames.PUBLISHER,

@@ -3,8 +3,8 @@ import CreativeMixpanelService from 'Mixpanel/creative.mixpanel';
 
 import PaginationComponent from '../components/CreativePagination.component';
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  requestCreatives: ownProps.requestCreatives,
+const mapDispatchToProps = (dispatch, { requestCreatives }) => ({
+  requestCreatives,
 });
 
 const mapStateToProps = (store, ownProps) => ({

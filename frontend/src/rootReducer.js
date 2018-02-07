@@ -1,17 +1,17 @@
 import { combineReducers } from 'redux';
 
 import account from 'reducers/Account.reducers';
-import app from 'containers/AppPage/redux/App.reducers';
-import explore from 'containers/ExplorePage/redux/Explore.reducers';
+import appPage from 'containers/AppPage/redux/App.reducers';
+import explorePage from 'containers/ExplorePage/redux/Explore.reducers';
 import lists from 'reducers/List.reducers';
-import publisher from 'containers/PublisherPage/redux/Publisher.reducers';
+import publisherPage from 'containers/PublisherPage/redux/Publisher.reducers';
 
 const rootReducer = combineReducers({
   account,
-  app,
-  explore,
+  appPage,
+  explorePage,
   lists,
-  publisher,
+  publisherPage,
 });
 
 export default rootReducer;

@@ -20,7 +20,7 @@ function appUtils() {
 
   function formatRatings (ratings) {
     if (ratings.length) {
-      const maxRating = _.max(ratings, rating => rating.ratings_count)
+      const maxRating = _.maxBy(ratings, rating => rating.ratings_count)
       maxRating.count = maxRating.ratings_count
       return maxRating
     }

@@ -6,6 +6,11 @@ export const longDate = date => moment(date).format('ll');
 
 export const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 
+export const camelCase = (string) => {
+  const stripped = string.replace(/\s+/g, '');
+  return stripped.charAt(0).toLowerCase() + stripped.slice(1);
+};
+
 export function getMaxDate (date1, date2) {
   date1 = new Date(date1);
   date2 = new Date(date2);

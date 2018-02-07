@@ -6,11 +6,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   ...ownProps,
 });
 
-const mapStateToProps = (store, ownProps) => {
-  const info = ownProps.adIntel.info;
-  const creatives = ownProps.adIntel.creatives;
+const mapStateToProps = (store, { adIntel: { info, creatives }, itemId }) => {
   const activeCreative = creatives.results[creatives.activeIndex];
-  const isLoaded = ownProps.itemId === creatives.id;
+  const isLoaded = itemId === creatives.id;
 
   const res = {
     ...creatives,

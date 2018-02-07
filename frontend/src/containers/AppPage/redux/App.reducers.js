@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import adIntelTab from 'components/ad-intel-tab/redux/AdIntelTab.reducers';
-import { APP_AD_INTEL_ACTION_TYPES } from './App.actions';
+import { AD_INTEL_TYPES } from './App.actions';
 
-const app = combineReducers({
-  adIntelligence: adIntelTab(APP_AD_INTEL_ACTION_TYPES),
+const appPage = combineReducers({
+  adIntelligence: adIntelTab(AD_INTEL_TYPES),
 });
 
-export default app;
+export default appPage;

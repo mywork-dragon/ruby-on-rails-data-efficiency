@@ -3,19 +3,11 @@ import { connect } from 'react-redux';
 import CarouselControlsComponent from '../components/CarouselControls.component';
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  updateIndex: ownProps.updateIndex,
-  getCreatives: ownProps.requestCreatives,
+  ...ownProps,
 });
 
 const mapStateToProps = (store, ownProps) => ({
-  activeIndex: ownProps.activeIndex,
-  currentSize: ownProps.currentSize,
-  format: ownProps.format,
-  formats: ownProps.formats,
-  networks: ownProps.networks,
-  pageNum: ownProps.pageNum,
-  pageSize: ownProps.pageSize,
-  resultsCount: ownProps.resultsCount,
+  ...ownProps,
 });
 
 const mergeProps = (storeProps, dispatchProps) => {
@@ -31,7 +23,7 @@ const mergeProps = (storeProps, dispatchProps) => {
   const totalPages = Math.ceil(resultsCount / pageSize);
 
   const requestCreatives = (page) => {
-    dispatchProps.getCreatives({
+    dispatchProps.requestCreatives({
       pageNum: page, pageSize, networks, formats,
     });
   };

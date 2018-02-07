@@ -42,7 +42,8 @@ const ActiveCreativeComponent = ({
             creative.ad_networks.map(network => <AdNetworkLogo key={network.id} {...network} />)
           }
         </li>
-        { showApp ? (
+        {
+          showApp &&
           <li>
             <span className={`icon fa fa-fw ${platform === 'ios' ? 'fa-apple' : 'fa-android'}`} />
             <label>App:</label>
@@ -51,7 +52,7 @@ const ActiveCreativeComponent = ({
               {app.name}
             </a>
           </li>
-        ) : null}
+        }
         <li>
           <span className="icon fa fa-image" />
           <label>Format:</label>

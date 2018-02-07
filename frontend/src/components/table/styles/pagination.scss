@@ -1,0 +1,79 @@
+@import '../../../styles/colors';
+
+.ReactTable {
+  .pagination-top {
+    border-bottom: 1px solid $table-border;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .pagination-bottom {
+    border-bottom: 0;
+    border-top: 1px solid $table-border;
+    box-shadow: none;
+
+    .dropdown-menu {
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate3d(0, -248px, 0);
+      will-change: transform;
+    }
+  }
+
+  .-pagination {
+    border: 0;
+    box-shadow: none;
+    display: flex;
+    float: right;
+    justify-content: flex-end;
+    width: 50%;
+
+    .-center {
+      justify-content: flex-end;
+    }
+
+    .-next {
+      flex: none;
+    }
+
+    .-previous {
+      flex: none;
+    }
+
+    .-btn {
+      background: none;
+      width: 30px;
+
+      &:not([disabled]):hover {
+        background: $primary-blue;
+        color: $white;
+      }
+    }
+  }
+
+  .-columnOptions {
+    margin: 3px 10px;
+  }
+
+  .column-select {
+    background: $white;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 5px;
+    display: inline-block;
+    font-size: inherit;
+    font-weight: normal;
+    outline: none;
+
+    button {
+      background: none;
+      border: 0;
+      font-size: 14px;
+      padding: 1px 7px;
+    }
+
+    .fa-caret-down, .fa-caret-up {
+      margin-left: 5px;
+    }
+  }
+}
