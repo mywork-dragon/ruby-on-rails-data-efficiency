@@ -8,6 +8,7 @@ import Pagination from './components/Pagination.component';
 
 Object.assign(ReactTableDefaults, {
   className: '-striped',
+  noDataText: 'No Results',
   pageSizeOptions: [20, 50, 75, 100],
   resizable: false,
 });
@@ -32,10 +33,6 @@ const Table = ({
   toggleItem,
   updateColumns,
 }) => {
-  if (!loaded && !loading && requestResults) {
-    requestResults();
-  }
-
   const allSelected = selectedItems.length === results.length;
   const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll, isAdIntel);
   const pages = totalNumPages(resultsCount, pageSize)

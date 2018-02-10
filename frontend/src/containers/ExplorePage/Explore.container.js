@@ -1,11 +1,14 @@
 import { connect } from 'react-redux';
+import { buildRequest } from 'utils/explore/queryBuilder.utils';
 
 import Explore from './Explore.component';
 
-const mapStateToProps = ({ explorePage }) => ({
-  apps: explorePage.apps,
-  tableOptions: explorePage.tableOptions,
-});
+const mapStateToProps = ({ explorePage: { searchForm, resultsTable: { columns } } }) => {
+  buildRequest(searchForm, columns);
+  return {
+    ...searchForm,
+  };
+};
 
 const ExploreContainer = connect(
   mapStateToProps,

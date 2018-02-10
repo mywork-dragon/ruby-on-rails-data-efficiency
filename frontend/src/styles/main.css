@@ -8231,18 +8231,18 @@ pre {
   display: block;
 }
 
-.categories-dropdown button.dropdown-toggle {
+.dropdown-multiselect button.dropdown-toggle {
   background: none;
   border: none;
   padding: 5px 33px 5px 8px;
   font-size: 11px;
 }
 
-.categories-dropdown ul.dropdown-menu {
+.dropdown-multiselect ul.dropdown-menu {
   overflow: auto !important;
 }
 
-div.categories-dropdown .caret {
+div.dropdown-multiselect .caret {
   display: none;
 }
 

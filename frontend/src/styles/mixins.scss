@@ -1,0 +1,17 @@
+@mixin not-first-child($selector) {
+  & #{$selector}:not(:first-child) {
+    @content;
+  }
+}
+
+@mixin not-last-child($selector) {
+  & #{$selector}:not(:last-child) {
+    @content;
+  }
+}
+
+@mixin not-first-nor-last-child($selector) {
+  & #{$selector}:not(:first-child):not(:last-child) {
+    @content;
+  }
+}

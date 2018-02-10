@@ -13,3 +13,6 @@ require('containers/PopularAppsPage/styles/styles.scss');
 // Component Styles
 require('components/ad-intel-tab/styles/styles.scss');
 require('components/table/styles/styles.js');
+
+// Explore Page
+require('containers/ExplorePage/styles/styles.js');

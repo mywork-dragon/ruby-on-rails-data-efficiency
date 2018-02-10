@@ -1,0 +1,36 @@
+@import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+.explore-search-form {
+  .panel-filters {
+    li {
+      padding: 10px;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $light-grey;
+      }
+
+      input[type=checkbox] {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .filter-label {
+    margin: 0 15px 0 0;
+    width: 150px;
+  }
+
+  .explore-checkbox {
+    margin: 0 20px 0 0;
+    position: relative;
+  }
+
+  .ui-select {
+    margin: 0;
+  }
+
+  select {
+    margin-right: 15px;
+  }
+}

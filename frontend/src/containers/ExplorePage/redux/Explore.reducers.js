@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
+import updateSearchForm from 'utils/explore/searchForm.utils';
 import { TABLE_TYPES } from './Explore.actions';
 
 const initialFormState = {
-  resultType: 'apps',
+  resultType: 'app',
   platform: 'all',
+  includeTakenDown: false,
   filters: {},
 };
 
@@ -43,6 +45,12 @@ const tableOptions = {
 
 function searchForm (state = initialFormState, action) {
   switch (action.type) {
+    case TABLE_TYPES.UPDATE_FILTER:
+      return updateSearchForm(state, action);
+    case TABLE_TYPES.CLEAR_FILTERS:
+      return {
+        ...initialFormState,
+      };
     default:
       return state;
   }
@@ -50,7 +58,6 @@ function searchForm (state = initialFormState, action) {
 
 const explorePage = combineReducers({
   searchForm,
-  tableOptions,
   resultsTable: table(TABLE_TYPES, tableOptions),
 });
 

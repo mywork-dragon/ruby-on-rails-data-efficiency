@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ExploreTableContainer from './containers/ExploreTable.container';
+import SearchFormContainer from './containers/SearchForm.container';
 
 const Explore = ({
   apps,
   tableOptions,
 }) => (
   <div className="page">
-    <h1>Explore V2</h1>
+    <SearchFormContainer />
     <ExploreTableContainer />
   </div>
 );

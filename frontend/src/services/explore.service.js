@@ -1,4 +1,4 @@
-import { exploreResults } from 'utils/mock-data.utils';
+import { exploreResults } from 'utils/mocks/mock-data.utils';
 import httpClient from './httpClient';
 
 const ExploreService = (client = httpClient) => ({

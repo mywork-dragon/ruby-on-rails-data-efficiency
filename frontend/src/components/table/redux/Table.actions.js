@@ -4,6 +4,8 @@ const tableActionTypes = [
   'TOGGLE_ITEM',
   'TOGGLE_ALL_ITEMS',
   'UPDATE_COLUMNS',
+  'UPDATE_FILTER',
+  'CLEAR_FILTERS',
 ];
 
 const tableRequestTypes = [
@@ -15,9 +17,11 @@ export const createTableRequestTypes = base => buildBaseRequestTypes(base, table
 
 export function createTableActions (types) {
   return {
+    clearFilters: () => action(types.CLEAR_FILTERS),
     toggleItem: item => action(types.TOGGLE_ITEM, { item }),
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
     updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
+    updateFilter: (parameter, value) => action(types.UPDATE_FILTER, { parameter, value }),
   };
 }
 
