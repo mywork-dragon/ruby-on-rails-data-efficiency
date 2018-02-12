@@ -61,6 +61,8 @@ services:
       - REDSHIFT_DATABASE_PORT=5432
       - SCREENSHOTLAYER_ACCESS_KEY=nop
       - SCREENSHOTLAYER_SECRET_KEYWORD=nop
+      - UNIQUE_TASKS_REDIS_URL=redis
+      - UNIQUE_TASKS_REDIS_PORT=6379
     depends_on:
       - db
       - redis
@@ -115,6 +117,8 @@ services:
       - HOT_STORE_REDIS_URL=dummy
       - HOT_STORE_REDIS_PORT=6379
       - HOT_STORE_REDIS_MAX_CONNECTIONS=6
+      - UNIQUE_TASKS_REDIS_URL=redis
+      - UNIQUE_TASKS_REDIS_PORT=6379
     depends_on:
       - db
       - redis
