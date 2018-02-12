@@ -72,7 +72,7 @@ class UniqueSidekiqWorker
         if use_mock
           # TODO: @@UNIQUE_WORKERS_REDIS = mock_redis
         else
-          @@UNIQUE_WORKERS_REDIS = Redis.new(host: ENV['UNIQUE_TASKS_REDIS_URL'], port: ENV['UNIQUE_TASKS_REDIS_PORT'])
+          @@UNIQUE_WORKERS_REDIS = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
         end
       end
     end
