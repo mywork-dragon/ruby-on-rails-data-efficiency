@@ -572,7 +572,7 @@ class IosApp < ActiveRecord::Base
     AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
   end
 
-  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [])
+  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)
       app = self
 
       # Only these attributes will be output in the final response.
@@ -637,15 +637,19 @@ class IosApp < ActiveRecord::Base
       app_obj.merge!(app.first_international_snapshot.as_json || {})
 
       app_obj['mightysignal_app_version'] = '1'
-      app_obj.merge!(app.sdk_history)
-      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
-      app_obj["installed_sdks"].map do |sdk|
-        sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
+
+      if include_sdk_history
+        app_obj.merge!(app.sdk_history)
+        app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
+        app_obj["installed_sdks"].map do |sdk|
+          sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
+        end
+        app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
+        app_obj["uninstalled_sdks"].map do |sdk|
+          sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
+        end
       end
-      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
-      app_obj["uninstalled_sdks"].map do |sdk|
-        sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
-      end
+
       app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self, with_category_id: true)
       app_obj["countries_available_in"] = app.app_stores.pluck(:country_code)
 

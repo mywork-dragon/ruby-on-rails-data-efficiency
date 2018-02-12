@@ -30,11 +30,11 @@ class AppHotStore < HotStore
     }
   end
 
-  def write(platform, app_id)
+  def write(platform, app_id, include_sdk_history: false)
     app_key = key("app", platform, app_id)
     extra_fields = extra_app_fields(platform)
 
-    app_attributes = to_class(platform).find(app_id).as_external_dump_json(extra_fields)
+    app_attributes = to_class(platform).find(app_id).as_external_dump_json(extra_fields, include_sdk_history: include_sdk_history)
 
     # Merge uninstalled_sdks and installed_sdks into sdk_activity
     sdk_activity = []

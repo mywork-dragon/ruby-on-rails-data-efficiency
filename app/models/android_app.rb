@@ -493,7 +493,7 @@ class AndroidApp < ActiveRecord::Base
     run_length_encode_app_snapshot_fields(android_app_snapshots, [:downloads_min, :downloads_max])
   end
 
-  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [])
+  def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)
       app = self
 
       # Only these attributes will be output in the final response.
@@ -546,15 +546,17 @@ class AndroidApp < ActiveRecord::Base
 
       app_obj = app.newest_android_app_snapshot.as_json || {}
       app_obj['mightysignal_app_version'] = '1'
-      app_obj.merge!(app.sdk_history)
 
-      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
-      app_obj["installed_sdks"].map do |sdk|
-        sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
-      end
-      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
-      app_obj["uninstalled_sdks"].map do |sdk|
-        sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
+      if include_sdk_history
+        app_obj.merge!(app.sdk_history)
+        app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
+        app_obj["installed_sdks"].map do |sdk|
+          sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
+        end
+        app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_fields + ["first_unseen_date"]))}
+        app_obj["uninstalled_sdks"].map do |sdk|
+          sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
+        end
       end
 
       if app.android_app_snapshot_categories
