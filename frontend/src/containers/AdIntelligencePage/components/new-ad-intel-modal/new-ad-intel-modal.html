@@ -3,15 +3,15 @@
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title network-modal-header" ng-if="!adIntel.modalNetwork">
+        <h3 class="modal-title network-modal-header" ng-if="!modalNetwork">
           Want to Discover More Advertisers?
         </h3>
-        <h3 class="modal-title network-modal-header" ng-if="adIntel.modalNetwork">
+        <h3 class="modal-title network-modal-header" ng-if="modalNetwork">
           Discover Apps Advertising on
         </h3>
-        <img class="network-full-logo" ng-if="adIntel.modalNetwork" ng-src="{{'images/' + adIntel.modalNetwork.id + '-full.png'}}" fallback-src="{{adIntel.modalNetwork.icon}}">
-        <div class="row network-modal-list" ng-if="!adIntel.modalNetwork">
-          <div ng-repeat="(id, network) in adIntel.adNetworks">
+        <img class="network-full-logo" ng-if="modalNetwork" ng-src="{{'images/' + modalNetwork.id + '-full.png'}}" fallback-src="{{modalNetwork.icon}}">
+        <div class="row network-modal-list" ng-if="!modalNetwork">
+          <div ng-repeat="(id, network) in adNetworks">
             <div class="modal-network-container">
               <img ng-if="network.icon" ng-src="{{'images/' + id + '.png'}}" fallback-src="{{network.icon}}">
               <div class="network-modal-label">
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="network-cta">
-          <p style="text-align: center;">Use the <span ng-if="!adIntel.modalNetwork">full</span> power of MightySignal Ad Intelligence to get more leads!</p>
+          <p style="text-align: center;">Use the <span ng-if="!modalNetwork">full</span> power of MightySignal Ad Intelligence to get more leads!</p>
           <a href="mailto:sales@mightysignal.com">
             <button class="btn btn-primary">Contact Us</button>
           </a>
