@@ -32,23 +32,28 @@ class AppHotStore < HotStore
 
   def write(platform, app_id, include_sdk_history: false)
     app_key = key("app", platform, app_id)
-    extra_fields = extra_app_fields(platform)
 
-    app_attributes = to_class(platform).find(app_id).as_external_dump_json(extra_fields, include_sdk_history: include_sdk_history)
+    default_external_json_params = {:include_sdk_history => include_sdk_history}
+    extra_fields = extra_app_fields(platform)
+    default_external_json_params.merge(extra_fields)
+
+    app_attributes = to_class(platform).find(app_id).as_external_dump_json(default_external_json_params)
 
     # Merge uninstalled_sdks and installed_sdks into sdk_activity
-    sdk_activity = []
-    app_attributes["installed_sdks"].each do |install_info|
-      install_info["installed"] = true
-      sdk_activity << install_info
+    if include_sdk_history
+      sdk_activity = []
+      app_attributes["installed_sdks"].each do |install_info|
+        install_info["installed"] = true
+        sdk_activity << install_info
+      end
+      app_attributes["uninstalled_sdks"].each do |install_info|
+        install_info["installed"] = false
+        sdk_activity << install_info
+      end
+      app_attributes["sdk_activity"] = sdk_activity
+      app_attributes.delete("installed_sdks")
+      app_attributes.delete("uninstalled_sdks")
     end
-    app_attributes["uninstalled_sdks"].each do |install_info|
-      install_info["installed"] = false
-      sdk_activity << install_info
-    end
-    app_attributes["sdk_activity"] = sdk_activity
-    app_attributes.delete("installed_sdks")
-    app_attributes.delete("uninstalled_sdks")
 
     delete_app_fields(platform, app_attributes)
 
