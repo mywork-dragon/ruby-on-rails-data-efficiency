@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import * as utils from '../publisher.utils';
-import * as data from '../mock-data.utils';
+import * as data from '../mocks/mock-data.utils';
 
 describe('Publisher Utils', () => {
   describe('formatPublisherAdData', () => {

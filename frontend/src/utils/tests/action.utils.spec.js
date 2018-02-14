@@ -11,13 +11,27 @@ describe('Action Utils', () => {
   });
 
   describe('createRequestTypes', () => {
-    it('should return a list containing request action types', () => {
+    it('should return an object mapping request action types to their request type', () => {
       const base = 'APP_INFO';
       const requestTypes = utils.createRequestTypes(base);
 
-      expect(requestTypes[0]).toEqual('APP_INFO_REQUEST');
-      expect(requestTypes[1]).toEqual('APP_INFO_SUCCESS');
-      expect(requestTypes[2]).toEqual('APP_INFO_FAILURE');
+      expect(requestTypes.REQUEST).toEqual('APP_INFO_REQUEST');
+      expect(requestTypes.SUCCESS).toEqual('APP_INFO_SUCCESS');
+      expect(requestTypes.FAILURE).toEqual('APP_INFO_FAILURE');
+    });
+  });
+
+  describe('buildBaseRequestTypes', () => {
+    it('should return an object nesting request action types within their action type', () => {
+      const base = 'explore';
+      const actionTypes = [
+        'ALL_ITEMS',
+      ];
+      const requestActionTypes = utils.buildBaseRequestTypes(base, actionTypes);
+
+      expect(requestActionTypes.ALL_ITEMS.REQUEST).toEqual('explore/ALL_ITEMS_REQUEST');
+      expect(requestActionTypes.ALL_ITEMS.SUCCESS).toEqual('explore/ALL_ITEMS_SUCCESS');
+      expect(requestActionTypes.ALL_ITEMS.FAILURE).toEqual('explore/ALL_ITEMS_FAILURE');
     });
   });
 

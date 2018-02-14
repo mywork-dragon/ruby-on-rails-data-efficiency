@@ -53,7 +53,7 @@ class ColumnPicker extends Component {
               {
                 Object.keys(this.state.columns).map((column) => {
                   const isActive = this.state.columns[column] === true;
-                  const isLocked = this.state.columns[column] === 'Locked';
+                  const isLocked = this.state.columns[column] === 'LOCKED';
                   return isLocked ? null : (
                     <li key={column}>
                       <div className="option">

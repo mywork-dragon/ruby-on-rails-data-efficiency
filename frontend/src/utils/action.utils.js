@@ -2,7 +2,7 @@ export const REQUEST = 'REQUEST'
 export const SUCCESS = 'SUCCESS'
 export const FAILURE = 'FAILURE'
 
-function createRequestTypes(base, name) {
+export function createRequestTypes(base, name) {
   const root = name ? `${name}/${base}` : `${base}`;
   const res = {};
   [REQUEST, SUCCESS, FAILURE].forEach(type => res[type] = `${root}_${type}`);

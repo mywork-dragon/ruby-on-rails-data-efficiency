@@ -1,14 +1,16 @@
 /* eslint-env jest */
 
-import * as actions from './Table.actions';
+import * as utils from './Table.actions';
 
 describe('Table Actions', () => {
-  const actionTypes = actions.createTableActionTypes('publisher/adIntelligence');
-  const results = actions.createTableActions(actionTypes);
+  const actionTypes = utils.createTableActionTypes('publisher/adIntelligence');
+  const requestTypes = utils.createTableRequestTypes('publisher/adIntelligence');
+  const actions = utils.createTableActions(actionTypes);
+  const requestActions = utils.createTableRequestActions(requestTypes);
 
   describe('createTableActionTypes', () => {
     it('should return an object containing all table action types namespaced within the provided key', () => {
-      expect(actionTypes.LOAD_RESULTS).toBe('publisher/adIntelligence/LOAD_RESULTS');
+      expect(requestTypes.ALL_ITEMS.SUCCESS).toBe('publisher/adIntelligence/ALL_ITEMS_SUCCESS');
       expect(actionTypes.TOGGLE_ITEM).toBe('publisher/adIntelligence/TOGGLE_ITEM');
       expect(actionTypes.TOGGLE_ALL_ITEMS).toBe('publisher/adIntelligence/TOGGLE_ALL_ITEMS');
     });
@@ -19,9 +21,9 @@ describe('Table Actions', () => {
       const items = [];
       const item = { id: '56', type: 'AndroidApp' };
 
-      expect(results.loadResults(items)).toEqual({ type: actionTypes.LOAD_RESULTS, payload: { results: items } });
-      expect(results.toggleItem(item)).toEqual({ type: actionTypes.TOGGLE_ITEM, payload: { item } });
-      expect(results.toggleAllItems()).toEqual({ type: actionTypes.TOGGLE_ALL_ITEMS });
+      expect(requestActions.allItems.success(items)).toEqual({ type: requestTypes.ALL_ITEMS.SUCCESS, payload: { data: items } });
+      expect(actions.toggleItem(item)).toEqual({ type: actionTypes.TOGGLE_ITEM, payload: { item } });
+      expect(actions.toggleAllItems()).toEqual({ type: actionTypes.TOGGLE_ALL_ITEMS });
     });
   });
 });

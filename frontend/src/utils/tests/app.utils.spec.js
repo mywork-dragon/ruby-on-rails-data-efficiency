@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import * as utils from '../app.utils';
-import * as data from '../mock-data.utils';
+import * as data from '../mocks/mock-data.utils';
 
 describe('App Utils', () => {
   describe('formatAppAdData', () => {

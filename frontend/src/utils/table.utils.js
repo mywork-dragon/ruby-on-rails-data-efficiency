@@ -8,7 +8,7 @@ export function initializeColumns (columns, activeColumns, lockedColumns) {
   const res = {};
   columns.forEach((column) => {
     if (lockedColumns && lockedColumns.includes(column)) {
-      res[column] = 'Locked';
+      res[column] = 'LOCKED';
     } else {
       res[column] = activeColumns ? activeColumns.includes(column) : true;
     }
