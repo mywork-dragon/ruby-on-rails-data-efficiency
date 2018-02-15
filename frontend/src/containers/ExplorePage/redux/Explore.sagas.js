@@ -1,15 +1,17 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import ExploreService from 'services/explore.service';
+import { formatResults } from 'utils/explore/explore.utils';
 
 import { TABLE_TYPES, tableActions } from './Explore.actions';
 
 function* requestResults (action) {
   const { params } = action.payload;
   try {
-    const data = yield call(ExploreService().requestResults, params);
-    yield put(tableActions.allItems.success(data));
+    const res = yield call(ExploreService().requestResults, params);
+    const items = formatResults(res.data, params);
+    yield put(tableActions.allItems.success(items));
   } catch (error) {
-    console.log(error);
+    yield put(tableActions.allItems.failure());
   }
 }
 

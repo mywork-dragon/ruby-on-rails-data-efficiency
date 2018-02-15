@@ -8,17 +8,17 @@ import Pagination from './components/Pagination.component';
 
 Object.assign(ReactTableDefaults, {
   className: '-striped',
-  noDataText: 'No Results',
   pageSizeOptions: [20, 50, 75, 100],
   resizable: false,
 });
 
 const Table = ({
   columns,
+  error,
   isAdIntel,
-  loaded,
   isManual,
   loading,
+  message,
   pageNum,
   pageSize,
   requestResults,
@@ -90,11 +90,12 @@ const Table = ({
               updateColumns,
             })}
             getTrProps={(state, rowInfo) => ({
-              className: !rowInfo.original.appAvailable && 'faded',
+              className: rowInfo && !rowInfo.original.appAvailable && rowInfo.original.taken_down && 'faded',
             })}
             loading={loading}
             manual={isManual}
             minRows={minRows}
+            noDataText={message}
             onPageChange={onPageChange}
             onPageSizeChange={onPageSizeChange}
             onSortedChange={onSortedChange}
@@ -102,8 +103,8 @@ const Table = ({
             pages={pages}
             pageSize={pageSize}
             PaginationComponent={Pagination}
-            showPaginationBottom={showControls}
-            showPaginationTop={showControls}
+            showPaginationBottom={showControls && !error}
+            showPaginationTop={showControls && !error}
             sorted={sort}
             style={{
               height: '750px',
@@ -130,10 +131,11 @@ Table.propTypes = {
     App: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     Publisher: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   }).isRequired,
+  error: PropTypes.bool.isRequired,
   isAdIntel: PropTypes.bool,
-  loaded: PropTypes.bool,
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
+  message: PropTypes.string,
   requestResults: PropTypes.func,
   pageNum: PropTypes.number,
   pageSize: PropTypes.number,
@@ -157,12 +159,12 @@ Table.propTypes = {
 
 Table.defaultProps = {
   isAdIntel: false,
-  loaded: true,
   isManual: false,
   loading: false,
-  requestResults: null,
+  message: 'No results',
   pageNum: 0,
   pageSize: 20,
+  requestResults: null,
   sort: [
     {
       id: headerNames.LAST_UPDATED,

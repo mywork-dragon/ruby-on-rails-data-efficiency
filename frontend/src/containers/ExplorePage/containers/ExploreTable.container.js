@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import Table from 'Table/Table.component';
+import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { tableActions } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -9,17 +10,31 @@ const mapDispatchToProps = dispatch => ({
   updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
 });
 
-const mapStateToProps = ({ explorePage: { resultsTable } }) => ({
+const mapStateToProps = ({ explorePage: { resultsTable, searchForm } }) => ({
   isManual: true,
-  ...resultsTable,
   showControls: true,
   showColumnDropdown: true,
   title: 'Results',
+  searchForm,
+  ...resultsTable,
 });
+
+const mergeProps = (stateProps, dispatchProps) => {
+  const { searchForm, ...other } = stateProps;
+  return {
+    ...other,
+    ...dispatchProps,
+    requestResults: (pageSettings) => {
+      const query = buildExploreRequest(searchForm, other.columns, pageSettings);
+      dispatchProps.requestResults(query);
+    },
+  };
+};
 
 const ExploreTableContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
+  mergeProps,
 )(Table);
 
 export default ExploreTableContainer;

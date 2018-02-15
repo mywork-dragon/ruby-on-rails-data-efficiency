@@ -8,7 +8,7 @@ describe('Table Utils', () => {
     headerNames.APP,
     headerNames.PUBLISHER,
     headerNames.MOBILE_PRIORITY,
-    headerNames.FORTUNE_RANK
+    headerNames.FORTUNE_RANK,
   ];
   const activeHeaders = [
     headerNames.APP,

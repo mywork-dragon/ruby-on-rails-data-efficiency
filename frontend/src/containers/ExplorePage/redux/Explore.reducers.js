@@ -30,9 +30,6 @@ const initialColumns = [
   headerNames.PUBLISHER,
   headerNames.PLATFORM,
   headerNames.MOBILE_PRIORITY,
-  headerNames.AD_SPEND,
-  headerNames.USER_BASE,
-  headerNames.CATEGORY,
   headerNames.LAST_UPDATED,
 ];
 

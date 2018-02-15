@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getUpdateDateClass } from 'utils/format.utils';
+import { daysAgo, getUpdateDateClass } from 'utils/format.utils';
 
-const LastUpdatedCell = ({ numDays }) => (
+const LastUpdatedCell = ({ date }) => (
   <div>
-    <span className={getUpdateDateClass(numDays)}>
-      <strong>{numDays}</strong>
+    <span className={getUpdateDateClass(date)}>
+      <strong>{daysAgo(date)}</strong>
     </span>
     {' '}
     days ago
@@ -14,7 +14,7 @@ const LastUpdatedCell = ({ numDays }) => (
 );
 
 LastUpdatedCell.propTypes = {
-  numDays: PropTypes.number.isRequired,
+  date: PropTypes.string.isRequired,
 };
 
 export default LastUpdatedCell;

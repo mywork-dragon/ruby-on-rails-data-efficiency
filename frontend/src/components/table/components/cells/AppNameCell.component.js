@@ -5,7 +5,7 @@ const AppNameCell = ({ app, isAdIntel }) => (
   <div className="resultsTableAppIcon">
     <span>
       <a className="dotted-link" href={`#/app/${app.platform}/${app.id}${isAdIntel ? '/ad-intelligence' : ''}`}>
-        <img src={app.icon} alt={app.name} />
+        <img src={app.icon || app.icon_url} alt={app.name} />
         {app.name}
         {app.price && <i className="fa fa-2 fa-usd" />}
       </a>

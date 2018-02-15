@@ -4,7 +4,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { store } from 'store';
 import { Provider } from 'react-redux';
 
-import ExploreContainer from './Explore.container';
+import ExploreComponent from './Explore.component';
 
 angular
   .module('appApp')
@@ -24,7 +24,7 @@ function explore() {
       function renderReactElement() {
         render(
           <Provider store={store}>
-            <ExploreContainer />
+            <ExploreComponent />
           </Provider>
           , element[0],
         );

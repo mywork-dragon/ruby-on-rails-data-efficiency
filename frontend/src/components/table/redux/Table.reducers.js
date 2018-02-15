@@ -6,8 +6,9 @@ export { initializeColumns } from 'utils/table.utils';
 export function table(actionTypes, tableOptions) {
   const initialState = {
     columns: {},
-    loaded: false,
+    error: false,
     loading: false,
+    message: 'No results',
     pageNum: 0,
     pageSize: 20,
     results: [],
@@ -27,6 +28,12 @@ export function table(actionTypes, tableOptions) {
         };
       case actionTypes.ALL_ITEMS.SUCCESS:
         return loadResults(state, action);
+      case actionTypes.ALL_ITEMS.FAILURE:
+        return {
+          ...initialState,
+          error: true,
+          message: 'Whoops! There was an error fetching the data for this table.',
+        };
       case actionTypes.CLEAR_RESULTS:
         return {
           ...initialState,
@@ -66,7 +73,7 @@ export function table(actionTypes, tableOptions) {
       resultsCount: resultsCount || results.length,
       sort: [sortVal],
       loading: false,
-      loaded: true,
+      error: false,
     };
   }
 
