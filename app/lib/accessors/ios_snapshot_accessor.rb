@@ -31,8 +31,8 @@ class IosSnapshotAccessor
     @delegate.user_base_details_from_ios_app(ios_app)
   end
 
-  def store_and_rating_details_from_ios_app(ios_app)
-    @delegate.store_and_rating_details_from_ios_app(ios_app)
+  def store_and_rating_details_from_ios_app(ios_app, include_current: false)
+    @delegate.store_and_rating_details_from_ios_app(ios_app, include_current: include_current)
   end
 
   # Response type is a hash who's keys are the columns in the ios_app_current_snapshots

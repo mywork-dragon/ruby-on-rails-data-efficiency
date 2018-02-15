@@ -9,7 +9,7 @@ class AppHotStore < HotStore
     super
 
     @key_set = "app_keys"
-    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries" ]
+    @compressed_fields = [ "sdk_activity", "ratings_history", "versions_history", "rankings", "description", "ad_summaries", "ratings_by_country" ]
     @required_fields = [ "app_identifier" ]
 
     @platform_to_class = {
@@ -37,7 +37,8 @@ class AppHotStore < HotStore
     extra_fields = extra_app_fields(platform)
     default_external_json_params.merge(extra_fields)
 
-    app_attributes = to_class(platform).find(app_id).as_external_dump_json(default_external_json_params)
+    app_object = to_class(platform).find(app_id)
+    app_attributes = app_object.as_external_dump_json(default_external_json_params)
 
     # Merge uninstalled_sdks and installed_sdks into sdk_activity
     if include_sdk_history
@@ -54,6 +55,8 @@ class AppHotStore < HotStore
       app_attributes.delete("installed_sdks")
       app_attributes.delete("uninstalled_sdks")
     end
+
+    add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
 
     delete_app_fields(platform, app_attributes)
 
@@ -81,6 +84,33 @@ class AppHotStore < HotStore
 
 private
 
+  def add_ios_storefront_ratings(app_object, app_attributes)
+    ratings_details = app_object.ratings_info
+    app_attributes["ratings_by_country"] = ratings_details
+
+    all_ratings_count = ratings_details.map { |storefront_rating| 
+      storefront_rating[:ratings_count] 
+    }.compact.inject(0, &:+) # sums all the ratings_counts in list
+
+    app_attributes["all_version_ratings_count"] = all_ratings_count
+
+    if all_ratings_count.nil? or all_ratings_count == 0
+      app_attributes["all_version_rating"] = 0
+      return
+    end
+
+    storefront_ratings_average = 0
+    ratings_details.each do |storefront_rating|
+      ratings_count = storefront_rating[:ratings_count]
+      rating_stars = storefront_rating[:rating]
+      next if ratings_count.nil? or rating_stars.nil?
+      
+      weight = ratings_count.to_f / all_ratings_count
+      storefront_ratings_average = storefront_ratings_average + ( weight * rating_stars )
+    end
+
+    app_attributes["all_version_rating"] = storefront_ratings_average
+  end
 
   def delete_app_fields(platform, app_attributes)
     @@APP_FIELDS_TO_DELETE[platform].each do |field|

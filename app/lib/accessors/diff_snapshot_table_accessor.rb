@@ -44,11 +44,38 @@ class DiffSnapshotTableAccessor
     end
   end
 
-  def store_and_rating_details_from_ios_app(ios_app)
+  def store_and_rating_details_from_ios_app(ios_app, include_current: false)
     if ios_app.ios_app_current_snapshots.where(latest: true).any?
-      ios_app.ios_app_current_snapshots.where(latest: true).joins(:app_store).select('app_stores.country_code, app_stores.name, ratings_all_stars, ratings_all_count').map{|app| {country_code: app.country_code, rating: app.ratings_all_stars, ratings_count: app.ratings_all_count, country: app.name}}
+      if include_current
+        snapshots_result = ios_app.ios_app_current_snapshots.where(latest: true).joins(:app_store).select('app_stores.country_code, app_stores.name, ratings_all_stars, ratings_all_count, ratings_current_stars, ratings_current_count, ratings_per_day_current_release')
+        snapshots_result.map { |app| 
+          {
+            current_rating: app.ratings_current_stars,
+            ratings_current_count: app.ratings_current_count,
+            ratings_per_day_current_release: app.ratings_per_day_current_release,
+            country_code: app.country_code,
+            rating: app.ratings_all_stars,
+            ratings_count: app.ratings_all_count,
+            country: app.name
+          }
+        }
+      else
+        return ios_app.ios_app_current_snapshots.where(latest: true).joins(:app_store).select('app_stores.country_code, app_stores.name, ratings_all_stars, ratings_all_count').map{|app| {country_code: app.country_code, rating: app.ratings_all_stars, ratings_count: app.ratings_all_count, country: app.name}}
+      end
     else
-      [{country_code: 'US', rating: ios_app.newest_ios_app_snapshot.try(:ratings_all_stars), ratings_count: ios_app.newest_ios_app_snapshot.try(:ratings_all_count), country: 'United States'}]
+      if include_current
+        return [{
+          current_rating: ios_app.newest_ios_app_snapshot.try(:ratings_current_stars),
+          ratings_current_count: ios_app.newest_ios_app_snapshot.try(:ratings_current_count),
+          ratings_per_day_current_release: ios_app.newest_ios_app_snapshot.try(:ratings_per_day_current_release),
+          country_code: 'US',
+          rating: ios_app.newest_ios_app_snapshot.try(:ratings_all_stars),
+          ratings_count: ios_app.newest_ios_app_snapshot.try(:ratings_all_count),
+          country: 'United States'
+        }]  
+      else
+        return [{country_code: 'US', rating: ios_app.newest_ios_app_snapshot.try(:ratings_all_stars), ratings_count: ios_app.newest_ios_app_snapshot.try(:ratings_all_count), country: 'United States'}]  
+      end
     end
   end
 

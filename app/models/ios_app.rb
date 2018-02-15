@@ -297,6 +297,16 @@ class IosApp < ActiveRecord::Base
     IosSnapshotAccessor.new.store_and_rating_details_from_ios_app(self)
   end
 
+  def ratings_info(include_current_version_ratings: true, include_taken_down_countries: false)
+    ratings_details = IosSnapshotAccessor.new.store_and_rating_details_from_ios_app(self, include_current: include_current_version_ratings)
+    return ratings_details if include_taken_down_countries
+
+    active_country_codes = app_stores.map {|x| x.country_code}
+    ratings_details.select {|user_base_record|
+      active_country_codes.include? user_base_record[:country_code]
+    }
+  end
+
   # def ratings_count
   #   intl_snapshot = first_international_snapshot
   #   if intl_snapshot

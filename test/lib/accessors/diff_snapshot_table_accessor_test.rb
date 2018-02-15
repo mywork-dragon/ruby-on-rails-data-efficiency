@@ -442,6 +442,14 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
       :country_code=>"JP",
       :name=>"JP_STORE")
 
+    AppStoresIosApp.create(
+      :app_store_id=>app_store.id,
+      :ios_app_id=>ios_app.id)
+ 
+    AppStoresIosApp.create(
+      :app_store_id=>jp_app_store.id,
+      :ios_app_id=>ios_app.id)
+
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
       :app_store_id=>app_store.id,
@@ -486,6 +494,14 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
     jp_app_store = AppStore.create(
       :country_code=>"JP",
       :name=>"JP_STORE")
+
+    AppStoresIosApp.create(
+      :app_store_id=>app_store.id,
+      :ios_app_id=>ios_app.id)
+ 
+    AppStoresIosApp.create(
+      :app_store_id=>jp_app_store.id,
+      :ios_app_id=>ios_app.id)
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
