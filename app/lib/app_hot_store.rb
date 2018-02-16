@@ -71,7 +71,7 @@ class AppHotStore < HotStore
     attributes["platform"] = platform
     attributes["app_identifier"] = app_identifier
 
-    write_entry("app", platform, app_id, attributes, async)
+    write_entry("app", platform, app_id, attributes, async: async)
   end
 
   def read(platform, app_id)
