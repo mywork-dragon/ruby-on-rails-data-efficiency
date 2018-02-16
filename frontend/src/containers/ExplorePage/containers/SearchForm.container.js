@@ -14,12 +14,12 @@ const mapStateToProps = ({ explorePage: { searchForm, resultsTable } }) => ({
   resultsTable,
 });
 
-const mergeProps = ({ searchForm, resultsTable: { columns, pageSize } }, dispatchProps) => ({
+const mergeProps = ({ searchForm, resultsTable: { columns, pageSize, sort } }, dispatchProps) => ({
   ...searchForm,
   ...dispatchProps,
   requestResults: () => {
     const pageSettings = { pageSize, pageNum: 0 };
-    const query = buildExploreRequest(searchForm, columns, pageSettings);
+    const query = buildExploreRequest(searchForm, columns, pageSettings, sort);
     dispatchProps.requestResults(query);
   },
 });

@@ -30,13 +30,14 @@ const initialColumns = [
   headerNames.PUBLISHER,
   headerNames.PLATFORM,
   headerNames.MOBILE_PRIORITY,
+  headerNames.USER_BASE,
   headerNames.LAST_UPDATED,
 ];
 
 const tableOptions = {
   columns: initializeColumns(columnOptions, initialColumns, [headerNames.APP]),
   sort: [
-    { id: headerNames.LAST_UPDATED, desc: true },
+    { id: headerNames.APP, desc: false },
   ],
 };
 

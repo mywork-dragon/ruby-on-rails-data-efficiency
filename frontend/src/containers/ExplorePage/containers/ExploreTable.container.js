@@ -24,8 +24,12 @@ const mergeProps = (stateProps, dispatchProps) => {
   return {
     ...other,
     ...dispatchProps,
-    requestResults: (pageSettings) => {
-      const query = buildExploreRequest(searchForm, other.columns, pageSettings);
+    requestResults: ({ pageSize, pageNum, sort }) => {
+      const pageSettings = {
+        pageSize,
+        pageNum,
+      };
+      const query = buildExploreRequest(searchForm, other.columns, pageSettings, sort);
       dispatchProps.requestResults(query);
     },
   };

@@ -52,26 +52,11 @@ export function table(actionTypes, tableOptions) {
     }
   }
 
+  // data format: { results, resultsCount, pageSize, pageNum, sort }
   function loadResults(state, { payload: { data } }) {
-    const {
-      results,
-      resultsCount,
-      pageSize,
-      pageNum,
-      sort,
-      order,
-    } = data;
-    const sortVal = {
-      id: sort,
-      desc: order === 'desc',
-    };
     return {
       ...state,
-      pageSize,
-      pageNum,
-      results,
-      resultsCount: resultsCount || results.length,
-      sort: [sortVal],
+      ...data,
       loading: false,
       error: false,
     };

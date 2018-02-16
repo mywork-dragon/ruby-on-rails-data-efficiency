@@ -11,8 +11,7 @@ export function formatPublisherAdData (data, platform) {
     total_apps: Object.keys(data).length,
     advertising_apps: {
       results: [],
-      sort: 'Last Seen Ads',
-      order: 'desc',
+      resultsCount: 0,
     },
   };
   Object.keys(data).forEach((key) => {
@@ -39,6 +38,7 @@ export function formatPublisherAdData (data, platform) {
   });
 
   result.advertising_apps.results = _.sortBy(result.advertising_apps.results, app => app.last_seen_ads_date).reverse();
+  result.advertising_apps.resultsCount = result.advertising_apps.results.length;
 
   return result;
 }

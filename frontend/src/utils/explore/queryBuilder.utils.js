@@ -1,26 +1,15 @@
 import { headerNames } from 'Table/redux/column.models';
 
-const columnKeys = {
-  [headerNames.APP]: ['id', 'name', 'current_version'], // TODO: add icon_url, app_identifier, taken_down, first_scanned_date
-  [headerNames.COUNTRIES_AVAILABLE_IN]: ['countries_available_in'],
-  [headerNames.LAST_UPDATED]: ['last_updated'],
-  [headerNames.MOBILE_PRIORITY]: ['mobile_priority'],
-  [headerNames.PLATFORM]: ['platform'],
-  [headerNames.PUBLISHER]: ['publisher_id', 'publisher_name'], // TODO: add seller_url
-  // [headerNames.RATINGS]: ['all_version_rating', 'all_version_ratings_count'],
-  // [headerNames.USER_BASE]: ['user_base'],
-};
-
 /* eslint-disable */
 export const sampleQuery = {
   "sort": {
     "fields": [
       {
-        "field": "id",
-        "object": "app"
+        "field": "name",
+        "object": "app",
+        "order": "asc",
       }
     ],
-    "order": "asc"
   },
   "query": {
     "filter": {
@@ -84,7 +73,8 @@ export const sampleQuery = {
     }
   },
   "page_settings": {
-    "page_size": 201
+    "page_size": 20,
+    "page": 1,
   },
   "select": {
     "fields": {
@@ -98,9 +88,23 @@ export const sampleQuery = {
 }
 /* eslint-enable */
 
+// map between frontend display fields and backend field
+// place sort field at beginning of the list
+const selectMap = {
+  [headerNames.APP]: ['name', 'id', 'current_version', 'icon_url', 'taken_down', 'app_identifier', 'first_scanned_date'],
+  [headerNames.COUNTRIES_AVAILABLE_IN]: ['countries_available_in'],
+  [headerNames.LAST_UPDATED]: ['last_updated'],
+  [headerNames.MOBILE_PRIORITY]: ['mobile_priority'],
+  [headerNames.PLATFORM]: ['platform'],
+  [headerNames.PUBLISHER]: ['publisher_name', 'publisher_id', 'seller_url'],
+  // [headerNames.RATINGS]: ['all_version_rating', 'all_version_ratings_count'],
+  [headerNames.USER_BASE]: ['user_base'],
+};
+
 export function buildExploreRequest (form, columns, pageSettings, sort) {
   const result = {};
   result.page_settings = buildPageSettings(pageSettings);
+  result.sort = buildSortSettings(sort);
   result.query = buildQuery(form.filters);
   result.select = buildSelect(form.resultType, columns);
   return result;
@@ -109,14 +113,20 @@ export function buildExploreRequest (form, columns, pageSettings, sort) {
 export function buildPageSettings ({ pageSize, pageNum }) {
   return {
     page_size: pageSize,
-    page: pageNum + 1,
+    page: pageNum,
+  };
+}
+
+export function buildSortSettings (sorts) {
+  return {
+    fields: convertToQuerySort(sorts),
   };
 }
 
 export function buildQuery (filters) {
-  const params = sampleQuery.query.filters;
+  const params = sampleQuery.query.filter;
   return {
-    filters: params,
+    filter: params,
   };
 }
 
@@ -125,8 +135,8 @@ export function buildSelect (resultType, columns) {
   const columnNames = Object.keys(columns);
 
   columnNames.forEach((column) => {
-    if (columnKeys[column]) {
-      columnKeys[column].forEach((field) => { fields[field] = true; });
+    if (selectMap[column]) {
+      selectMap[column].forEach((field) => { fields[field] = true; });
     }
   });
 
@@ -137,3 +147,22 @@ export function buildSelect (resultType, columns) {
   result.object = 'app';
   return result;
 }
+
+export const convertToTableSort = sorts => sorts.map(sort => ({
+  id: getSortName(sort.field),
+  desc: sort.order === 'desc',
+}));
+
+export const convertToQuerySort = sorts => sorts.map(sort => ({
+  field: selectMap[sort.id][0],
+  order: sort.desc ? 'desc' : 'asc',
+  object: 'app',
+}));
+
+export const getSortName = (val) => {
+  for (let key in selectMap) {
+    if (selectMap[key] && selectMap[key].includes(val)) {
+      return key;
+    }
+  }
+};

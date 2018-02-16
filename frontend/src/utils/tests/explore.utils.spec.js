@@ -23,6 +23,12 @@ const columns = initializeColumns([
   headerNames.PLATFORM,
   headerNames.LAST_UPDATED,
 ]);
+const sort = [
+  {
+    id: headerNames.APP,
+    desc: false,
+  },
+];
 
 describe('buildExploreRequest', () => {
   describe('buildPageSettings', () => {
@@ -30,7 +36,23 @@ describe('buildExploreRequest', () => {
       const page_settings = utils.buildPageSettings(pageSettings);
 
       expect(page_settings.page_size).toBe(pageSettings.pageSize);
-      expect(page_settings.page).toBe(pageSettings.pageNum + 1);
+      expect(page_settings.page).toBe(pageSettings.pageNum);
+    });
+  });
+
+  describe('buildSortSettings', () => {
+    it('should take a list of sorts and return sort settings for the query', () => {
+      const sort_settings = utils.buildSortSettings(sort);
+
+      expect(Array.isArray(sort_settings.fields)).toBe(true);
+      expect(sort_settings.fields[0]).toMatchObject(utils.sampleQuery.sort.fields[0]);
+    });
+  });
+
+  describe('getSortName', () => {
+    it('should take in a select field and return the corresponding sort/display field', () => {
+      expect(utils.getSortName('name')).toBe(headerNames.APP);
+      expect(utils.getSortName('last_updated')).toBe(headerNames.LAST_UPDATED);
     });
   });
 
@@ -53,10 +75,10 @@ describe('buildExploreRequest', () => {
 
   describe('buildExploreRequest', () => {
     it('should take in the search form, the columns, the page settings, and the sort and return a formatted query', () => {
-      const query = utils.buildExploreRequest(form, columns, pageSettings);
+      const query = utils.buildExploreRequest(form, columns, pageSettings, sort);
 
       expect(query).toMatchObject(utils.sampleQuery);
-      expect(query.page_settings.page).toBe(2);
+      expect(query.page_settings.page).toBe(1);
     });
   });
 });
@@ -81,23 +103,7 @@ describe('exploreUtils', () => {
 
   describe('formatResults', () => {
     it('should take in the response data and params and return an object of results formatted for the table reducer', () => {
-      const data = {
-        pages: {
-          2: [
-            {
-              'last_updated': '2017-12-01',
-              'name': 'Taps to Riches',
-              'publisher_name': 'Game Circus LLC',
-              'platform': 'ios',
-              'mobile_priority': 'high',
-              'current_version': '2.17',
-              'publisher_id': 131716,
-              'id': 2729366,
-            },
-          ],
-        },
-      };
-      const query = utils.buildExploreRequest(form, columns, pageSettings);
+      const query = utils.buildExploreRequest(form, columns, pageSettings, sort);
       const results = formatResults(data, query);
       // const expected = {
       //   results: [],
@@ -110,7 +116,7 @@ describe('exploreUtils', () => {
 
       expect(Array.isArray(results.results)).toBe(true);
       expect(results.results[0].id).toBe(data.pages['2'][0].id);
-      expect(results.pageNum).toBe(1);
+      expect(results.pageNum).toBe(2);
     });
   });
 

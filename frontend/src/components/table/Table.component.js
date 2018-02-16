@@ -42,8 +42,7 @@ const Table = ({
     requestResults({
       pageNum: pageIndex,
       pageSize,
-      sort: sort[0].id,
-      order: sort[0].desc ? 'desc' : 'asc',
+      sort,
     });
   };
 
@@ -51,8 +50,7 @@ const Table = ({
     requestResults({
       pageNum: 0,
       pageSize: newSize,
-      sort: sort[0].id,
-      order: sort[0].desc ? 'desc' : 'asc',
+      sort,
     });
   };
 
@@ -61,8 +59,7 @@ const Table = ({
       requestResults({
         pageNum: 0,
         pageSize,
-        sort: newSort[0].id,
-        order: newSort[0].desc ? 'desc' : 'asc',
+        sort: newSort,
       });
     }
   };

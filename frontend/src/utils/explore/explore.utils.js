@@ -1,11 +1,12 @@
+import { convertToTableSort } from './queryBuilder.utils';
+
 export function formatResults (data, params) {
   const result = {};
   result.results = Object.values(data.pages)[0].map(x => extractPublisher(x)).map(x => mockDataEnhancer(x)); // TODO: remove eventually
-  result.pageNum = Object.keys(data.pages)[0] - 1;
+  result.pageNum = parseInt(Object.keys(data.pages)[0]);
   result.pageSize = params.page_settings.page_size;
   result.resultsCount = result.results.length * 2;
-  result.sort = 'APP';
-  result.order = 'desc';
+  result.sort = convertToTableSort(params.sort.fields);
   result.resultType = params.select.object;
 
   return result;
@@ -28,7 +29,5 @@ function mockDataEnhancer (app) {
   return {
     ...app,
     type: app.platform === 'ios' ? 'IosApp' : 'AndroidApp',
-    taken_down: false,
-    icon_url: '//lh3.googleusercontent.com/XrcANMMPQPxhXlST8wrxaoH_NHRqfl9acN-llzSKciuPii9z5jZdqJgLFGHDZP4Vww=w300',
   };
 }
