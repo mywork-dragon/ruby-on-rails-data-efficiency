@@ -38,30 +38,36 @@ private
 
     raise MissingHotStoreField.new("Type: #{type} Platform: #{platform} Id: #{id}") unless all_required_fields_exist?(attributes)
 
+    # Send separate requests for compressed and uncompressed fields since the write will fail
+    # with an encoding error if 
     attributes_array = []
+    compressed_attributes_array = []
 
     attributes.each do |key, value|
       if value != nil
-        attributes_array << key.to_s
         if @compressed_fields.include? key.to_s
-          attributes_array << ActiveSupport::Gzip.compress(value.to_json)
+          compressed_attributes_array << key.to_s
+          compressed_attributes_array << ActiveSupport::Gzip.compress(value.to_json)
         else
+          attributes_array << key.to_s
           attributes_array << value.to_json
         end
       end
     end
     
-    return if attributes_array.empty?
-    
+    return if attributes_array.empty? and compressed_attributes_array.empty?
+
     if async
       HotStoreThreadPool.instance.post do
         HotStoreThreadPool.connection_pool.with do |connection|
-          connection.hmset(entry_key, attributes_array)
+          connection.hmset(entry_key, attributes_array) if attributes_array.any?
+          connection.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
           connection.sadd(@key_set, entry_key)
         end
       end
     else
-      @redis_store.hmset(entry_key, attributes_array)
+      @redis_store.hmset(entry_key, attributes_array) if attributes_array.any?
+      @redis_store.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
       @redis_store.sadd(@key_set, entry_key)
     end
   end
