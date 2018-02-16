@@ -8,7 +8,9 @@ function* requestResults (action) {
   const { params } = action.payload;
   try {
     const res = yield call(ExploreService().requestResults, params);
-    const items = formatResults(res.data, params);
+    const countRes = yield call(ExploreService().requestResultsCount, params);
+    const count = countRes.data.number_results;
+    const items = formatResults(res.data, params, count);
     yield put(tableActions.allItems.success(items));
   } catch (error) {
     yield put(tableActions.allItems.failure());

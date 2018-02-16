@@ -1,11 +1,11 @@
 import { convertToTableSort } from './queryBuilder.utils';
 
-export function formatResults (data, params) {
+export function formatResults (data, params, count) {
   const result = {};
   result.results = Object.values(data.pages)[0].map(x => extractPublisher(x)).map(x => mockDataEnhancer(x)); // TODO: remove eventually
   result.pageNum = parseInt(Object.keys(data.pages)[0]);
   result.pageSize = params.page_settings.page_size;
-  result.resultsCount = result.results.length * 2;
+  result.resultsCount = count;
   result.sort = convertToTableSort(params.sort.fields);
   result.resultType = params.select.object;
 
