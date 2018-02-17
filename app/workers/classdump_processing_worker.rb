@@ -4,7 +4,7 @@ class ClassdumpProcessingWorker
   include Sidekiq::Worker
   include IosClassification
 
-  sidekiq_options retry: false, queue: :live
+  sidekiq_options retry: false, queue: :classdump_processing
 
   class NoClassdumpAvailable < RuntimeError; end
 
