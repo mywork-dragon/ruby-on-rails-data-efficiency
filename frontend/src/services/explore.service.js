@@ -1,14 +1,27 @@
 import httpClient from './httpClient';
 
+const url = 'http://mightyquery-927305443.us-east-1.elb.amazonaws.com';
+
 const ExploreService = (client = httpClient) => ({
-  requestResults: (params) => {
-    const page = params.page_settings.page;
-    delete params.page_settings.page;
-    return client.put(`http://mightyquery-927305443.us-east-1.elb.amazonaws.com/query/query_result/pages/${page}?formatter=json_list`, params);
-  },
-  requestResultsCount: params => (
-    client.put('http://mightyquery-927305443.us-east-1.elb.amazonaws.com/query', params)
-      .then(response => client.put(`http://mightyquery-927305443.us-east-1.elb.amazonaws.com/query_result/${response.data.query_id}`))
+  requestResults: (params, page) => (
+    ExploreService().requestQueryId(params)
+      .then(response => ExploreService().requestQueryResultInfo(response.data.query_id))
+      .then(res => (
+        ExploreService().requestResultsById(res.data.query_result_id, page)
+          .then(result => ({
+            data: result.data,
+            resultsCount: res.data.number_results,
+          }))
+      ))
+  ),
+  requestQueryId: params => (
+    client.put(`${url}/query`, params)
+  ),
+  requestQueryResultInfo: id => (
+    client.put(`${url}/query_result/${id}`)
+  ),
+  requestResultsById: (id, page) => (
+    client.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
   ),
 });
 

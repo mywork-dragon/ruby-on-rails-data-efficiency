@@ -8,7 +8,17 @@ export const sampleQuery = {
         "field": "name",
         "object": "app",
         "order": "asc",
-      }
+      },
+      {
+        field: 'id',
+        object: 'app',
+        order: 'asc',
+      },
+      {
+        field: 'platform',
+        object: 'app',
+        order: 'asc',
+      },
     ],
   },
   "query": {
@@ -63,8 +73,15 @@ export const sampleQuery = {
               "ios"
             ],
             [
-              "mobile_priority",
-              "high"
+              "or",
+              [
+                "mobile_priority",
+                "high"
+              ],
+              [
+                "mobile_priority",
+                "medium"
+              ]
             ]
           ],
           "object": "app"
@@ -118,8 +135,21 @@ export function buildPageSettings ({ pageSize, pageNum }) {
 }
 
 export function buildSortSettings (sorts) {
+  const defaultSorts = [
+    {
+      field: 'id',
+      object: 'app',
+      order: 'asc',
+    },
+    {
+      field: 'platform',
+      object: 'app',
+      order: 'asc',
+    },
+  ];
+  const formattedSorts = convertToQuerySort(sorts);
   return {
-    fields: convertToQuerySort(sorts),
+    fields: formattedSorts.concat(defaultSorts),
   };
 }
 

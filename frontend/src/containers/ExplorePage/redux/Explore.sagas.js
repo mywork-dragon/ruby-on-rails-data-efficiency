@@ -5,14 +5,14 @@ import { formatResults } from 'utils/explore/explore.utils';
 import { TABLE_TYPES, tableActions } from './Explore.actions';
 
 function* requestResults (action) {
-  const { params } = action.payload;
+  const { params, params: { page_settings: { page: pageNum } } } = action.payload;
+  delete params.page_settings.page;
   try {
-    const res = yield call(ExploreService().requestResults, params);
-    const countRes = yield call(ExploreService().requestResultsCount, params);
-    const count = countRes.data.number_results;
-    const items = formatResults(res.data, params, count);
+    const { data, resultsCount } = yield call(ExploreService().requestResults, params, pageNum);
+    const items = formatResults(data, params, resultsCount);
     yield put(tableActions.allItems.success(items));
   } catch (error) {
+    console.log(error);
     yield put(tableActions.allItems.failure());
   }
 }
