@@ -1,13 +1,15 @@
 import { combineReducers } from 'redux';
 import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
 import updateSearchForm from 'utils/explore/searchForm.utils';
-import { TABLE_TYPES } from './Explore.actions';
+import { TABLE_TYPES, TOGGLE_FORM, UPDATE_ACTIVE_PANEL } from './Explore.actions';
 
 const initialFormState = {
   resultType: 'app',
   platform: 'all',
   includeTakenDown: false,
   filters: {},
+  expanded: true,
+  activeKey: '',
 };
 
 const columnOptions = [
@@ -48,6 +50,16 @@ function searchForm (state = initialFormState, action) {
     case TABLE_TYPES.CLEAR_FILTERS:
       return {
         ...initialFormState,
+      };
+    case TOGGLE_FORM:
+      return {
+        ...state,
+        expanded: !state.expanded,
+      };
+    case UPDATE_ACTIVE_PANEL:
+      return {
+        ...state,
+        activeKey: action.payload.index,
       };
     default:
       return state;

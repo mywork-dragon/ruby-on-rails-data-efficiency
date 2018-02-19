@@ -1,3 +1,5 @@
+import { action } from 'utils/action.utils';
+
 import {
   createTableActionTypes,
   createTableActions,
@@ -13,3 +15,9 @@ export const exploreTableRequestActions = createTableRequestActions(EXPLORE_TABL
 
 export const TABLE_TYPES = Object.assign({}, EXPLORE_TABLE_ACTION_TYPES, EXPLORE_TABLE_REQUEST_TYPES);
 export const tableActions = Object.assign({}, exploreTableActions, exploreTableRequestActions);
+
+export const TOGGLE_FORM = 'TOGGLE_FORM';
+export const toggleForm = () => action(TOGGLE_FORM);
+
+export const UPDATE_ACTIVE_PANEL = 'UPDATE_ACTIVE_PANEL';
+export const updateActivePanel = index => action(UPDATE_ACTIVE_PANEL, { index });

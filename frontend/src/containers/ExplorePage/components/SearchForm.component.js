@@ -13,110 +13,100 @@ import RankingsFilterPanel from './panels/RankingsFilterPanel.component';
 import ResultTypeFilter from './ResultTypeFilter.component';
 import SdkFilterPanel from './panels/SdkFilterPanel.component';
 
-class SearchForm extends Component {
-  constructor () {
-    super();
+const SearchForm = ({
+  activeKey,
+  expanded,
+  clearFilters,
+  filters,
+  includeTakenDown,
+  platform,
+  resultType,
+  requestResults,
+  toggleForm,
+  updateActivePanel,
+  updateFilter,
+}) => {
+  const togglePanel = () => (e) => {
+    e.stopPropagation();
+    toggleForm();
+  };
 
-    this.togglePanel = this.togglePanel.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
+  const handleSelect = () => newKey => () => updateActivePanel(newKey !== activeKey ? newKey : '');
 
-    this.state = {
-      expanded: true,
-      activeKey: '',
-    };
-  }
-
-  togglePanel () {
-    return () => this.setState({ expanded: !this.state.expanded, activeKey: '' });
-  }
-
-  handleSelect(activeKey) {
-    if (activeKey !== this.state.activeKey) {
-      this.setState({ activeKey });
-    } else {
-      this.setState({ activeKey: '' });
-    }
-  }
-
-  render () {
-    const {
-      clearFilters,
-      filters,
-      includeTakenDown,
-      platform,
-      resultType,
-      requestResults,
-      updateFilter,
-    } = this.props;
-
-    const { expanded, activeKey } = this.state;
-
-    return (
-      <Panel expanded={expanded} id="search-form-panel" onToggle={this.togglePanel()}>
-        <Panel.Heading onClick={this.togglePanel()}>
-          <Panel.Title>
-            Build Your Search
-            {
-              expanded ? (
-                <i className="fa fa-times pull-right" onClick={this.togglePanel()} />
-              ) : (
-                <i className="fa fa-angle-down pull-right" />
-              )
-            }
-          </Panel.Title>
-        </Panel.Heading>
-        <Panel.Collapse>
-          <Panel.Body>
-            <div className="explore-search-form">
-              <div className="basic-filter-group form-group">
-                <ResultTypeFilter resultType={resultType} updateFilter={updateFilter} />
-                <PlatformFilter platform={platform} updateFilter={updateFilter} />
-                <AdditionalFilters includeTakenDown={includeTakenDown} updateFilter={updateFilter} />
-              </div>
-              <div className="advanced-filter-group form-group">
-                <h4>Add Filters</h4>
-                <ControlledPanelGroup activeKey={activeKey} handleSelect={key => () => this.handleSelect(key)} id="panel-group-1">
-                  <div className="col-md-6">
-                    <SdkFilterPanel handleSelect={key => () => this.handleSelect(key)} />
-                    <AppFilterPanel filters={filters} handleSelect={key => () => this.handleSelect(key)} updateFilter={updateFilter} />
-                    <PublisherFilterPanel handleSelect={key => () => this.handleSelect(key)} />
-                  </div>
-                  <div className="col-md-6">
-                    <AdIntelFilterPanel handleSelect={key => () => this.handleSelect(key)} />
-                    <RankingsFilterPanel handleSelect={key => () => this.handleSelect(key)} />
-                  </div>
-                </ControlledPanelGroup>
-              </div>
-              <div className="form-review form-group">
-                <h4>Review Filters</h4>
-                <FilterTags />
-              </div>
-              <div className="search-form-footer form-group">
-                <div>
-                  <button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</button>
-                  <button className="btn btn-primary" onClick={this.togglePanel()}>Hide Form</button>
+  return (
+    <Panel expanded={expanded} id="search-form-panel" onToggle={togglePanel()}>
+      <Panel.Heading onClick={togglePanel()}>
+        <Panel.Title>
+          Build Your Search
+          {
+            expanded ? (
+              <i className="fa fa-times pull-right" onClick={togglePanel()} />
+            ) : (
+              <i className="fa fa-angle-down pull-right" />
+            )
+          }
+        </Panel.Title>
+      </Panel.Heading>
+      <Panel.Collapse>
+        <Panel.Body>
+          <div className="explore-search-form">
+            <div className="basic-filter-group form-group">
+              <ResultTypeFilter resultType={resultType} updateFilter={updateFilter} />
+              <PlatformFilter platform={platform} updateFilter={updateFilter} />
+              <AdditionalFilters includeTakenDown={includeTakenDown} updateFilter={updateFilter} />
+            </div>
+            <div className="advanced-filter-group form-group">
+              <h4>Add Filters</h4>
+              <ControlledPanelGroup activeKey={activeKey} handleSelect={handleSelect()} id="panel-group-1">
+                <div className="col-md-6">
+                  <SdkFilterPanel handleSelect={handleSelect()} />
+                  <AppFilterPanel filters={filters} handleSelect={handleSelect()} updateFilter={updateFilter} />
+                  <PublisherFilterPanel handleSelect={handleSelect()} />
                 </div>
-                <div className="search-form-submit">
-                  <button className="btn btn-primary">Save Search</button>
-                  <button className="btn btn-primary" onClick={() => requestResults()}>Submit Search</button>
+                <div className="col-md-6">
+                  <AdIntelFilterPanel handleSelect={handleSelect()} />
+                  <RankingsFilterPanel handleSelect={handleSelect()} />
                 </div>
+              </ControlledPanelGroup>
+            </div>
+            <div className="form-review form-group">
+              <h4>Review Filters</h4>
+              <FilterTags />
+            </div>
+            <div className="search-form-footer form-group">
+              <div>
+                <button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</button>
+                <button className="btn btn-primary" onClick={togglePanel()}>Hide Form</button>
+              </div>
+              <div className="search-form-submit">
+                <button className="btn btn-primary">Save Search</button>
+                <button className="btn btn-primary" onClick={requestResults()}>Submit Search</button>
               </div>
             </div>
-          </Panel.Body>
-        </Panel.Collapse>
-      </Panel>
-    );
-  }
-}
+          </div>
+        </Panel.Body>
+      </Panel.Collapse>
+    </Panel>
+  );
+};
 
 SearchForm.propTypes = {
+  activeKey: PropTypes.string,
   clearFilters: PropTypes.func.isRequired,
+  expanded: PropTypes.bool,
   filters: PropTypes.object.isRequired,
   includeTakenDown: PropTypes.bool.isRequired,
   platform: PropTypes.string.isRequired,
   requestResults: PropTypes.func.isRequired,
+  toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
+  updateActivePanel: PropTypes.func.isRequired,
   updateFilter: PropTypes.func.isRequired,
+};
+
+SearchForm.defaultProps = {
+  activeKey: '',
+  expanded: true,
 };
 
 export default SearchForm;
