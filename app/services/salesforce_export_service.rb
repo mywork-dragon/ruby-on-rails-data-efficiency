@@ -118,6 +118,7 @@ class SalesforceExportService
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
+      model_query = @account.syncing_query(model)
       
       query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where"
 
@@ -131,6 +132,7 @@ class SalesforceExportService
 
       query += " and IsConverted = false" if model == 'Lead'
       query += " and CreatedDate > #{date}" if date
+      query += " and #{model_query}" if model_query
       query += " LIMIT #{batch_limit * batch_size}" if batch_limit
 
       imports = []

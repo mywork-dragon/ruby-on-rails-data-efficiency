@@ -112,6 +112,18 @@ class Account < ActiveRecord::Base
     (salesforce_settings.try(:with_indifferent_access) || {})[:blacklisted_sdk_tags]
   end
 
+  def syncing_query(model)
+    settings =  salesforce_settings.try(:with_indifferent_access)
+    settings.try(:[], :syncing_queries).try(:[], model)
+  end
+
+  def set_syncing_query(model:, query:)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    settings[:syncing_queries] ||= {}
+    settings[:syncing_queries][model] = query
+    self.update_attributes(salesforce_settings: settings)
+  end
+
   def domain_mapping_query(model)
     settings =  salesforce_settings.try(:with_indifferent_access)
     settings.try(:[], :domain_mapping_queries).try(:[], model)
