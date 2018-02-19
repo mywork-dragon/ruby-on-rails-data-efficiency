@@ -1,4 +1,5 @@
 import React from 'react';
+import { $localStorage } from 'utils/localStorage.utils';
 import AppNameCell from 'Table/components/cells/AppNameCell.component';
 import ToggleAllCheckbox from 'Table/components/headerCells/ToggleAllCheckbox.component';
 import CheckboxCell from 'Table/components/cells/CheckboxCell.component';
@@ -60,4 +61,12 @@ function createCheckboxModel (selectedItems, allSelected, toggleItem, toggleAll)
       />
     ),
   };
+}
+
+export function setPreferredPageSize (pageSize) {
+  $localStorage.set('tablePageSize', pageSize);
+}
+
+export function getPreferredPageSize () {
+  return $localStorage.get('tablePageSize');
 }

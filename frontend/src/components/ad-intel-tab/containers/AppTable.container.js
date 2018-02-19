@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Table from 'Table/Table.component';
+import TableContainer from 'Table/Table.container';
 import { pubAdIntelTableActions } from 'containers/PublisherPage/redux/Publisher.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -16,6 +16,6 @@ const mapStateToProps = ({ publisherPage: { adIntelligence: { appTable } } }, { 
 const AppTableContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Table);
+)(TableContainer);
 
 export default AppTableContainer;

@@ -34,3 +34,6 @@ export function createTableRequestActions (types) {
     },
   };
 }
+
+export const UPDATE_PAGE_SIZE = 'UPDATE_PAGE_SIZE';
+export const updatePageSize = pageSize => action(UPDATE_PAGE_SIZE, { pageSize });

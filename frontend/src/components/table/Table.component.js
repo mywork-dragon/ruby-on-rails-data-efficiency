@@ -32,6 +32,7 @@ const Table = ({
   toggleAll,
   toggleItem,
   updateColumns,
+  updatePageSize,
 }) => {
   const allSelected = selectedItems.length === results.length;
   const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll, isAdIntel);
@@ -47,6 +48,7 @@ const Table = ({
   };
 
   const onPageSizeChange = (newSize) => {
+    updatePageSize(newSize);
     requestResults({
       pageNum: 0,
       pageSize: newSize,
@@ -55,13 +57,11 @@ const Table = ({
   };
 
   const onSortedChange = (newSort) => {
-    if (isManual) {
-      requestResults({
-        pageNum: 0,
-        pageSize,
-        sort: newSort,
-      });
-    }
+    requestResults({
+      pageNum: 0,
+      pageSize,
+      sort: newSort,
+    });
   };
 
   return (
@@ -152,6 +152,7 @@ Table.propTypes = {
   toggleItem: PropTypes.func.isRequired,
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
+  updatePageSize: PropTypes.func.isRequired,
 };
 
 Table.defaultProps = {

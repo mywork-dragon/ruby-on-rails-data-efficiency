@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Table from 'Table/Table.component';
+import TableContainer from 'Table/Table.container';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { tableActions } from '../redux/Explore.actions';
 
@@ -39,6 +39,6 @@ const ExploreTableContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
-)(Table);
+)(TableContainer);
 
 export default ExploreTableContainer;

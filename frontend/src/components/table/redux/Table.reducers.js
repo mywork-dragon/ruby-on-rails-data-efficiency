@@ -1,3 +1,4 @@
+import { getPreferredPageSize } from 'utils/table.utils';
 import { headerNames } from './column.models';
 
 export { headerNames };
@@ -10,7 +11,7 @@ export function table(actionTypes, tableOptions) {
     loading: false,
     message: 'No results',
     pageNum: 0,
-    pageSize: 20,
+    pageSize: getPreferredPageSize() || 20,
     results: [],
     resultType: 'app',
     selectedItems: [],
