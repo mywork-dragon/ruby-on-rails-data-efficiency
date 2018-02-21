@@ -10,7 +10,7 @@ const PublisherCell = ({ platform, publisher: { id, name } }) => (
 PublisherCell.propTypes = {
   platform: PropTypes.string.isRequired,
   publisher: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     name: PropTypes.string,
   }).isRequired,
 };

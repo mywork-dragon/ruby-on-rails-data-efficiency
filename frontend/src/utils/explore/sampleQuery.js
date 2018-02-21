@@ -37,6 +37,12 @@ export const sampleQuery = {
               "platform",
               "ios"
             ],
+            [
+              "not",
+              [
+                "taken_down"
+              ]
+            ]
             // [
             //   "or",
             //   [

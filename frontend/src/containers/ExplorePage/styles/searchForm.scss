@@ -2,6 +2,10 @@
 @import '../../../styles/mixins';
 
 #search-form-panel {
+  label {
+    cursor: pointer;
+  }
+
   .fa-times {
     cursor: pointer;
     font-size: 16px;

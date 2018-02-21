@@ -24,7 +24,7 @@ export function buildFilter (form) {
   return result;
 }
 
-export function buildAppFilters ({ platform, filters }) {
+export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   const result = {
     operator: 'filter',
     predicates: [],
@@ -35,6 +35,15 @@ export function buildAppFilters ({ platform, filters }) {
     result.predicates.push([
       'platform',
       platform,
+    ]);
+  }
+
+  if (!includeTakenDown) {
+    result.predicates.push([
+      'not',
+      [
+        'taken_down',
+      ],
     ]);
   }
 

@@ -80,39 +80,12 @@ describe('buildFilter', () => {
   describe('buildAppFilters', () => {
     it('should take in the search form and return the app filters for the query', () => {
       const appFilters = buildAppFilters(form);
-      const expected = {
-        'operator': 'filter',
-        'predicates': [
-          // [
-          //   "or",
-          //   [
-          //     "user_base",
-          //     "elite"
-          //   ]
-          // ],
-          [
-            'platform',
-            'ios',
-          ],
-          // [
-          //   "or",
-          //   [
-          //     "mobile_priority",
-          //     "high"
-          //   ],
-          //   [
-          //     "mobile_priority",
-          //     "medium"
-          //   ]
-          // ]
-        ],
-        'object': 'app',
-      };
 
-      expect(appFilters).toMatchObject(expected);
+      expect(appFilters).toMatchObject(sampleQuery.query.filter.inputs[0]);
     });
   });
 
+  // TODO: add later
   // describe('buildSdkFilters', () => {
   //   it('should take in the search form and return the sdk filters for the query', () => {
   //
