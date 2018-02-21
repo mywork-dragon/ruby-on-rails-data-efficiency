@@ -669,11 +669,15 @@ class SalesforceExportService
         if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
           imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: record_id}
+
+          export(object_id: record_id, publisher: ios_publisher) if date
         end
 
         if !record.MightySignal_Android_Publisher_ID__c && android_publisher
           new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
           imports << {publisher_id: android_publisher.id, platform: 'android', export_id: record_id}
+
+          export(object_id: record_id, publisher: android_publisher) if date
         end
 
         puts "Domain is #{domain}"
@@ -683,7 +687,7 @@ class SalesforceExportService
         @update_records[model] << new_record if new_record.size > 1
       end
 
-      if @update_records[model].try(:any?)
+      if @update_records[model].try(:any?) && date.blank?
         @update_records[model].each_slice(10_000) do |slice|
           @bulk_client.update(model, slice)
         end
