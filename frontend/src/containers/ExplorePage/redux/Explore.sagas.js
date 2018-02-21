@@ -1,6 +1,6 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import ExploreService from 'services/explore.service';
-import { formatResults } from 'utils/explore/explore.utils';
+import { formatResults } from 'utils/explore/general.utils';
 
 import { TABLE_TYPES, tableActions } from './Explore.actions';
 
