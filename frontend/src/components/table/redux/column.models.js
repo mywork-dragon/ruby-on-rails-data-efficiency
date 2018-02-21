@@ -141,10 +141,15 @@ export const columnModels = [
   {
     Header: headerNames.PUBLISHER,
     id: headerNames.PUBLISHER,
-    accessor: d => d.publisher.name,
+    accessor: d => (d.publisher ? d.publisher.name : ''),
     headerClassName: 'name-cell',
     className: 'name-cell',
-    Cell: cell => <PublisherCell id={cell.original.publisher.id} name={cell.original.publisher.name} platform={cell.original.platform} />,
+    Cell: (cell) => {
+      if (cell.original.publisher) {
+        return <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />
+      }
+      return '';
+    },
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,
