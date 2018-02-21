@@ -633,6 +633,7 @@ class SalesforceExportService
   def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer)
     dl = DomainLinker.new
     models.each do |model|
+      @model_name = model
       model_query = @account.domain_mapping_query(model)
       custom_website_fields = @account.custom_website_fields(model)
 
