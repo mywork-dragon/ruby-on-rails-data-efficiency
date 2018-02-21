@@ -12,3 +12,7 @@ export const selectMap = {
   [headerNames.RATINGS]: ['all_version_rating', 'all_version_ratings_count'],
   [headerNames.USER_BASE]: ['user_base'],
 };
+
+export const appFilterKeys = [
+  'mobilePriority',
+];

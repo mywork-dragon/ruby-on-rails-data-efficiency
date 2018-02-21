@@ -13,6 +13,24 @@ export const camelCase = (string) => {
   return stripped.charAt(0).toLowerCase() + stripped.slice(1);
 };
 
+export const snakeCase = (string) => {
+  const upperChars = string.match(/([A-Z])/g);
+  if (!upperChars) {
+    return this;
+  }
+
+  let str = string;
+  for (let i = 0, n = upperChars.length; i < n; i++) {
+    str = str.replace(new RegExp(upperChars[i]), `_${upperChars[i].toLowerCase()}`);
+  }
+
+  if (str.slice(0, 1) === '_') {
+    str = str.slice(1);
+  }
+
+  return str;
+};
+
 export function getMaxDate (date1, date2) {
   date1 = new Date(date1);
   date2 = new Date(date2);

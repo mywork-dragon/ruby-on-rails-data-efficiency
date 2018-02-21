@@ -17,14 +17,13 @@ const SearchForm = ({
   activeKey,
   expanded,
   clearFilters,
-  filters,
   includeTakenDown,
   platform,
   resultType,
   requestResults,
   toggleForm,
   updateActivePanel,
-  updateFilter,
+  ...rest
 }) => {
   const togglePanel = () => (e) => {
     e.stopPropagation();
@@ -51,16 +50,16 @@ const SearchForm = ({
         <Panel.Body>
           <div className="explore-search-form">
             <div className="basic-filter-group form-group">
-              <ResultTypeFilter resultType={resultType} updateFilter={updateFilter} />
-              <PlatformFilter platform={platform} updateFilter={updateFilter} />
-              <AdditionalFilters includeTakenDown={includeTakenDown} updateFilter={updateFilter} />
+              <ResultTypeFilter resultType={resultType} {...rest} />
+              <PlatformFilter platform={platform} {...rest} />
+              <AdditionalFilters includeTakenDown={includeTakenDown} {...rest} />
             </div>
             <div className="advanced-filter-group form-group">
               <h4>Add Filters</h4>
               <ControlledPanelGroup activeKey={activeKey} handleSelect={handleSelect()} id="panel-group-1">
                 <div className="col-md-6">
                   <SdkFilterPanel handleSelect={handleSelect()} />
-                  <AppFilterPanel filters={filters} handleSelect={handleSelect()} updateFilter={updateFilter} />
+                  <AppFilterPanel handleSelect={handleSelect()} {...rest} />
                   <PublisherFilterPanel handleSelect={handleSelect()} />
                 </div>
                 <div className="col-md-6">
@@ -94,14 +93,12 @@ SearchForm.propTypes = {
   activeKey: PropTypes.string,
   clearFilters: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
-  filters: PropTypes.object.isRequired,
   includeTakenDown: PropTypes.bool.isRequired,
   platform: PropTypes.string.isRequired,
   requestResults: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
   updateActivePanel: PropTypes.func.isRequired,
-  updateFilter: PropTypes.func.isRequired,
 };
 
 SearchForm.defaultProps = {

@@ -7,7 +7,7 @@ const AdditionalFilters = ({ includeTakenDown, updateFilter }) => (
       Additional Settings
     </h4>
     <div className="additional-filters">
-      <label>
+      <label className="explore-checkbox">
         <input checked={includeTakenDown} onChange={updateFilter('includeTakenDown')} type="checkbox" />
         Include unavailable apps
       </label>

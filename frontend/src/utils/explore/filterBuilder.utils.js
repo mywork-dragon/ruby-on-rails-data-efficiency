@@ -1,6 +1,5 @@
-const appFilterKeys = [
-  'mobilePriority',
-];
+import { snakeCase } from 'utils/format.utils';
+import { appFilterKeys } from './models.utils';
 
 export function buildFilter (form) {
   const result = {
@@ -47,10 +46,25 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
     ]);
   }
 
-  // for (let key in form.filters) {
-  //
-  // }
-  //
+  for (let key in filters) {
+    if (appFilterKeys.includes(key) && filters[key].value.length <= 2) { // TODO: we'll see how this holds, meant to eliminate unnecessary filters
+      result.predicates.push(generatePredicate(key, filters[key]));
+    }
+  }
+
+  return result;
+}
+
+function generatePredicate(type, filter) {
+  const result = ['or'];
+  const filterType = snakeCase(type);
+  filter.value.forEach((x) => {
+    result.push([
+      filterType,
+      x,
+    ]);
+  });
+
   return result;
 }
 

@@ -9,7 +9,14 @@ import MobilePriorityFilter from '../appFilters/MobilePriorityFilter.component';
 import PriceFilter from '../appFilters/PriceFilter.component';
 import UserbaseFilter from '../appFilters/UserbaseFilter.component';
 
-const AppFilterPanel = ({ filters, handleSelect, updateFilter }) => (
+const AppFilterPanel = ({
+  filters: {
+    appCategory,
+    mobilePriority,
+  },
+  handleSelect,
+  ...rest
+}) => (
   <Panel eventKey="2">
     <Panel.Heading onClick={handleSelect('2')}>
       <Panel.Title>
@@ -19,11 +26,11 @@ const AppFilterPanel = ({ filters, handleSelect, updateFilter }) => (
     </Panel.Heading>
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
-        <MobilePriorityFilter />
+        <MobilePriorityFilter mobilePriority={mobilePriority} {...rest} />
         <PriceFilter />
         <InAppPurchaseFilter />
         <AvailableCountriesFilter />
-        <CategoriesFilter filter={filters.app_category} updateFilter={updateFilter} />
+        <CategoriesFilter filter={appCategory} {...rest} />
         <UserbaseFilter />
       </ul>
     </Panel.Body>
@@ -33,7 +40,6 @@ const AppFilterPanel = ({ filters, handleSelect, updateFilter }) => (
 AppFilterPanel.propTypes = {
   filters: PropTypes.object.isRequired,
   handleSelect: PropTypes.func,
-  updateFilter: PropTypes.func.isRequired,
 };
 
 AppFilterPanel.defaultProps = {

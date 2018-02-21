@@ -4,12 +4,15 @@ import { getDisplayText } from './displayText.utils';
 function updateSearchForm(state, action) {
   const { parameter, value } = action.payload;
   switch (parameter) {
-    case 'app_category':
-      return updateFilter(state, action);
     case 'includeTakenDown':
       return {
         ...state,
         includeTakenDown: !state.includeTakenDown,
+      };
+    case 'mobilePriority':
+      return {
+        ...state,
+        filters: updateArrayTypeFilter(state.filters, parameter, value),
       };
     case 'platform':
       return {
@@ -26,34 +29,34 @@ function updateSearchForm(state, action) {
   }
 }
 
-function updateFilter (state, { payload: { parameter, value } }) {
-  const result = Object.assign({}, state.filters);
-  switch (parameter) {
-    case 'app_category':
-      result.app_category = updateCategoryFilter(result.app_category, value);
-      break;
-    default:
-      return { ...state };
-  }
-
-  return {
-    ...state,
-    filters: result,
+function updateArrayTypeFilter (filters, type, value) {
+  const newFilters = Object.assign({}, filters);
+  const filter = filters[type];
+  const result = {
+    value: [],
   };
-}
 
-function updateCategoryFilter (filter, value) {
-  const result = {};
   if (filter === undefined) {
-    result.value = [value];
+    result.value.push(value);
   } else {
     const values = filter.value;
-    values.push(value);
+    if (values.includes(value)) {
+      _.remove(values, x => x === value);
+    } else {
+      values.push(value);
+    }
     result.value = _.uniq(values);
   }
 
-  result.displayText = getDisplayText('app_category', result.value);
-  return result;
+  result.displayText = getDisplayText(type, result.value);
+
+  if (result.value.length === 0) {
+    delete newFilters[type];
+  } else {
+    newFilters[type] = result;
+  }
+
+  return newFilters;
 }
 
 export default updateSearchForm;

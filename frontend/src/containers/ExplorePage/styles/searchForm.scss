@@ -2,10 +2,6 @@
 @import '../../../styles/mixins';
 
 #search-form-panel {
-  label {
-    cursor: pointer;
-  }
-
   .fa-times {
     cursor: pointer;
     font-size: 16px;
@@ -31,7 +27,7 @@
   h4 {
     border-bottom: 0;
     font-size: 18px;
-    margin: 0 10px 10px 10px;
+    margin: 0 10px 10px;
   }
 
   .form-group {
@@ -41,7 +37,7 @@
   }
 
   @include not-first-nor-last-child('>div') {
-    border-top: 1px solid $light-grey;
+    border-top: 1px solid $light-grey-border;
   }
 
   .basic-filter-group {
@@ -79,7 +75,6 @@
     }
 
     .panel-heading {
-      background-color: #f9f9f9;
       cursor: pointer;
       transition: color .3s;
 
@@ -89,7 +84,7 @@
     }
 
     .col-md-6 {
-      padding: 0 10px 20px 10px;
+      padding: 0 10px 20px;
     }
   }
 
@@ -97,8 +92,8 @@
     width: 100%;
 
     .filter-tags-container {
-      background-color: #f9f9f9;
-      border: 1px solid $light-grey;
+      background-color: $light-grey-background;
+      border: 1px solid $light-grey-border;
       margin: 0 10px;
       min-height: 30px;
     }
@@ -114,5 +109,10 @@
         margin-left: 10px;
       }
     }
+  }
+
+  .explore-checkbox {
+    cursor: pointer;
+    user-select: none;
   }
 }
