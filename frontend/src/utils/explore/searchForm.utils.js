@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getDisplayText } from './displayText.utils';
+import getDisplayText from './displayText.utils';
 
 function updateSearchForm(state, action) {
   const { parameter, value } = action.payload;
@@ -10,6 +10,7 @@ function updateSearchForm(state, action) {
         includeTakenDown: !state.includeTakenDown,
       };
     case 'mobilePriority':
+    case 'userBase':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -33,6 +34,7 @@ function updateFilters (filters, { parameter, value }) {
   let filter;
 
   switch (parameter) {
+    case 'userBase':
     case 'mobilePriority':
       filter = updateArrayTypeFilter(filters[parameter], parameter, value);
       break;
@@ -40,7 +42,7 @@ function updateFilters (filters, { parameter, value }) {
       break;
   }
 
-  const newFilters = addFilter(newFilters, parameter, filter);
+  const newFilters = addFilter(filters, parameter, filter);
 
   return newFilters;
 }

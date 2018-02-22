@@ -15,4 +15,5 @@ export const selectMap = {
 
 export const appFilterKeys = [
   'mobilePriority',
+  'userBase',
 ];

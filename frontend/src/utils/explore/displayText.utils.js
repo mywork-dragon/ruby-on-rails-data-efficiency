@@ -1,14 +1,20 @@
 import { capitalize } from 'utils/format.utils';
 
-export function getDisplayText (parameter, value) {
+function getDisplayText (parameter, value) {
   switch (parameter) {
     case 'app_category':
       return categoryText(value);
     case 'mobilePriority':
-      return mobilePriorityText(value);
+      return listText('Mobile Priority: ', value);
+    case 'userBase':
+      return listText('User Base: ', value);
     default:
       return '';
   }
+}
+
+function listText(base, value) {
+  return base + value.map(x => capitalize(x)).join(', ');
 }
 
 function categoryText (value) {
@@ -16,7 +22,4 @@ function categoryText (value) {
   return base + value.join(', ');
 }
 
-function mobilePriorityText (value) {
-  const base = 'Mobile Priority: ';
-  return base + value.map(x => capitalize(x)).join(', ');
-}
+export default getDisplayText;

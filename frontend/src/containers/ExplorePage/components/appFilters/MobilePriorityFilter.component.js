@@ -12,19 +12,21 @@ const MobilePriorityFilter = ({
     <label className="filter-label">
       Mobile Priority:
     </label>
-    {
-      ['low', 'medium', 'high'].map(option => (
-        <label key={option} className="explore-checkbox">
-          <input
-            checked={value.includes(option)}
-            onChange={updateFilter('mobilePriority', option)}
-            type="checkbox"
-            value={option}
-          />
-          <span>{capitalize(option)}</span>
-        </label>
-      ))
-    }
+    <div className="input-group">
+      {
+        ['low', 'medium', 'high'].map(option => (
+          <label key={option} className="explore-checkbox">
+            <input
+              checked={value.includes(option)}
+              onChange={updateFilter('mobilePriority', option)}
+              type="checkbox"
+              value={option}
+            />
+            <span>{capitalize(option)}</span>
+          </label>
+        ))
+      }
+    </div>
   </li>
 );
 

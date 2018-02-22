@@ -18,12 +18,14 @@
 
   .filter-label {
     margin: 0 15px 0 0;
-    width: 150px;
+    width: 35%;
   }
 
   .explore-checkbox {
+    cursor: pointer;
     margin: 0 20px 0 0;
     position: relative;
+    user-select: none;
   }
 
   .ui-select {
@@ -32,5 +34,11 @@
 
   select {
     margin-right: 15px;
+  }
+
+  .input-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    width: 60%;
   }
 }

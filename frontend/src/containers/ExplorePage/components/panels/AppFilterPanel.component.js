@@ -13,6 +13,7 @@ const AppFilterPanel = ({
   filters: {
     appCategory,
     mobilePriority,
+    userBase,
   },
   handleSelect,
   ...rest
@@ -31,7 +32,7 @@ const AppFilterPanel = ({
         <InAppPurchaseFilter />
         <AvailableCountriesFilter />
         <CategoriesFilter filter={appCategory} {...rest} />
-        <UserbaseFilter />
+        <UserbaseFilter userBase={userBase} {...rest} />
       </ul>
     </Panel.Body>
   </Panel>
