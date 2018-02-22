@@ -25,10 +25,20 @@ function addItemType (app) {
   };
 }
 
-export const convertToTableSort = sorts => sorts.map(sort => ({
-  id: getSortName(sort.field),
-  desc: sort.order === 'desc',
-}));
+export const convertToTableSort = (sorts) => {
+  const tableSorts = [];
+  sorts.forEach((sort) => {
+    const sortName = getSortName(sort.field);
+    if (sortName && sortName !== 'Platform') {
+      tableSorts.push({
+        id: getSortName(sort.field),
+        desc: sort.order === 'desc',
+      });
+    }
+  });
+
+  return tableSorts;
+};
 
 export const convertToQuerySort = sorts => sorts.map(sort => ({
   field: selectMap[sort.id][0],
@@ -38,8 +48,23 @@ export const convertToQuerySort = sorts => sorts.map(sort => ({
 
 export const getSortName = (val) => {
   for (let key in selectMap) {
-    if (selectMap[key] && selectMap[key].includes(val)) {
+    const fields = selectMap[key];
+    if (fields && fields.includes(val) && fields[0] === val) {
       return key;
     }
   }
+
+  return null;
 };
+
+export function formatTableData(columns, pageSize, sort) {
+  const result = {};
+  result.sort = sort;
+  result.pageSize = pageSize;
+  result.pageNum = 0;
+  result.results = [];
+  result.resultsCount = 0;
+  result.columns = columns;
+
+  return result;
+}

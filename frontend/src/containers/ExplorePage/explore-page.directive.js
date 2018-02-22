@@ -4,13 +4,15 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { store } from 'store';
 import { Provider } from 'react-redux';
 
-import ExploreComponent from './Explore.component';
+import ExploreContainer from './Explore.container';
 
 angular
   .module('appApp')
   .directive('explore', explore);
 
-function explore() {
+explore.$inject = ['$stateParams'];
+
+function explore($stateParams) {
   const directive = {
     restrict: 'E',
     template: '<div></div>',
@@ -24,7 +26,9 @@ function explore() {
       function renderReactElement() {
         render(
           <Provider store={store}>
-            <ExploreComponent />
+            <ExploreContainer
+              queryId={$stateParams.queryId}
+            />
           </Provider>
           , element[0],
         );

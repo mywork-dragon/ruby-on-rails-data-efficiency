@@ -1,4 +1,4 @@
-import { action } from 'utils/action.utils';
+import { action, createRequestTypes } from 'utils/action.utils';
 
 import {
   createTableActionTypes,
@@ -21,3 +21,13 @@ export const toggleForm = () => action(TOGGLE_FORM);
 
 export const UPDATE_ACTIVE_PANEL = 'UPDATE_ACTIVE_PANEL';
 export const updateActivePanel = index => action(UPDATE_ACTIVE_PANEL, { index });
+
+export const UPDATE_QUERY_ID = 'UPDATE_QUERY_ID';
+export const updateQueryId = id => action(UPDATE_QUERY_ID, { id });
+
+export const POPULATE_FROM_QUERY_ID = createRequestTypes('POPULATE_FROM_QUERY_ID');
+export const populateFromQueryId = {
+  request: id => action(POPULATE_FROM_QUERY_ID.REQUEST, { id }),
+  success: (id, formState) => action(POPULATE_FROM_QUERY_ID.SUCCESS, { id, formState }),
+  failure: () => action(POPULATE_FROM_QUERY_ID.FAILURE),
+};

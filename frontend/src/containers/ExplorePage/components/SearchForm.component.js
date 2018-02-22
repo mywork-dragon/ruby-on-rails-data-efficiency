@@ -14,9 +14,10 @@ import ResultTypeFilter from './ResultTypeFilter.component';
 import SdkFilterPanel from './panels/SdkFilterPanel.component';
 
 const SearchForm = ({
-  activeKey,
-  expanded,
+  activePanel,
+  canFetch,
   clearFilters,
+  expanded,
   includeTakenDown,
   platform,
   resultType,
@@ -30,7 +31,7 @@ const SearchForm = ({
     toggleForm();
   };
 
-  const handleSelect = () => newKey => () => updateActivePanel(newKey !== activeKey ? newKey : '');
+  const handleSelect = () => newKey => () => updateActivePanel(newKey !== activePanel ? newKey : '');
 
   return (
     <Panel expanded={expanded} id="search-form-panel" onToggle={togglePanel()}>
@@ -56,7 +57,7 @@ const SearchForm = ({
             </div>
             <div className="advanced-filter-group form-group">
               <h4>Add Filters</h4>
-              <ControlledPanelGroup activeKey={activeKey} handleSelect={handleSelect()} id="panel-group-1">
+              <ControlledPanelGroup activeKey={activePanel} handleSelect={handleSelect()} id="panel-group-1">
                 <div className="col-md-6">
                   <SdkFilterPanel handleSelect={handleSelect()} />
                   <AppFilterPanel handleSelect={handleSelect()} {...rest} />
@@ -78,8 +79,8 @@ const SearchForm = ({
                 <button className="btn btn-primary" onClick={togglePanel()}>Hide Form</button>
               </div>
               <div className="search-form-submit">
-                <button className="btn btn-primary">Save Search</button>
-                <button className="btn btn-primary" onClick={requestResults()}>Submit Search</button>
+                <button className="btn btn-primary" disabled={!canFetch}>Save Search</button>
+                <button className="btn btn-primary" disabled={!canFetch} onClick={requestResults()}>Submit Search</button>
               </div>
             </div>
           </div>
@@ -90,7 +91,8 @@ const SearchForm = ({
 };
 
 SearchForm.propTypes = {
-  activeKey: PropTypes.string,
+  activePanel: PropTypes.string,
+  canFetch: PropTypes.bool,
   clearFilters: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
   includeTakenDown: PropTypes.bool.isRequired,
@@ -102,7 +104,8 @@ SearchForm.propTypes = {
 };
 
 SearchForm.defaultProps = {
-  activeKey: '',
+  activePanel: '',
+  canFetch: false,
   expanded: true,
 };
 

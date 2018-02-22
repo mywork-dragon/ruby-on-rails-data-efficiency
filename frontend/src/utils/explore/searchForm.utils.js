@@ -12,7 +12,7 @@ function updateSearchForm(state, action) {
     case 'mobilePriority':
       return {
         ...state,
-        filters: updateArrayTypeFilter(state.filters, parameter, value),
+        filters: updateFilters(state.filters, action.payload),
       };
     case 'platform':
       return {
@@ -29,9 +29,23 @@ function updateSearchForm(state, action) {
   }
 }
 
-function updateArrayTypeFilter (filters, type, value) {
-  const newFilters = Object.assign({}, filters);
-  const filter = filters[type];
+function updateFilters (filters, { parameter, value }) {
+  let filter;
+
+  switch (parameter) {
+    case 'mobilePriority':
+      filter = updateArrayTypeFilter(filters[parameter], parameter, value);
+      break;
+    default:
+      break;
+  }
+
+  const newFilters = addFilter(newFilters, parameter, filter);
+
+  return newFilters;
+}
+
+function updateArrayTypeFilter (filter, type, value) {
   const result = {
     value: [],
   };
@@ -50,13 +64,19 @@ function updateArrayTypeFilter (filters, type, value) {
 
   result.displayText = getDisplayText(type, result.value);
 
-  if (result.value.length === 0) {
-    delete newFilters[type];
+  return result;
+}
+
+function addFilter (filters, type, filter) {
+  const result = { ...filters };
+
+  if (Array.isArray(filter.value) && filter.value.length !== 0) {
+    result[type] = filter;
   } else {
-    newFilters[type] = result;
+    delete result[type];
   }
 
-  return newFilters;
+  return result;
 }
 
 export default updateSearchForm;

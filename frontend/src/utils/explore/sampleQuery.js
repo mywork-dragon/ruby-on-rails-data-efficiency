@@ -42,18 +42,18 @@ export const sampleQuery = {
               [
                 "taken_down"
               ]
+            ],
+            [
+              "or",
+              [
+                "mobile_priority",
+                "high"
+              ],
+              [
+                "mobile_priority",
+                "medium"
+              ]
             ]
-            // [
-            //   "or",
-            //   [
-            //     "mobile_priority",
-            //     "high"
-            //   ],
-            //   [
-            //     "mobile_priority",
-            //     "medium"
-            //   ]
-            // ]
           ],
           "object": "app"
         },

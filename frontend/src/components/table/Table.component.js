@@ -13,6 +13,7 @@ Object.assign(ReactTableDefaults, {
 });
 
 const Table = ({
+  canFetch,
   columns,
   error,
   isAdIntel,
@@ -32,6 +33,7 @@ const Table = ({
   toggleAll,
   toggleItem,
   updateColumns,
+  updateDefaultPageSize,
   updatePageSize,
 }) => {
   const allSelected = selectedItems.length === results.length;
@@ -40,28 +42,35 @@ const Table = ({
   const minRows = loading ? 10 : 0;
 
   const onPageChange = (pageIndex) => {
-    requestResults({
-      pageNum: pageIndex,
-      pageSize,
-      sort,
-    });
+    if (canFetch) {
+      requestResults({
+        pageNum: pageIndex,
+        pageSize,
+        sort,
+      });
+    }
   };
 
   const onPageSizeChange = (newSize) => {
     updatePageSize(newSize);
-    requestResults({
-      pageNum: 0,
-      pageSize: newSize,
-      sort,
-    });
+    updateDefaultPageSize(newSize);
+    if (canFetch) {
+      requestResults({
+        pageNum: 0,
+        pageSize: newSize,
+        sort,
+      });
+    }
   };
 
   const onSortedChange = (newSort) => {
-    requestResults({
-      pageNum: 0,
-      pageSize,
-      sort: newSort,
-    });
+    if (canFetch) {
+      requestResults({
+        pageNum: 0,
+        pageSize,
+        sort: newSort,
+      });
+    }
   };
 
   return (
@@ -124,6 +133,7 @@ const Table = ({
 };
 
 Table.propTypes = {
+  canFetch: PropTypes.bool,
   columns: PropTypes.shape({
     App: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     Publisher: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -152,10 +162,12 @@ Table.propTypes = {
   toggleItem: PropTypes.func.isRequired,
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
+  updateDefaultPageSize: PropTypes.func.isRequired,
   updatePageSize: PropTypes.func.isRequired,
 };
 
 Table.defaultProps = {
+  canFetch: false,
   isAdIntel: false,
   isManual: false,
   loading: false,

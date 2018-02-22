@@ -11,20 +11,38 @@ const mapDispatchToProps = dispatch => ({
   updateFilter: (parameter, value) => () => dispatch(tableActions.updateFilter(parameter, value)),
 });
 
-const mapStateToProps = ({ explorePage: { searchForm, resultsTable } }) => ({
+const mapStateToProps = ({ explorePage: { explore, searchForm, resultsTable } }) => ({
+  canFetch: Object.keys(searchForm.filters).length !== 0,
+  explore,
   searchForm,
   resultsTable,
 });
 
-const mergeProps = ({ searchForm, resultsTable: { columns, pageSize, sort } }, dispatchProps) => ({
-  ...searchForm,
-  ...dispatchProps,
-  requestResults: () => () => {
-    const pageSettings = { pageSize, pageNum: 0 };
-    const query = buildExploreRequest(searchForm, columns, pageSettings, sort);
-    dispatchProps.requestResults(query);
-  },
-});
+const mergeProps = (storeProps, dispatchProps) => {
+  const {
+    canFetch,
+    explore,
+    searchForm,
+    resultsTable:
+      {
+        columns,
+        pageSize,
+        sort,
+      },
+  } = storeProps;
+
+  return {
+    canFetch,
+    ...explore,
+    ...searchForm,
+    ...dispatchProps,
+    requestResults: () => () => {
+      const pageSettings = { pageSize, pageNum: 0 };
+      const query = buildExploreRequest(searchForm, columns, pageSettings, sort);
+      dispatchProps.requestResults(query);
+    },
+  };
+};
 
 const SearchFormContainer = connect(
   mapStateToProps,

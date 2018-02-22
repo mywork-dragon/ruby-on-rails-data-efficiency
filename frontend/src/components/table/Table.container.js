@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import Table from './Table.component';
-import { updatePageSize } from './redux/Table.actions';
+import { updateDefaultPageSize } from './redux/Table.actions';
 
 const mapDispatchToProps = dispatch => ({
-  updatePageSize: pageSize => dispatch(updatePageSize(pageSize)),
+  updateDefaultPageSize: pageSize => dispatch(updateDefaultPageSize(pageSize)),
 });
 
 const TableContainer = connect(

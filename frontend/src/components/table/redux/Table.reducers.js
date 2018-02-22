@@ -48,16 +48,22 @@ export function table(actionTypes, tableOptions) {
           ...state,
           columns: action.payload.columns,
         };
+      case actionTypes.UPDATE_PAGE_SIZE:
+        return {
+          ...state,
+          pageSize: action.payload.pageSize,
+        };
       default:
         return state;
     }
   }
 
-  // data format: { results, resultsCount, pageSize, pageNum, sort }
+  // data format: { results, resultsCount, pageSize, pageNum, sort, columns }
   function loadResults(state, { payload: { data } }) {
     return {
       ...state,
       ...data,
+      columns: reconcileColumns(state.columns, data.columns),
       loading: false,
       error: false,
     };
@@ -91,6 +97,22 @@ export function table(actionTypes, tableOptions) {
       ...state,
       selectedItems: state.results.map(x => ({ id: x.id, type: x.type })),
     };
+  }
+
+  function reconcileColumns (oldColumns, newColumns) {
+    if (newColumns === undefined) {
+      return oldColumns;
+    }
+
+    const columns = {};
+
+    for (let key in oldColumns) {
+      if (oldColumns[key]) {
+        columns[key] = newColumns[key] ? newColumns[key] : false;
+      }
+    }
+
+    return columns;
   }
 
   return reducer;

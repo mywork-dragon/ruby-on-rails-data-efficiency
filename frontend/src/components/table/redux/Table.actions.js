@@ -6,6 +6,7 @@ const tableActionTypes = [
   'UPDATE_COLUMNS',
   'UPDATE_FILTER',
   'CLEAR_FILTERS',
+  'UPDATE_PAGE_SIZE',
 ];
 
 const tableRequestTypes = [
@@ -22,6 +23,7 @@ export function createTableActions (types) {
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
     updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
     updateFilter: (parameter, value) => action(types.UPDATE_FILTER, { parameter, value }),
+    updatePageSize: pageSize => action(types.UPDATE_PAGE_SIZE, { pageSize }),
   };
 }
 
@@ -35,5 +37,5 @@ export function createTableRequestActions (types) {
   };
 }
 
-export const UPDATE_PAGE_SIZE = 'UPDATE_PAGE_SIZE';
-export const updatePageSize = pageSize => action(UPDATE_PAGE_SIZE, { pageSize });
+export const UPDATE_DEFAULT_PAGE_SIZE = 'UPDATE_DEFAULT_PAGE_SIZE';
+export const updateDefaultPageSize = pageSize => action(UPDATE_DEFAULT_PAGE_SIZE, { pageSize });

@@ -85,6 +85,12 @@ angular
       template: '<explore />',
     };
 
+    const explorev2QueryState = {
+      name: 'explore-v2-query',
+      url: '/search/v2/{queryId}',
+      template: '<explore />',
+    };
+
     const listState = {
       name: 'list',
       url: '/lists/{listId}',
@@ -173,6 +179,7 @@ angular
     $stateProvider.state(timelineState);
     $stateProvider.state(exploreState);
     $stateProvider.state(explorev2State);
+    $stateProvider.state(explorev2QueryState);
     $stateProvider.state(customSearchState);
     $stateProvider.state(trendingState);
     $stateProvider.state(newcomerState);

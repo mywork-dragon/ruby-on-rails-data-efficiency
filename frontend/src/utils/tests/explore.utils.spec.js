@@ -16,7 +16,11 @@ const form = {
   resultType: 'app',
   platform: 'ios',
   includeTakenDown: false,
-  filters: {},
+  filters: {
+    mobilePriority: {
+      value: ['high', 'medium'],
+    },
+  },
 };
 const columns = initializeColumns([
   headerNames.APP,

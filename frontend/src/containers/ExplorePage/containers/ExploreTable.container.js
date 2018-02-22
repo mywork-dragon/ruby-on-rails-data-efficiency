@@ -8,6 +8,7 @@ const mapDispatchToProps = dispatch => ({
   toggleItem: (id, type) => () => dispatch(tableActions.toggleItem({ id, type })),
   toggleAll: () => dispatch(tableActions.toggleAllItems()),
   updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
+  updatePageSize: pageSize => dispatch(tableActions.updatePageSize(pageSize)),
 });
 
 const mapStateToProps = ({ explorePage: { resultsTable, searchForm } }) => ({
@@ -15,6 +16,7 @@ const mapStateToProps = ({ explorePage: { resultsTable, searchForm } }) => ({
   showControls: true,
   showColumnDropdown: true,
   title: 'Results',
+  canFetch: Object.keys(searchForm.filters).length !== 0,
   searchForm,
   ...resultsTable,
 });

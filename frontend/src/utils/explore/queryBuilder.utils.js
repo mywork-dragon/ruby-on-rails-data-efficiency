@@ -1,5 +1,5 @@
 import { selectMap } from './models.utils';
-import { convertToQuerySort } from './general.utils';
+import { convertToQuerySort, formatTableData } from './general.utils';
 import { buildFilter } from './filterBuilder.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort) {
@@ -8,6 +8,7 @@ export function buildExploreRequest (form, columns, pageSettings, sort) {
   result.sort = buildSortSettings(sort);
   result.query = buildFilter(form);
   result.select = buildSelect(form.resultType, columns);
+  result.formState = JSON.stringify(form);
   return result;
 }
 
