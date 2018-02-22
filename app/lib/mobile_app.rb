@@ -54,7 +54,15 @@ module MobileApp
 
     def run_length_encode_app_snapshot_fields(snap_table, fields)
       fields.append(:created_at)
-      rts = snap_table.pluck(*fields).reject{|x| x[-1].nil?}.group_by {|x| x.first(x.size - 1) }.values
+      snapshots = snap_table.pluck(*fields)
+      run_length_encode_app_snapshot_fields_from_fetched(snapshots, fields)
+    end
+
+    # This from_fetched hook is used by the AndroidApp.bulk_export method in order to allow
+    # for optimizing the query for historical snapshots.
+    def run_length_encode_app_snapshot_fields_from_fetched(snapshots, fields)
+      rts = snapshots.reject{|x| x[-1].nil?}.group_by {|x| x.first(x.size - 1) }.values
+
       output = []
       rts.map do |bin|
         bin = bin.select {|x| x[-1]}

@@ -63,14 +63,11 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def mobile_priority
-      if newest_android_app_snapshot and newest_android_app_snapshot.released
-        if newest_android_app_snapshot.released > 2.months.ago
-          return 'high'
-        elsif newest_android_app_snapshot.released > 4.months.ago
-          return 'medium'
-        end
+    last_release_date = nil
+    if newest_android_app_snapshot and newest_android_app_snapshot.released
+      last_release_date = newest_android_app_snapshot.released
     end
-    'low'
+    AndroidApp.mobile_priority_from_date(last_release_date)
   end
 
   def validate_regions
@@ -603,6 +600,406 @@ class AndroidApp < ActiveRecord::Base
       app_obj.slice(*white_list)
   end
 
+  def self.bulk_export(ids:[], options: {})
+      
+      # Whitelist as a safeguard to prevent us from exporting any
+      # attributes that we don't want to expose.
+      attribute_whitelist = [
+        "app_identifier",
+        "user_base",
+        "taken_down",
+        "google_play_id",
+        "publisher",
+        "headquarters",
+        "downloads_history",
+        "ratings_history",
+        "versions_history",
+        "first_scraped",
+        "id",
+        "name",
+        "price",
+        "seller_url",
+        "released",
+        "description",
+        "in_app_purchases",
+        "required_android_version",
+        "content_rating",
+        "seller",
+        "status",
+        "in_app_purchase_min",
+        "in_app_purchase_max",
+        "downloads_min",
+        "downloads_max",
+        "developer_google_play_identifier",
+        "categories",
+        "platform",
+        "last_updated",
+        "mobile_priority",
+        "installed_sdks",
+        "uninstalled_sdks",
+        "has_fb_ad_spend",
+        "all_version_rating",
+        "all_version_ratings_count",
+        "icon_url",
+        "current_version",
+        "download_regions",
+        "first_scanned_date",
+        "last_scanned_date"
+      ]
+
+      # List of attributes to pluck from respective collections
+
+      attributes_from_app = [
+        "app_identifier",
+        "region_codes",
+        "user_base"
+      ]
+
+      snapshot_attributes = [
+        "id",
+        "name",
+        "price",
+        "seller_url",
+        "version",
+        "released",
+        "description",
+        "android_app_id",
+        "in_app_purchases",
+        "required_android_version",
+        "content_rating",
+        "seller",
+        "ratings_all_stars",
+        "ratings_all_count",
+        "status",
+        "in_app_purchase_min",
+        "in_app_purchase_max",
+        "downloads_min",
+        "downloads_max",
+        "icon_url_300x300",
+        "developer_google_play_identifier"
+      ]
+      
+      category_attributes = [
+        "name",
+        "category_id"
+      ]
+
+      sdk_attributes = [
+        "id",
+        "name",
+        "last_seen_date",
+        "first_seen_date",
+        "activities"
+      ]
+
+      historical_attributes = [
+        "created_at",
+        "android_app_id",
+        "downloads_min",
+        "downloads_max",
+        "ratings_all_count",
+        "ratings_all_stars",
+        "version",
+        "released"
+      ]
+
+      domain_data_attributes = [
+        "id",
+        "domain",
+        "street_number",
+        "street_name",
+        "sub_premise",
+        "city",
+        "postal_code",
+        "state",
+        "state_code",
+        "country",
+        "country_code",
+        "lat",
+        "lng"
+      ]
+
+      rename = [
+        ['ratings_all_stars', 'all_version_rating'],
+        ['ratings_all_count', 'all_version_ratings_count'],
+        ['icon_url_300x300', 'icon_url'],
+        ['version', 'current_version'],
+        ['region_codes', 'download_regions']
+      ]
+
+      results = {}
+
+      apps = AndroidApp.where(:id => ids).to_a
+      
+      ##
+      # Step 1:
+      #
+      # Run bulk queries and build out info mappings in memory.
+      #
+
+      # Build app_id => newest_snapshot/category mapping
+      # 
+      # {
+      #   app_id => [
+      #     [ id, name, price, size, updated, seller_url, version, released, description, ... ] 
+      #   ]
+      # }
+      #
+
+      attributes_to_pluck = snapshot_attributes.map { |a| "android_app_snapshots.#{a}" } + category_attributes.map { |a| "android_app_categories.#{a}" }
+      snaps_and_categories = AndroidAppSnapshot.where(:id => apps.map(&:newest_android_app_snapshot_id)).joins(:android_app_categories).pluck(*attributes_to_pluck)
+      snapshots_history_attributes = AndroidAppSnapshot.where(:android_app_id => ids).pluck(*historical_attributes)
+
+      snapshots_history_attributes_map = {}
+      snapshots_history_attributes.each do |snapshot|
+        app_id = snapshot[historical_attributes.index("android_app_id")]
+        if snapshots_history_attributes_map[app_id]
+          snapshots_history_attributes_map[app_id] << snapshot
+        else
+          snapshots_history_attributes_map[app_id] = [ snapshot ]
+        end
+      end
+
+      # Build developer_id => developer_name mapping:
+      #
+      # {
+      #   developer_id => "developer_name"
+      # }
+
+      android_developers = AndroidDeveloper.where(:id => apps.map(&:android_developer_id)).pluck(:id, :name)
+      android_developers = Hash[*android_developers.flatten] # converts tuples in to {:id => :name} dict
+
+ 
+      # Build developer_id to headquarters mapping:
+      #
+      # {
+      #   developer_id => [ 
+      #     {
+      #       "id" => xxx
+      #       "domain" => "xxxx"
+      #       "street_number" => xxxx
+      #     }
+      #   ]
+      # }
+
+      developer_id_to_website_id = AndroidDevelopersWebsite.where(:android_developer_id => android_developers.keys).pluck(:android_developer_id, :website_id)
+
+      developer_id_to_website_id_map = {}
+      developer_id_to_website_id.each do |dw|
+        if developer_id_to_website_id_map[dw[0]]
+          developer_id_to_website_id_map[dw[0]] << dw[1]
+        else
+          developer_id_to_website_id_map[dw[0]] = [ dw[1] ]
+        end
+      end
+
+      website_ids = developer_id_to_website_id.map{ |a| a[1] }
+      website_id_to_domain_datum_id = WebsitesDomainDatum.where(:website_id => website_ids).pluck(:website_id, :domain_datum_id)
+      website_id_to_domain_datum_id = Hash[*website_id_to_domain_datum_id.flatten] # again, convert into map. okay cause a website has a single domain datum
+
+      domain_data_ids = website_id_to_domain_datum_id.values
+      domain_data = DomainDatum.where(:id => domain_data_ids).pluck(*domain_data_attributes)
+      domain_data_map = {} 
+      domain_data.each do |dd|
+        domain_data_map[dd[domain_data_attributes.index("id")]] = dd
+      end
+      domain_data = nil
+
+      
+      ##
+      # Step 2:
+      #
+      # Build out app exports from mappings generated in first step
+      # 
+
+      apps.each do |app|
+        result = {}
+        
+        attributes_from_app.each do |attribute|
+          result[attribute] = app.send(attribute).as_json
+        end
+
+        result['taken_down'] = !app.app_available?
+        result['google_play_id'] = result['app_identifier']
+
+        pub_name = android_developers[app.android_developer_id]
+        if pub_name
+          result["publisher"] = {
+            :id => app.android_developer_id,
+            :name => pub_name,
+            :platform => platform
+          }.as_json
+        end
+        
+        # Gather headquarter data if any
+
+        headquarters = []
+        website_ids = developer_id_to_website_id_map[app.android_developer_id]
+        if website_ids
+          website_ids.each do |website_id|
+            domain_datum_id = website_id_to_domain_datum_id[website_id]
+            dd = domain_data_map[domain_datum_id]
+            next if dd.nil?
+            headquarter = {}
+            domain_data_attributes.each do |dd_attribute|
+              next if dd_attribute == "id"
+              headquarter[dd_attribute] = dd[domain_data_attributes.index(dd_attribute)]
+            end
+            headquarters << headquarter
+          end
+        end
+        result["headquarters"] = headquarters.uniq[0..100] # limit to 100 headquarters
+
+        # Gather versions, ratings, and download history if any
+
+        historical_snapshots = snapshots_history_attributes_map[app.id]
+        if historical_snapshots
+          historical_download_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("downloads_min")], s[historical_attributes.index("downloads_max")], s[historical_attributes.index("created_at")]] }
+          app_download_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_download_snapshots, [:downloads_min, :downloads_max, :created_at])
+          result["downloads_history"] = app_download_history.as_json
+
+          historical_ratings_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("ratings_all_count")], s[historical_attributes.index("ratings_all_stars")], s[historical_attributes.index("created_at")]] }
+          app_ratings_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_ratings_snapshots, [:ratings_all_count, :ratings_all_stars, :created_at])
+          result["ratings_history"] = app_ratings_history.as_json
+
+          app_versions_history = historical_snapshots.map{|s|[s[historical_attributes.index("version")],s[historical_attributes.index("released")]]}.uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
+          result["versions_history"] = app_versions_history.as_json
+
+          if result['versions_history'] and result['versions_history'].any?
+            result['first_scraped'] = result['versions_history'][0]["released"]
+          end
+        end
+
+        results[app.id] = result
+      end
+
+      snaps_and_categories.each do |attributes_array|
+        app_id = attributes_array[snapshot_attributes.index("android_app_id")]
+        if !results[app_id]
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
+          next
+        end
+
+        category_info = Hash[category_attributes.zip(attributes_array.last(category_attributes.length))]
+        category_info["id"] = category_info["category_id"] # Rename category_id to id
+        category_info.delete("category_id")
+
+        if results[app_id] and results[app_id]["categories"]
+          results[app_id]["categories"] << category_info
+        else
+          result = {}
+          snapshot_attributes.each_with_index do |value, i|
+            result[value] = attributes_array[i]
+          end
+          result["categories"] = [ category_info ]
+          result["platform"] = platform
+          
+          # Overwrite snapshot id with AndroidAppId
+          result["id"] = result["android_app_id"]
+          result.delete("android_app_id")
+
+          result["last_updated"] = result["released"].as_json
+          
+          result["mobile_priority"] = AndroidApp.mobile_priority_from_date(attributes_array[snapshot_attributes.index("released")])
+
+          results[app_id] = results[app_id].merge(result)
+        end
+      end
+
+      if options[:include_sdk_history]
+        sdk_ids = Set.new
+    
+        apps.each do |app|
+          sdk_history = app.sdk_history
+          if results[app.id]
+            results[app.id]["installed_sdks"] = sdk_history[:installed_sdks].map{|sdk| sdk.slice(*sdk_attributes)}
+            results[app.id]["uninstalled_sdks"] = sdk_history[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_attributes + ["first_unseen_date"]))}
+          else
+            Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
+          end
+    
+          sdk_history[:installed_sdks].each do |sdk|
+            sdk_ids << sdk["id"]
+          end
+          sdk_history[:uninstalled_sdks].each do |sdk|
+            sdk_ids << sdk["id"]
+          end
+        end
+        
+        sdks_to_tags_tuples = AndroidSdk.where(:id => sdk_ids.to_a).joins(:tags).pluck("android_sdks.id", "tags.name")
+    
+        sdks_to_tags_map = {}
+        sdks_to_tags_tuples.each do |sdk_id, tag_name|
+          if sdks_to_tags_map[sdk_id]
+            sdks_to_tags_map[sdk_id] << tag_name
+          else
+            sdks_to_tags_map[sdk_id] = [ tag_name ]
+          end
+        end
+    
+        sdks_to_tags_map.keys.each do |sdk_id|
+          sdks_to_tags_map[sdk_id] = sdks_to_tags_map[sdk_id].uniq
+        end
+
+        results.values.each do |result|
+          result["installed_sdks"].each {|sdk| sdk["categories"] = sdks_to_tags_map[sdk["id"]]} if result["installed_sdks"]
+          result["uninstalled_sdks"].each {|sdk| sdk["categories"] = sdks_to_tags_map[sdk["id"]]} if result["uninstalled_sdks"]
+        end
+      end
+
+
+      ##
+      # Step 3:
+      #
+      # Run final aggregate queries and finish building app export objects.
+      # 
+
+      ad_stats = AndroidAd.where(:advertised_app_id => apps.map(&:id)).select('advertised_app_id, min(date_seen) as created_at, max(date_seen) as updated_at').group(:advertised_app_id)
+      ad_stats.each do |ad_stat|
+        if results[ad_stat.advertised_app_id]
+          results[ad_stat.advertised_app_id]["first_seen_ads_date"] = ad_stat.created_at
+          results[ad_stat.advertised_app_id]["last_seen_ads_date"] = ad_stat.updated_at
+          results[ad_stat.advertised_app_id]["has_fb_ad_spend"] = true
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{ad_stat.advertised_app_id}"))
+        end
+      end
+
+      app_missing_ads = apps.map(&:id) - ad_stats.map(&:advertised_app_id)
+      app_missing_ads.each do |app_id|
+        if results[app_id]
+          results[app_id]['has_fb_ad_spend'] = false
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app_id}"))
+        end
+      end
+
+      results.values.each do |app|
+        rename.map do |field, new_name|
+          app[new_name] = app[field]
+          app.delete(field)
+        end
+      end
+      
+      scan_statuses = ApkSnapshot.where("scan_status = ? OR status = ?",
+        ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success])
+        .where(:android_app_id => apps.map(&:id))
+        .group(:android_app_id).select('android_app_id',
+          'max(good_as_of_date) as last_scanned',
+          'min(good_as_of_date) as created_at')
+      
+      scan_statuses.each do |scan_status|
+        if results[scan_status.android_app_id]
+          results[scan_status.android_app_id]["first_scanned_date"] = scan_status.created_at.utc.iso8601
+          results[scan_status.android_app_id]["last_scanned_date"] = scan_status.last_scanned.utc.iso8601
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app_id}"))
+        end
+      end
+      
+      results.values.map { |result| result.slice(*attribute_whitelist) }
+  end
+
   private
 
   # delete old method
@@ -615,6 +1012,18 @@ class AndroidApp < ActiveRecord::Base
   end
 
   class << self
+
+    def mobile_priority_from_date(date)
+      if date
+        if date > 2.months.ago
+          return 'high'
+        elsif date > 4.months.ago
+          return 'medium'
+        end
+      end
+      'low'
+    end
+
     def validate_snapshot_history(app_id)
       # Function to cleanup install events associated with apk scan system ping ponging between
       # device specific APK version.
