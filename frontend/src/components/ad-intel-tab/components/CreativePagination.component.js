@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Pagination } from 'react-bootstrap';
+import UltimatePagination from 'Table/components/OldPagination.component';
 
 const PaginationComponent = ({
   requestCreatives,
@@ -14,14 +13,11 @@ const PaginationComponent = ({
   return (
     <div className="row">
       <div className="col-md-12 text-right pagination-container">
-        <Pagination
-          activePage={pageNum}
-          boundaryLinks={resultsCount > 50}
-          bsSize="small"
-          buttonComponentClass="span"
-          items={totalPages}
-          maxButtons={5}
-          onSelect={requestCreatives}
+        <UltimatePagination
+          currentPage={pageNum}
+          hidePreviousAndNextPageLinks
+          onChange={requestCreatives}
+          totalPages={totalPages}
         />
       </div>
     </div>

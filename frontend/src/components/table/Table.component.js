@@ -163,7 +163,7 @@ Table.propTypes = {
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
-  updatePageSize: PropTypes.func.isRequired,
+  updatePageSize: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -185,6 +185,7 @@ Table.defaultProps = {
   showColumnDropdown: false,
   showControls: false,
   updateColumns: null,
+  updatePageSize: () => {},
 };
 
 export default Table;

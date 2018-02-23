@@ -1,7 +1,7 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import { formatPublisherAdData, formatPublisherCreatives } from 'utils/publisher.utils';
 import PublisherService from 'services/publisher.service';
-// import { publisherAdSummary, publisherCreatives } from 'utils/mock-data.utils';
+// import { publisherAdSummary, publisherCreatives } from 'utils/mocks/mock-data.utils';
 
 import {
   AD_INTEL_TYPES as actionTypes,
