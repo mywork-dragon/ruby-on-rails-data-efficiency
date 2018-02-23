@@ -38,7 +38,7 @@ class AppHotStore < HotStore
       app_ids.each do |app_id|
         default_external_json_params = {:include_sdk_history => include_sdk_history}
         extra_fields = extra_app_fields(platform)
-        default_external_json_params.merge(extra_fields)
+        default_external_json_params = default_external_json_params.merge(extra_fields)
 
         app_object = to_class(platform).find(app_id)
         app_attributes = app_object.as_external_dump_json(default_external_json_params)
