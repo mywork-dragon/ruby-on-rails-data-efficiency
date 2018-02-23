@@ -23,7 +23,7 @@ private
     "#{type}:#{platform}:#{application_id}"
   end
 
-  def write_entry(type, platform, id, attributes, override_key: nil, async: true)
+  def write_entry(type, platform, id, attributes, override_key: nil, async: false)
     entry_key = override_key || key(type, platform, id)
 
     if @fields_to_normalize

@@ -30,37 +30,72 @@ class AppHotStore < HotStore
     }
   end
 
-  def write(platform, app_id, include_sdk_history: false)
-    app_key = key("app", platform, app_id)
+  def write(platform, app_ids, include_sdk_history: true)
+    # TODO: Remove once iOS bulk export is done
+    # Temporary duplicate code while Ben optimizes iOS export...
+    if platform == "ios"
+      
+      app_ids.each do |app_id|
+        default_external_json_params = {:include_sdk_history => include_sdk_history}
+        extra_fields = extra_app_fields(platform)
+        default_external_json_params.merge(extra_fields)
 
-    default_external_json_params = {:include_sdk_history => include_sdk_history}
-    extra_fields = extra_app_fields(platform)
-    default_external_json_params.merge(extra_fields)
+        app_object = to_class(platform).find(app_id)
+        app_attributes = app_object.as_external_dump_json(default_external_json_params)
 
-    app_object = to_class(platform).find(app_id)
-    app_attributes = app_object.as_external_dump_json(default_external_json_params)
+        # Merge uninstalled_sdks and installed_sdks into sdk_activity
+        if include_sdk_history
+          sdk_activity = []
+          app_attributes["installed_sdks"].each do |install_info|
+            install_info["installed"] = true
+            sdk_activity << install_info
+          end
+          app_attributes["uninstalled_sdks"].each do |install_info|
+            install_info["installed"] = false
+            sdk_activity << install_info
+          end
+          app_attributes["sdk_activity"] = sdk_activity
+          app_attributes.delete("installed_sdks")
+          app_attributes.delete("uninstalled_sdks")
+        end
 
-    # Merge uninstalled_sdks and installed_sdks into sdk_activity
-    if include_sdk_history
-      sdk_activity = []
-      app_attributes["installed_sdks"].each do |install_info|
-        install_info["installed"] = true
-        sdk_activity << install_info
+        add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
+
+        delete_app_fields(platform, app_attributes)
+
+        write_entry("app", platform, app_id, app_attributes)
       end
-      app_attributes["uninstalled_sdks"].each do |install_info|
-        install_info["installed"] = false
-        sdk_activity << install_info
+
+    else
+
+      export_options = {:include_sdk_history => include_sdk_history}
+      export_results = AndroidApp.bulk_export(ids: app_ids, options: export_options)
+      export_results.each do |app_id, app_attributes|
+        # Merge uninstalled_sdks and installed_sdks into sdk_activity
+        if include_sdk_history
+          sdk_activity = []
+          app_attributes["installed_sdks"].each do |install_info|
+            install_info["installed"] = true
+            sdk_activity << install_info
+          end
+          app_attributes["uninstalled_sdks"].each do |install_info|
+            install_info["installed"] = false
+            sdk_activity << install_info
+          end
+          app_attributes["sdk_activity"] = sdk_activity
+          app_attributes.delete("installed_sdks")
+          app_attributes.delete("uninstalled_sdks")
+        end
+        
+        # TODO: probably merge this into iOS version of bulk_export:
+        # add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
+  
+        delete_app_fields(platform, app_attributes)
+  
+        write_entry("app", platform, app_id, app_attributes)
       end
-      app_attributes["sdk_activity"] = sdk_activity
-      app_attributes.delete("installed_sdks")
-      app_attributes.delete("uninstalled_sdks")
+
     end
-
-    add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
-
-    delete_app_fields(platform, app_attributes)
-
-    write_entry("app", platform, app_id, app_attributes)
   end
 
   def write_ad_summary(app_id, app_identifier, platform, ad_summary, async: false)

@@ -105,7 +105,7 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
   end
 
   test 'single app' do
-    result = AndroidApp.bulk_export(ids: [@app.id])[0]
+    result = AndroidApp.bulk_export(ids: [@app.id])[@app.id]
          
     assert_equal result["app_identifier"], "com.mightysignal.osman"
     assert_equal result["user_base"], "elite"
@@ -137,7 +137,7 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
     assert_equal result["downloads_history"][0]["downloads_max"], 123123123
     assert_equal result["ratings_history"][0]["ratings_all_count"], 123
     assert_equal result["ratings_history"][0]["ratings_all_stars"], "1.23"
-    assert_equal result["versions_history"], [{"version"=>"osman1.0", "released"=>"2018-02-22"}]
+    assert_equal result["versions_history"], [{"version"=>"osman1.0", "released"=>@date2.strftime("%Y-%m-%d")}]
   end
 
 end

@@ -997,7 +997,11 @@ class AndroidApp < ActiveRecord::Base
         end
       end
       
-      results.values.map { |result| result.slice(*attribute_whitelist) }
+      results.each do |app_id, result|
+        results[app_id] = result.slice(*attribute_whitelist)
+      end
+
+      results
   end
 
   private
