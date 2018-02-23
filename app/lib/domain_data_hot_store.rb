@@ -4,7 +4,6 @@ class DomainDataHotStore < HotStore
     super
 
     @key_set = "domain_data_keys"
-    @compressed_fields = [ "description", "tags", "tech_used" ]
   end
 
   def write(domain_datum, async: false)

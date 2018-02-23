@@ -45,12 +45,14 @@ private
 
     attributes.each do |key, value|
       if value != nil
-        if @compressed_fields.include? key.to_s
+        raw_value = value.to_json
+        gzipped_value = ActiveSupport::Gzip.compress(raw_value)
+        if gzipped_value.bytesize < raw_value.bytesize
           compressed_attributes_array << key.to_s
-          compressed_attributes_array << ActiveSupport::Gzip.compress(value.to_json)
+          compressed_attributes_array << gzipped_value
         else
           attributes_array << key.to_s
-          attributes_array << value.to_json
+          attributes_array << raw_value
         end
       end
     end
@@ -95,7 +97,7 @@ private
     cursor, attributes = @redis_store.hscan(entry_key, entry_cursor)
     attributes.each do |attribute_tuple|
       begin
-        if @compressed_fields.include? attribute_tuple[0]
+        if attribute_tuple[1].start_with?("\x1F\x8B")
           entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(ActiveSupport::Gzip.decompress(attribute_tuple[1]))
         else
           entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(attribute_tuple[1])

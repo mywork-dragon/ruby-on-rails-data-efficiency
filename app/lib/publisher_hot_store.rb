@@ -4,7 +4,7 @@ class PublisherHotStore < HotStore
     super
 
     @key_set = "publisher_keys"
-    @compressed_fields = [ "details", "websites" ]
+
     @platform_to_class = {
       "ios" => IosDeveloper,
       "android" => AndroidDeveloper

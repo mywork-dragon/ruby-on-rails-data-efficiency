@@ -10,7 +10,6 @@ class SdkHotStore < HotStore
     super
 
     @key_set = "sdk_keys"
-    @compressed_fields = []
     @platform_to_class = {
       "ios" => IosSdk,
       "android" => AndroidSdk
