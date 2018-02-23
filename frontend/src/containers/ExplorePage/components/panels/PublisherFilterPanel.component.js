@@ -5,7 +5,13 @@ import { Panel } from 'react-bootstrap';
 import FortuneRankFilter from '../publisherFilters/FortuneRankFilter.component';
 import HeadquarterFilter from '../publisherFilters/HeadquarterFilter.component';
 
-const PublisherFilterPanel = ({ handleSelect }) => (
+const PublisherFilterPanel = ({
+  filters: {
+    fortuneRank,
+  },
+  handleSelect,
+  ...rest
+}) => (
   <Panel eventKey="3">
     <Panel.Heading onClick={handleSelect('3')}>
       <Panel.Title>
@@ -15,7 +21,7 @@ const PublisherFilterPanel = ({ handleSelect }) => (
     </Panel.Heading>
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
-        <FortuneRankFilter />
+        <FortuneRankFilter fortuneRank={fortuneRank} {...rest} />
         <HeadquarterFilter />
       </ul>
     </Panel.Body>
@@ -23,6 +29,7 @@ const PublisherFilterPanel = ({ handleSelect }) => (
 );
 
 PublisherFilterPanel.propTypes = {
+  filters: PropTypes.object.isRequired,
   handleSelect: PropTypes.func,
 };
 

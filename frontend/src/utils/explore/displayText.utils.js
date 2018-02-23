@@ -4,6 +4,8 @@ function getDisplayText (parameter, value) {
   switch (parameter) {
     case 'app_category':
       return categoryText(value);
+    case 'fortuneRank':
+      return `Fortune Rank: ${value}`;
     case 'mobilePriority':
       return listText('Mobile Priority: ', value);
     case 'userBase':

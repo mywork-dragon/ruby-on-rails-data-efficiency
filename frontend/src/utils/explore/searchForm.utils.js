@@ -9,6 +9,7 @@ function updateSearchForm(state, action) {
         ...state,
         includeTakenDown: !state.includeTakenDown,
       };
+    case 'fortuneRank':
     case 'mobilePriority':
     case 'userBase':
       return {
@@ -34,6 +35,9 @@ function updateFilters (filters, { parameter, value }) {
   let filter;
 
   switch (parameter) {
+    case 'fortuneRank':
+      filter = updateSingleValueFilter(filters[parameter], parameter, value);
+      break;
     case 'userBase':
     case 'mobilePriority':
       filter = updateArrayTypeFilter(filters[parameter], parameter, value);
@@ -69,10 +73,25 @@ function updateArrayTypeFilter (filter, type, value) {
   return result;
 }
 
+function updateSingleValueFilter (filter, type, value) {
+  const result = {
+    value: null,
+  };
+
+  if (value && (filter === undefined || value !== filter.value)) {
+    result.value = value;
+    result.displayText = getDisplayText(type, result.value);
+  }
+
+  return result;
+}
+
 function addFilter (filters, type, filter) {
   const result = { ...filters };
 
   if (Array.isArray(filter.value) && filter.value.length !== 0) {
+    result[type] = filter;
+  } else if (!Array.isArray(filter.value) && filter.value) {
     result[type] = filter;
   } else {
     delete result[type];

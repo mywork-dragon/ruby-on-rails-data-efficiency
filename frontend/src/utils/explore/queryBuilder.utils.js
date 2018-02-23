@@ -1,5 +1,5 @@
 import { selectMap } from './models.utils';
-import { convertToQuerySort, formatTableData } from './general.utils';
+import { convertToQuerySort } from './general.utils';
 import { buildFilter } from './filterBuilder.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort) {

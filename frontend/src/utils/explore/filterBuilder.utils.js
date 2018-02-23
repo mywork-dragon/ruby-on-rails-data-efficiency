@@ -1,5 +1,5 @@
 import { snakeCase } from 'utils/format.utils';
-import { appFilterKeys } from './models.utils';
+import { appFilterKeys, publisherFilterKeys } from './models.utils';
 
 export function buildFilter (form) {
   const result = {
@@ -11,9 +11,14 @@ export function buildFilter (form) {
 
   const appFilters = buildAppFilters(form);
   const sdkFilters = buildSdkFilters(form);
+  const publisherFilters = buildPublisherFilters(form);
 
   if (appFilters.predicates.length !== 0) {
     result.filter.inputs.push(appFilters);
+  }
+
+  if (publisherFilters.predicates.length !== 0) {
+    result.filter.inputs.push(publisherFilters);
   }
 
   if (sdkFilters.inputs.length !== 0) {
@@ -58,12 +63,20 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
 function generatePredicate(type, filter) {
   const result = ['or'];
   const filterType = snakeCase(type);
-  filter.value.forEach((x) => {
+  if (Array.isArray(filter.value)) {
+    filter.value.forEach((x) => {
+      result.push([
+        filterType,
+        x,
+      ]);
+    });
+  } else if (typeof filter.value === 'number') {
     result.push([
       filterType,
-      x,
+      0,
+      filter.value,
     ]);
-  });
+  }
 
   return result;
 }
@@ -102,4 +115,20 @@ export function buildSdkFilters (filters) {
       },
     ],
   };
+}
+
+export function buildPublisherFilters ({ filters }) {
+  const result = {
+    operator: 'filter',
+    predicates: [],
+    object: 'publisher',
+  };
+
+  for (let key in filters) {
+    if (publisherFilterKeys.includes(key)) { // TODO: we'll see how this holds, meant to eliminate unnecessary filters
+      result.predicates.push(generatePredicate(key, filters[key]));
+    }
+  }
+
+  return result;
 }

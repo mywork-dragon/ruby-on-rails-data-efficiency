@@ -10,7 +10,7 @@
         border-bottom: 1px solid $light-grey-border;
       }
 
-      input[type=checkbox] {
+      input[type='checkbox'], input[type='radio'] {
         margin-right: 5px;
       }
     }

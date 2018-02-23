@@ -61,7 +61,7 @@ const SearchForm = ({
                 <div className="col-md-6">
                   <SdkFilterPanel handleSelect={handleSelect()} />
                   <AppFilterPanel handleSelect={handleSelect()} {...rest} />
-                  <PublisherFilterPanel handleSelect={handleSelect()} />
+                  <PublisherFilterPanel handleSelect={handleSelect()} {...rest} />
                 </div>
                 <div className="col-md-6">
                   <AdIntelFilterPanel handleSelect={handleSelect()} />

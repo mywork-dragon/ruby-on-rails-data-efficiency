@@ -9,7 +9,7 @@ export function table(actionTypes, tableOptions) {
     columns: {},
     error: false,
     loading: false,
-    message: 'No results',
+    message: 'Filter items to see results',
     pageNum: 0,
     pageSize: getPreferredPageSize() || 20,
     results: [],
@@ -60,6 +60,13 @@ export function table(actionTypes, tableOptions) {
 
   // data format: { results, resultsCount, pageSize, pageNum, sort, columns }
   function loadResults(state, { payload: { data } }) {
+    if (data.resultsCount === 0) {
+      return {
+        ...initialState,
+        message: 'No Results',
+      };
+    }
+
     return {
       ...state,
       ...data,

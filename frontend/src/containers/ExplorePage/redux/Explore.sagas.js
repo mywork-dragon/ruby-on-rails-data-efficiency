@@ -17,23 +17,36 @@ function* requestResults (action) {
   try {
     const { data: { query_id } } = yield call(ExploreService().getQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
-    yield put(updateQueryId(query_id));
-    const { data, resultsCount } = yield call(ExploreService().getResultsByQueryId, query_id, pageNum);
-    const items = formatResults(data, params, resultsCount);
-    yield put(tableActions.allItems.success(items));
+    yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
   }
 }
 
-function* requestFormState ({ payload: { id } }) {
+function* requestResultsByQueryId (id, params, pageNum) {
+  try {
+    yield put(updateQueryId(id));
+    const res = yield call(ExploreService().getQueryResultInfo, id);
+    const { number_results, query_result_id } = res.data;
+    if (number_results === 0) {
+      yield put(tableActions.allItems.success({ resultsCount: 0 }));
+    } else {
+      const { data } = yield call(ExploreService().getResultsByResultId, query_result_id, pageNum);
+      const items = formatResults(data, params, number_results);
+      yield put(tableActions.allItems.success(items));
+    }
+  } catch (error) {
+    console.log(error);
+    yield put(tableActions.allItems.failure());
+  }
+}
+
+function* populateFromQuery ({ payload: { id } }) {
   try {
     const { data: params, data: { formState } } = yield call(ExploreService().getQueryParams, id);
-    const { data, resultsCount } = yield call(ExploreService().getResultsByQueryId, id, 0);
-    const items = formatResults(data, params, resultsCount);
     yield put(populateFromQueryId.success(id, JSON.parse(formState)));
-    yield put(tableActions.allItems.success(items));
+    yield call(requestResultsByQueryId, id, params, 0);
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
@@ -47,7 +60,7 @@ function* watchResultsRequest() {
 }
 
 function* watchQueryPopulation() {
-  yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, requestFormState);
+  yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, populateFromQuery);
 }
 
 export default function* exploreSaga() {

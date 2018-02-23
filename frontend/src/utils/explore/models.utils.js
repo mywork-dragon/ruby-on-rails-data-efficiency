@@ -17,3 +17,7 @@ export const appFilterKeys = [
   'mobilePriority',
   'userBase',
 ];
+
+export const publisherFilterKeys = [
+  'fortuneRank',
+];
