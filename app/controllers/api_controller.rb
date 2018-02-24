@@ -464,7 +464,7 @@ class ApiController < ApplicationController
       categories[tag.name] = {
         id: tag.id,
         name: tag.name,
-        sdks: tag.ios_sdks.as_json.sort_by { |sdk| sdk[:name] }
+        sdks: tag.ios_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
       }
     end
 
@@ -477,7 +477,7 @@ class ApiController < ApplicationController
       categories[tag.name] = {
         id: tag.id,
         name: tag.name,
-        sdks: tag.android_sdks.as_json.sort_by { |sdk| sdk[:name] }
+        sdks: tag.android_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
       }
     end
 
