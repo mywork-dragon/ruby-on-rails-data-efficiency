@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
-const AdIntelFilterPanel = ({ handleSelect }) => (
-  <Panel eventKey="4">
-    <Panel.Heading onClick={handleSelect('4')}>
+const AdIntelFilterPanel = ({ handleSelect, panelKey }) => (
+  <Panel eventKey={panelKey}>
+    <Panel.Heading onClick={handleSelect(panelKey)}>
       <Panel.Title>
         Ad Intelligence
         <i className="fa fa-angle-down pull-right" />
@@ -18,6 +18,7 @@ const AdIntelFilterPanel = ({ handleSelect }) => (
 
 AdIntelFilterPanel.propTypes = {
   handleSelect: PropTypes.func,
+  panelKey: PropTypes.string.isRequired,
 };
 
 AdIntelFilterPanel.defaultProps = {

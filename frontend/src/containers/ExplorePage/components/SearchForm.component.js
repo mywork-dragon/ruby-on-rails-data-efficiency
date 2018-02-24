@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
@@ -6,7 +6,7 @@ import AdditionalFilters from './AdditionalFilters.component';
 import AdIntelFilterPanel from './panels/AdIntelFilterPanel.component';
 import AppFilterPanel from './panels/AppFilterPanel.component';
 import ControlledPanelGroup from './panels/ControlledPanelGroup';
-import FilterTags from './FilterTags.component';
+import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
 import PublisherFilterPanel from './panels/PublisherFilterPanel.component';
 import RankingsFilterPanel from './panels/RankingsFilterPanel.component';
@@ -31,7 +31,7 @@ const SearchForm = ({
     toggleForm();
   };
 
-  const handleSelect = () => newKey => () => updateActivePanel(newKey !== activePanel ? newKey : '');
+  const handleSelect = newKey => () => updateActivePanel(newKey !== activePanel ? newKey : '');
 
   return (
     <Panel expanded={expanded} id="search-form-panel" onToggle={togglePanel()}>
@@ -59,19 +59,19 @@ const SearchForm = ({
               <h4>Add Filters</h4>
               <ControlledPanelGroup activeKey={activePanel} handleSelect={handleSelect()} id="panel-group-1">
                 <div className="col-md-6">
-                  <SdkFilterPanel handleSelect={handleSelect()} />
-                  <AppFilterPanel handleSelect={handleSelect()} {...rest} />
-                  <PublisherFilterPanel handleSelect={handleSelect()} {...rest} />
+                  <SdkFilterPanel handleSelect={handleSelect} panelKey="1" />
+                  <AppFilterPanel handleSelect={handleSelect} panelKey="2" {...rest} />
+                  <PublisherFilterPanel handleSelect={handleSelect} panelKey="3" {...rest} />
                 </div>
                 <div className="col-md-6">
-                  <AdIntelFilterPanel handleSelect={handleSelect()} />
-                  <RankingsFilterPanel handleSelect={handleSelect()} />
+                  <AdIntelFilterPanel handleSelect={handleSelect} panelKey="4" />
+                  <RankingsFilterPanel handleSelect={handleSelect} panelKey="5" />
                 </div>
               </ControlledPanelGroup>
             </div>
             <div className="form-review form-group">
               <h4>Review Filters</h4>
-              <FilterTags />
+              <FilterTagsDisplay updateActivePanel={updateActivePanel} {...rest} />
             </div>
             <div className="search-form-footer form-group">
               <div>

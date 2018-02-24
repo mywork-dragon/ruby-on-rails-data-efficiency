@@ -5,10 +5,11 @@ import { tableActions, toggleForm, updateActivePanel } from '../redux/Explore.ac
 
 const mapDispatchToProps = dispatch => ({
   clearFilters: () => () => dispatch(tableActions.clearFilters()),
-  requestResults: params => dispatch(tableActions.allItems.request(params)),
+  deleteFilter: filterKey => dispatch(tableActions.deleterFilter(filterKey)),
+  getResults: params => dispatch(tableActions.allItems.request(params)),
   toggleForm: () => dispatch(toggleForm()),
   updateActivePanel: index => dispatch(updateActivePanel(index)),
-  updateFilter: (parameter, value) => () => dispatch(tableActions.updateFilter(parameter, value)),
+  updateFilter: (parameter, value, options) => () => dispatch(tableActions.updateFilter(parameter, value, options)),
 });
 
 const mapStateToProps = ({ explorePage: { explore, searchForm, resultsTable } }) => ({
@@ -39,7 +40,7 @@ const mergeProps = (storeProps, dispatchProps) => {
     requestResults: () => () => {
       const pageSettings = { pageSize, pageNum: 0 };
       const query = buildExploreRequest(searchForm, columns, pageSettings, sort);
-      dispatchProps.requestResults(query);
+      dispatchProps.getResults(query);
     },
   };
 };

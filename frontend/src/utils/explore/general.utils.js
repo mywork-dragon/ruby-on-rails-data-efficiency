@@ -68,3 +68,7 @@ export function formatTableData(columns, pageSize, sort) {
 
   return result;
 }
+
+export function panelFilterCount(filters, panelKey) {
+  return Object.values(filters).filter(x => x.panelKey === panelKey).length;
+}

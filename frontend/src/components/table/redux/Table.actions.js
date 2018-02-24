@@ -1,6 +1,7 @@
 import { action, namespaceActions, buildBaseRequestTypes } from 'utils/action.utils';
 
 const tableActionTypes = [
+  'DELETE_FILTER',
   'TOGGLE_ITEM',
   'TOGGLE_ALL_ITEMS',
   'UPDATE_COLUMNS',
@@ -19,10 +20,11 @@ export const createTableRequestTypes = base => buildBaseRequestTypes(base, table
 export function createTableActions (types) {
   return {
     clearFilters: () => action(types.CLEAR_FILTERS),
+    deleterFilter: filterKey => action(types.DELETE_FILTER, { filterKey }),
     toggleItem: item => action(types.TOGGLE_ITEM, { item }),
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
     updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
-    updateFilter: (parameter, value) => action(types.UPDATE_FILTER, { parameter, value }),
+    updateFilter: (parameter, value, options) => action(types.UPDATE_FILTER, { parameter, value, options }),
     updatePageSize: pageSize => action(types.UPDATE_PAGE_SIZE, { pageSize }),
   };
 }

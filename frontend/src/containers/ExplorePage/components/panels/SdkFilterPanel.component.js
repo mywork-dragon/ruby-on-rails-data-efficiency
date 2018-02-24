@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
-const SdkFilterPanel = ({ handleSelect }) => (
-  <Panel eventKey="1">
-    <Panel.Heading onClick={handleSelect('1')}>
+const SdkFilterPanel = ({ handleSelect, panelKey }) => (
+  <Panel eventKey={panelKey}>
+    <Panel.Heading onClick={handleSelect(panelKey)}>
       <Panel.Title>
         SDK Data
         <i className="fa fa-angle-down pull-right" />
@@ -18,6 +18,7 @@ const SdkFilterPanel = ({ handleSelect }) => (
 
 SdkFilterPanel.propTypes = {
   handleSelect: PropTypes.func,
+  panelKey: PropTypes.string.isRequired,
 };
 
 SdkFilterPanel.defaultProps = {

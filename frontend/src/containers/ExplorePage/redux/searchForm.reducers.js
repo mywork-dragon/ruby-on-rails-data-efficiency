@@ -18,6 +18,8 @@ function searchForm (state = initialFormState, action) {
       return {
         ...initialFormState,
       };
+    case TABLE_TYPES.DELETE_FILTER:
+      return deleteFilter(state, action.payload.filterKey);
     case POPULATE_FROM_QUERY_ID.SUCCESS:
       return {
         ...action.payload.formState,
@@ -25,6 +27,13 @@ function searchForm (state = initialFormState, action) {
     default:
       return state;
   }
+}
+
+function deleteFilter(state, filterKey) {
+  const newState = { ...state };
+  delete newState.filters[filterKey];
+
+  return newState;
 }
 
 export default searchForm;

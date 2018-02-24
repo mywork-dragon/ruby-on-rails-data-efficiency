@@ -31,16 +31,16 @@ function updateSearchForm(state, action) {
   }
 }
 
-function updateFilters (filters, { parameter, value }) {
+function updateFilters (filters, { parameter, value, options: { panelKey } }) {
   let filter;
 
   switch (parameter) {
     case 'fortuneRank':
-      filter = updateSingleValueFilter(filters[parameter], parameter, value);
+      filter = updateSingleValueFilter(filters[parameter], parameter, value, panelKey);
       break;
     case 'userBase':
     case 'mobilePriority':
-      filter = updateArrayTypeFilter(filters[parameter], parameter, value);
+      filter = updateArrayTypeFilter(filters[parameter], parameter, value, panelKey);
       break;
     default:
       break;
@@ -51,8 +51,9 @@ function updateFilters (filters, { parameter, value }) {
   return newFilters;
 }
 
-function updateArrayTypeFilter (filter, type, value) {
+function updateArrayTypeFilter (filter, type, value, panelKey) {
   const result = {
+    panelKey,
     value: [],
   };
 
@@ -73,8 +74,9 @@ function updateArrayTypeFilter (filter, type, value) {
   return result;
 }
 
-function updateSingleValueFilter (filter, type, value) {
+function updateSingleValueFilter (filter, type, value, panelKey) {
   const result = {
+    panelKey,
     value: null,
   };
 

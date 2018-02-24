@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { capitalize } from 'utils/format.utils';
 
 const UserbaseFilter = ({
+  panelKey,
   userBase: {
     value,
   },
@@ -18,7 +19,7 @@ const UserbaseFilter = ({
           <label key={option} className="explore-checkbox">
             <input
               checked={value.includes(option)}
-              onChange={updateFilter('userBase', option)}
+              onChange={updateFilter('userBase', option, { panelKey })}
               type="checkbox"
               value={option}
             />
@@ -31,6 +32,7 @@ const UserbaseFilter = ({
 );
 
 UserbaseFilter.propTypes = {
+  panelKey: PropTypes.string.isRequired,
   userBase: PropTypes.shape({
     value: PropTypes.arrayOf(PropTypes.string),
   }),

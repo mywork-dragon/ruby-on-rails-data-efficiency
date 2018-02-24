@@ -5,6 +5,7 @@ const FortuneRankFilter = ({
   fortuneRank: {
     value,
   },
+  panelKey,
   updateFilter,
 }) => (
   <li>
@@ -18,7 +19,7 @@ const FortuneRankFilter = ({
             <input
               checked={value === option}
               name="fortuneRank"
-              onClick={updateFilter('fortuneRank', option)}
+              onClick={updateFilter('fortuneRank', option, { panelKey })}
               type="radio"
               value={option}
             />
@@ -34,6 +35,7 @@ FortuneRankFilter.propTypes = {
   fortuneRank: PropTypes.shape({
     value: PropTypes.number,
   }),
+  panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
 };
 

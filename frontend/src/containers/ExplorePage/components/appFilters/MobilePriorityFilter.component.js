@@ -6,6 +6,7 @@ const MobilePriorityFilter = ({
   mobilePriority: {
     value,
   },
+  panelKey,
   updateFilter,
 }) => (
   <li>
@@ -18,7 +19,7 @@ const MobilePriorityFilter = ({
           <label key={option} className="explore-checkbox">
             <input
               checked={value.includes(option)}
-              onChange={updateFilter('mobilePriority', option)}
+              onChange={updateFilter('mobilePriority', option, { panelKey })}
               type="checkbox"
               value={option}
             />
@@ -34,6 +35,7 @@ MobilePriorityFilter.propTypes = {
   mobilePriority: PropTypes.shape({
     value: PropTypes.arrayOf(PropTypes.string),
   }),
+  panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
 };
 
