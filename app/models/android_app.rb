@@ -625,7 +625,6 @@ class AndroidApp < ActiveRecord::Base
         "required_android_version",
         "content_rating",
         "seller",
-        "status",
         "in_app_purchase_min",
         "in_app_purchase_max",
         "downloads_min",
@@ -876,7 +875,7 @@ class AndroidApp < ActiveRecord::Base
       snaps_and_categories.each do |attributes_array|
         app_id = attributes_array[snapshot_attributes.index("android_app_id")]
         if !results[app_id]
-          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app_id}"))
           next
         end
 
@@ -993,7 +992,7 @@ class AndroidApp < ActiveRecord::Base
           results[scan_status.android_app_id]["first_scanned_date"] = scan_status.created_at.utc.iso8601
           results[scan_status.android_app_id]["last_scanned_date"] = scan_status.last_scanned.utc.iso8601
         else
-          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app_id}"))
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{scan_status.android_app_id}"))
         end
       end
       

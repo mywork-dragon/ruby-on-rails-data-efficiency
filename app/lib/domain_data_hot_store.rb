@@ -1,7 +1,7 @@
 class DomainDataHotStore < HotStore
 
-  def initialize()
-    super
+  def initialize(redis_store: nil)
+    super(redis_store: redis_store)
 
     @key_set = "domain_data_keys"
   end

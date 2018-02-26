@@ -9,8 +9,12 @@ class HotStore
 
   @@MAX_CONNECTIONS = (ENV['HOT_STORE_REDIS_MAX_CONNECTIONS'] || 1).to_i
 
-  def initialize()
-    @redis_store = RedisCluster.new(@@STARTUP_NODES, @@MAX_CONNECTIONS)
+  def initialize(redis_store: nil)
+    if redis_store
+      @redis_store = redis_store
+    else
+      @redis_store = RedisCluster.new(@@STARTUP_NODES, @@MAX_CONNECTIONS)
+    end
   end
 
 private
@@ -97,7 +101,14 @@ private
     cursor, attributes = @redis_store.hscan(entry_key, entry_cursor)
     attributes.each do |attribute_tuple|
       begin
-        if attribute_tuple[1].start_with?("\x1F\x8B")
+        is_gzipped = false
+        begin 
+          is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B")
+        rescue Encoding::CompatibilityError => e
+          is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B".force_encoding("ASCII-8BIT"))
+        end
+
+        if is_gzipped
           entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(ActiveSupport::Gzip.decompress(attribute_tuple[1]))
         else
           entry_attributes[attribute_tuple[0]] = ActiveSupport::JSON.decode(attribute_tuple[1])

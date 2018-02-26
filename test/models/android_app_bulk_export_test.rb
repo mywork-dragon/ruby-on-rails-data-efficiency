@@ -120,7 +120,6 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
     assert_equal result["required_android_version"], "osman2.0"
     assert_equal result["content_rating"], "osman rated m for mature"
     assert_equal result["seller"], "osman seller of goods"
-    assert_equal result["status"], 1
     assert_equal result["in_app_purchase_min"], 1
     assert_equal result["in_app_purchase_max"], 10
     assert_equal result["downloads_min"], 123

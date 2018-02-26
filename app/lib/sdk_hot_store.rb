@@ -6,8 +6,8 @@ class SdkHotStore < HotStore
     :tags => :categories
   }
 
-  def initialize()
-    super
+  def initialize(redis_store: nil)
+    super(redis_store: redis_store)
 
     @key_set = "sdk_keys"
     @platform_to_class = {

@@ -19,6 +19,90 @@ class RedisMock
     end
   end
 
+  def hmset(k,arr)
+    run_callbacks :expire_keys do
+      @store[k] = { value: {} } if @store[k].nil?
+      hm = @store[k][:value]
+
+      arr.each_slice(2) do |a|
+        hm[a[0]] = a[1]
+      end
+      
+      record_response('OK')
+    end
+  end
+
+  def hget(h,k)
+    run_callbacks :expire_keys do
+      info = @store[h] || {}
+      v = info[:value]
+      res = v[k]
+      record_response(res)
+    end
+  end
+
+  def hscan(k, cursor)
+    run_callbacks :expire_keys do
+      info = @store[k] || {}
+      v = info[:value]
+      res = []
+      v.each do |key, value|
+        res << [key, value]
+      end
+      record_response(["0", res])
+    end
+  end
+
+  def sadd(k,v)
+    run_callbacks :expire_keys do
+      @store[k] = { value: Set.new } if @store[k].nil?
+      s = @store[k][:value]
+      if s.include? v
+        response = "0"
+      else 
+        response = "1"
+      end
+      s.add(v)
+      record_response(response)
+    end
+  end
+
+  def srem(k,v)
+    run_callbacks :expire_keys do
+      @store[k] = { value: Set.new } if @store[k].nil?
+      s = @store[k][:value]
+      if s.include? v
+        response = "1"
+      else 
+        response = "0"
+      end
+      s.delete(v)
+      record_response(response)
+    end
+  end
+
+  def sismember(k,v)
+    run_callbacks :expire_keys do
+      s = @store[k] || { :value => Set.new }
+      s = s[:value]
+      if s.include? v
+        response = "1"
+      else 
+        response = "0"
+      end
+      record_response(response)
+    end
+  end
+
+  def del(*k)
+    deleted = 0
+    k.each do |key|
+      deleted += 1 if @store.key?(key)
+      @store.delete(key)
+    end
+    record_response(deleted.to_s)
+  end
+
   def setex(k,s,v)
     set(k,v)
     expire(k,s)
