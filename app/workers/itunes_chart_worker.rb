@@ -1,7 +1,7 @@
 class ItunesChartWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :itunes_charts, retry: false
+  sidekiq_options queue: :itunes_charts, retry: 5
 
   def perform(method, *args)
     self.send(method.to_sym, *args)
@@ -9,7 +9,9 @@ class ItunesChartWorker
 
   def scrape_itunes_top_free
     ranked_app_identifiers = ItunesChartScraperService::FreeApps.new.ranked_app_identifiers
-
+    if ranked_app_identifiers.empty
+      raise "Empty ranked_app_identifiers set"
+    end
     existing_ios_apps = IosApp.where(app_identifier: ranked_app_identifiers)
     missing_app_identifiers = ranked_app_identifiers - existing_ios_apps.pluck(:app_identifier)
 
