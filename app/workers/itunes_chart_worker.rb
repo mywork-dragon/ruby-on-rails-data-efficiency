@@ -9,7 +9,7 @@ class ItunesChartWorker
 
   def scrape_itunes_top_free
     ranked_app_identifiers = ItunesChartScraperService::FreeApps.new.ranked_app_identifiers
-    if ranked_app_identifiers.empty
+    if ranked_app_identifiers.empty?
       raise "Empty ranked_app_identifiers set"
     end
     existing_ios_apps = IosApp.where(app_identifier: ranked_app_identifiers)
