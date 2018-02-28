@@ -26,32 +26,44 @@ function updateSearchForm(state, action) {
         ...state,
         resultType: value,
       };
+    case 'sdks':
+      return {
+        ...state,
+        filters: updateFilters(state.filters, action.payload),
+      };
+    case 'sdkOperator':
+      const newState = { ...state };
+      newState.filters.sdks.operator = action.payload.value;
+      return newState;
     default:
       return state;
   }
 }
 
-function updateFilters (filters, { parameter, value, options: { panelKey } }) {
+function updateFilters (filters, { parameter, value, options }) {
   let filter;
 
   switch (parameter) {
     case 'fortuneRank':
-      filter = updateSingleValueFilter(filters[parameter], parameter, value, panelKey);
+      filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':
     case 'mobilePriority':
-      filter = updateArrayTypeFilter(filters[parameter], parameter, value, panelKey);
+      filter = updateArrayTypeFilter(filters[parameter], parameter, value, options);
+      break;
+    case 'sdks':
+      filter = updateSdkFilter(filters[parameter].filters[options.index], parameter, value, options);
       break;
     default:
       break;
   }
 
-  const newFilters = addFilter(filters, parameter, filter);
+  const newFilters = addFilter(filters, parameter, filter, options);
 
   return newFilters;
 }
 
-function updateArrayTypeFilter (filter, type, value, panelKey) {
+function updateArrayTypeFilter (filter, type, value, { panelKey }) {
   const result = {
     panelKey,
     value: [],
@@ -74,7 +86,7 @@ function updateArrayTypeFilter (filter, type, value, panelKey) {
   return result;
 }
 
-function updateSingleValueFilter (filter, type, value, panelKey) {
+function updateSingleValueFilter (filter, type, value, { panelKey }) {
   const result = {
     panelKey,
     value: null,
@@ -88,13 +100,26 @@ function updateSingleValueFilter (filter, type, value, panelKey) {
   return result;
 }
 
-function addFilter (filters, type, filter) {
+function updateSdkFilter (filter, type, value, { field }) {
+  const newFilter = {
+    ...filter,
+    [field]: value,
+  };
+
+  newFilter.displayText = getDisplayText('sdk', newFilter);
+
+  return newFilter;
+}
+
+function addFilter (filters, type, filter, options) {
   const result = { ...filters };
 
   if (Array.isArray(filter.value) && filter.value.length !== 0) {
     result[type] = filter;
   } else if (!Array.isArray(filter.value) && filter.value) {
     result[type] = filter;
+  } else if (type === 'sdks') {
+    result.sdks.filters[options.index] = filter;
   } else {
     delete result[type];
   }

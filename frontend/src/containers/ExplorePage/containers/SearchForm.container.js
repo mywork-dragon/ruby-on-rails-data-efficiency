@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
+import { hasFilters } from 'utils/explore/general.utils';
 import SearchForm from '../components/SearchForm.component';
-import { tableActions, toggleForm, updateActivePanel } from '../redux/Explore.actions';
+import { tableActions, toggleForm, updateActivePanel, addBlankSdkFilter } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
+  addSdkFilter: () => dispatch(addBlankSdkFilter()),
   clearFilters: () => () => dispatch(tableActions.clearFilters()),
-  deleteFilter: filterKey => dispatch(tableActions.deleterFilter(filterKey)),
+  deleteFilter: (filterKey, index) => dispatch(tableActions.deleteFilter(filterKey, index)),
   getResults: params => dispatch(tableActions.allItems.request(params)),
   toggleForm: () => dispatch(toggleForm()),
   updateActivePanel: index => dispatch(updateActivePanel(index)),
@@ -13,7 +15,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = ({ explorePage: { explore, searchForm, resultsTable } }) => ({
-  canFetch: Object.keys(searchForm.filters).length !== 0,
+  canFetch: hasFilters(searchForm.filters),
   explore,
   searchForm,
   resultsTable,

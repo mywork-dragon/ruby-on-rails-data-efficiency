@@ -70,5 +70,15 @@ export function formatTableData(columns, pageSize, sort) {
 }
 
 export function panelFilterCount(filters, panelKey) {
+  if (panelKey === '1') {
+    return filters.filter(x => x.sdks.length > 0).length;
+  }
+
   return Object.values(filters).filter(x => x.panelKey === panelKey).length;
+}
+
+export function hasFilters(filters) {
+  const keys = Object.keys(filters);
+  const sdks = filters.sdks;
+  return keys.length > 1 || sdks.filters.some(x => x.sdks.length > 0);
 }

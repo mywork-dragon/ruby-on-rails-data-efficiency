@@ -41,4 +41,44 @@
     flex-wrap: wrap;
     width: 60%;
   }
+
+  .sdk-filter-group {
+    border: 1px solid #daedf2;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px 10px;
+    padding: 10px;
+
+    .options-group {
+      .ant-select {
+        margin: 0 10px 10px 0;
+      }
+
+      .ant-calendar-picker {
+        margin: 0 10px 10px 0;
+      }
+
+      .anticon-delete {
+        cursor: pointer;
+        float: right;
+        font-size: 15px;
+        transition: .3s color;
+
+        &:hover {
+          color: $primary-blue;
+        }
+      }
+    }
+
+    .sdk-select-option {
+      .fa {
+        margin-right: 5px;
+      }
+    }
+
+    .following {
+      margin: 0 5px 10px;
+    }
+  }
 }

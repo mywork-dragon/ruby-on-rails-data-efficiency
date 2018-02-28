@@ -5,7 +5,7 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
-  before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
+  before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete, :get_sdks_and_categories_autocomplete]
   before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv, :export_results_to_csv]
   before_action :authenticate_ios_live_scan, only: [:ios_scan_status, :ios_start_scan] # Authorizing iOS Live Scan routes
   before_action :authenticate_ad_intelligence, only: :ad_intelligence
@@ -484,7 +484,7 @@ class ApiController < ApplicationController
     render json: categories
   end
 
-  
+
 
   def export_results_to_csv
     app_filters = JSON.parse(params[:app])
@@ -923,14 +923,56 @@ class ApiController < ApplicationController
     results = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
+      sdk_companies = AndroidSdk.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon, platform: 'Android'}
       end
     elsif platform == 'ios'
-      sdk_companies = IosSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
+      sdk_companies = IosSdk.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon, platform: 'iOS'}
+      end
+    end
+
+    render json: {searchParam: query, results: results}
+  end
+
+  def get_sdks_and_categories_autocomplete
+    query = params['query']
+    platform = params['platform']
+
+    sdk_companies = []
+    results = []
+
+    unless platform == 'ios'
+      sdk_companies = AndroidSdk.where("name LIKE ?", "#{query}%").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon, platform: 'android', type: 'sdk'}
+      end
+      Tag.where("tags.name LIKE ?", "#{query}%").select(:id, :name).joins(:android_sdks).group(:tag_id).having('count(tag_id) > ?', 0).map do |tag|
+        results << {
+          id: tag.id,
+          name: tag.name,
+          sdks: tag.android_sdks.where(flagged: false).pluck(:id),
+          platform: 'android',
+          type: 'sdkCategory'
+        }
+      end
+    end
+
+    unless platform == 'android'
+      sdk_companies = IosSdk.where("name LIKE ?", "#{query}%").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon, platform: 'ios', type: 'sdk'}
+      end
+      Tag.where("tags.name LIKE ?", "#{query}%").select(:id, :name).joins(:ios_sdks).group(:tag_id).having('count(tag_id) > ?', 0).each do |tag|
+        results << {
+          id: tag.id,
+          name: tag.name,
+          sdks: tag.ios_sdks.where(flagged: false).pluck(:id),
+          platform: 'ios',
+          type: 'sdkCategory'
+        }
       end
     end
 

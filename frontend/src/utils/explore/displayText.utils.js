@@ -10,6 +10,8 @@ function getDisplayText (parameter, value) {
       return listText('Mobile Priority: ', value);
     case 'userBase':
       return listText('User Base: ', value);
+    case 'sdk':
+      return sdkText(value);
     default:
       return '';
   }
@@ -22,6 +24,28 @@ function listText(base, value) {
 function categoryText (value) {
   const base = 'Categories: ';
   return base + value.join(', ');
+}
+
+function sdkText ({ eventType, sdks }) {
+  if (sdks.length === 0) {
+    return '';
+  }
+
+  let eventTypeText;
+
+  switch (eventType) {
+    case 'install':
+      eventTypeText = 'Installed';
+      break;
+    case 'uninstall':
+      eventTypeText = 'Uninstalled';
+      break;
+    case 'never-seen':
+      eventTypeText = 'Never Seen';
+      break;
+  }
+
+  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText}`;
 }
 
 export default getDisplayText;

@@ -1,4 +1,4 @@
-/* eslint react/prop-types: 1 */
+/* eslint-disable */
 import React from 'react';
 import { Pagination } from 'react-bootstrap';
 
@@ -72,3 +72,4 @@ const UltimatePagination = ReactUltimatePagination.createUltimatePagination({
 });
 
 export default UltimatePagination;
+/* eslint-enable */

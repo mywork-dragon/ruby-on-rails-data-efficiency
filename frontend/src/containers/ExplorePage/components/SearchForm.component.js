@@ -59,7 +59,7 @@ const SearchForm = ({
               <h4>Add Filters</h4>
               <ControlledPanelGroup activeKey={activePanel} handleSelect={handleSelect()} id="panel-group-1">
                 <div className="col-md-6">
-                  <SdkFilterPanel handleSelect={handleSelect} panelKey="1" />
+                  <SdkFilterPanel handleSelect={handleSelect} panelKey="1" platform={platform} {...rest} />
                   <AppFilterPanel handleSelect={handleSelect} panelKey="2" {...rest} />
                   <PublisherFilterPanel handleSelect={handleSelect} panelKey="3" {...rest} />
                 </div>

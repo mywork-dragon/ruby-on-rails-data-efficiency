@@ -31,3 +31,6 @@ export const populateFromQueryId = {
   success: (id, formState) => action(POPULATE_FROM_QUERY_ID.SUCCESS, { id, formState }),
   failure: () => action(POPULATE_FROM_QUERY_ID.FAILURE),
 };
+
+export const ADD_BLANK_SDK_FILTER = 'ADD_BLANK_SDK_FILTER';
+export const addBlankSdkFilter = () => action(ADD_BLANK_SDK_FILTER);

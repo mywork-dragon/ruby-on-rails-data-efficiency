@@ -25,6 +25,9 @@ const ExploreService = (client = httpClient) => ({
   getResultsByResultId: (id, page) => (
     client.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
   ),
+  getSdkAutocompleteResults: (platform, query) => (
+    client.get(`/api/sdks_and_categories/autocomplete?platform=${platform}&query=${query}`)
+  ),
 });
 
 export default ExploreService;

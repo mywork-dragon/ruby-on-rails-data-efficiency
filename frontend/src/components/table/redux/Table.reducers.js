@@ -37,7 +37,9 @@ export function table(actionTypes, tableOptions) {
         };
       case actionTypes.CLEAR_RESULTS:
         return {
-          ...initialState,
+          ...state,
+          results: [],
+          resultsCount: 0,
         };
       case actionTypes.TOGGLE_ALL_ITEMS:
         return toggleAll(state);
@@ -113,7 +115,7 @@ export function table(actionTypes, tableOptions) {
 
     const columns = {};
 
-    for (let key in oldColumns) {
+    for (const key in oldColumns) {
       if (oldColumns[key]) {
         columns[key] = newColumns[key] ? newColumns[key] : false;
       }

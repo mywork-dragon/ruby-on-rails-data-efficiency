@@ -3,7 +3,7 @@
 
 import { headerNames } from 'Table/redux/column.models';
 import * as utils from '../explore/queryBuilder.utils';
-import { buildFilter, buildAppFilters, buildSdkFilters } from '../explore/filterBuilder.utils';
+import { buildFilter, buildAppFilters } from '../explore/filterBuilder.utils';
 import { sampleQuery } from '../explore/sampleQuery';
 import { initializeColumns } from '../table.utils';
 import { formatResults, getSortName } from '../explore/general.utils';

@@ -1,4 +1,5 @@
 require('./font-awesome/css/font-awesome.css');
+require('antd/dist/antd.css');
 require('./main.css');
 require('./flags.css');
 require('./ng-tags-input.css');

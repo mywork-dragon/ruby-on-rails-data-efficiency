@@ -6,7 +6,13 @@ export const longDate = date => moment(date).format('ll');
 
 export const timeAgo = date => moment(date, 'YYYYMMDD').fromNow();
 
-export const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalize = (string) => {
+  if (string === 'ios') {
+    return 'iOS';
+  }
+
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 export const camelCase = (string) => {
   const stripped = string.replace(/\s+/g, '');

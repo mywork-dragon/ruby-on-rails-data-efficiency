@@ -6,12 +6,17 @@ const FilterTag = ({
   deleteFilter,
   displayText,
   filterKey,
+  index,
   panelKey,
   updateActivePanel,
 }) => {
+  if (displayText === '') {
+    return null;
+  }
+
   const handleDelete = () => (e) => {
     e.stopPropagation();
-    deleteFilter(filterKey);
+    deleteFilter(filterKey, index);
   };
 
   return (
@@ -27,8 +32,13 @@ FilterTag.propTypes = {
   deleteFilter: PropTypes.func.isRequired,
   displayText: PropTypes.string.isRequired,
   filterKey: PropTypes.string.isRequired,
+  index: PropTypes.number,
   panelKey: PropTypes.string.isRequired,
   updateActivePanel: PropTypes.func.isRequired,
+};
+
+FilterTag.defaultProps = {
+  index: null,
 };
 
 export default FilterTag;

@@ -15,6 +15,7 @@ function* requestResults (action) {
   const { params, params: { page_settings: { page: pageNum } } } = action.payload;
   delete params.page_settings.page;
   try {
+    yield put(tableActions.clearResults());
     const { data: { query_id } } = yield call(ExploreService().getQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
     yield call(requestResultsByQueryId, query_id, params, pageNum);

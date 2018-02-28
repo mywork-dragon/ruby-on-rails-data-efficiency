@@ -25,6 +25,7 @@
       "react/void-dom-elements-no-children": "warn",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "react/jsx-sort-props": "warn",
+      "react/no-array-index-key": "warn",
       "func-names": "off",
       "global-require": "off",
       "no-param-reassign": "off",
@@ -80,6 +81,7 @@
       "no-restricted-properties": "warn",
       "no-continue": "warn",
       "no-debugger": "warn",
-      "prefer-const": "warn"
+      "prefer-const": "warn",
+      "no-fallthrough": "warn"
     }
 }
