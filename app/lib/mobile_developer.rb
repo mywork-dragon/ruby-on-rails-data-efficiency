@@ -13,7 +13,7 @@ module MobileDeveloper
   end
 
   def fortune_1000_rank
-    domains = DomainLinker.new.domain_to_publisher(self.platform, self.id)
+    domains = DomainLinker.new.publisher_to_domains(self.platform, self.id)
     DomainDatum.where(:domain => domains).pluck(:fortune_1000_rank).compact.min
   end
 
