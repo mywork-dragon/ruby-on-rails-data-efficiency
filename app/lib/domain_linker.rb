@@ -5,6 +5,7 @@ class DomainLinker
   def initialize()
     @downloaded = false
     @domain_to_publishers = Hash.new {[]}
+    @hotstore = PublisherHotStore.new
   end
 
   def download!
@@ -27,4 +28,9 @@ class DomainLinker
       "#{platform}_developer".classify.constantize.find(publisher_id)
     end
   end
+
+  def publisher_to_domains(platform, publisher_id)
+    @hotstore.read(platform, publisher_id)['domains'] || []
+  end
+
 end

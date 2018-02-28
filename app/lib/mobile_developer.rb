@@ -13,7 +13,8 @@ module MobileDeveloper
   end
 
   def fortune_1000_rank
-    valid_websites.joins(:domain_datum).pluck(:fortune_1000_rank).compact.min
+    domains = DomainLinker.new.domain_to_publisher(self.platform, self.id)
+    DomainDatum.where(:domain => domains).pluck(:fortune_1000_rank).compact.min
   end
 
   def is_major_publisher?
