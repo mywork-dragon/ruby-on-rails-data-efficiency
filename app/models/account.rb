@@ -124,6 +124,16 @@ class Account < ActiveRecord::Base
     self.update_attributes(salesforce_settings: settings)
   end
 
+  def set_salesforce_tier(tier:)
+    settings = salesforce_settings.try(:with_indifferent_access) || {}  
+    settings[:tier] = tier
+    self.update_attributes(salesforce_settings: settings)
+  end
+
+  def salesforce_tier
+    (salesforce_settings.try(:with_indifferent_access) || {})[:tier] || 'basic'
+  end
+
   def domain_mapping_query(model)
     settings =  salesforce_settings.try(:with_indifferent_access)
     settings.try(:[], :domain_mapping_queries).try(:[], model)

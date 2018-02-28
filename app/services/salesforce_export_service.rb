@@ -316,6 +316,7 @@ class SalesforceExportService
   end
 
   def export(app: nil, mapping: nil, object_id: nil, publisher: nil, export_apps: true)
+
     app ||= publisher.apps.first if publisher
     publisher ||=  app.publisher if app
 
@@ -353,6 +354,8 @@ class SalesforceExportService
     end
 
     new_object = new_object.merge(new_object_fields(object_id))
+
+    Throttler.new(@user.id, 25, 1.month, prefix: 'salesforce-user-export').increment if basic_access?
 
     export = if object_id.present?
       @client.update!(@model_name, new_object)
@@ -701,6 +704,10 @@ class SalesforceExportService
       end
     end
     reset_bulk_data
+  end
+
+  def basic_access?
+    @account.salesforce_tier == 'basic'
   end
 
   private

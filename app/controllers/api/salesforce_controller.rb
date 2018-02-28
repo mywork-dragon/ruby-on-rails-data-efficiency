@@ -25,6 +25,11 @@ class Api::SalesforceController < ApplicationController
                                 app: app, 
                                 mapping: params[:mapping], 
                                 object_id: params[:objectId]) 
+    rescue Throttler::LimitExceeded => e
+      render json: {
+                    error_class: e.class.name, 
+                    error_message: "Your account can only export to Salesforce 25 times per month"
+                   }, status: 400
     rescue StandardError => e
       render json: {error_class: e.class.name, error_message: e.message}, status: 400
     else
