@@ -7,42 +7,10 @@ export function buildSdkFilters ({ sdks }) {
   };
 
   sdks.filters.forEach((filter) => {
-    if (filter.sdks.length === 0) {
-      return;
+    const sdkFilter = generateSdkFilter(filter);
+    if (sdkFilter) {
+      result.inputs.push(sdkFilter);
     }
-
-    const query = {
-      operator: filter.operator === 'all' ? 'intersect' : 'union',
-      inputs: [],
-    };
-
-    const dateItem = generateDateRange(filter);
-
-    const sdkTemplate = (sdk) => {
-      const sdkItem = generateSdkItem(sdk);
-      const sdkFilter = {
-        object: 'sdk_event',
-        operator: 'filter',
-        predicates: _.compact([
-          ['type', filter.eventType === 'uninstall' ? 'uninstall' : 'install'],
-          dateItem,
-          sdkItem,
-          ['platform', sdk.platform],
-        ]),
-      };
-
-      if (filter.eventType === 'never-seen') {
-        return {
-          operator: 'not',
-          inputs: [sdkFilter],
-        };
-      }
-
-      return sdkFilter;
-    };
-
-    filter.sdks.forEach(sdk => query.inputs.push(sdkTemplate(sdk)));
-    result.inputs.push(query);
   });
 
   if (result.inputs.length === 0) {
@@ -52,8 +20,56 @@ export function buildSdkFilters ({ sdks }) {
   return result;
 }
 
-export function generateDateRange ({ dateRange, dates }) {
-  if (dateRange === 'anytime') {
+export function generateSdkFilter (filter) {
+  if (filter.sdks.length === 0) {
+    return null;
+  }
+
+  const query = {
+    operator: filter.operator === 'all' ? 'intersect' : 'union',
+    inputs: [],
+  };
+
+  const dateItem = generateDateRange(filter);
+
+  const sdkTemplate = (sdk) => {
+    const sdkItem = generateSdkItem(sdk);
+    const sdkFilter = {
+      object: 'sdk_event',
+      operator: 'filter',
+      predicates: _.compact([
+        ['type', filter.eventType === 'uninstall' ? 'uninstall' : 'install'],
+        dateItem,
+        sdkItem,
+        ['platform', sdk.platform],
+      ]),
+    };
+
+    if (filter.eventType === 'never-seen') {
+      return {
+        operator: 'not',
+        inputs: [sdkFilter],
+      };
+    }
+
+    return sdkFilter;
+  };
+
+  filter.sdks.forEach(sdk => query.inputs.push(sdkTemplate(sdk)));
+
+  return query;
+}
+
+export function generateSdkItem (sdk) {
+  const result = [];
+  result.push(`sdk_id${sdk.sdks ? 's' : ''}`);
+  result.push(sdk.sdks ? sdk.sdks : sdk.id);
+
+  return result;
+}
+
+export function generateDateRange ({ dateRange, dates, eventType }) {
+  if (dateRange === 'anytime' || eventType === 'never-seen') {
     return null;
   }
 
@@ -91,17 +107,10 @@ export function generateDateRange ({ dateRange, dates }) {
       break;
     case 'custom':
       dates.forEach(x => result.push(x));
+      break;
     default:
       break;
   }
-
-  return result;
-}
-
-export function generateSdkItem (sdk) {
-  const result = [];
-  result.push(`sdk_id${sdk.sdks ? 's' : ''}`);
-  result.push(sdk.sdks ? sdk.sdks : sdk.id);
 
   return result;
 }

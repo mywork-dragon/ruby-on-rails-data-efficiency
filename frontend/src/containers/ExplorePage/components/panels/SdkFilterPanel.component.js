@@ -9,6 +9,7 @@ import SdkFilterGroup from '../SdkFilterGroup.component';
 
 const SdkFilterPanel = ({
   addSdkFilter,
+  filters,
   filters: {
     sdks,
   },
@@ -17,14 +18,14 @@ const SdkFilterPanel = ({
   updateFilter,
   ...rest
 }) => {
-  let filters = [];
+  let sdkFilters = [];
   const disableMasterOperator = !sdks || sdks.filters.length <= 1;
 
   // initialize empty filter if currently no sdk filters
   if (!sdks) {
     addSdkFilter();
   } else {
-    filters = sdks.filters;
+    sdkFilters = sdks.filters;
   }
 
   return (
@@ -58,10 +59,10 @@ const SdkFilterPanel = ({
           </Radio.Group>
         </div>
         {
-          filters.map((filter, index) => (
+          sdkFilters.map((filter, index) => (
             <SdkFilterGroup
               key={`${filter.eventType}${filter.dateRange}${index}`}
-              canDelete={filters.length > 1}
+              canDelete={sdkFilters.length > 1}
               filter={filter}
               index={index}
               updateFilter={updateFilter}

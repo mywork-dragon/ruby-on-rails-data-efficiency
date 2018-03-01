@@ -1,5 +1,4 @@
 import { selectMap } from './models.utils';
-import { convertToQuerySort } from './general.utils';
 import { buildFilter } from './filterBuilder.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort) {
@@ -37,6 +36,12 @@ export function buildSortSettings (sorts) {
     fields: formattedSorts.concat(defaultSorts),
   };
 }
+
+export const convertToQuerySort = sorts => sorts.map(sort => ({
+  field: selectMap[sort.id][0],
+  order: sort.desc ? 'desc' : 'asc',
+  object: 'app',
+}));
 
 export function buildSelect (resultType, columns) {
   const fields = {};
