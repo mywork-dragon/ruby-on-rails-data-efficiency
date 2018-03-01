@@ -1008,9 +1008,12 @@ class ApiController < ApplicationController
   def blog_feed
     require 'rss'
     require 'open-uri'
-    rss = RSS::Parser.parse(open('https://blog.mightysignal.com/feed').read, false).items
-    result = rss.select { |result| result.categories.none? { |category| category.content == "engineering" } }.first
-    pub_date = result.pubDate.to_date;
+    result = Rails.cache.fetch('blog_feed', expires: 1.hours) do
+      rss = RSS::Parser.parse(open('https://blog.mightysignal.com/feed').read, false).items
+      rss.select { |result| result.categories.none? { |category| category.content == "engineering" } }.first
+    end
+
+    pub_date = result.pubDate.to_date
     if Date.today - pub_date > 4
       render json: { :message => "No new posts" }
       return
