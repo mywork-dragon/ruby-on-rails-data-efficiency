@@ -176,7 +176,7 @@ class AndroidApp < ActiveRecord::Base
       developer.try(:name),
       developer.try(:identifier),
       self.fortune_rank,
-      developer.try(:get_website_urls).try(:join, ', '),
+      DomainLinker.new.publisher_to_domains('android', developer.id).try(:first, 10).try(:join, ', '),
       self.link,
       developer.try(:link),
       self.ratings_all_count,

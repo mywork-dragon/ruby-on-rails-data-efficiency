@@ -11,7 +11,7 @@ module ApiHelper
   def csv_header
     headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'FB Ad Spend', 'First Seen FB Ads', 'Last Seen FB Ads',
                'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID',
-               'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads', 'Street Numbers', 'Street Names',
+               'Fortune Rank', 'Publisher Domain(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads', 'Street Numbers', 'Street Names',
                'Cities', 'States', 'Countries', 'Postal Codes']
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
       headers << "User Base - #{store.country_code}"
@@ -91,7 +91,7 @@ module ApiHelper
       es_app['publisher_name'],
       es_app['publisher_identifier'],
       es_app['fortune_rank'],
-      es_app['publisher_websites'].try(:first, 5).try(:join, ', '),
+      DomainLinker.new.publisher_to_domains('ios', es_app['publisher_id']).try(:first, 10).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/ios/' + es_app['id'].to_s,
       es_app['publisher_id'].present? ? "http://www.mightysignal.com/app/app#/publisher/ios/#{es_app['publisher_id']}" : nil,
       es_app['ratings_all'],
@@ -135,7 +135,7 @@ module ApiHelper
       es_app['publisher_name'],
       es_app['publisher_identifier'],
       es_app['fortune_rank'],
-      es_app['publisher_websites'].try(:first, 5).try(:join, ', '),
+      DomainLinker.new.publisher_to_domains('android', es_app['publisher_id']).try(:first, 10).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/android/' + es_app['id'].to_s,
       es_app['publisher_id'].present? ? "http://www.mightysignal.com/app/app#/publisher/android/#{es_app['publisher_id']}" : nil,
       es_app['ratings_all'],
