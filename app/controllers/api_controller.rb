@@ -1018,4 +1018,42 @@ class ApiController < ApplicationController
     render json: { title: result.title, author: result.dc_creator, link: result.link, pubDate: pub_date }
   end
 
+  def mightyquery_auth_token
+      body = {
+      "account_id": "mri:mws:iam:varys-#{@current_user.account_id}:user/#{@current_user.email}",
+      "statements": [
+        {
+            "action": [
+                "mightyquery:create_query",
+                "mightyquery:execute_query",
+                "mightyquery:fetch_result_page"
+            ],
+            "effect": "allow",
+            "resource": [
+                "mri:mws:mightyquery/query",
+                "mri:mws:mightyquery/query/*",
+                "mri:mws:mightyquery/query_result/*"
+            ]
+        },
+        {
+          "action": [
+              "adintel:get_ad_data",
+          ],
+          "effect": "allow",
+          "resource": @current_user.account.enabled_ad_networks.map {|x| "mri:mws:adsource/#{x}"}
+        }
+      ],
+      "expire": Time.now.to_i + 20.minutes
+    }
+
+    @result = HTTParty.post('https://query.mightysignal.com/auth/token',
+    :body => body.to_json,
+    :headers => { 'JWT' => ENV['MIGHTYQUERY_AUTH_TOKEN_GENERATION_TOKEN'], 'Content-Type' => 'application/json' } )
+    if @result.code == 200
+      render json: @result.as_json
+    else
+      raise "Unable to generate mightyquery token"
+    end
+  end
+
 end
