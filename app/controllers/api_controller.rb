@@ -571,9 +571,9 @@ class ApiController < ApplicationController
 
   def get_contact_email
     # Let accounts make 10 requests (one full page) in a second but no more.
-    Throttler.new(@current_user.account_id, 10, 1, prefix: 'get_contact_email_s')
+    Throttler.new(@current_user.account_id, 10, 1, prefix: 'get_contact_email_s').increment
     # Limit accounts to 100 contacts per 20 minute period.
-    Throttler.new(@current_user.account_id, 100, 1200, prefix: 'get_contact_email_h')
+    Throttler.new(@current_user.account_id, 100, 1200, prefix: 'get_contact_email_h').increment
     contact_id = params['contactId']
     begin
       email = @contact_service.get_contact_email(contact_id)
@@ -586,7 +586,7 @@ class ApiController < ApplicationController
 
   def get_company_contacts
     # Let users make 20 requests (load 20 pages) in a minute but no more.
-    Throttler.new(@current_user.id, 20, 60, prefix: 'get_company_contacts')
+    Throttler.new(@current_user.id, 20, 60, prefix: 'get_company_contacts').increment
 
     platform = params['platform']
     publisher_id = params['publisherId']
