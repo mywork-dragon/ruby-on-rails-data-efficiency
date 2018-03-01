@@ -1020,30 +1020,30 @@ class ApiController < ApplicationController
 
   def mightyquery_auth_token
       body = {
-      "account_id": "mri:mws:iam:varys-#{@current_user.account_id}:user/#{@current_user.email}",
-      "statements": [
+      "account_id" => "mri:mws:iam:varys-#{@current_user.account_id}:user/#{@current_user.email}",
+      "statements" => [
         {
-            "action": [
+            "action"=> [
                 "mightyquery:create_query",
                 "mightyquery:execute_query",
                 "mightyquery:fetch_result_page"
             ],
-            "effect": "allow",
-            "resource": [
+            "effect" => "allow",
+            "resource" => [
                 "mri:mws:mightyquery/query",
                 "mri:mws:mightyquery/query/*",
                 "mri:mws:mightyquery/query_result/*"
             ]
         },
         {
-          "action": [
+          "action" => [
               "adintel:get_ad_data",
           ],
-          "effect": "allow",
-          "resource": @current_user.account.enabled_ad_networks.map {|x| "mri:mws:adsource/#{x}"}
+          "effect" => "allow",
+          "resource" => @current_user.account.enabled_ad_networks.map {|x| "mri:mws:adsource/#{x}"}
         }
       ],
-      "expire": Time.now.to_i + 20.minutes
+      "expire" => Time.now.to_i + 20.minutes
     }
 
     @result = HTTParty.post('https://query.mightysignal.com/auth/token',
