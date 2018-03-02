@@ -11,7 +11,7 @@ class ApplicationHotStoreImportWorker
   end
 
   def queue_ios_apps
-    IosApp.where.not(:display_type => IosApp.display_types[:not_ios]).pluck(:id).each_slice(1000) do |ids|
+    IosApp.where.not(:display_type => IosApp.display_types[:not_ios]).pluck(:id).each_slice(100) do |ids|
       ApplicationHotStoreImportWorker.perform_async("ios", ids)
     end
   end
