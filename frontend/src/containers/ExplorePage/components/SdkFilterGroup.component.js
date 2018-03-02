@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, DatePicker, Icon, Spin } from 'antd';
-import _ from 'lodash';
+import { Select, DatePicker, Icon, Spin, Tooltip } from 'antd';
 import { capitalize } from 'utils/format.utils';
 import ExploreService from 'services/explore.service';
 
@@ -55,6 +54,7 @@ class SdkFilterGroup extends React.Component {
     const {
       canDelete,
       deleteFilter,
+      duplicateSdkFilter,
       filter: {
         dateRange,
         dates,
@@ -65,25 +65,37 @@ class SdkFilterGroup extends React.Component {
       index,
       updateFilter,
     } = this.props;
+
     const { sdkOptions, fetching } = this.state;
+
+    const showDateOptions = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType);
+    const showDatePicker = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType) && dateRange === 'custom';
+
     return (
       <div className="sdk-filter-group">
         <div className="options-group">
-          { canDelete && <Icon onClick={() => deleteFilter('sdks', index)} type="delete" /> }
+          <div className="action-items">
+            { canDelete && <Icon onClick={() => deleteFilter('sdks', index)} type="delete" /> }
+            <Tooltip title="Duplicate filter">
+              <Icon onClick={duplicateSdkFilter(index)} type="copy" />
+            </Tooltip>
+          </div>
           <Select
             onChange={value => updateFilter('sdks', value, { field: 'eventType', index })()}
             size="small"
             style={{
-              width: '125px',
+              width: '180px',
             }}
             value={eventType}
           >
             <Option value="install">Installed</Option>
             <Option value="uninstall">Uninstalled</Option>
             <Option value="never-seen">Never Seen</Option>
+            <Option value="is-installed">Currently Installed</Option>
+            <Option value="is-not-installed">Currently Not Installed</Option>
           </Select>
           {
-            eventType !== 'never-seen' && (
+            showDateOptions && (
               <Select
                 onChange={value => updateFilter('sdks', value, { field: 'dateRange', index })()}
                 size="small"
@@ -102,7 +114,7 @@ class SdkFilterGroup extends React.Component {
               </Select>
             )
           }
-          { dateRange === 'custom' && (
+          { showDatePicker && (
             <RangePicker
               onChange={value => updateFilter('sdks', value, { field: 'dates', index })()}
               size="small"
@@ -156,6 +168,7 @@ class SdkFilterGroup extends React.Component {
 SdkFilterGroup.propTypes = {
   canDelete: PropTypes.bool.isRequired,
   deleteFilter: PropTypes.func.isRequired,
+  duplicateSdkFilter: PropTypes.func.isRequired,
   filter: PropTypes.shape({
     eventType: PropTypes.string,
     dateRange: PropTypes.string,

@@ -2,12 +2,19 @@ import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { hasFilters } from 'utils/explore/general.utils';
 import SearchForm from '../components/SearchForm.component';
-import { tableActions, toggleForm, updateActivePanel, addBlankSdkFilter } from '../redux/Explore.actions';
+import {
+  tableActions,
+  toggleForm,
+  updateActivePanel,
+  addBlankSdkFilter,
+  duplicateSdkFilter,
+} from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
   addSdkFilter: () => dispatch(addBlankSdkFilter()),
   clearFilters: () => () => dispatch(tableActions.clearFilters()),
   deleteFilter: (filterKey, index) => dispatch(tableActions.deleteFilter(filterKey, index)),
+  duplicateSdkFilter: index => () => dispatch(duplicateSdkFilter(index)),
   getResults: params => dispatch(tableActions.allItems.request(params)),
   toggleForm: () => dispatch(toggleForm()),
   updateActivePanel: index => dispatch(updateActivePanel(index)),

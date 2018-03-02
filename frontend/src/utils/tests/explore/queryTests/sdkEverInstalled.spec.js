@@ -21,12 +21,24 @@ describe('buildSdkFilters', () => {
       operator: 'union',
       inputs: [
         {
-          object: 'sdk_event',
-          operator: 'filter',
-          predicates: [
-            ['type', 'install'],
-            ['sdk_id', 114],
-            ['platform', 'ios'],
+          operator: 'intersect',
+          inputs: [
+            {
+              object: 'sdk_event',
+              operator: 'filter',
+              predicates: [
+                ['type', 'install'],
+                ['sdk_id', 114],
+                ['platform', 'ios'],
+              ],
+            },
+            {
+              object: 'app',
+              operator: 'filter',
+              predicates: [
+                ['platform', 'ios'],
+              ],
+            },
           ],
         },
       ],
@@ -34,8 +46,6 @@ describe('buildSdkFilters', () => {
 
     const sdkFilter = generateSdkFilter(filter);
 
-    expect(sdkFilter).toMatchObject(expected);
-    expect(sdkFilter.inputs).toEqual(expected.inputs);
-    expect(sdkFilter.inputs[0].predicates).toEqual(expected.inputs[0].predicates);
+    expect(sdkFilter).toEqual(expected);
   });
 });

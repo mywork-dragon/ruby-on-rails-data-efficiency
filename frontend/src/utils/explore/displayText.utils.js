@@ -43,6 +43,12 @@ function sdkText ({ eventType, sdks }) {
     case 'never-seen':
       eventTypeText = 'Never Seen';
       break;
+    case 'is-installed':
+      eventTypeText = 'Currently Installed';
+      break;
+    case 'is-not-installed':
+      eventTypeText = 'Currently Not Installed';
+      break;
   }
 
   return `${sdks.map(x => x.name).join(', ')} ${eventTypeText}`;

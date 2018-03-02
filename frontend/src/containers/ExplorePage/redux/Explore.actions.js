@@ -34,3 +34,6 @@ export const populateFromQueryId = {
 
 export const ADD_BLANK_SDK_FILTER = 'ADD_BLANK_SDK_FILTER';
 export const addBlankSdkFilter = () => action(ADD_BLANK_SDK_FILTER);
+
+export const DUPLICATE_SDK_FILTER = 'DUPLICATE_SDK_FILTER';
+export const duplicateSdkFilter = index => action(DUPLICATE_SDK_FILTER, { index });

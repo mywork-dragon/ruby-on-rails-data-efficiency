@@ -3,7 +3,7 @@
 import { generateSdkFilter } from '../../../explore/sdkFilterBuilder.utils';
 
 describe('buildSdkFilters', () => {
-  it('should create a filter for an sdk install event within a specified date range', () => {
+  it('should create a filter for an sdk currently installed', () => {
     const filter = {
       sdks: [{
         id: 114,
@@ -11,9 +11,9 @@ describe('buildSdkFilters', () => {
         type: 'sdk',
         platform: 'ios',
       }],
-      eventType: 'install',
-      dateRange: 'custom',
-      dates: ['2017-10-01', '2017-11-01'],
+      eventType: 'is-installed',
+      dateRange: 'anytime',
+      dates: [],
       operator: 'any',
     };
 
@@ -24,12 +24,11 @@ describe('buildSdkFilters', () => {
           operator: 'intersect',
           inputs: [
             {
-              object: 'sdk_event',
+              object: 'sdk',
               operator: 'filter',
               predicates: [
-                ['type', 'install'],
-                ['date', '2017-10-01', '2017-11-01'],
-                ['sdk_id', 114],
+                ['installed'],
+                ['id', 114],
                 ['platform', 'ios'],
               ],
             },

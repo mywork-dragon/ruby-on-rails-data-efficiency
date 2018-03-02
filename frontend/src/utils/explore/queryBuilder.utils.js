@@ -60,3 +60,19 @@ export function buildSelect (resultType, columns) {
   result.object = 'app';
   return result;
 }
+
+export function requirePlatformFilter (filter, platform) {
+  return {
+    operator: 'intersect',
+    inputs: [
+      filter,
+      {
+        object: 'app',
+        operator: 'filter',
+        predicates: [
+          ['platform', platform],
+        ],
+      },
+    ],
+  };
+}

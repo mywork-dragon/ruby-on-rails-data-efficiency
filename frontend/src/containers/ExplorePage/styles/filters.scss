@@ -59,16 +59,20 @@
         margin: 0 10px 10px 0;
       }
 
-      .anticon-delete {
-        cursor: pointer;
-        float: right;
-        font-size: 15px;
-        transition: .3s color;
+      .action-items {
+        .anticon {
+          cursor: pointer;
+          float: right;
+          font-size: 15px;
+          margin-left: 5px;
+          transition: .3s color;
 
-        &:hover {
-          color: $primary-blue;
+          &:hover {
+            color: $primary-blue;
+          }
         }
       }
+
     }
 
     .sdk-select-option {

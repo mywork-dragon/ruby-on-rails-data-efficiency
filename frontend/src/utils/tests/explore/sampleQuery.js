@@ -74,40 +74,64 @@ export const sampleQuery = {
               "operator": "union",
               "inputs": [
                 {
-                  "operator": "filter",
-                  "predicates": [
-                    [
-                      "type",
-                      "install"
-                    ],
-                    [
-                      "sdk_id",
-                      114
-                    ],
-                    [
-                      'platform',
-                      'ios'
-                    ]
-                  ],
-                  "object": "sdk_event"
+                  operator: 'intersect',
+                  inputs: [
+                    {
+                      "operator": "filter",
+                      "predicates": [
+                        [
+                          "type",
+                          "install"
+                        ],
+                        [
+                          "sdk_id",
+                          114
+                        ],
+                        [
+                          'platform',
+                          'ios'
+                        ]
+                      ],
+                      "object": "sdk_event"
+                    },
+                    {
+                      object: 'app',
+                      operator: 'filter',
+                      predicates: [
+                        ['platform', 'ios'],
+                      ],
+                    }
+                  ]
                 },
                 {
-                  "operator": "filter",
-                  "predicates": [
-                    [
-                      "type",
-                      "install"
-                    ],
-                    [
-                      "sdk_id",
-                      200
-                    ],
-                    [
-                      'platform',
-                      'ios'
-                    ]
-                  ],
-                  "object": "sdk_event"
+                  operator: 'intersect',
+                  inputs: [
+                    {
+                      "operator": "filter",
+                      "predicates": [
+                        [
+                          "type",
+                          "install"
+                        ],
+                        [
+                          "sdk_id",
+                          200
+                        ],
+                        [
+                          'platform',
+                          'ios'
+                        ]
+                      ],
+                      "object": "sdk_event"
+                    },
+                    {
+                      object: 'app',
+                      operator: 'filter',
+                      predicates: [
+                        ['platform', 'ios'],
+                      ],
+                    }
+                  ]
                 },
               ]
             }

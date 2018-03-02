@@ -1,5 +1,10 @@
 import updateSearchForm from 'utils/explore/searchForm.utils';
-import { TABLE_TYPES, POPULATE_FROM_QUERY_ID, ADD_BLANK_SDK_FILTER } from './Explore.actions';
+import {
+  TABLE_TYPES,
+  POPULATE_FROM_QUERY_ID,
+  ADD_BLANK_SDK_FILTER,
+  DUPLICATE_SDK_FILTER,
+} from './Explore.actions';
 
 const sdkFilterModel = {
   dateRange: 'anytime',
@@ -40,6 +45,8 @@ function searchForm (state = initialFormState, action) {
       return {
         ...action.payload.formState,
       };
+    case DUPLICATE_SDK_FILTER:
+      return duplicateSdkFilter(state, action.payload);
     default:
       return state;
   }
@@ -60,6 +67,13 @@ function addBlankSdkFilter (state) {
   const newState = { ...state };
   newState.filters.sdks.filters.push({ ...sdkFilterModel });
 
+  return newState;
+}
+
+function duplicateSdkFilter (state, { index }) {
+  const newState = { ...state };
+  const copy = { ...state.filters.sdks.filters[index] };
+  newState.filters.sdks.filters.splice(index, 0, copy);
   return newState;
 }
 
