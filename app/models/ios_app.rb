@@ -418,7 +418,7 @@ class IosApp < ActiveRecord::Base
 
   def icon_url(size='350x350') # size should be string eg '350x350'
     url = first_international_snapshot['icon_url_100x100'] || newest_ios_app_snapshot.try(:send, "icon_url_#{size}")
-    url = url.gsub(/http:\/\/is([0-9]+).mzstatic/, 'https://is\1-ssl.mzstatic') if url.present?
+    IosApp.convert_icon_url_to_https(url)
   end
 
   def tagged_sdk_response(only_show_tagged=false)
@@ -582,6 +582,563 @@ class IosApp < ActiveRecord::Base
     AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
   end
 
+  def self.bulk_export(ids:[833071], options: {})
+      
+      # Whitelist as a safeguard to prevent us from exporting any
+      # attributes that we don't want to expose.
+
+      attribute_whitelist = [
+        "last_seen_ads_date",
+        "last_updated",
+        "seller_url",
+        "current_version",
+        "has_in_app_purchases",
+        "id",
+        "first_seen_ads_date",
+        "platform",
+        "support_url",
+        "seller",
+        "headquarters",
+        "original_release_date",
+        "uninstalled_sdks",
+        "all_version_rating",
+        "description",
+        "price",
+        "has_ad_spend",
+        "categories",
+        "name",
+        "installed_sdks",
+        "publisher",
+        "content_rating",
+        "mobile_priority",
+        "user_base",
+        "last_scanned_date",
+        "app_store_id",
+        "current_version_ratings_count",
+        "current_version_rating",
+        "all_version_ratings_count",
+        "first_scanned_date",
+        "ratings_history",
+        "versions_history",
+        "bundle_identifier",
+        "countries_available_in",
+        "taken_down",
+        "icon_url",
+        "first_scraped"
+      ]
+
+      # List of attributes to pluck from respective collections
+
+      attributes_from_app = [
+        "id",
+        "released",
+        "user_base"
+      ]
+
+      newest_ios_app_snapshot_attributes = [
+        "id",
+        "ios_app_id",
+        "seller_url",
+        "support_url",
+        "seller",
+        "description",
+        "price",
+        "name",
+        "released",
+        "ratings_all_stars",
+        "ratings_all_count",
+        "version",
+        "ratings_current_count",
+        "ratings_current_stars",
+        "icon_url_350x350"
+      ]
+
+      first_international_snapshot_attributes = [
+        "ios_app_id",
+        "seller_url",
+        "description",
+        "price",
+        "name",
+        "mobile_priority",
+        "user_base",
+        "app_store_id",
+        "bundle_identifier",
+        "icon_url_100x100",
+        "released",
+        "version",
+        "ratings_all_stars",
+        "ratings_all_count",
+        "ratings_current_count",
+        "ratings_current_stars"
+      ]
+      
+      snapshot_category_join_attributes = [
+        "kind",
+        "ios_app_category_id"
+      ]
+
+      category_attributes = [
+        "name",
+        "category_identifier",
+        "id"
+      ]
+
+      app_store_attributes = [
+        "country_code",
+        "id",
+        "display_priority"
+      ]
+
+      publisher_attributes = [
+        "name",
+        "id",
+        "identifier"
+      ]
+
+      historical_attributes = [
+        "created_at",
+        "ios_app_id",
+        "ratings_all_count",
+        "ratings_all_stars",
+        "version",
+        "released"
+      ]
+
+      sdk_attributes = [
+        "id",
+        "name",
+        "last_seen_date",
+        "first_seen_date",
+        "activities"
+      ]
+
+      domain_data_attributes = [
+        "id",
+        "domain",
+        "street_number",
+        "street_name",
+        "sub_premise",
+        "city",
+        "postal_code",
+        "state",
+        "state_code",
+        "country",
+        "country_code",
+        "lat",
+        "lng"
+      ]
+
+      rename = [
+        ['version', 'current_version'],
+        ['ratings_current_count', 'current_version_ratings_count'],
+        ['ratings_current_stars', 'current_version_rating'],
+        ['ratings_all_stars', 'all_version_rating'],
+        ['ratings_all_count', 'all_version_ratings_count']
+      ]
+
+      ##
+      # Step 1:
+      #
+      # Run bulk queries and build out info mappings in memory.
+      #
+
+      # Build app_id => us snapshots attributes mapping
+      # 
+      # {
+      #   app_id => [
+      #     [ app_id, snapshot_id, ios_app_id, seller_url, etc. ]
+      #   ]
+      # }
+      #
+
+      results = {}
+
+      apps = IosApp.where(:id => ids).to_a
+      app_ids = apps.map(&:id)
+      
+      us_snapshot_attributes = IosAppSnapshot.where(:id => apps.map(&:newest_ios_app_snapshot_id)).pluck(*newest_ios_app_snapshot_attributes)
+      us_snapshot_attributes_map = {}
+      us_snapshot_attributes.each do |attributes|
+        us_snapshot_attributes_map[attributes[newest_ios_app_snapshot_attributes.index("ios_app_id")]] = attributes
+      end
+
+      us_snapshot_ids = us_snapshot_attributes.map { |a| a[newest_ios_app_snapshot_attributes.index("id")] }
+      snapshot_ids_with_in_app_purchases = IosInAppPurchase.where(:ios_app_snapshot_id => us_snapshot_ids).group(:ios_app_snapshot_id).pluck(:ios_app_snapshot_id)
+
+      us_snapshot_attributes = nil
+
+
+      snapshots_history_attributes = IosAppSnapshot.where(:ios_app_id => app_ids).pluck(*historical_attributes)
+      snapshots_history_attributes_map = {}
+      snapshots_history_attributes.each do |snapshot|
+        app_id = snapshot[historical_attributes.index("ios_app_id")]
+        if snapshots_history_attributes_map[app_id]
+          snapshots_history_attributes_map[app_id] << snapshot
+        else
+          snapshots_history_attributes_map[app_id] = [ snapshot ]
+        end
+      end
+      snapshots_history_attributes = nil 
+
+
+      # Build app_id => storefront details mapping
+      # 
+      # {
+      #   app_id => [
+      #     [ app_id, country_code, id, display_priority ]
+      #   ]
+      # }
+      #
+
+      app_country_codes_map = {}
+      available_store_attributes_to_pluck = [ "ios_apps.id" ] + app_store_attributes.map { |a| "app_stores.#{a}" }
+      app_store_results = IosApp.where(:id => ids).joins(:app_stores).pluck(*available_store_attributes_to_pluck).uniq
+      app_store_results.each do |app_store_result|
+        if app_country_codes_map[app_store_result[0]]
+          app_country_codes_map[app_store_result[0]] << app_store_result
+        else
+          app_country_codes_map[app_store_result[0]] = [ app_store_result ]
+        end
+      end
+      app_store_results = nil
+
+      # Build app_id => first international snapshot details mapping
+      # 
+      # {
+      #   app_id => [
+      #     [ app_id, ios_app_id, seller_url, etc. ]
+      #   ]
+      # }
+      #
+
+      prefixed_snapshot_attributes = first_international_snapshot_attributes.map { |a| "all_latest_snapshot_attributes.#{a}" } 
+      first_international_snapshot_attribute_results = ActiveRecord::Base.connection.execute(
+      "SELECT #{prefixed_snapshot_attributes.join(",")}
+       FROM
+         (SELECT ios_app_current_snapshots.ios_app_id,
+                 MIN(display_priority) AS dp
+          FROM `ios_app_current_snapshots`
+          INNER JOIN `app_stores` ON `app_stores`.`id` = `ios_app_current_snapshots`.`app_store_id`
+          WHERE `ios_app_current_snapshots`.`latest` = 1
+            AND `ios_app_current_snapshots`.`ios_app_id` IN (#{app_ids.join(",")})
+          GROUP BY `ios_app_id`) AS ios_app_ids_to_highest_display_priority
+       INNER JOIN
+         (SELECT ios_app_current_snapshots.*,
+                 app_stores.display_priority AS display_priority
+          FROM `ios_app_current_snapshots`
+          INNER JOIN `app_stores` ON `app_stores`.`id` = `ios_app_current_snapshots`.`app_store_id`
+          WHERE `ios_app_current_snapshots`.`latest` = 1
+            AND `ios_app_current_snapshots`.`ios_app_id` IN (#{app_ids.join(",")})) AS all_latest_snapshot_attributes ON ios_app_ids_to_highest_display_priority.ios_app_id = all_latest_snapshot_attributes.ios_app_id
+       AND ios_app_ids_to_highest_display_priority.dp = all_latest_snapshot_attributes.display_priority")
+      
+      first_international_snapshot_attributes_map = {}
+      first_international_snapshot_attribute_results.each do |attributes|
+        first_international_snapshot_attributes_map[attributes[first_international_snapshot_attributes.index("ios_app_id")]] = attributes
+      end
+
+      # Build app_id => newest_snapshot/category mapping
+      # 
+      # {
+      #   app_id => [
+      #     [ app_id, kind, name, category_id ]
+      #   ]
+      # }
+      #
+
+      prefixed_category_join_attributes = snapshot_category_join_attributes.map { |c| "ios_app_categories_current_snapshots.#{c}" }
+      category_attributes_to_pluck = [ "ios_app_current_snapshots.ios_app_id" ] + prefixed_category_join_attributes
+      category_results = IosAppCurrentSnapshot.where(:latest => true).where(:ios_app_id => ids).joins(:ios_app_categories_current_snapshots).pluck(*category_attributes_to_pluck).uniq
+      kinds_map = IosAppCategoriesCurrentSnapshot.kinds.invert
+      
+      # Build intermediate category info mapping instead of using triple join, since triple join only seems to return primary types
+      # due to the has_many relationship declared in the IosAppCurrentSnapshots class.
+      category_ids = category_results.map { |cra| cra[snapshot_category_join_attributes.index("ios_app_category_id") + 1] }
+      category_info_results = IosAppCategory.where(:id => category_ids).pluck(*category_attributes)
+      category_info_results_map = {}
+      category_info_results.each do |category_info_result|
+        category_info_results_map[category_info_result[category_attributes.index("id")]] = category_info_result
+      end
+      category_info_results = nil
+
+      app_id_to_category_map = {}
+      category_results.each do |category_result_attributes|
+        kind_index = snapshot_category_join_attributes.index("kind") + 1
+        category_result_attributes[kind_index] = kinds_map[category_result_attributes[kind_index]] # Convert the kind enum val to the name
+        category_info = category_info_results_map[category_result_attributes[snapshot_category_join_attributes.index("ios_app_category_id") + 1]]
+        if category_info
+          category_result_attributes << category_info[category_attributes.index("name")]
+          category_result_attributes << category_info[category_attributes.index("category_identifier")]
+        end
+        if app_id_to_category_map[category_result_attributes[0]]
+          app_id_to_category_map[category_result_attributes[0]] << category_result_attributes
+        else
+          app_id_to_category_map[category_result_attributes[0]] = [ category_result_attributes ]
+        end
+      end
+
+      # Build publisher => publisher details mapping
+      # 
+      # {
+      #   publisher_id => {
+      #     "app_store_id" => id,
+      #     "platform" => platform,
+      #     "id" => id,
+      #     "name" => name
+      #   }
+      # }
+      #
+
+      developer_id_to_attributes = {}
+      ios_developer_attributes = IosDeveloper.where(:id => apps.map(&:ios_developer_id)).pluck(*publisher_attributes)
+      ios_developer_attributes.each do |developer_attributes|
+        developer_id_to_attributes[developer_attributes[publisher_attributes.index("id")]] = {
+          "app_store_id" => developer_attributes[publisher_attributes.index("identifier")],
+          "platform" => "ios",
+          "id" => developer_attributes[publisher_attributes.index("id")],
+          "name" => developer_attributes[publisher_attributes.index("name")]
+        }
+      end
+
+      # Build developer_id to headquarters mapping:
+      #
+      # {
+      #   developer_id => [ 
+      #     {
+      #       "id" => xxx
+      #       "domain" => "xxxx"
+      #       "street_number" => xxxx
+      #     }
+      #   ]
+      # }
+
+      developer_id_to_website_id = IosDevelopersWebsite.where(:ios_developer_id => developer_id_to_attributes.keys).pluck(:ios_developer_id, :website_id)
+
+      developer_id_to_website_id_map = {}
+      developer_id_to_website_id.each do |dw|
+        if developer_id_to_website_id_map[dw[0]]
+          developer_id_to_website_id_map[dw[0]] << dw[1]
+        else
+          developer_id_to_website_id_map[dw[0]] = [ dw[1] ]
+        end
+      end
+
+      website_ids = developer_id_to_website_id.map{ |a| a[1] }
+      website_id_to_domain_datum_id = WebsitesDomainDatum.where(:website_id => website_ids).pluck(:website_id, :domain_datum_id)
+      website_id_to_domain_datum_id = Hash[*website_id_to_domain_datum_id.flatten] # again, convert into map. okay cause a website has a single domain datum
+
+      domain_data_ids = website_id_to_domain_datum_id.values
+      domain_data = DomainDatum.where(:id => domain_data_ids).pluck(*domain_data_attributes)
+      domain_data_map = {} 
+      domain_data.each do |dd|
+        domain_data_map[dd[domain_data_attributes.index("id")]] = dd
+      end
+      domain_data = nil
+
+      user_base_map = IosApp.user_bases.invert
+      mobile_priority_map = IosApp.mobile_priorities.invert
+
+      ##
+      # Step 2:
+      #
+      # Build out app exports from mappings generated in first step
+      # 
+
+      apps.each do |app|
+        id = app.id
+        result = {
+          "countries_available_in" => [],
+          "categories" => [],
+          "mobile_priority" => "low"
+        }
+
+        attributes_from_app.each do |attribute|
+          result[attribute] = app.send(attribute).as_json
+        end
+
+        result["original_release_date"] = result["released"]
+        result.delete("released")
+
+        result["user_base"] = IosApp.user_bases[result["user_base"]]
+
+        us_snapshot_attribute_entry = us_snapshot_attributes_map[id]
+        if us_snapshot_attribute_entry
+          us_snapshot_attribute_hash = Hash[newest_ios_app_snapshot_attributes.zip(us_snapshot_attribute_entry)]
+          us_snapshot_attribute_hash.delete("id")
+          result = result.merge(us_snapshot_attribute_hash)
+
+          # Use pre-built maps to determine if app has in in-app purchases
+          us_snapshot_id = us_snapshot_attribute_entry[newest_ios_app_snapshot_attributes.index("id")]
+          result["has_in_app_purchases"] = snapshot_ids_with_in_app_purchases.include?(us_snapshot_id)
+        end
+
+        international_snapshot_attribute_entry = first_international_snapshot_attributes_map[id]
+        result = result.merge(Hash[first_international_snapshot_attributes.zip(international_snapshot_attribute_entry)]) if international_snapshot_attribute_entry
+
+        result["mobile_priority"] = IosApp.mobile_priority_from_date(released: result["released"])
+        result["last_updated"] = result["released"].as_json
+        result.delete("released")
+
+        result["user_base"] = user_base_map[result["user_base"]]
+        
+        if app_id_to_category_map[id]
+          result["categories"] = app_id_to_category_map[id].map do |category_info|
+            {
+              "type" => category_info[1 + snapshot_category_join_attributes.index("kind")],
+              "name" => category_info[1 + snapshot_category_join_attributes.length + category_attributes.index("name")],
+              "id" => category_info[1 + snapshot_category_join_attributes.length + category_attributes.index("category_identifier")]
+            }
+          end
+        end
+
+        if app_country_codes_map[id]
+          result["countries_available_in"] = app_country_codes_map[id].map do |storefront_info|
+            storefront_info[1 + app_store_attributes.index("country_code")]
+          end.uniq
+        end
+        
+        result["publisher"] = developer_id_to_attributes[app.ios_developer_id] if developer_id_to_attributes[app.ios_developer_id]
+        result["taken_down"] = app_country_codes_map[id].nil? || app.display_type == IosApp.display_types[:not_ios]
+        result["platform"] = "ios"
+        result['app_store_id'] = app.app_identifier
+
+        headquarters = []
+        website_ids = developer_id_to_website_id_map[app.ios_developer_id]
+        if website_ids
+          website_ids.each do |website_id|
+            domain_datum_id = website_id_to_domain_datum_id[website_id]
+            dd = domain_data_map[domain_datum_id]
+            next if dd.nil?
+            headquarter = {}
+            domain_data_attributes.each do |dd_attribute|
+              next if dd_attribute == "id"
+              headquarter[dd_attribute] = dd[domain_data_attributes.index(dd_attribute)]
+            end
+            headquarters << headquarter
+          end
+        end
+        result["headquarters"] = headquarters.uniq[0..100] # limit to 100 headquarters
+
+        # Gather versions, ratings history if any
+
+        historical_snapshots = snapshots_history_attributes_map[app.id]
+        if historical_snapshots
+          historical_ratings_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("ratings_all_count")], s[historical_attributes.index("ratings_all_stars")], s[historical_attributes.index("created_at")]] }
+          app_ratings_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_ratings_snapshots, [:ratings_all_count, :ratings_all_stars, :created_at])
+          result["ratings_history"] = app_ratings_history.as_json
+
+          app_versions_history = historical_snapshots.map{|s|[s[historical_attributes.index("version")],s[historical_attributes.index("released")]]}.uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
+          result["versions_history"] = app_versions_history.as_json
+
+          if result['versions_history'] and result['versions_history'].any?
+            result['first_scraped'] = result['versions_history'][0]["released"]
+          end
+        end
+
+        results[id] = result
+      end
+
+      if options[:include_sdk_history]
+        sdk_ids = Set.new
+
+        apps.each do |app|
+          sdk_history = app.sdk_history
+          if results[app.id]
+            results[app.id]["installed_sdks"] = sdk_history[:installed_sdks].map{|sdk| sdk.slice(*sdk_attributes)}
+            results[app.id]["uninstalled_sdks"] = sdk_history[:uninstalled_sdks].map{|sdk| sdk.slice(*(sdk_attributes + ["first_unseen_date"]))}
+          else
+            Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
+          end
+    
+          sdk_history[:installed_sdks].each do |sdk|
+            sdk_ids << sdk["id"]
+          end
+          sdk_history[:uninstalled_sdks].each do |sdk|
+            sdk_ids << sdk["id"]
+          end
+        end
+        
+        sdks_to_tags_tuples = IosSdk.where(:id => sdk_ids.to_a).joins(:tags).pluck("ios_sdks.id", "tags.name")
+    
+        sdks_to_tags_map = {}
+        sdks_to_tags_tuples.each do |sdk_id, tag_name|
+          if sdks_to_tags_map[sdk_id]
+            sdks_to_tags_map[sdk_id] << tag_name
+          else
+            sdks_to_tags_map[sdk_id] = [ tag_name ]
+          end
+        end
+    
+        sdks_to_tags_map.keys.each do |sdk_id|
+          sdks_to_tags_map[sdk_id] = sdks_to_tags_map[sdk_id].uniq
+        end
+
+        results.values.each do |result|
+          result["installed_sdks"].each {|sdk| sdk["categories"] = sdks_to_tags_map[sdk["id"]]} if result["installed_sdks"]
+          result["uninstalled_sdks"].each {|sdk| sdk["categories"] = sdks_to_tags_map[sdk["id"]]} if result["uninstalled_sdks"]
+        end
+      end
+
+      ##
+      # Step 3:
+      #
+      # Run final aggregate queries and finish building app export objects.
+      # 
+
+      ad_stats = IosFbAd.where(:ios_app_id => app_ids).select('ios_app_id, min(date_seen) as created_at, max(date_seen) as updated_at').group(:ios_app_id)
+      ad_stats.each do |ad_stat|
+        if results[ad_stat.ios_app_id]
+          results[ad_stat.ios_app_id]["first_seen_ads_date"] = ad_stat.created_at
+          results[ad_stat.ios_app_id]["last_seen_ads_date"] = ad_stat.updated_at
+          results[ad_stat.ios_app_id]["has_ad_spend"] = true
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{ad_stat.ios_app_id}"))
+        end
+      end
+
+      app_missing_ads = app_ids - ad_stats.map(&:ios_app_id)
+      app_missing_ads.each do |app_id|
+        if results[app_id]
+          results[app_id]['has_ad_spend'] = false
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app_id}"))
+        end
+      end
+
+      scan_statuses = IpaSnapshot.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).where(:ios_app_id => app_ids)
+        .group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as created_at')
+
+      scan_statuses.each do |scan_status|
+        if results[scan_status.ios_app_id]
+          results[scan_status.ios_app_id]["first_scanned_date"] = scan_status.created_at.utc.iso8601
+          results[scan_status.ios_app_id]["last_scanned_date"] = scan_status.last_scanned.utc.iso8601
+        else
+          Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{scan_status.ios_app_id}"))
+        end
+      end
+
+      results.values.each do |app|
+        rename.map do |field, new_name|
+          app[new_name] = app[field]
+          app.delete(field)
+        end
+
+        if app["icon_url_100x100"]
+          app["icon_url"] = IosApp.convert_icon_url_to_https(app["icon_url_100x100"])
+          app.delete("icon_url_100x100")
+        elsif app["icon_url_350x350"]
+          app["icon_url"] = IosApp.convert_icon_url_to_https(app["icon_url_350x350"])
+          app.delete("icon_url_350x350")
+        end
+      end
+
+      results.each do |app_id, result|
+        results[app_id] = result.slice(*attribute_whitelist)
+      end
+
+      results
+
+  end
+
   def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)
       app = self
 
@@ -647,7 +1204,7 @@ class IosApp < ActiveRecord::Base
       app_obj.merge!(app.first_international_snapshot.as_json || {})
 
       app_obj['mightysignal_app_version'] = '1'
-
+      
       if include_sdk_history
         app_obj.merge!(app.sdk_history)
         app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
@@ -674,11 +1231,11 @@ class IosApp < ActiveRecord::Base
       if app.newest_ios_app_snapshot
         app_obj["has_in_app_purchases"] = app.newest_ios_app_snapshot.ios_in_app_purchases.any?
       end
-
+      
       fields_from_app.map do |field, new_name|
           app_obj[new_name] = app.send(field).as_json
       end
-
+      
       rename.map do |field, new_name|
           app_obj[new_name] = app_obj[field]
           app_obj.delete(field)
@@ -783,6 +1340,10 @@ class IosApp < ActiveRecord::Base
   end
 
   class << self
+
+    def convert_icon_url_to_https(url)
+      url.gsub(/http:\/\/is([0-9]+).mzstatic/, 'https://is\1-ssl.mzstatic') if url.present?
+    end
 
     def mobile_priority_from_date(released: nil)
       if released
