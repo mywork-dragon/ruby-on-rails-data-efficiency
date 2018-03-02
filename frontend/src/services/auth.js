@@ -67,6 +67,11 @@ export const authenticateWithProviderToken = (provider, accessToken, inviteCode)
   })
 );
 
+export const getQueryToken = () => (
+  http.post('/api/mightyquery_auth')
+    .then(response => response.data.token)
+);
+
   // if (this.permissions) {
   //   return Promise.resolve(this.permissions);
   // }

@@ -11,12 +11,14 @@ import {
   updateQueryId,
 } from './Explore.actions';
 
+const service = ExploreService();
+
 function* requestResults (action) {
   const { params, params: { page_settings: { page: pageNum } } } = action.payload;
   delete params.page_settings.page;
   try {
     yield put(tableActions.clearResults());
-    const { data: { query_id } } = yield call(ExploreService().getQueryId, params);
+    const { data: { query_id } } = yield call(service.getQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
@@ -28,12 +30,12 @@ function* requestResults (action) {
 function* requestResultsByQueryId (id, params, pageNum) {
   try {
     yield put(updateQueryId(id));
-    const res = yield call(ExploreService().getQueryResultInfo, id);
+    const res = yield call(service.getQueryResultInfo, id);
     const { number_results, query_result_id } = res.data;
     if (number_results === 0) {
       yield put(tableActions.allItems.success({ resultsCount: 0 }));
     } else {
-      const { data } = yield call(ExploreService().getResultsByResultId, query_result_id, pageNum);
+      const { data } = yield call(service.getResultsByResultId, query_result_id, pageNum);
       const items = formatResults(data, params, number_results);
       yield put(tableActions.allItems.success(items));
     }
@@ -45,7 +47,7 @@ function* requestResultsByQueryId (id, params, pageNum) {
 
 function* populateFromQuery ({ payload: { id } }) {
   try {
-    const { data: params, data: { formState } } = yield call(ExploreService().getQueryParams, id);
+    const { data: params, data: { formState } } = yield call(service.getQueryParams, id);
     yield put(populateFromQueryId.success(id, JSON.parse(formState)));
     yield call(requestResultsByQueryId, id, params, 0);
   } catch (error) {

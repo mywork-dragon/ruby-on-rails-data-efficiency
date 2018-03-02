@@ -1,33 +1,46 @@
+import axios from 'axios';
+import { isValidToken } from 'utils/auth.utils';
+import { getQueryToken } from './auth';
 import httpClient from './httpClient';
 
-const url = 'http://mightyquery-927305443.us-east-1.elb.amazonaws.com';
 
-const ExploreService = (client = httpClient) => ({
-  getResultsByQueryId: (id, page) => (
-    ExploreService().getQueryResultInfo(id)
-      .then(response => (
-        ExploreService().getResultsByResultId(response.data.query_result_id, page)
-          .then(res => ({
-            data: res.data,
-            resultsCount: response.data.number_results,
-          }))
-      ))
-  ),
-  getQueryId: params => (
-    client.put(`${url}/query`, params)
-  ),
-  getQueryParams: id => (
-    client.get(`${url}/query/${id}`)
-  ),
-  getQueryResultInfo: id => (
-    client.put(`${url}/query_result/${id}`)
-  ),
-  getResultsByResultId: (id, page) => (
-    client.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
-  ),
-  getSdkAutocompleteResults: (platform, query) => (
-    client.get(`/api/sdks_and_categories/autocomplete?platform=${platform}&query=${query}`)
-  ),
-});
+const ExploreService = (client = httpClient) => {
+  const url = 'https://query.mightysignal.com';
+
+  const exploreClient = axios.create({
+    headers: { Authorization: null },
+  });
+
+  exploreClient.interceptors.request.use((config) => {
+    const { headers: { Authorization: token } } = config;
+    if (token && isValidToken(token)) {
+      return config;
+    }
+
+    return getQueryToken().then((newToken) => {
+      exploreClient.defaults.headers.Authorization = `${newToken}`;
+      config.headers.Authorization = `${newToken}`;
+      return Promise.resolve(config);
+    });
+  });
+
+  return {
+    getQueryId: params => (
+      exploreClient.put(`${url}/query`, params)
+    ),
+    getQueryParams: id => (
+      exploreClient.get(`${url}/query/${id}`)
+    ),
+    getQueryResultInfo: id => (
+      exploreClient.put(`${url}/query_result/${id}`)
+    ),
+    getResultsByResultId: (id, page) => (
+      exploreClient.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
+    ),
+    getSdkAutocompleteResults: (platform, query) => (
+      client.get(`/api/sdks_and_categories/autocomplete?platform=${platform}&query=${query}`)
+    ),
+  };
+};
 
 export default ExploreService;
