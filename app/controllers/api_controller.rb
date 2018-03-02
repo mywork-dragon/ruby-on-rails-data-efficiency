@@ -1029,7 +1029,8 @@ class ApiController < ApplicationController
             "action"=> [
                 "mightyquery:create_query",
                 "mightyquery:execute_query",
-                "mightyquery:fetch_result_page"
+                "mightyquery:fetch_result_page",
+                "mightyquery:describe_query"
             ],
             "effect" => "allow",
             "resource" => [
