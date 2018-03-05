@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Radio } from 'antd';
 
 const FortuneRankFilter = ({
   fortuneRank: {
@@ -15,16 +16,15 @@ const FortuneRankFilter = ({
     <div className="input-group">
       {
         [500, 1000].map(option => (
-          <label key={option} className="explore-checkbox">
-            <input
-              checked={value === option}
-              name="fortuneRank"
-              onClick={updateFilter('fortuneRank', option, { panelKey })}
-              type="radio"
-              value={option}
-            />
-            <span>{option}</span>
-          </label>
+          <Radio
+            checked={value === option}
+            name="fortuneRank"
+            onClick={updateFilter('fortuneRank', option, { panelKey })}
+            type="radio"
+            value={option}
+          >
+            {option}
+          </Radio>
         ))
       }
     </div>

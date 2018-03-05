@@ -83,6 +83,7 @@
 
     .panel {
       border: 1px solid $light-grey-border;
+      margin-bottom: 5px;
     }
 
     .panel-heading {
@@ -115,7 +116,6 @@
     .filter-tag-label {
       background-color: #c8ddf4;
       color: $main-font;
-      cursor: pointer;
       font-size: 12px;
       margin: 2px;
       padding: 7px;

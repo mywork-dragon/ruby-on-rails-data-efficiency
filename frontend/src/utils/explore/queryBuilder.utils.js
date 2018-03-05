@@ -1,5 +1,6 @@
 import { selectMap } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
+import { cleanState } from './general.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort) {
   const result = {};
@@ -7,7 +8,7 @@ export function buildExploreRequest (form, columns, pageSettings, sort) {
   result.sort = buildSortSettings(sort);
   result.query = buildFilter(form);
   result.select = buildSelect(form.resultType, columns);
-  result.formState = JSON.stringify(form);
+  result.formState = JSON.stringify(cleanState(form));
   return result;
 }
 

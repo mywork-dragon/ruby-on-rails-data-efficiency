@@ -22,6 +22,7 @@ export function table(actionTypes, tableOptions) {
 
   function reducer(state = initialState, action) {
     switch (action.type) {
+      case actionTypes.SET_LOADING:
       case actionTypes.ALL_ITEMS.REQUEST:
         return {
           ...state,
@@ -39,7 +40,6 @@ export function table(actionTypes, tableOptions) {
         return {
           ...state,
           results: [],
-          resultsCount: 0,
         };
       case actionTypes.TOGGLE_ALL_ITEMS:
         return toggleAll(state);

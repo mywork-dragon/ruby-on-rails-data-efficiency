@@ -5,7 +5,6 @@ import { Panel } from 'react-bootstrap';
 import AdditionalFilters from './AdditionalFilters.component';
 import AdIntelFilterPanel from './panels/AdIntelFilterPanel.component';
 import AppFilterPanel from './panels/AppFilterPanel.component';
-import ControlledPanelGroup from './panels/ControlledPanelGroup';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
 import PublisherFilterPanel from './panels/PublisherFilterPanel.component';
@@ -14,7 +13,6 @@ import ResultTypeFilter from './ResultTypeFilter.component';
 import SdkFilterPanel from './panels/SdkFilterPanel.component';
 
 const SearchForm = ({
-  activePanel,
   canFetch,
   clearFilters,
   expanded,
@@ -23,24 +21,21 @@ const SearchForm = ({
   resultType,
   requestResults,
   toggleForm,
-  updateActivePanel,
   ...rest
 }) => {
-  const togglePanel = () => (e) => {
+  const toggleFormPanel = () => (e) => {
     e.stopPropagation();
     toggleForm();
   };
 
-  const handleSelect = newKey => () => updateActivePanel(newKey !== activePanel ? newKey : '');
-
   return (
-    <Panel expanded={expanded} id="search-form-panel" onToggle={togglePanel()}>
-      <Panel.Heading onClick={togglePanel()}>
+    <Panel expanded={expanded} id="search-form-panel" onToggle={toggleFormPanel()}>
+      <Panel.Heading onClick={toggleFormPanel()}>
         <Panel.Title>
           Build Your Search
           {
             expanded ? (
-              <i className="fa fa-times pull-right" onClick={togglePanel()} />
+              <i className="fa fa-times pull-right" onClick={toggleFormPanel()} />
             ) : (
               <i className="fa fa-angle-down pull-right" />
             )
@@ -57,26 +52,24 @@ const SearchForm = ({
             </div>
             <div className="advanced-filter-group form-group">
               <h4>Add Filters</h4>
-              <ControlledPanelGroup activeKey={activePanel} handleSelect={handleSelect()} id="panel-group-1">
-                <div className="col-md-6">
-                  <SdkFilterPanel handleSelect={handleSelect} panelKey="1" platform={platform} {...rest} />
-                  <AppFilterPanel handleSelect={handleSelect} panelKey="2" {...rest} />
-                  <PublisherFilterPanel handleSelect={handleSelect} panelKey="3" {...rest} />
-                </div>
-                <div className="col-md-6">
-                  <AdIntelFilterPanel handleSelect={handleSelect} panelKey="4" />
-                  <RankingsFilterPanel handleSelect={handleSelect} panelKey="5" />
-                </div>
-              </ControlledPanelGroup>
+              <div className="col-md-6">
+                <SdkFilterPanel panelKey="1" platform={platform} {...rest} />
+                <AppFilterPanel panelKey="2" {...rest} />
+                <PublisherFilterPanel panelKey="3" {...rest} />
+              </div>
+              <div className="col-md-6">
+                <AdIntelFilterPanel panelKey="4" {...rest} />
+                <RankingsFilterPanel panelKey="5" {...rest} />
+              </div>
             </div>
             <div className="form-review form-group">
               <h4>Review Filters</h4>
-              <FilterTagsDisplay updateActivePanel={updateActivePanel} {...rest} />
+              <FilterTagsDisplay {...rest} />
             </div>
             <div className="search-form-footer form-group">
               <div>
                 <button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</button>
-                <button className="btn btn-primary" onClick={togglePanel()}>Hide Form</button>
+                <button className="btn btn-primary" onClick={toggleFormPanel()}>Hide Form</button>
               </div>
               <div className="search-form-submit">
                 <button className="btn btn-primary" disabled={!canFetch}>Save Search</button>
@@ -91,7 +84,6 @@ const SearchForm = ({
 };
 
 SearchForm.propTypes = {
-  activePanel: PropTypes.string,
   canFetch: PropTypes.bool,
   clearFilters: PropTypes.func.isRequired,
   expanded: PropTypes.bool,
@@ -100,11 +92,9 @@ SearchForm.propTypes = {
   requestResults: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
-  updateActivePanel: PropTypes.func.isRequired,
 };
 
 SearchForm.defaultProps = {
-  activePanel: '',
   canFetch: false,
   expanded: true,
 };

@@ -1,0 +1,18 @@
+@import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+.explore-search-form {
+  %button-wrapper-override {
+    color: inherit;
+    font-family: inherit;
+    margin: 0 10px 0 0;
+  }
+
+  .ant-checkbox-wrapper {
+    @extend %button-wrapper-override;
+  }
+
+  .ant-radio-wrapper {
+    @extend %button-wrapper-override;
+  }
+}

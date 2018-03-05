@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { selectMap } from './models.utils';
 
 export function formatResults (data, params, count) {
@@ -66,4 +67,20 @@ export function hasFilters(filters) {
   const keys = Object.keys(filters);
   const sdks = filters.sdks;
   return keys.length > 1 || sdks.filters.some(x => x.sdks.length > 0);
+}
+
+export function cleanState (form) {
+  const cleanedState = _.cloneDeep(form);
+  const sdkFilters = cleanedState.filters.sdks.filters;
+  _.remove(sdkFilters, x => x.sdks.length === 0);
+  cleanedState.filters.sdks.filters = sdkFilters.map((x) => {
+    const newFilter = { ...x };
+    if (['never-seen', 'is-installed', 'is-not-installed'].includes(x.eventType)) {
+      newFilter.dateRange = 'anytime';
+      newFilter.dates = [];
+    }
+    return newFilter;
+  });
+
+  return cleanedState;
 }

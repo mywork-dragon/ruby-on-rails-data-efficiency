@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { capitalize } from 'utils/format.utils';
+import { Checkbox } from 'antd';
 
 const PriceFilter = () => (
   <li>
@@ -7,14 +9,12 @@ const PriceFilter = () => (
       Price:
     </label>
     {
-      ['Free', 'Paid'].map(option => (
-        <label key={option} className="explore-checkbox">
-          <input type="checkbox" value={option.toLowerCase()} />
-          <span>{option}</span>
-        </label>
+      ['free', 'paid'].map(option => (
+        <Checkbox>
+          {capitalize(option)}
+        </Checkbox>
       ))
     }
-
   </li>
 );
 

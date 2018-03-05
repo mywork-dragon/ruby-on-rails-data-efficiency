@@ -5,7 +5,7 @@ import SearchForm from '../components/SearchForm.component';
 import {
   tableActions,
   toggleForm,
-  updateActivePanel,
+  togglePanel,
   addBlankSdkFilter,
   duplicateSdkFilter,
 } from '../redux/Explore.actions';
@@ -17,7 +17,7 @@ const mapDispatchToProps = dispatch => ({
   duplicateSdkFilter: index => () => dispatch(duplicateSdkFilter(index)),
   getResults: params => dispatch(tableActions.allItems.request(params)),
   toggleForm: () => dispatch(toggleForm()),
-  updateActivePanel: index => dispatch(updateActivePanel(index)),
+  togglePanel: index => () => dispatch(togglePanel(index)),
   updateFilter: (parameter, value, options) => () => dispatch(tableActions.updateFilter(parameter, value, options)),
 });
 

@@ -13,8 +13,8 @@ import {
 
 const service = ExploreService();
 
-function* requestResults (action) {
-  const { params, params: { page_settings: { page: pageNum } } } = action.payload;
+function* requestResults ({ payload }) {
+  const { params, params: { page_settings: { page: pageNum } } } = payload;
   delete params.page_settings.page;
   try {
     yield put(tableActions.clearResults());
@@ -49,6 +49,7 @@ function* populateFromQuery ({ payload: { id } }) {
   try {
     const { data: params, data: { formState } } = yield call(service.getQueryParams, id);
     yield put(populateFromQueryId.success(id, JSON.parse(formState)));
+    yield put(tableActions.setLoading(true));
     yield call(requestResultsByQueryId, id, params, 0);
   } catch (error) {
     console.log(error);

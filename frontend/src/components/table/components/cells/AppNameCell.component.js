@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const AppNameCell = ({ app, isAdIntel }) => (
   <div className="resultsTableAppIcon">
     <span>
-      <a className="dotted-link" href={`#/app/${app.platform}/${app.id}${isAdIntel ? '/ad-intelligence' : ''}`}>
+      <a className="dotted-link" href={`#/app/${app.platform}/${app.id}${isAdIntel ? '/ad-intelligence' : ''}`} target="_blank">
         <img src={app.icon || app.icon_url} />
         {app.name.replace(/\u00AD/g, '')}
         {app.price && <i className="fa fa-2 fa-usd" />}

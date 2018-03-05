@@ -4,14 +4,14 @@ import searchForm from './searchForm.reducers';
 import {
   TABLE_TYPES,
   TOGGLE_FORM,
-  UPDATE_ACTIVE_PANEL,
+  TOGGLE_PANEL,
   UPDATE_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
 } from './Explore.actions';
 
 const initialState = {
   expanded: true,
-  activePanel: '',
+  panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: '',
 };
 
@@ -54,10 +54,13 @@ function explore (state = initialState, action) {
         ...state,
         expanded: !state.expanded,
       };
-    case UPDATE_ACTIVE_PANEL:
+    case TOGGLE_PANEL:
       return {
         ...state,
-        activePanel: payload.index,
+        panels: {
+          ...state.panels,
+          [payload.index]: !state.panels[payload.index],
+        },
       };
     case POPULATE_FROM_QUERY_ID.SUCCESS:
     case UPDATE_QUERY_ID:

@@ -18,12 +18,13 @@ const AppFilterPanel = ({
     mobilePriority,
     userBase,
   },
-  handleSelect,
+  panels,
   panelKey,
+  togglePanel,
   ...rest
 }) => (
-  <Panel eventKey={panelKey}>
-    <Panel.Heading onClick={handleSelect(panelKey)}>
+  <Panel expanded={panels[panelKey]}>
+    <Panel.Heading onClick={togglePanel(panelKey)}>
       <Panel.Title>
         App Details
         <FilterCountLabel count={panelFilterCount(filters, panelKey)} />
@@ -45,12 +46,9 @@ const AppFilterPanel = ({
 
 AppFilterPanel.propTypes = {
   filters: PropTypes.object.isRequired,
-  handleSelect: PropTypes.func,
+  panels: PropTypes.object.isRequired,
   panelKey: PropTypes.string.isRequired,
-};
-
-AppFilterPanel.defaultProps = {
-  handleSelect: () => {},
+  togglePanel: PropTypes.func.isRequired,
 };
 
 export default AppFilterPanel;

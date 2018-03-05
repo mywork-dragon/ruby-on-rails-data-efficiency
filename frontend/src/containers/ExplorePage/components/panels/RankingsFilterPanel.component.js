@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
-const RankingsFilterPanel = ({ handleSelect, panelKey }) => (
-  <Panel eventKey={panelKey}>
-    <Panel.Heading onClick={handleSelect(panelKey)}>
+const RankingsFilterPanel = ({
+  togglePanel,
+  panelKey,
+  panels,
+}) => (
+  <Panel expanded={panels[panelKey]}>
+    <Panel.Heading onClick={togglePanel(panelKey)}>
       <Panel.Title>
         Rankings
         <i className="fa fa-angle-down pull-right" />
@@ -17,12 +21,9 @@ const RankingsFilterPanel = ({ handleSelect, panelKey }) => (
 );
 
 RankingsFilterPanel.propTypes = {
-  handleSelect: PropTypes.func,
+  togglePanel: PropTypes.func.isRequired,
   panelKey: PropTypes.string.isRequired,
-};
-
-RankingsFilterPanel.defaultProps = {
-  handleSelect: () => {},
+  panels: PropTypes.object.isRequired,
 };
 
 export default RankingsFilterPanel;

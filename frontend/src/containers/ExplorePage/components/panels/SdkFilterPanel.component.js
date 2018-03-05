@@ -13,8 +13,9 @@ const SdkFilterPanel = ({
   filters: {
     sdks,
   },
-  handleSelect,
+  panels,
   panelKey,
+  togglePanel,
   updateFilter,
   ...rest
 }) => {
@@ -29,8 +30,8 @@ const SdkFilterPanel = ({
   }
 
   return (
-    <Panel eventKey={panelKey}>
-      <Panel.Heading onClick={handleSelect(panelKey)}>
+    <Panel expanded={panels[panelKey]}>
+      <Panel.Heading onClick={togglePanel(panelKey)}>
         <Panel.Title>
           SDK Data
           <FilterCountLabel count={panelFilterCount(filters, panelKey)} />
@@ -81,13 +82,10 @@ SdkFilterPanel.propTypes = {
   filters: PropTypes.shape({
     sdks: PropTypes.object,
   }).isRequired,
-  handleSelect: PropTypes.func,
+  panels: PropTypes.object.isRequired,
   panelKey: PropTypes.string.isRequired,
+  togglePanel: PropTypes.func.isRequired,
   updateFilter: PropTypes.func.isRequired,
-};
-
-SdkFilterPanel.defaultProps = {
-  handleSelect: () => {},
 };
 
 export default SdkFilterPanel;

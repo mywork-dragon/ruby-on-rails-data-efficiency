@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { capitalize } from 'utils/format.utils';
+import { Checkbox } from 'antd';
 
 const MobilePriorityFilter = ({
   mobilePriority: {
@@ -16,15 +17,12 @@ const MobilePriorityFilter = ({
     <div className="input-group">
       {
         ['low', 'medium', 'high'].map(option => (
-          <label key={option} className="explore-checkbox">
-            <input
-              checked={value.includes(option)}
-              onChange={updateFilter('mobilePriority', option, { panelKey })}
-              type="checkbox"
-              value={option}
-            />
-            <span>{capitalize(option)}</span>
-          </label>
+          <Checkbox
+            checked={value.includes(option)}
+            onChange={updateFilter('mobilePriority', option, { panelKey })}
+          >
+            {capitalize(option)}
+          </Checkbox>
         ))
       }
     </div>

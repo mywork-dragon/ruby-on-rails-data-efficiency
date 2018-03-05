@@ -5,6 +5,7 @@ import { generateColumns, totalNumPages } from 'utils/table.utils';
 import { headerNames } from './redux/column.models';
 import ListDropdownContainer from './containers/ListDropdown.container';
 import Pagination from './components/Pagination.component';
+import LoadingSpinner from './components/Spinner.component';
 
 Object.assign(ReactTableDefaults, {
   className: '-striped',
@@ -99,6 +100,7 @@ const Table = ({
               className: rowInfo && !rowInfo.original.appAvailable && rowInfo.original.taken_down && 'faded',
             })}
             loading={loading}
+            LoadingComponent={LoadingSpinner}
             manual={isManual}
             minRows={minRows}
             noDataText={message}

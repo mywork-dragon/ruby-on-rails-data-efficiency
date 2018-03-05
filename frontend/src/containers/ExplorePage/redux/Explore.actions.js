@@ -19,8 +19,8 @@ export const tableActions = Object.assign({}, exploreTableActions, exploreTableR
 export const TOGGLE_FORM = 'TOGGLE_FORM';
 export const toggleForm = () => action(TOGGLE_FORM);
 
-export const UPDATE_ACTIVE_PANEL = 'UPDATE_ACTIVE_PANEL';
-export const updateActivePanel = index => action(UPDATE_ACTIVE_PANEL, { index });
+export const TOGGLE_PANEL = 'TOGGLE_PANEL';
+export const togglePanel = index => action(TOGGLE_PANEL, { index });
 
 export const UPDATE_QUERY_ID = 'UPDATE_QUERY_ID';
 export const updateQueryId = id => action(UPDATE_QUERY_ID, { id });

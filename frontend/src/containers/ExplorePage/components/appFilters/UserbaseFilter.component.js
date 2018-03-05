@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { capitalize } from 'utils/format.utils';
+import { Checkbox } from 'antd';
 
 const UserbaseFilter = ({
   panelKey,
@@ -16,15 +17,12 @@ const UserbaseFilter = ({
     <div className="input-group">
       {
         ['weak', 'moderate', 'strong', 'elite'].map(option => (
-          <label key={option} className="explore-checkbox">
-            <input
-              checked={value.includes(option)}
-              onChange={updateFilter('userBase', option, { panelKey })}
-              type="checkbox"
-              value={option}
-            />
-            <span>{capitalize(option)}</span>
-          </label>
+          <Checkbox
+            checked={value.includes(option)}
+            onChange={updateFilter('userBase', option, { panelKey })}
+          >
+            {capitalize(option)}
+          </Checkbox>
         ))
       }
     </div>

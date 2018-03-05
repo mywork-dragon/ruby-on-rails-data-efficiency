@@ -8,7 +8,6 @@ const FilterTag = ({
   filterKey,
   index,
   panelKey,
-  updateActivePanel,
 }) => {
   if (displayText === '') {
     return null;
@@ -20,7 +19,7 @@ const FilterTag = ({
   };
 
   return (
-    <Label bsClass="label filter-tag-label" onClick={() => updateActivePanel(panelKey)}>
+    <Label bsClass="label filter-tag-label">
       {displayText}
       {' '}
       <i className="fa fa-times" onClick={handleDelete()} />
@@ -34,7 +33,6 @@ FilterTag.propTypes = {
   filterKey: PropTypes.string.isRequired,
   index: PropTypes.number,
   panelKey: PropTypes.string.isRequired,
-  updateActivePanel: PropTypes.func.isRequired,
 };
 
 FilterTag.defaultProps = {

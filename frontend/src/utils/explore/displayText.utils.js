@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { capitalize } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
@@ -26,12 +27,13 @@ function categoryText (value) {
   return base + value.join(', ');
 }
 
-function sdkText ({ eventType, sdks }) {
+function sdkText ({ eventType, sdks, dateRange, dates }) {
   if (sdks.length === 0) {
     return '';
   }
 
   let eventTypeText;
+  let dateText;
 
   switch (eventType) {
     case 'install':
@@ -51,7 +53,33 @@ function sdkText ({ eventType, sdks }) {
       break;
   }
 
-  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText}`;
+  switch (dateRange) {
+    case 'anytime':
+      dateText = 'Anytime';
+      break;
+    case 'week':
+      dateText = 'in the Last Week';
+      break;
+    case 'month':
+      dateText = 'in the Last Month';
+      break;
+    case 'three-months':
+      dateText = 'in the Last Three Months';
+      break;
+    case 'six-months':
+      dateText = 'in the Last Six Months';
+      break;
+    case 'year':
+      dateText = 'in the Last Year';
+      break;
+    case 'custom':
+      dateText = dates[0] ? `between ${moment(dates[0]).format('L')} and ${moment(dates[1]).format('L')}` : 'in Custom Date Range';
+      break;
+  }
+
+  const requiresDate = ['install', 'uninstall'].includes(eventType);
+
+  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''}`;
 }
 
 export default getDisplayText;
