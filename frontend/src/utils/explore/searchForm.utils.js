@@ -11,6 +11,7 @@ function updateSearchForm(state, action) {
       };
     case 'fortuneRank':
     case 'mobilePriority':
+    case 'headquarters':
     case 'userBase':
       return {
         ...state,
@@ -44,6 +45,7 @@ function updateFilters (filters, { parameter, value, options }) {
   let filter;
 
   switch (parameter) {
+    case 'headquarters':
     case 'fortuneRank':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;

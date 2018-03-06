@@ -60,7 +60,7 @@ export function panelFilterCount(filters, panelKey) {
     return filters.sdks.filters.filter(x => x.sdks.length > 0).length;
   }
 
-  return Object.values(filters).filter(x => x.panelKey === panelKey).length;
+  return Object.values(filters).filter(x => x.panelKey === panelKey && x.displayText && x.displayText.length > 0).length;
 }
 
 export function hasFilters(filters) {

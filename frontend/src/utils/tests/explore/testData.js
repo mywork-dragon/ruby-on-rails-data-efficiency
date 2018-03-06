@@ -15,14 +15,20 @@ export const form = {
       }],
       operator: 'any',
     },
-    fortuneRank: { value: 500, panelKey: '3' },
+    fortuneRank: {
+      value: 500,
+      panelKey: '3',
+      displayText: 'Fortune rank 500',
+    },
     mobilePriority: {
       value: ['high', 'medium'],
       panelKey: '2',
+      displayText: 'Mobile Priority High, Medium',
     },
     userBase: {
       value: ['elite'],
       panelKey: '2',
+      displayText: 'User base Elite',
     },
   },
 };

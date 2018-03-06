@@ -78,4 +78,22 @@
       margin: 0 5px 10px;
     }
   }
+
+  .input-group.headquarter {
+    >div {
+      width: 100%;
+
+      .ant-select {
+        width: 100%;
+      }
+
+      li {
+        padding: 0 20px 0 10px;
+      }
+    }
+  }
+
+  .ant-select {
+    margin-right: 10px;
+  }
 }

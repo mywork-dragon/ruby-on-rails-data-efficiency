@@ -13,6 +13,8 @@ function getDisplayText (parameter, value) {
       return listText('User Base: ', value);
     case 'sdk':
       return sdkText(value);
+    case 'headquarters':
+      return headquarterText(value);
     default:
       return '';
   }
@@ -80,6 +82,10 @@ function sdkText ({ eventType, sdks, dateRange, dates }) {
   const requiresDate = ['install', 'uninstall'].includes(eventType);
 
   return `${sdks.map(x => x.name).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''}`;
+}
+
+function headquarterText (countries) {
+  return `Headquartered in ${countries.map(x => x.label).join(', ')}`;
 }
 
 export default getDisplayText;

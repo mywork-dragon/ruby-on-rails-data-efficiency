@@ -13,11 +13,16 @@ export const selectMap = {
   [headerNames.USER_BASE]: ['user_base'],
 };
 
-export const appFilterKeys = [
-  'mobilePriority',
-  'userBase',
-];
+export const isAppFilter = filter => Object.keys(appFilterKeys).includes(filter);
+export const isPubFilter = filter => Object.keys(publisherFilterKeys).includes(filter);
+export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys)[filter];
 
-export const publisherFilterKeys = [
-  'fortuneRank',
-];
+export const appFilterKeys = {
+  mobilePriority: 'mobile_priority',
+  userBase: 'user_base',
+};
+
+export const publisherFilterKeys = {
+  fortuneRank: 'fortune_rank',
+  headquarters: 'country_code',
+};

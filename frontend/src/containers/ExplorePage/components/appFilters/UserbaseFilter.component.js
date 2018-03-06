@@ -18,6 +18,7 @@ const UserbaseFilter = ({
       {
         ['weak', 'moderate', 'strong', 'elite'].map(option => (
           <Checkbox
+            key={option}
             checked={value.includes(option)}
             onChange={updateFilter('userBase', option, { panelKey })}
           >

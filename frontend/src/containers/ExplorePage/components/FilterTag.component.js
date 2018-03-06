@@ -7,9 +7,8 @@ const FilterTag = ({
   displayText,
   filterKey,
   index,
-  panelKey,
 }) => {
-  if (displayText === '') {
+  if (!displayText || displayText === '') {
     return null;
   }
 
@@ -29,13 +28,13 @@ const FilterTag = ({
 
 FilterTag.propTypes = {
   deleteFilter: PropTypes.func.isRequired,
-  displayText: PropTypes.string.isRequired,
+  displayText: PropTypes.string,
   filterKey: PropTypes.string.isRequired,
   index: PropTypes.number,
-  panelKey: PropTypes.string.isRequired,
 };
 
 FilterTag.defaultProps = {
+  displayText: '',
   index: null,
 };
 

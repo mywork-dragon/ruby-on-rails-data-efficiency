@@ -28,7 +28,7 @@ const PublisherFilterPanel = ({
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
         <FortuneRankFilter fortuneRank={fortuneRank} panelKey={panelKey} {...rest} />
-        <HeadquarterFilter />
+        <HeadquarterFilter filter={filters.headquarters} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>
   </Panel>

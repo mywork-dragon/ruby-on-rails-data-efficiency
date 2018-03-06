@@ -17,6 +17,7 @@ const FortuneRankFilter = ({
       {
         [500, 1000].map(option => (
           <Radio
+            key={option}
             checked={value === option}
             name="fortuneRank"
             onClick={updateFilter('fortuneRank', option, { panelKey })}

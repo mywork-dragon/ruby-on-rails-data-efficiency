@@ -10,7 +10,7 @@ const PriceFilter = () => (
     </label>
     {
       ['free', 'paid'].map(option => (
-        <Checkbox>
+        <Checkbox key={option}>
           {capitalize(option)}
         </Checkbox>
       ))

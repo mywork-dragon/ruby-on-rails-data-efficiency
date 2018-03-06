@@ -18,6 +18,7 @@ const MobilePriorityFilter = ({
       {
         ['low', 'medium', 'high'].map(option => (
           <Checkbox
+            key={option}
             checked={value.includes(option)}
             onChange={updateFilter('mobilePriority', option, { panelKey })}
           >

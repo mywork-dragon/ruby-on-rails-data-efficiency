@@ -10,7 +10,7 @@ const InAppPurchaseFilter = () => (
     </label>
     {
       ['yes', 'no'].map(option => (
-        <Checkbox>
+        <Checkbox key={`inapppurchase-${option}`}>
           {capitalize(option)}
         </Checkbox>
       ))

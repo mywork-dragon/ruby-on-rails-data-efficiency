@@ -23,6 +23,10 @@ export function table(actionTypes, tableOptions) {
   function reducer(state = initialState, action) {
     switch (action.type) {
       case actionTypes.SET_LOADING:
+        return {
+          ...state,
+          loading: action.payload.state,
+        };
       case actionTypes.ALL_ITEMS.REQUEST:
         return {
           ...state,
