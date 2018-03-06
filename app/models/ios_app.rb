@@ -582,7 +582,7 @@ class IosApp < ActiveRecord::Base
     AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
   end
 
-  def self.bulk_export(ids:[833071], options: {})
+  def self.bulk_export(ids:[], options: {})
       
       # Whitelist as a safeguard to prevent us from exporting any
       # attributes that we don't want to expose.
