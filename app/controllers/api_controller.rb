@@ -1057,9 +1057,9 @@ class ApiController < ApplicationController
               "adintel:list",
           ],
           "effect" => "allow",
-          "resource": [
+          "resource" => [
             "mri:mws:adsource*"
-          ],
+          ]
         }
     )
     end
