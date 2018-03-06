@@ -64,7 +64,7 @@ export function panelFilterCount(filters, panelKey) {
 }
 
 export function hasFilters(filters) {
-  const keys = Object.keys(filters);
+  const keys = Object.keys(cleanState({ filters }).filters);
   const sdks = filters.sdks;
   return keys.length > 1 || sdks.filters.some(x => x.sdks.length > 0);
 }
@@ -72,9 +72,11 @@ export function hasFilters(filters) {
 export function cleanState (form) {
   const cleanedState = _.cloneDeep(form);
   const sdkFilters = cleanedState.filters.sdks.filters;
+
   if (sdkFilters.length > 1) {
     _.remove(sdkFilters, x => x.sdks.length === 0);
   }
+
   cleanedState.filters.sdks.filters = sdkFilters.map((x) => {
     const newFilter = { ...x };
     if (['never-seen', 'is-installed', 'is-not-installed'].includes(x.eventType)) {
@@ -83,6 +85,10 @@ export function cleanState (form) {
     }
     return newFilter;
   });
+
+  if (cleanedState.filters.availableCountries && cleanedState.filters.availableCountries.value.countries.length === 0) {
+    delete cleanedState.filters.availableCountries;
+  };
 
   return cleanedState;
 }

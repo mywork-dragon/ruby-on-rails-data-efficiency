@@ -7,15 +7,38 @@ const Option = Select.Option;
 const AvailableCountriesFilter = ({
   availableCountries,
   filter: {
+    value,
     value: {
       countries,
       operator,
       condition,
     },
   },
+  panelKey,
   updateFilter,
 }) => {
   const allowMultiple = condition && condition !== 'only-available-in';
+
+  const updateCondition = (val) => {
+    const newFilter = { ...value };
+    newFilter.condition = val;
+    updateFilter('availableCountries', newFilter, { panelKey })();
+  };
+
+  const updateOperator = (val) => {
+    const newFilter = { ...value };
+    newFilter.operator = val;
+    updateFilter('availableCountries', newFilter, { panelKey })();
+  };
+
+  const updateCountries = (val) => {
+    const newFilter = { ...value };
+    if (!allowMultiple) {
+      val = [val];
+    }
+    newFilter.countries = val;
+    updateFilter('availableCountries', newFilter, { panelKey })();
+  };
 
   return (
     <li>
@@ -25,7 +48,7 @@ const AvailableCountriesFilter = ({
       <div className="input-group available-countries">
         <div className="options-group">
           <Select
-            onChange={val => updateFilter('availableCountries', val, { field: 'condition' })()}
+            onChange={updateCondition}
             size="small"
             style={{
               width: '150px',
@@ -39,7 +62,7 @@ const AvailableCountriesFilter = ({
           {
             allowMultiple &&
               <Select
-                onChange={val => updateFilter('availableCountries', val, { field: 'operator' })()}
+                onChange={updateOperator}
                 size="small"
                 value={operator || 'any'}
               >
@@ -60,13 +83,7 @@ const AvailableCountriesFilter = ({
             filterOption={false}
             labelInValue
             mode={allowMultiple ? 'multiple' : ''}
-            onChange={(values) => {
-              if (!allowMultiple) {
-                values = [values];
-              }
-
-              updateFilter('availableCountries', values, { field: 'countries' })();
-            }}
+            onChange={updateCountries}
             placeholder={`Select Countr${allowMultiple ? 'ies' : 'y'}`}
             value={countries}
           >
@@ -80,7 +97,7 @@ const AvailableCountriesFilter = ({
       </div>
     </li>
   );
-}
+};
 
 AvailableCountriesFilter.propTypes = {
   availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -90,6 +107,7 @@ AvailableCountriesFilter.propTypes = {
       operator: PropTypes.string,
     }),
   }),
+  panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
 };
 
@@ -98,6 +116,7 @@ AvailableCountriesFilter.defaultProps = {
     value: {
       countries: [],
       operator: 'any',
+      condition: 'only-available-in',
     },
   },
 };

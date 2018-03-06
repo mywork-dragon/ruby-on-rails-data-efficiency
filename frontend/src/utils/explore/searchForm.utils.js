@@ -48,6 +48,7 @@ function updateFilters (filters, { parameter, value, options }) {
   switch (parameter) {
     case 'headquarters':
     case 'fortuneRank':
+    case 'availableCountries':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':
@@ -56,9 +57,6 @@ function updateFilters (filters, { parameter, value, options }) {
       break;
     case 'sdks':
       filter = updateSdkFilter(filters[parameter].filters[options.index], parameter, value, options);
-      break;
-    case 'availableCountries':
-      filter = updateNestedField(filters[parameter], parameter, value, options);
       break;
     default:
       break;
@@ -110,22 +108,6 @@ function updateSingleValueFilter (filter, type, value, { panelKey }) {
   if (!result.value || (Array.isArray(value) && value.length === 0)) {
     return null;
   }
-
-  return result;
-}
-
-function updateNestedField (filter, type, value, { panelKey, field }) {
-  const result = {
-    panelKey,
-    value: filter ? filter.value : {},
-  };
-
-  result.value = {
-    ...result.value,
-    [field]: value,
-  };
-
-  result.displayText = getDisplayText(type, result.value);
 
   return result;
 }

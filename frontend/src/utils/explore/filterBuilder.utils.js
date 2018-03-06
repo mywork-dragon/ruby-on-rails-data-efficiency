@@ -112,9 +112,14 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       value,
     ]);
   } else if (type === 'availableCountries') {
+    if (value.countries.length === 0) {
+      return;
+    }
+
     if (!condition || condition === 'only-available-in') {
       return ['only_available_in_country', value.countries[0].key];
     }
+
     value.countries.forEach((x) => {
       const predicate = ['available_in', x.key];
       if (condition === 'available-in') {
