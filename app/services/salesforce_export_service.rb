@@ -427,7 +427,7 @@ class SalesforceExportService
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'User_Base__c' => app.user_base,
-      'Ad_Spend__c' => app.old_ad_spend?,
+      'Ad_Spend__c' => app.ad_spend?,
       'Last_Scanned_Date__c' => app.last_scanned.try(:to_date)
     }
 
@@ -458,7 +458,7 @@ class SalesforceExportService
       publisher = import[:publisher]
       export_id = import[:export_id]
 
-      publisher.apps.each do |app|
+      publisher.apps.limit(500).each do |app|
         app_key = "#{app.platform}_#{app.id}"
         @app_export_id_map[app_key] ||= []
         @app_export_id_map[app_key] << export_id
