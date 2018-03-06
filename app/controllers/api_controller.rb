@@ -1040,6 +1040,15 @@ class ApiController < ApplicationController
             ]
         },
         {
+            "action"=> [
+                "mightyquery:filter:*",
+            ],
+            "effect" => "allow",
+            "resource" => [
+                "mri:mws:mightyquery/object/*"
+            ]
+        },
+        {
           "action" => [
               "adintel:get_ad_data",
           ],
