@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as models from './models.utils';
 import { buildSdkFilters } from './sdkFilterBuilder.utils';
 
@@ -52,7 +53,7 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   }
 
   for (const key in filters) {
-    if (models.isAppFilter(key) && filters[key].value.length <= 2) { // TODO: we'll see how this holds, meant to eliminate unnecessary filters
+    if (models.isAppFilter(key)) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -60,6 +61,8 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   if (result.predicates.length === 0) {
     return null;
   }
+
+  result.predicates = _.compact(result.predicates);
 
   return result;
 }
@@ -84,11 +87,15 @@ export function buildPublisherFilters ({ filters }) {
   return result;
 }
 
-function generatePredicate(type, filter) {
-  const result = ['or'];
+function generatePredicate(type, { value, value: { operator, condition } }) {
+  const result = [];
+  result.push(operator && operator === 'all' ? 'and' : 'or');
   const filterType = models.getQueryFilter(type);
-  if (Array.isArray(filter.value)) {
-    filter.value.forEach((x) => {
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return null;
+    }
+    value.forEach((x) => {
       let val = x;
       if (type === 'headquarters') {
         val = x.key;
@@ -98,12 +105,24 @@ function generatePredicate(type, filter) {
         val,
       ]);
     });
-  } else if (typeof filter.value === 'number') {
+  } else if (typeof value === 'number') {
     result.push([
       filterType,
       0,
-      filter.value,
+      value,
     ]);
+  } else if (type === 'availableCountries') {
+    if (!condition || condition === 'only-available-in') {
+      return ['only_available_in_country', value.countries[0].key];
+    }
+    value.countries.forEach((x) => {
+      const predicate = ['available_in', x.key];
+      if (condition === 'available-in') {
+        result.push(predicate);
+      } else {
+        result.push(['not', predicate]);
+      }
+    });
   }
 
   return result;

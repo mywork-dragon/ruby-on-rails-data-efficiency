@@ -9,6 +9,7 @@ function updateSearchForm(state, action) {
         ...state,
         includeTakenDown: !state.includeTakenDown,
       };
+    case 'availableCountries':
     case 'fortuneRank':
     case 'mobilePriority':
     case 'headquarters':
@@ -56,6 +57,9 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'sdks':
       filter = updateSdkFilter(filters[parameter].filters[options.index], parameter, value, options);
       break;
+    case 'availableCountries':
+      filter = updateNestedField(filters[parameter], parameter, value, options);
+      break;
     default:
       break;
   }
@@ -83,6 +87,10 @@ function updateArrayTypeFilter (filter, type, value, { panelKey }) {
     result.value = _.uniq(values);
   }
 
+  if (result.value.length === 0) {
+    return null;
+  }
+
   result.displayText = getDisplayText(type, result.value);
 
   return result;
@@ -98,6 +106,26 @@ function updateSingleValueFilter (filter, type, value, { panelKey }) {
     result.value = value;
     result.displayText = getDisplayText(type, result.value);
   }
+
+  if (!result.value || (Array.isArray(value) && value.length === 0)) {
+    return null;
+  }
+
+  return result;
+}
+
+function updateNestedField (filter, type, value, { panelKey, field }) {
+  const result = {
+    panelKey,
+    value: filter ? filter.value : {},
+  };
+
+  result.value = {
+    ...result.value,
+    [field]: value,
+  };
+
+  result.displayText = getDisplayText(type, result.value);
 
   return result;
 }
@@ -116,14 +144,12 @@ function updateSdkFilter (filter, type, value, { field }) {
 function addFilter (filters, type, filter, options) {
   const result = { ...filters };
 
-  if (Array.isArray(filter.value) && filter.value.length !== 0) {
-    result[type] = filter;
-  } else if (!Array.isArray(filter.value) && filter.value) {
-    result[type] = filter;
+  if (filter == null) {
+    delete result[type];
   } else if (type === 'sdks') {
     result.sdks.filters[options.index] = filter;
   } else {
-    delete result[type];
+    result[type] = filter;
   }
 
   return result;

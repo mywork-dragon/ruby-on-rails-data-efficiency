@@ -36,7 +36,7 @@ const AppFilterPanel = ({
         <MobilePriorityFilter mobilePriority={mobilePriority} panelKey={panelKey} {...rest} />
         <PriceFilter />
         <InAppPurchaseFilter />
-        <AvailableCountriesFilter />
+        <AvailableCountriesFilter filter={filters.availableCountries} {...rest} />
         <CategoriesFilter filter={appCategory} {...rest} />
         <UserbaseFilter panelKey={panelKey} userBase={userBase} {...rest} />
       </ul>

@@ -18,6 +18,7 @@ export const isPubFilter = filter => Object.keys(publisherFilterKeys).includes(f
 export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys)[filter];
 
 export const appFilterKeys = {
+  availableCountries: 'available_in',
   mobilePriority: 'mobile_priority',
   userBase: 'user_base',
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { capitalize } from 'utils/format.utils';
 import { Select, Spin } from 'antd';
 import ExploreService from 'services/explore.service';
 
@@ -36,7 +35,6 @@ class HeadquarterFilter extends React.Component {
       });
   }
 
-
   render () {
     const {
       filter: {
@@ -54,7 +52,7 @@ class HeadquarterFilter extends React.Component {
           Headquartered in any:
         </label>
         <div className="input-group headquarter">
-          <div>
+          <div className="countries-select">
             <Select
               allowClear
               filterOption={false}

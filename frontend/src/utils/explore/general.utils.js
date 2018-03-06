@@ -72,7 +72,9 @@ export function hasFilters(filters) {
 export function cleanState (form) {
   const cleanedState = _.cloneDeep(form);
   const sdkFilters = cleanedState.filters.sdks.filters;
-  _.remove(sdkFilters, x => x.sdks.length === 0);
+  if (sdkFilters.length > 1) {
+    _.remove(sdkFilters, x => x.sdks.length === 0);
+  }
   cleanedState.filters.sdks.filters = sdkFilters.map((x) => {
     const newFilter = { ...x };
     if (['never-seen', 'is-installed', 'is-not-installed'].includes(x.eventType)) {

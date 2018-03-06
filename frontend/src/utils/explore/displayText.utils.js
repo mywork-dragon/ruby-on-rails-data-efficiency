@@ -15,6 +15,8 @@ function getDisplayText (parameter, value) {
       return sdkText(value);
     case 'headquarters':
       return headquarterText(value);
+    case 'availableCountries':
+      return availableCountriesText(value);
     default:
       return '';
   }
@@ -86,6 +88,29 @@ function sdkText ({ eventType, sdks, dateRange, dates }) {
 
 function headquarterText (countries) {
   return `Headquartered in ${countries.map(x => x.label).join(', ')}`;
+}
+
+function availableCountriesText ({ countries, condition }) {
+  if (!countries || countries.length === 0) {
+    return '';
+  }
+
+  let availableText;
+
+  switch (condition) {
+    case undefined:
+    case 'only-available-in':
+      availableText = 'Only Available in';
+      break;
+    case 'available-in':
+      availableText = 'Available in';
+      break;
+    case 'not-available-in':
+      availableText = 'Not Available in';
+      break;
+  }
+
+  return `${availableText} ${countries.map(x => x.label).join(', ')}`;
 }
 
 export default getDisplayText;

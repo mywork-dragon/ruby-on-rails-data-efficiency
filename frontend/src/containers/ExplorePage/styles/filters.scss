@@ -74,13 +74,18 @@
       }
     }
 
-    .following {
-      margin: 0 5px 10px;
-    }
   }
 
-  .input-group.headquarter {
-    >div {
+  .following {
+    margin: 0 5px 10px;
+  }
+
+  .input-group {
+    .options-group {
+      margin-bottom: 10px;
+    }
+
+    .countries-select {
       width: 100%;
 
       .ant-select {
