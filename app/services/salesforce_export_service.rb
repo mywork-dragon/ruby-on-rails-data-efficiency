@@ -652,7 +652,7 @@ class SalesforceExportService
 
       query = "select #{select_fields} from #{model} where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
       query += website_filter
-      query += " and where #{model_query}" if model_query
+      query += " and #{model_query}" if model_query
       query += " and IsConverted = false" if model == 'Lead'
       query += " and CreatedDate > #{date}" if date
 
