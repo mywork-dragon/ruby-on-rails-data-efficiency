@@ -7,6 +7,8 @@ import 'AngularService/publisher.service';
 import 'AngularService/ad-intelligence.service';
 import 'components/ad-intel-tab/ad-intel-tab.directive';
 
+import { attachGetCompanyContactsLoader } from 'utils/contact.utils';
+
 angular
   .module('appApp')
   .controller('PublisherController', PublisherController);
@@ -116,13 +118,10 @@ function PublisherController (
   }
 
   function getCompanyContacts (filter) {
-    publisher.contactFetchComplete = false;
-    contactService.getCompanyContacts($stateParams.platform, $stateParams.id, filter, publisher.currentContactsPage)
-      .then((data) => {
-        publisher.contacts = data.contacts;
-        publisher.contactsCount = data.contactsCount;
-        publisher.contactFetchComplete = true;
-      });
+    attachGetCompanyContactsLoader(
+      publisher,
+      contactService.getCompanyContacts($stateParams.platform, $stateParams.id, filter, publisher.currentContactsPage)
+      )
   }
 
   function getContactEmail (contact) {

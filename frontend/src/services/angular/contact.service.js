@@ -53,8 +53,7 @@ function contactService($window, $http) {
         perPage: 10,
       },
     })
-      .then(response => response.data)
-      .catch(error => error);
+      .then(response => response.data);
   }
 
   function getContactEmail(clearbitId) {

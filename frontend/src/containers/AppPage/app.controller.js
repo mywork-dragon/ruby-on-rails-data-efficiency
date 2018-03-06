@@ -10,6 +10,7 @@ import 'AngularService/ad-intelligence.service';
 import 'AngularService/newsfeed';
 
 import { addAdIds } from 'utils/app.utils';
+import { attachGetCompanyContactsLoader } from 'utils/contact.utils';
 
 angular
   .module('appApp')
@@ -179,15 +180,12 @@ function AppController (
       });
   }
 
-  function getCompanyContacts (filter) {
-    app.contactFetchComplete = false;
-    contactService.getCompanyContacts(app.platform, app.publisher.id, filter, app.currentContactsPage)
-      .then((data) => {
-        app.contacts = data.contacts;
-        app.contactsCount = data.contactsCount;
-        app.contactFetchComplete = true;
-      });
-  }
+  function getCompanyContacts(filter) {
+    attachGetCompanyContactsLoader(
+      app,
+      contactService.getCompanyContacts(app.platform, app.publisher.id, filter, app.currentContactsPage)
+    )
+  };
 
   function getContactEmail (contact) {
     contact.isLoading = true;

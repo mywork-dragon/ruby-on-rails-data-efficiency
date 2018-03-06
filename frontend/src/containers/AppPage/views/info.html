@@ -388,7 +388,7 @@
                           </tbody>
                         </table>
                         <div class="tableStatusMessage" ng-show="!app.contactFetchComplete || !app.contacts.length">
-                          <h5 data-ng-hide="app.contacts.length || !app.contactFetchComplete">Sorry, No Contacts Available</h5>
+                          <h5 data-ng-hide="app.contacts.length || !app.contactFetchComplete">{{app.contactMessage}}</h5>
                           <div id="loadingSpinnerContainer" data-ng-show="!app.contactFetchComplete">
                             <div class="loading outer">
                               <div class="loading inner"></div>
