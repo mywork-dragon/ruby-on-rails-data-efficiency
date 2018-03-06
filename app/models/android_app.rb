@@ -650,6 +650,7 @@ class AndroidApp < ActiveRecord::Base
 
       attributes_from_app = [
         "id",
+        "platform",
         "app_identifier",
         "region_codes",
         "user_base"
@@ -893,7 +894,6 @@ class AndroidApp < ActiveRecord::Base
             result[value] = attributes_array[i]
           end
           result["categories"] = [ category_info ]
-          result["platform"] = platform
 
           result["last_updated"] = result["released"].as_json
           
