@@ -1050,6 +1050,20 @@ class ApiController < ApplicationController
       "expire" => Time.now.to_i + 20.minutes
     }
 
+    if @current_user.account.ad_data_permissions['enabled_ad_network_tiers'].include? 'tier-2'
+      body["statements"].append(
+        {
+          "action" => [
+              "adintel:list",
+          ],
+          "effect" => "allow",
+          "resource": [
+            "mri:mws:adsource*"
+          ],
+        }
+    )
+    end
+
     @result = HTTParty.post('https://query.mightysignal.com/auth/token',
     :body => body.to_json,
     :headers => { 'JWT' => ENV['MIGHTYQUERY_AUTH_TOKEN_GENERATION_TOKEN'], 'Content-Type' => 'application/json' } )
