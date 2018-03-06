@@ -524,17 +524,19 @@ class SalesforceExportService
   end
 
   def run_sdk_imports
-    results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
-    results['batches'].first['response'].each_with_index do |sdk, i|
-      next unless sdk["id"] # failed to import
+    if @upsert_records[@sdk_model].present?
+      results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
+      results['batches'].first['response'].each_with_index do |sdk, i|
+        next unless sdk["id"] # failed to import
 
-      sdk_id = sdk["id"].first
-      record = @upsert_records[@sdk_model][i]
+        sdk_id = sdk["id"].first
+        record = @upsert_records[@sdk_model][i]
 
-      sdk_apps = @sdk_app_map["#{record['Platform__c']}_#{record['MightySignal_SDK_ID__c']}"]
-      sdk_apps.each do |sdk_app|
-        sdk_app[:sdk_id] = sdk_id
-        import_sdk_app(**sdk_app)
+        sdk_apps = @sdk_app_map["#{record['Platform__c']}_#{record['MightySignal_SDK_ID__c']}"]
+        sdk_apps.each do |sdk_app|
+          sdk_app[:sdk_id] = sdk_id
+          import_sdk_app(**sdk_app)
+        end
       end
     end
   end
