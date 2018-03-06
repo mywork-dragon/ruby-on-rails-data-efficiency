@@ -243,7 +243,7 @@ order_by | **string** <br>Order results by field. Must be one of:<br><code>first
 
 You can use the [MightySignal web portal](http://mightysignal.com/app/app) to find the ids for the query parameters.
 
-For example, the `publisher_id` would be `200033` for Uber Technlogies, Inc. since its MightySignal link is [http://mightysignal.com/app/app#/publisher/ios/200033](http://mightysignal.com/app/app#/publisher/ios/200033), and the `installed_sdk_id` for Mixpanel would be `1896` since its MightySignal link is [http://mightysignal.com/app/app#/sdk/ios/1896](http://mightysignal.com/app/app#/sdk/ios/1896). 
+For example, the `publisher_id` would be `200033` for Uber Technlogies, Inc. since its MightySignal link is [http://mightysignal.com/app/app#/publisher/ios/200033](http://mightysignal.com/app/app#/publisher/ios/200033), and the `installed_sdk_id` for Mixpanel would be `1896` since its MightySignal link is [http://mightysignal.com/app/app#/sdk/ios/1896](http://mightysignal.com/app/app#/sdk/ios/1896).
 
 Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the [simple app route](#filter-on-ios-apps) and pluck the IDs off the response.
 
@@ -448,7 +448,7 @@ order_by | **string** <br>Order results by field. Must be one of:<br><code>first
 
 You can use the [MightySignal web portal](http://mightysignal.com/app/app) to find the ids for the query parameters.
 
-For example, the `publisher_id` would be `12` for Uber Technlogies, Inc. since its MightySignal link is [http://mightysignal.com/app/app#/publisher/android/12](http://mightysignal.com/app/app#/publisher/android/12), and the `installed_sdk_id` for Crashlytics would be `7` since its MightySignal link is [http://mightysignal.com/app/app#/sdk/android/7](http://mightysignal.com/app/app#/sdk/android/7). 
+For example, the `publisher_id` would be `12` for Uber Technlogies, Inc. since its MightySignal link is [http://mightysignal.com/app/app#/publisher/android/12](http://mightysignal.com/app/app#/publisher/android/12), and the `installed_sdk_id` for Crashlytics would be `7` since its MightySignal link is [http://mightysignal.com/app/app#/sdk/android/7](http://mightysignal.com/app/app#/sdk/android/7).
 
 Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the [simple app route](#filter-on-android-apps) and pluck the IDs off the response.
 
@@ -500,14 +500,14 @@ curl "https://api.mightysignal.com/ios/sdk/153"
 
 `GET /<platform>/sdk/<sdk_id>`
 
-where `<platform>` is either `ios` or `android` and `<sdk_id>` is the MightySignal id of the SDK. 
+where `<platform>` is either `ios` or `android` and `<sdk_id>` is the MightySignal id of the SDK.
 
 One way to find the `<sdk_id>` is by using the [MightySignal web portal](http://mightysignal.com/app/app). For example, the `<sdk_id>` for the Mixpanel iOS SDK would be `1896` since its MightySignal link is [http://mightysignal.com/app/app#/sdk/ios/1896](http://mightysignal.com/app/app#/sdk/ios/1896).
 
 You can also use the responses from the [iOS](#ios-apps) or [Android](#android-apps) app routes to find the `<sdk_id>`.
 
 <aside class="notice">
-SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code>/ios/sdk/1</code> will return information about different SDKs 
+SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code>/ios/sdk/1</code> will return information about different SDKs
 </aside>
 
 ### Response
@@ -659,7 +659,7 @@ details.company_type | Type of company
 details.employees_range | Range of employees , eg. `251-1000`
 details.country | Country where the publisher is located
 details.alexa_us_rank | US Alexa rank
-details.street_name | Street name 
+details.street_name | Street name
 details.raised | Money raised ($)
 details.phone | Phone number
 details.industry | Industry
@@ -672,7 +672,7 @@ details.state_code | The state code of the location
 details.tech_used | Array of web technologies on the developer's website
 details.legal_name | Legal name
 
-## [BETA] Lookup a publisher by domain
+## Lookup a publisher by domain
 
 > Example: Retrieve the publisher who owns the domain `snapchat.com`
 
