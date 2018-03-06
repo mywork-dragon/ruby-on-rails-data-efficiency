@@ -649,6 +649,7 @@ class AndroidApp < ActiveRecord::Base
       # List of attributes to pluck from respective collections
 
       attributes_from_app = [
+        "id",
         "app_identifier",
         "region_codes",
         "user_base"
@@ -888,14 +889,11 @@ class AndroidApp < ActiveRecord::Base
         else
           result = {}
           snapshot_attributes.each_with_index do |value, i|
+            next if value == "id" or value == "android_app_id"
             result[value] = attributes_array[i]
           end
           result["categories"] = [ category_info ]
           result["platform"] = platform
-          
-          # Overwrite snapshot id with AndroidAppId
-          result["id"] = result["android_app_id"]
-          result.delete("android_app_id")
 
           result["last_updated"] = result["released"].as_json
           

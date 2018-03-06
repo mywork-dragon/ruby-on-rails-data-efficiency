@@ -10,7 +10,7 @@ class AppHotStore < HotStore
 
     @key_set = "app_keys"
 
-    @required_fields = [ "app_identifier" ]
+    @required_fields = [ "app_identifier", "id" ]
 
     @platform_to_class = {
       "ios" => IosApp,
@@ -29,7 +29,7 @@ class AppHotStore < HotStore
       }
     }
   end
-
+  
   def write(platform, app_ids, include_sdk_history: true)
     export_options = {:include_sdk_history => include_sdk_history}
     export_results = to_class(platform).bulk_export(ids: app_ids, options: export_options)
@@ -55,7 +55,11 @@ class AppHotStore < HotStore
   
       delete_app_fields(platform, app_attributes)
   
-      write_entry("app", platform, app_id, app_attributes)
+      begin
+        write_entry("app", platform, app_id, app_attributes)
+      rescue HotStore::MissingHotStoreField => e
+        Bugsnag.notify(e)
+      end
     end
   end
 
