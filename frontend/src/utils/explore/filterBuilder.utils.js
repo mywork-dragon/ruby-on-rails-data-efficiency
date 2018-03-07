@@ -128,6 +128,11 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
         result.push(['not', predicate]);
       }
     });
+  } else if (['price', 'inAppPurchases'].includes(type)) {
+    if (['paid', 'no'].includes(value)) {
+      return ['not', [filterType]];
+    }
+    return [filterType];
   }
 
   return result;

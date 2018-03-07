@@ -21,6 +21,8 @@ export const appFilterKeys = {
   availableCountries: 'available_in',
   mobilePriority: 'mobile_priority',
   userBase: 'user_base',
+  price: 'free',
+  inAppPurchases: 'in_app_purchases',
 };
 
 export const publisherFilterKeys = {

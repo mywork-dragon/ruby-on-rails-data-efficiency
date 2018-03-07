@@ -34,8 +34,8 @@ const AppFilterPanel = ({
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
         <MobilePriorityFilter mobilePriority={mobilePriority} panelKey={panelKey} {...rest} />
-        <PriceFilter />
-        <InAppPurchaseFilter />
+        <PriceFilter filter={filters.price} panelKey={panelKey} {...rest} />
+        <InAppPurchaseFilter filter={filters.inAppPurchases} panelKey={panelKey} {...rest} />
         <AvailableCountriesFilter filter={filters.availableCountries} panelKey={panelKey} {...rest} />
         <CategoriesFilter filter={appCategory} {...rest} />
         <UserbaseFilter panelKey={panelKey} userBase={userBase} {...rest} />

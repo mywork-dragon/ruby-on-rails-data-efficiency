@@ -17,6 +17,8 @@ function getDisplayText (parameter, value) {
       return headquarterText(value);
     case 'availableCountries':
       return availableCountriesText(value);
+    case 'price':
+      return `Price: ${capitalize(value)}`;
     default:
       return '';
   }
