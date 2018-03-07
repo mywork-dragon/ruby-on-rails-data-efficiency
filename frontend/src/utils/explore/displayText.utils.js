@@ -19,6 +19,8 @@ function getDisplayText (parameter, value) {
       return availableCountriesText(value);
     case 'price':
       return `Price: ${capitalize(value)}`;
+    case 'inAppPurchases':
+      return `In App Purchases: ${capitalize(value)}`;
     default:
       return '';
   }
