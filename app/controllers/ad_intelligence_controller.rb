@@ -267,7 +267,7 @@ class AdIntelligenceController < ApplicationController
 
         ios_apps_e = AppsIndex::IosApp.limit(AdDataAccessor::MAX_PAGE_SIZE).filter({"terms" => {"id" => ios_apps.map{|x| x['id']}}}).to_a
         android_apps_e = AppsIndex::AndroidApp.limit(AdDataAccessor::MAX_PAGE_SIZE).filter({"terms" => {"id" => android_apps.map{|x| x['id']}}}).to_a
-        exporter = ApplicationExportWorker.new
+        hotstore = AppHotStore.new
         self.response_body  = render_csv(apps: android_apps_e + ios_apps_e, additional_fields: ['Ad Formats', 'Ad Networks', 'Last Seen Ads', 'First Seen Ads', 'Ad Attribution SDKs']) do |header, csv_row|
           # This block adds to the standard CSV rows we generate.
           app_index_key = "#{csv_row[header.index('App Type')]}:#{csv_row[header.index('MightySignal App ID')]}"
@@ -277,7 +277,7 @@ class AdIntelligenceController < ApplicationController
           csv_row.append(app_hash['ad_sources'].map {|x| x['name']}.join('|'))
           csv_row.append(app_hash['last_seen_ads_date'])
           csv_row.append(app_hash['first_seen_ads_date'])
-          csv_row.append(exporter.get_ad_attribution_sdks("#{app_hash['platform']}_app", app_hash['id']).map {|sdk| sdk['name']}.join('|'))
+          csv_row.append(hotstore.get_ad_attribution_sdks(app_hash['platform'], app_hash['id']).map {|sdk| sdk['name']}.join('|'))
 
           csv_row
         end

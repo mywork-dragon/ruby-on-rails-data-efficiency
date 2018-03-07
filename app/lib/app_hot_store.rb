@@ -8,6 +8,8 @@ class AppHotStore < HotStore
   def initialize(redis_store: nil)
     super(redis_store: redis_store)
 
+    @ad_attribution_sdks = nil
+
     @key_set = "app_keys"
 
     @required_fields = [ "app_identifier", "id" ]
@@ -29,7 +31,17 @@ class AppHotStore < HotStore
       }
     }
   end
-  
+
+  def ad_attribution_sdks
+    @ad_attribution_sdks ||= {'ios' => Tag.find(24).ios_sdks.pluck(:id), 'android' => Tag.find(24).android_sdks.pluck(:id)}
+  end
+
+  def get_ad_attribution_sdks(platform, application_id)
+    hs_data = read(platform, application_id)
+    attribution_sdk_ids = ad_attribution_sdks[platform]
+    hs_data['sdk_activity'].select {|sdk| attribution_sdk_ids.include?(sdk["id"]) and sdk['installed']}
+  end
+
   def write(platform, app_ids, include_sdk_history: true)
     export_options = {:include_sdk_history => include_sdk_history}
     export_results = to_class(platform).bulk_export(ids: app_ids, options: export_options)
@@ -49,12 +61,12 @@ class AppHotStore < HotStore
         app_attributes.delete("installed_sdks")
         app_attributes.delete("uninstalled_sdks")
       end
-      
+
       # TODO: probably merge this into iOS version of bulk_export:
       # add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
-  
+
       delete_app_fields(platform, app_attributes)
-  
+
       begin
         write_entry("app", platform, app_id, app_attributes)
       rescue HotStore::MissingHotStoreField => e
@@ -88,8 +100,8 @@ private
     ratings_details = app_object.ratings_info
     app_attributes["ratings_by_country"] = ratings_details
 
-    all_ratings_count = ratings_details.map { |storefront_rating| 
-      storefront_rating[:ratings_count] 
+    all_ratings_count = ratings_details.map { |storefront_rating|
+      storefront_rating[:ratings_count]
     }.compact.inject(0, &:+) # sums all the ratings_counts in list
 
     app_attributes["all_version_ratings_count"] = all_ratings_count
@@ -104,7 +116,7 @@ private
       ratings_count = storefront_rating[:ratings_count]
       rating_stars = storefront_rating[:rating]
       next if ratings_count.nil? or rating_stars.nil?
-      
+
       weight = ratings_count.to_f / all_ratings_count
       storefront_ratings_average = storefront_ratings_average + ( weight * rating_stars )
     end
