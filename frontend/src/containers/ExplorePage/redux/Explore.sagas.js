@@ -9,8 +9,6 @@ import {
   populateFromQueryId,
   tableActions,
   updateQueryId,
-  AVAILABLE_COUNTRIES,
-  availableCountries,
 } from './Explore.actions';
 
 const service = ExploreService();
@@ -61,16 +59,6 @@ function* populateFromQuery ({ payload: { id } }) {
   }
 }
 
-function* requestAvailableCountries () {
-  try {
-    const { data: { results } } = yield call(service.getCountryAutocompleteResults, 1, '');
-    yield put(availableCountries.success(results));
-  } catch (err) {
-    console.log(err);
-    yield put(availableCountries.failure());
-  }
-}
-
 function* watchResultsRequest() {
   yield takeLatest(TABLE_TYPES.ALL_ITEMS.REQUEST, requestResults);
 }
@@ -79,14 +67,9 @@ function* watchQueryPopulation() {
   yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, populateFromQuery);
 }
 
-function* watchCountryRequest() {
-  yield takeLatest(AVAILABLE_COUNTRIES.REQUEST, requestAvailableCountries);
-}
-
 export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
     watchQueryPopulation(),
-    watchCountryRequest(),
   ]);
 }

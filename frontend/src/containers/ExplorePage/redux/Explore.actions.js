@@ -37,10 +37,3 @@ export const addBlankSdkFilter = () => action(ADD_BLANK_SDK_FILTER);
 
 export const DUPLICATE_SDK_FILTER = 'DUPLICATE_SDK_FILTER';
 export const duplicateSdkFilter = index => action(DUPLICATE_SDK_FILTER, { index });
-
-export const AVAILABLE_COUNTRIES = createRequestTypes('AVAILABLE_COUNTRIES');
-export const availableCountries = {
-  request: () => action(AVAILABLE_COUNTRIES.REQUEST),
-  success: countries => action(AVAILABLE_COUNTRIES.SUCCESS, { countries }),
-  failure: () => action(AVAILABLE_COUNTRIES.FAILURE),
-};

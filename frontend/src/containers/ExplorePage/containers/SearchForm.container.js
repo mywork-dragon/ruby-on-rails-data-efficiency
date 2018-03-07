@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { hasFilters } from 'utils/explore/general.utils';
+import * as appStore from 'selectors/appStore.selectors';
 import SearchForm from '../components/SearchForm.component';
 import {
   tableActions,
@@ -21,17 +22,22 @@ const mapDispatchToProps = dispatch => ({
   updateFilter: (parameter, value, options) => () => dispatch(tableActions.updateFilter(parameter, value, options)),
 });
 
-const mapStateToProps = ({ explorePage: { explore, searchForm, resultsTable } }) => ({
-  canFetch: hasFilters(searchForm.filters),
-  explore,
-  searchForm,
-  resultsTable,
-});
+const mapStateToProps = (state) => {
+  const { explorePage: { explore, searchForm, resultsTable } } = state;
+
+  return {
+    canFetch: hasFilters(searchForm.filters),
+    ...explore,
+    searchForm,
+    resultsTable,
+    iosCategories: appStore.getIosCategories(state),
+    androidCategories: appStore.getAndroidCategories(state),
+    availableCountries: appStore.getAvailableCountries(state),
+  };
+};
 
 const mergeProps = (storeProps, dispatchProps) => {
   const {
-    canFetch,
-    explore,
     searchForm,
     resultsTable:
       {
@@ -39,13 +45,13 @@ const mergeProps = (storeProps, dispatchProps) => {
         pageSize,
         sort,
       },
+    ...rest
   } = storeProps;
 
   return {
-    canFetch,
-    ...explore,
     ...searchForm,
     ...dispatchProps,
+    ...rest,
     requestResults: () => () => {
       const pageSettings = { pageSize, pageNum: 0 };
       const query = buildExploreRequest(searchForm, columns, pageSettings, sort);

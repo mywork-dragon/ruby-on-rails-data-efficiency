@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, Spin } from 'antd';
-import ExploreService from 'services/explore.service';
+import AppStoreService from 'services/appStore.service';
 
 const Option = Select.Option;
 
@@ -25,7 +25,7 @@ class HeadquarterFilter extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ countryOptions: [], fetching: true });
-    ExploreService().getCountryAutocompleteResults(0, value)
+    AppStoreService().getCountryAutocompleteResults(0, value)
       .then((response) => {
         if (fetchId !== this.lastFetchId) {
           return;

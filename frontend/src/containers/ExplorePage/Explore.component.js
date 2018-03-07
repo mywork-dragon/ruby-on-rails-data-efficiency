@@ -7,15 +7,21 @@ import SearchFormContainer from './containers/SearchForm.container';
 const Explore = ({
   queryId,
   populateFromQueryId,
-  loaded,
+  shouldFetchCountries,
   requestAvailableCountries,
+  shouldFetchCategories,
+  requestCategories,
 }) => {
   if (queryId) {
     populateFromQueryId(queryId);
   }
 
-  if (!loaded) {
+  if (shouldFetchCountries) {
     requestAvailableCountries();
+  }
+
+  if (shouldFetchCategories) {
+    requestCategories();
   }
 
   return (
@@ -29,8 +35,10 @@ const Explore = ({
 Explore.propTypes = {
   populateFromQueryId: PropTypes.func.isRequired,
   queryId: PropTypes.string,
-  loaded: PropTypes.bool.isRequired,
+  shouldFetchCountries: PropTypes.bool.isRequired,
   requestAvailableCountries: PropTypes.func.isRequired,
+  shouldFetchCategories: PropTypes.bool.isRequired,
+  requestCategories: PropTypes.func.isRequired,
 };
 
 Explore.defaultProps = {

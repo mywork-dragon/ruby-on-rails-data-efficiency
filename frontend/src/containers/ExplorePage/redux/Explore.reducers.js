@@ -7,15 +7,12 @@ import {
   TOGGLE_PANEL,
   UPDATE_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
-  AVAILABLE_COUNTRIES,
 } from './Explore.actions';
 
 const initialState = {
   expanded: true,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: '',
-  availableCountries: [],
-  loaded: false,
 };
 
 const columnOptions = [
@@ -75,12 +72,6 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryId: '',
-      };
-    case AVAILABLE_COUNTRIES.SUCCESS:
-      return {
-        ...state,
-        availableCountries: action.payload.countries,
-        loaded: true,
       };
     default:
       return state;

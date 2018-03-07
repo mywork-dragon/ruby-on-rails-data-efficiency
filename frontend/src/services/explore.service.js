@@ -40,9 +40,6 @@ const ExploreService = (client = httpClient) => {
     getSdkAutocompleteResults: (platform, query) => (
       client.get(`/api/sdks_and_categories/autocomplete?platform=${platform}&query=${query}`)
     ),
-    getCountryAutocompleteResults: (status, query) => (
-      client.get(`/api/location/autocomplete?status=${status}&query=${query}`)
-    ),
   };
 };
 
