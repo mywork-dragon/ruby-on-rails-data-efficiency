@@ -7,7 +7,8 @@ class AndroidAppCategory < ActiveRecord::Base
     {
       name: display_name,
       id: category_id,
-      platform: 'android'
+      platform: 'android',
+      parent: parent_category
     }
   end
 
@@ -19,7 +20,7 @@ class AndroidAppCategory < ActiveRecord::Base
     # Infer the parent category from the category ID.
     parent_category_prefixes.each do |prefix, display_name|
         if (!category_id.nil?) && category_id.starts_with?(prefix)
-            return {name: display_name, id: prefix}
+            return {name: display_name, id: prefix.tr('_', '')}
         end
     end
     nil

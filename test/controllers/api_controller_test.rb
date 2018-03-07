@@ -60,9 +60,9 @@ class ApiControllerTest < ActionController::TestCase
     categories = JSON.parse(@response.body).sort_by {|x| x["id"]}
 
     # From Fixtures
-    assert_equal categories[0], {"name" => 'Education', "id" => 'EDUCATION', "platform" => 'android'}
-    assert_equal categories[1], {"name" => 'Sports (Games)', "id" => 'GAME_SPORTS', "platform" => 'android'}
-    assert_equal categories[2], {"name" => 'Sports', "id" => 'SPORTS', "platform" => 'android'}
+    assert_equal categories[0], {"name" => 'Education', "id" => 'EDUCATION', "platform" => 'android', "parent" => nil}
+    assert_equal categories[1], {"name" => 'Sports (Games)', "id" => 'GAME_SPORTS', "platform" => 'android', "parent" => {"id" => "GAME", "name" => "Games"}}
+    assert_equal categories[2], {"name" => 'Sports', "id" => 'SPORTS', "platform" => 'android', "parent" => nil}
   end
 
 end
