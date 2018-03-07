@@ -52,7 +52,7 @@ class HeadquarterFilter extends React.Component {
           Headquartered in any:
         </label>
         <div className="input-group headquarter">
-          <div className="countries-select">
+          <div className="li-select">
             <Select
               allowClear
               filterOption={false}

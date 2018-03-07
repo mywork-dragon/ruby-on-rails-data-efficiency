@@ -77,7 +77,7 @@ const AvailableCountriesFilter = ({
             of the following
           </div>
         }
-        <div className="countries-select">
+        <div className="li-select">
           <Select
             allowClear={allowMultiple}
             filterOption={false}

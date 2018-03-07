@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as models from './models.utils';
 import { buildSdkFilters } from './sdkFilterBuilder.utils';
+import { requirePlatformFilter } from './queryBuilder.utils';
 
 export function buildFilter (form) {
   const result = {
@@ -24,6 +25,10 @@ export function buildFilter (form) {
 
   if (sdkFilters) {
     result.filter.inputs.push(sdkFilters);
+  }
+
+  if (form.filters.iosCategories || form.filters.androidCategories) {
+    result.filter.inputs.push(buildCategoryFilters(form.filters));
   }
 
   return result;
@@ -87,6 +92,41 @@ export function buildPublisherFilters ({ filters }) {
   return result;
 }
 
+export function buildCategoryFilters (filters) {
+  const result = {
+    operator: 'union',
+    inputs: [],
+  };
+
+  if (filters.iosCategories) {
+    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(filters.iosCategories, 'ios'), 'ios'));
+  }
+
+  if (filters.androidCategories) {
+    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(filters.androidCategories, 'android'), 'android'));
+  }
+
+  return result;
+}
+
+export function buildPlatformCategoryFilter (filter, platform) {
+  const result = {
+    operator: 'filter',
+    object: 'app_category',
+    predicates: [
+      ['platform', platform],
+    ],
+  };
+
+  const ids = ['or'];
+
+  filter.value.forEach(x => ids.push(['id', x]));
+  result.predicates.push(ids);
+
+  return result;
+}
+
+// TODO: clean this up someday
 function generatePredicate(type, { value, value: { operator, condition } }) {
   const result = [];
   result.push(operator && operator === 'all' ? 'and' : 'or');

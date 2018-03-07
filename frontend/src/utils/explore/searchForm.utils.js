@@ -16,6 +16,8 @@ function updateSearchForm(state, action) {
     case 'userBase':
     case 'price':
     case 'inAppPurchases':
+    case 'iosCategories':
+    case 'androidCategories':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -53,6 +55,8 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'availableCountries':
     case 'price':
     case 'inAppPurchases':
+    case 'iosCategories':
+    case 'androidCategories':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

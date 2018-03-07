@@ -12,7 +12,7 @@ export function formatCategories (categories) {
       if (!result[category.parent.id] || !result[category.parent.id].subCategories) {
         result[category.parent.id] = Object.assign({}, result[category.parent.id], { subCategories: [] });
       }
-      result[category.parent.id].subCategories.push(category.id);
+      result[category.parent.id].subCategories.push(category);
     }
   });
 

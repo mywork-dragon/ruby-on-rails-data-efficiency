@@ -14,9 +14,13 @@ import UserbaseFilter from '../appFilters/UserbaseFilter.component';
 const AppFilterPanel = ({
   filters,
   filters: {
-    appCategory,
+    availableCountries,
+    inAppPurchases,
+    price,
     mobilePriority,
     userBase,
+    iosCategories,
+    androidCategories,
   },
   panels,
   panelKey,
@@ -34,10 +38,10 @@ const AppFilterPanel = ({
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
         <MobilePriorityFilter mobilePriority={mobilePriority} panelKey={panelKey} {...rest} />
-        <PriceFilter filter={filters.price} panelKey={panelKey} {...rest} />
-        <InAppPurchaseFilter filter={filters.inAppPurchases} panelKey={panelKey} {...rest} />
-        <AvailableCountriesFilter filter={filters.availableCountries} panelKey={panelKey} {...rest} />
-        <CategoriesFilter filter={appCategory} {...rest} />
+        <PriceFilter filter={price} panelKey={panelKey} {...rest} />
+        <InAppPurchaseFilter filter={inAppPurchases} panelKey={panelKey} {...rest} />
+        <AvailableCountriesFilter filter={availableCountries} panelKey={panelKey} {...rest} />
+        <CategoriesFilter androidFilter={androidCategories} iosFilter={iosCategories} panelKey={panelKey} {...rest} />
         <UserbaseFilter panelKey={panelKey} userBase={userBase} {...rest} />
       </ul>
     </Panel.Body>

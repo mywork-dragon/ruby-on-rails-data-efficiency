@@ -54,7 +54,7 @@ const SearchForm = ({
               <h4>Add Filters</h4>
               <div className="col-md-6">
                 <SdkFilterPanel panelKey="1" platform={platform} {...rest} />
-                <AppFilterPanel panelKey="2" {...rest} />
+                <AppFilterPanel panelKey="2" platform={platform} {...rest} />
                 <PublisherFilterPanel panelKey="3" {...rest} />
               </div>
               <div className="col-md-6">

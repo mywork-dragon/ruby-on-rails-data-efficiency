@@ -1,58 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
-import { ButtonDropdown } from 'simple-react-bootstrap';
+import CategoriesDropdown from './CategoriesDropdown.component';
 
-const CategoriesFilter = ({ filter: { value }, updateFilter }) => (
+const CategoriesFilter = ({
+  androidCategories,
+  androidFilter,
+  iosCategories,
+  iosFilter,
+  platform,
+  ...rest
+}) => (
   <li>
     <label className="filter-label">
       Categories:
     </label>
-    <span className="ui-select">
-      <div className="multiselect-parent btn-group dropdown-multiselect">
-        <div>
-          <ButtonDropdown ignoreContentClick>
-            <button>Multiselect!</button>
-            <ul className="dropdown-menu-form">
-              {
-                ['Games', 'Productivity', 'Food & Drink'].map(filter => (
-                  <li key={filter}>
-                    <div className="option">
-                      <div className="checkbox">
-                        <label>
-                          <input
-                            checked={value.includes(filter)}
-                            className="checkboxInput"
-                            onChange={updateFilter('app_category', filter)}
-                            type="checkbox"
-                          />
-                          <span>{filter}</span>
-                        </label>
-                      </div>
-                    </div>
-                  </li>
-                ))
-              }
-            </ul>
-          </ButtonDropdown>
-        </div>
-      </div>
-    </span>
+    <div className="input-group">
+      <CategoriesDropdown categories={iosCategories} filter={iosFilter} platform="ios" selectedPlatform={platform} {...rest} />
+      <CategoriesDropdown categories={androidCategories} filter={androidFilter} platform="android" selectedPlatform={platform} {...rest} />
+    </div>
   </li>
 );
 
 CategoriesFilter.propTypes = {
-  filter: PropTypes.shape({
+  androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
+  androidFilter: PropTypes.shape({
     value: PropTypes.array,
-    displayText: PropTypes.string,
   }),
-  updateFilter: PropTypes.func.isRequired,
+  iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
+  iosFilter: PropTypes.shape({
+    value: PropTypes.array,
+  }),
+  platform: PropTypes.string.isRequired,
 };
 
 CategoriesFilter.defaultProps = {
-  filter: {
+  androidFilter: {
     value: [],
-    displayText: '',
+  },
+  iosFilter: {
+    value: [],
   },
 };
 
