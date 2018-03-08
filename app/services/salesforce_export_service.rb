@@ -1,10 +1,11 @@
 class SalesforceExportService
   attr_reader :client, :metadata_client, :bulk_client
 
-  def initialize(user:, model_name: 'Account')
+  def initialize(user:, model_name: 'Account', logging: false)
     @user = user
     @account = @user.account
     @model_name = model_name
+    @logging = logging
     @is_sandbox = @account.salesforce_sandbox?
 
     @app_model = 'MightySignal_App__c'
@@ -14,7 +15,9 @@ class SalesforceExportService
 
     client_id = '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9'
 
-    #Restforce.log = true
+    if @logging
+      Restforce.log = true
+    end
 
     host = @is_sandbox ? 'test.salesforce.com' : 'login.salesforce.com'
 
@@ -458,7 +461,14 @@ class SalesforceExportService
       publisher = import[:publisher]
       export_id = import[:export_id]
 
-      publisher.apps.limit(500).each do |app|
+      apps = publisher.apps
+      if publisher.ios?
+        apps = apps.joins(:app_stores_ios_apps).where.not(display_type: IosApp.display_types[:not_ios]).uniq
+      else
+        apps = apps.where.not(display_type: AndroidApp.display_types[:taken_down])
+      end
+
+      apps.limit(500).each do |app|
         app_key = "#{app.platform}_#{app.id}"
         @app_export_id_map[app_key] ||= []
         @app_export_id_map[app_key] << export_id
@@ -484,6 +494,7 @@ class SalesforceExportService
   def run_app_imports
     @sdk_app_map = {}
     results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
+    puts "App imports #{results.inspect}" if @logging 
     results['batches'].first['response'].each_with_index do |app, i|
       next unless app["id"] #record failed to import
       app_id = app["id"].first
@@ -526,6 +537,7 @@ class SalesforceExportService
   def run_sdk_imports
     if @upsert_records[@sdk_model].present?
       results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
+      puts "SDK imports #{results.inspect}" if @logging 
       results['batches'].first['response'].each_with_index do |sdk, i|
         next unless sdk["id"] # failed to import
 
@@ -544,7 +556,8 @@ class SalesforceExportService
   def run_sdk_app_imports
     if @upsert_records[@sdk_join_model].try(:any?)
       @upsert_records[@sdk_join_model].each_slice(10_000) do |slice|
-        @bulk_client.upsert(@sdk_join_model, slice, 'MightySignal_Key__c')
+        results = @bulk_client.upsert(@sdk_join_model, slice, 'MightySignal_Key__c')
+        puts "SDK app imports #{results.inspect}" if @logging 
       end
     end
   end
@@ -552,7 +565,8 @@ class SalesforceExportService
   def run_app_ownership_imports
     if @upsert_records[@app_ownership_model].try(:any?)
       @upsert_records[@app_ownership_model].each_slice(10_000) do |slice|
-        @bulk_client.upsert(@app_ownership_model, slice, 'MightySignal_Key__c')
+        results = @bulk_client.upsert(@app_ownership_model, slice, 'MightySignal_Key__c')
+        puts "SDK app imports #{results.inspect}" if @logging 
       end
     end
   end
@@ -630,9 +644,9 @@ class SalesforceExportService
     }
   end
 
-  def self.sf_for(account_name, model_name = 'Account')
+  def self.sf_for(account_name, model_name = 'Account', logging = false)
     account = Account.where(name: account_name).first
-    SalesforceExportService.new(user: account.users.first, model_name: model_name)
+    SalesforceExportService.new(user: account.users.first, model_name: model_name, logging: logging)
   end
 
   def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer)
