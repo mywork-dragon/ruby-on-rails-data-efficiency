@@ -11,7 +11,7 @@ import {
 
 const initialState = {
   expanded: true,
-  panels: { 1: false, 2: true, 3: false, 4: false, 5: false },
+  panels: { 1: true, 2: false, 3: false, 4: false, 5: false },
   queryId: '',
 };
 
@@ -62,6 +62,7 @@ function explore (state = initialState, action) {
           [payload.index]: !state.panels[payload.index],
         },
       };
+    case POPULATE_FROM_QUERY_ID.REQUEST:
     case POPULATE_FROM_QUERY_ID.SUCCESS:
     case UPDATE_QUERY_ID:
       return {

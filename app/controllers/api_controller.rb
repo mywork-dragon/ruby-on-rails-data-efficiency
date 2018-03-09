@@ -960,7 +960,7 @@ class ApiController < ApplicationController
         results << {
           id: tag.id,
           name: tag.name,
-          sdks: tag.android_sdks.where(flagged: false).pluck(:id),
+          sdks: tag.android_sdks.where(flagged: false).pluck(:id, :name),
           platform: 'android',
           type: 'sdkCategory'
         }
@@ -976,7 +976,7 @@ class ApiController < ApplicationController
         results << {
           id: tag.id,
           name: tag.name,
-          sdks: tag.ios_sdks.where(flagged: false).pluck(:id),
+          sdks: tag.ios_sdks.where(flagged: false).pluck(:id, :name),
           platform: 'ios',
           type: 'sdkCategory'
         }

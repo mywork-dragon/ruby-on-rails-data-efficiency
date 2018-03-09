@@ -10,7 +10,20 @@ describe('buildSdkFilters', () => {
         name: 'Analytics',
         type: 'sdkCategory',
         platform: 'ios',
-        sdks: [12, 56, 234, 734, 34, 5],
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+        ],
       }],
       eventType: 'uninstall',
       dateRange: 'custom',
@@ -30,8 +43,7 @@ describe('buildSdkFilters', () => {
               predicates: [
                 ['type', 'uninstall'],
                 ['date', '2017-10-01', '2017-11-01'],
-                ['sdk_ids', [12, 56, 234, 734, 34, 5]],
-                ['platform', 'ios'],
+                ['sdk_category', 'Analytics', 'ios', [34, 5]],
               ],
             },
             {

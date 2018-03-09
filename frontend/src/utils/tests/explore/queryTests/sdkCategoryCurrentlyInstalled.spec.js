@@ -10,7 +10,22 @@ describe('buildSdkFilters', () => {
         name: 'Analytics',
         type: 'sdkCategory',
         platform: 'ios',
-        sdks: [12, 56, 234, 734, 34, 5],
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
       }],
       eventType: 'is-installed',
       dateRange: 'anytime',
@@ -25,12 +40,72 @@ describe('buildSdkFilters', () => {
           operator: 'intersect',
           inputs: [
             {
-              object: 'sdk',
+              object: 'sdk_event',
               operator: 'filter',
               predicates: [
                 ['installed'],
-                ['ids', [12, 56, 234, 734, 34, 5]],
+                ['sdk_category', 'Analytics', 'ios'],
+              ],
+            },
+            {
+              object: 'app',
+              operator: 'filter',
+              predicates: [
                 ['platform', 'ios'],
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const sdkFilter = generateSdkFilter(filter);
+
+    expect(sdkFilter).toEqual(expected);
+  });
+});
+
+describe('buildSdkFilters', () => {
+  it('should create a filter for an sdk category currently installed with excluded SDKs', () => {
+    const filter = {
+      sdks: [{
+        id: 114,
+        name: 'Analytics',
+        type: 'sdkCategory',
+        platform: 'ios',
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+        ],
+      }],
+      eventType: 'is-installed',
+      dateRange: 'anytime',
+      dates: [],
+      operator: 'any',
+    };
+
+    const expected = {
+      operator: 'union',
+      inputs: [
+        {
+          operator: 'intersect',
+          inputs: [
+            {
+              object: 'sdk_event',
+              operator: 'filter',
+              predicates: [
+                ['installed'],
+                ['sdk_category', 'Analytics', 'ios', [34, 5]],
               ],
             },
             {

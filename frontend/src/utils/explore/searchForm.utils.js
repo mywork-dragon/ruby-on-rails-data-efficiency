@@ -120,10 +120,9 @@ function updateSingleValueFilter (filter, type, value, { panelKey }) {
   return result;
 }
 
-function updateSdkFilter (filter, type, value, { field }) {
+function updateSdkFilter (filter, type, value) {
   const newFilter = {
-    ...filter,
-    [field]: value,
+    ...value,
   };
 
   newFilter.displayText = getDisplayText('sdk', newFilter);

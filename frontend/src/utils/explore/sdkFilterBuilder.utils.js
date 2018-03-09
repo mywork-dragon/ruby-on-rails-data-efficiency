@@ -36,7 +36,7 @@ export function generateSdkFilter (filter) {
   const sdkTemplate = (sdk) => {
     const typeItem = generateTypeItem(filter.eventType);
     const sdkItem = generateSdkItem(sdk, filter.eventType);
-    const filterObject = ['is-installed', 'is-not-installed'].includes(filter.eventType) ? 'sdk' : 'sdk_event';
+    const filterObject = ['is-installed', 'is-not-installed'].includes(filter.eventType) && !sdk.sdks ? 'sdk' : 'sdk_event';
 
     let sdkFilter = {
       object: filterObject,
@@ -45,9 +45,12 @@ export function generateSdkFilter (filter) {
         typeItem,
         dateItem,
         sdkItem,
-        ['platform', sdk.platform],
       ]),
     };
+
+    if (!sdk.sdks) {
+      sdkFilter.predicates.push(['platform', sdk.platform]);
+    }
 
     if (filter.eventType === 'never-seen') {
       sdkFilter = {
@@ -56,7 +59,6 @@ export function generateSdkFilter (filter) {
       };
     }
 
-    // return sdkFilter;
     return requirePlatformFilter(sdkFilter, sdk.platform);
   };
 
@@ -66,12 +68,22 @@ export function generateSdkFilter (filter) {
 }
 
 export function generateSdkItem (sdk, eventType) {
-  const result = [];
-  const base = ['is-installed', 'is-not-installed'].includes(eventType) ? 'id' : 'sdk_id';
-  result.push(`${base}${sdk.sdks ? 's' : ''}`);
-  result.push(sdk.sdks ? sdk.sdks : sdk.id);
-
-  return result;
+  if (sdk.sdks) {
+    const result = [
+      'sdk_category',
+      sdk.name,
+      sdk.platform,
+    ];
+    const excluded = _.difference(sdk.sdks.map(x => x[0]), sdk.includedSdks.map(x => x[0]));
+    if (excluded.length > 0) {
+      result.push(excluded);
+    }
+    return result;
+  }
+  return [
+    ['is-installed', 'is-not-installed'].includes(eventType) ? 'id' : 'sdk_id',
+    sdk.id,
+  ];
 }
 
 export function generateTypeItem (eventType) {

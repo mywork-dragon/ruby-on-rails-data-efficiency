@@ -13,6 +13,7 @@ const mapStateToProps = ({
   explorePage: {
     explore: {
       loaded,
+      queryId,
     },
   },
   appStoreInfo: {
@@ -27,6 +28,7 @@ const mapStateToProps = ({
   },
 }) => ({
   loaded,
+  existingId: queryId,
   shouldFetchCategories: !categoriesLoaded && !categoriesFetching,
   shouldFetchCountries: !countriesLoaded && !countriesFetching,
 });

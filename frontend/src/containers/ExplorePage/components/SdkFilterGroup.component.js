@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, DatePicker, Icon, Spin, Tooltip } from 'antd';
+import { Select, DatePicker, Icon, Spin, Tooltip, TreeSelect } from 'antd';
 import { capitalize } from 'utils/format.utils';
 import ExploreService from 'services/explore.service';
+import { formatCategorySdksTree, updateCategorySdks, formatCategorySdksValue } from 'utils/explore/general.utils';
 
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
@@ -40,14 +41,21 @@ class SdkFilterGroup extends React.Component {
   }
 
   updateSdkFilter (values) {
-    const { updateFilter, index, filter: { sdks: currentSdks } } = this.props;
-    const options = currentSdks.concat(this.state.sdkOptions);
+    const { updateFilter, index, filter } = this.props;
+    const options = filter.sdks.concat(this.state.sdkOptions);
     const newSdks = values.map((val) => {
       const [id, platform, type] = val.key.split(' ');
       const sdk = options.find(x => x.id === parseInt(id, 10) && x.platform === platform && x.type === type);
+      if (type === 'sdkCategory' && !sdk.includedSdks) {
+        sdk.includedSdks = sdk.sdks;
+      }
       return { ...sdk, ...val, label: `${sdk.name} (${capitalize(sdk.platform)})` };
     });
-    updateFilter('sdks', newSdks, { field: 'sdks', index })();
+    const newFilter = {
+      ...filter,
+      sdks: newSdks,
+    };
+    updateFilter('sdks', newFilter, { index })();
   }
 
   render () {
@@ -55,6 +63,7 @@ class SdkFilterGroup extends React.Component {
       canDelete,
       deleteFilter,
       duplicateSdkFilter,
+      filter,
       filter: {
         dateRange,
         dates,
@@ -70,6 +79,8 @@ class SdkFilterGroup extends React.Component {
 
     const showDateOptions = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType);
     const showDatePicker = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType) && dateRange === 'custom';
+    const treeData = formatCategorySdksTree(sdks);
+    const treeValues = formatCategorySdksValue(sdks);
 
     return (
       <div className="sdk-filter-group">
@@ -81,7 +92,13 @@ class SdkFilterGroup extends React.Component {
             </Tooltip>
           </div>
           <Select
-            onChange={value => updateFilter('sdks', value, { field: 'eventType', index })()}
+            onChange={(value) => {
+              const newFilter = {
+                ...filter,
+                eventType: value,
+              };
+              updateFilter('sdks', newFilter, { index })();
+            }}
             size="small"
             style={{
               width: '180px',
@@ -97,7 +114,13 @@ class SdkFilterGroup extends React.Component {
           {
             showDateOptions && (
               <Select
-                onChange={value => updateFilter('sdks', value, { field: 'dateRange', index })()}
+                onChange={(value) => {
+                  const newFilter = {
+                    ...filter,
+                    dateRange: value,
+                  };
+                  updateFilter('sdks', newFilter, { index })();
+                }}
                 size="small"
                 style={{
                   width: '160px',
@@ -116,14 +139,26 @@ class SdkFilterGroup extends React.Component {
           }
           { showDatePicker && (
             <RangePicker
-              onChange={value => updateFilter('sdks', value, { field: 'dates', index })()}
+              onChange={(value) => {
+                const newFilter = {
+                  ...filter,
+                  dates: value,
+                };
+                updateFilter('sdks', newFilter, { index })();
+              }}
               size="small"
               style={{ width: '225px' }}
               value={dates}
             />
           ) }
           <Select
-            onChange={value => updateFilter('sdks', value, { field: 'operator', index })()}
+            onChange={(value) => {
+              const newFilter = {
+                ...filter,
+                operator: value,
+              };
+              updateFilter('sdks', newFilter, { index })();
+            }}
             size="small"
             style={{
               width: '80px',
@@ -160,6 +195,28 @@ class SdkFilterGroup extends React.Component {
             </Option>
           ))}
         </Select>
+        {
+          sdks.some(x => x.type === 'sdkCategory') &&
+          <div className="sdk-categories">
+            Specify category SDKs:
+            <TreeSelect
+              multiple
+              onChange={(values) => {
+                const newFilter = {
+                  ...filter,
+                  sdks: updateCategorySdks(sdks, values),
+                };
+
+                updateFilter('sdks', newFilter, { index })();
+              }}
+              showCheckedStrategy={TreeSelect.SHOW_PARENT}
+              style={{ width: '100%' }}
+              treeCheckable
+              treeData={treeData}
+              value={treeValues}
+            />
+          </div>
+        }
       </div>
     );
   }

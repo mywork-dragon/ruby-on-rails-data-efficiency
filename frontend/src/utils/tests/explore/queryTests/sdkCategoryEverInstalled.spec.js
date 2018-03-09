@@ -3,18 +3,33 @@
 import { generateSdkFilter } from '../../../explore/sdkFilterBuilder.utils';
 
 describe('buildSdkFilters', () => {
-  it('should create a filter for an sdk category install event anytime', () => {
+  it('should create a filter for an sdk category ever installed', () => {
     const filter = {
       sdks: [{
         id: 114,
         name: 'Analytics',
         type: 'sdkCategory',
         platform: 'ios',
-        sdks: [12, 56, 234, 734, 34, 5],
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
       }],
       eventType: 'install',
       dateRange: 'anytime',
-      dates: ['2017-10-01', '2017-11-01'],
+      dates: [],
       operator: 'any',
     };
 
@@ -29,8 +44,7 @@ describe('buildSdkFilters', () => {
               operator: 'filter',
               predicates: [
                 ['type', 'install'],
-                ['sdk_ids', [12, 56, 234, 734, 34, 5]],
-                ['platform', 'ios'],
+                ['sdk_category', 'Analytics', 'ios'],
               ],
             },
             {

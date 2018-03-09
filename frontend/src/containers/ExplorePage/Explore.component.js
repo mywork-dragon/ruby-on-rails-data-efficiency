@@ -5,6 +5,7 @@ import ExploreTableContainer from './containers/ExploreTable.container';
 import SearchFormContainer from './containers/SearchForm.container';
 
 const Explore = ({
+  existingId,
   queryId,
   populateFromQueryId,
   shouldFetchCountries,
@@ -12,7 +13,7 @@ const Explore = ({
   shouldFetchCategories,
   requestCategories,
 }) => {
-  if (queryId) {
+  if (queryId && queryId !== existingId) {
     populateFromQueryId(queryId);
   }
 
@@ -35,6 +36,7 @@ const Explore = ({
 Explore.propTypes = {
   populateFromQueryId: PropTypes.func.isRequired,
   queryId: PropTypes.string,
+  existingId: PropTypes.string.isRequired,
   shouldFetchCountries: PropTypes.bool.isRequired,
   requestAvailableCountries: PropTypes.func.isRequired,
   shouldFetchCategories: PropTypes.bool.isRequired,

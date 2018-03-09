@@ -74,6 +74,13 @@
       }
     }
 
+    .sdk-categories {
+      margin-top: 10px;
+
+      .ant-select {
+        margin-top: 10px;
+      }
+    }
   }
 
   .following {
@@ -100,9 +107,5 @@
         padding: 0 20px 0 10px;
       }
     }
-  }
-
-  .ant-select {
-    margin-right: 10px;
   }
 }

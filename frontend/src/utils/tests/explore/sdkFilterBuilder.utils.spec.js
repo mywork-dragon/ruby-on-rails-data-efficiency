@@ -14,9 +14,57 @@ describe('buildFilter', () => {
       expect(result).toEqual(expected);
     });
 
-    it('should take in an sdkCategory and return the necessary IDs for the query', () => {
-      const sdkCategory = { id: 23, type: 'sdkCategory', sdks: [2, 5, 65, 28] };
-      const expected = ['sdk_ids', [2, 5, 65, 28]];
+    it('should take in an sdkCategory and return the sdk category for the query', () => {
+      const sdkCategory = {
+        id: 114,
+        name: 'Analytics',
+        type: 'sdkCategory',
+        platform: 'ios',
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+      };
+      const expected = ['sdk_category', 'Analytics', 'ios'];
+      const result = utils.generateSdkItem(sdkCategory);
+
+      expect(result).toEqual(expected);
+    });
+
+    it('should take in an sdkCategory and return the sdk category and any excluded sdks for the query', () => {
+      const sdkCategory = {
+        id: 114,
+        name: 'Analytics',
+        type: 'sdkCategory',
+        platform: 'ios',
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+        ],
+      };
+      const expected = ['sdk_category', 'Analytics', 'ios', [34, 5]];
       const result = utils.generateSdkItem(sdkCategory);
 
       expect(result).toEqual(expected);

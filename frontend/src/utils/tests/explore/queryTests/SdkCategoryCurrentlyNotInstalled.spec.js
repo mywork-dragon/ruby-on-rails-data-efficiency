@@ -10,7 +10,22 @@ describe('buildSdkFilters', () => {
         name: 'Analytics',
         type: 'sdkCategory',
         platform: 'ios',
-        sdks: [12, 56, 234, 734, 34, 5],
+        sdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
+        includedSdks: [
+          [12, 'bob'],
+          [56, 'joe'],
+          [234, 'dan'],
+          [734, 'sue'],
+          [34, 'dave'],
+          [5, 'jan'],
+        ],
       }],
       eventType: 'is-not-installed',
       dateRange: 'anytime',
@@ -25,12 +40,11 @@ describe('buildSdkFilters', () => {
           operator: 'intersect',
           inputs: [
             {
-              object: 'sdk',
+              object: 'sdk_event',
               operator: 'filter',
               predicates: [
                 ['not', ['installed']],
-                ['ids', [12, 56, 234, 734, 34, 5]],
-                ['platform', 'ios'],
+                ['sdk_category', 'Analytics', 'ios'],
               ],
             },
             {

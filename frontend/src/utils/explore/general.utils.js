@@ -1,4 +1,6 @@
+
 import _ from 'lodash';
+import { capitalize } from 'utils/format.utils';
 import { selectMap } from './models.utils';
 
 export function formatResults (data, params, count) {
@@ -91,4 +93,52 @@ export function cleanState (form) {
   };
 
   return cleanedState;
+}
+
+export function formatCategorySdksTree (sdks) {
+  return sdks.filter(x => x.type === 'sdkCategory').map(category => ({
+    value: `${category.id}_${category.platform}_${category.name}`,
+    label: `${category.name} (${capitalize(category.platform)}) (${category.sdks.length} SDKs)`,
+    children: category.sdks.map(x => ({
+      value: `${x[0]}_${category.platform}_${x[1]}_${category.id}`,
+      label: x[1],
+    })),
+  }));
+}
+
+export function formatCategorySdksValue (sdks) {
+  const result = [];
+  sdks.filter(x => x.type === 'sdkCategory').forEach((x) => {
+    if (x.sdks.length === x.includedSdks.length) {
+      result.push(`${x.id}_${x.platform}_${x.name}`);
+    } else {
+      x.includedSdks.forEach((y) => {
+        result.push(`${y[0]}_${x.platform}_${y[1]}_${x.id}`);
+      });
+    }
+  });
+
+  return result;
+}
+
+export function updateCategorySdks (sdks, values) {
+  const newSdks = sdks.slice(0);
+  newSdks.forEach((x) => {
+    if (x.type === 'sdkCategory') {
+      x.includedSdks = [];
+    }
+  });
+
+  values.forEach((val) => {
+    const [id, platform, name, parentId] = val.split('_');
+    if (!parentId) {
+      const idx = newSdks.findIndex(x => x.platform === platform && x.id === parseInt(id, 10) && x.type === 'sdkCategory');
+      newSdks[idx].includedSdks = newSdks[idx].sdks;
+    } else {
+      const idx = newSdks.findIndex(x => x.platform === platform && x.id === parseInt(parentId, 10) && x.type === 'sdkCategory');
+      newSdks[idx].includedSdks.push([parseInt(id, 10), name]);
+    }
+  });
+
+  return newSdks;
 }
