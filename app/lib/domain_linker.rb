@@ -4,6 +4,7 @@
 class DomainLinker
   @@hotstore = nil
   @@dd_hotstore = nil
+
   def initialize()
     @downloaded = false
     @domain_to_publishers = Hash.new {[]}

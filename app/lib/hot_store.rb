@@ -1,5 +1,5 @@
 class HotStore
-  
+
   class MissingHotStoreField < RuntimeError; end
   class MalformedHotStoreField < RuntimeError; end
 
@@ -43,7 +43,7 @@ private
     raise MissingHotStoreField.new("Type: #{type} Platform: #{platform} Id: #{id}") unless all_required_fields_exist?(attributes)
 
     # Send separate requests for compressed and uncompressed fields since the write will fail
-    # with an encoding error if 
+    # with an encoding error if
     attributes_array = []
     compressed_attributes_array = []
 
@@ -60,7 +60,7 @@ private
         end
       end
     end
-    
+
     return if attributes_array.empty? and compressed_attributes_array.empty?
 
     if async
@@ -82,7 +82,7 @@ private
     entry_key = override_key || key(type, platform, id)
 
     attributes = {}
-    
+
     cursor = read_scanned_attributes(type, entry_key, "0", attributes)
     while cursor != "0"
       cursor = read_scanned_attributes(type, entry_key, cursor, attributes)
@@ -102,8 +102,12 @@ private
     attributes.each do |attribute_tuple|
       begin
         is_gzipped = false
-        begin 
-          is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B")
+        begin
+          begin
+            is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B")
+          rescue Encoding::CompatibilityError => e
+            is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B".force_encoding("UTF-8"))
+          end
         rescue Encoding::CompatibilityError => e
           is_gzipped = attribute_tuple[1].start_with?("\x1F\x8B".force_encoding("ASCII-8BIT"))
         end

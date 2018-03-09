@@ -86,6 +86,11 @@ class AppHotStore < HotStore
     write_entry("app", platform, app_id, attributes, async: async)
   end
 
+
+  def write_major_app(app_id,app_identifier, platform, major_app: true)
+    write_entry("app", platform, app_id, {'major_app' => major_app, 'id' => app_id, 'platform' =>  platform, 'app_identifier' => app_identifier})
+  end
+
   def read(platform, app_id)
     read_entry("app", platform, app_id)
   end

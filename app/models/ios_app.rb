@@ -219,7 +219,7 @@ class IosApp < ActiveRecord::Base
         description: self.description,
         facebookAds: self.ios_fb_ads.has_image.as_json({no_app: true}),
         headquarters: self.headquarters,
-        isMajorApp: self.is_major_app? || self.major_app_tag?
+        isMajorApp: self.is_major_app?
       })
     end
 

@@ -264,7 +264,7 @@ class AndroidApp < ActiveRecord::Base
         displayStatus: self.display_type,
         facebookAds: self.android_ads.as_json({no_app: true}),
         headquarters: self.headquarters,
-        isMajorApp: self.is_major_app? || self.major_app_tag?
+        isMajorApp: self.is_major_app?
       })
     end
 

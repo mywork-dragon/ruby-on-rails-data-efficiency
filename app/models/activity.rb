@@ -21,7 +21,7 @@ class Activity < ActiveRecord::Base
       end
     end
 
-    is_major_app = owners.any? { |owner| (owner.class.name == "IosApp" || owner.class.name == "AndroidApp") && (owner.is_major_app? || owner.major_app_tag?) }
+    is_major_app = owners.any? { |owner| (owner.class.name == "IosApp" || owner.class.name == "AndroidApp") && (owner.is_major_app?) }
 
     activity = Activity.create(happened_at: time, major_app: is_major_app)
     owners.each do |owner|
