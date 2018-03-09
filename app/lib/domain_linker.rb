@@ -19,7 +19,7 @@ class DomainLinker
     record = @@dd_hotstore.read(domain)
 
     record.fetch('publishers', []).map do |publisher|
-      "#{publisher['platform']}_developer".classify.constantize.find(publisher['id'])
+      "#{publisher['platform']}_developer".classify.constantize.find(publisher['publisher_id'])
     end
   end
 
