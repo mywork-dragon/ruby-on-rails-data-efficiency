@@ -2,10 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
+import CreativeFormatFilter from './CreativeFormatFilter.component';
+
 const AdIntelFilterPanel = ({
+  filters: {
+    creativeFormats,
+  },
   togglePanel,
   panelKey,
   panels,
+  ...rest
 }) => (
   <Panel expanded={panels[panelKey]}>
     <Panel.Heading onClick={togglePanel(panelKey)}>
@@ -15,12 +21,15 @@ const AdIntelFilterPanel = ({
       </Panel.Title>
     </Panel.Heading>
     <Panel.Body collapsible>
-      Filters go in here
+      <ul className="panel-filters list-unstyled">
+        <CreativeFormatFilter filter={creativeFormats} panelKey={panelKey} {...rest} />
+      </ul>
     </Panel.Body>
   </Panel>
 );
 
 AdIntelFilterPanel.propTypes = {
+  filters: PropTypes.object.isRequired,
   togglePanel: PropTypes.func.isRequired,
   panelKey: PropTypes.string.isRequired,
   panels: PropTypes.object.isRequired,

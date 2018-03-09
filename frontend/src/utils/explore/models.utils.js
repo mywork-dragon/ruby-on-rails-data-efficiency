@@ -15,7 +15,8 @@ export const selectMap = {
 
 export const isAppFilter = filter => Object.keys(appFilterKeys).includes(filter);
 export const isPubFilter = filter => Object.keys(publisherFilterKeys).includes(filter);
-export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys)[filter];
+export const isAdIntelFilter = filter => Object.keys(adIntelFilterKeys).includes(filter);
+export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys, adIntelFilterKeys)[filter];
 
 export const appFilterKeys = {
   availableCountries: 'available_in',
@@ -28,4 +29,8 @@ export const appFilterKeys = {
 export const publisherFilterKeys = {
   fortuneRank: 'fortune_rank',
   headquarters: 'country_code',
+};
+
+export const adIntelFilterKeys = {
+  creativeFormats: '',
 };

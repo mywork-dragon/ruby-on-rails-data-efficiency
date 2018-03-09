@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
 import AdditionalFilters from './AdditionalFilters.component';
-import AdIntelFilterPanel from './panels/AdIntelFilterPanel.component';
+import AdIntelFilterPanel from './adIntelFilters/AdIntelFilterPanel.component';
 import AppFilterPanel from './panels/AppFilterPanel.component';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';

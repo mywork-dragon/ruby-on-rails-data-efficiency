@@ -11,7 +11,7 @@ import {
 
 const initialState = {
   expanded: true,
-  panels: { 1: true, 2: false, 3: false, 4: false, 5: false },
+  panels: { 1: false, 2: false, 3: false, 4: true, 5: false },
   queryId: '',
 };
 

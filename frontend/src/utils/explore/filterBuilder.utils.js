@@ -13,7 +13,8 @@ export function buildFilter (form) {
 
   const appFilters = buildAppFilters(form);
   const sdkFilters = buildSdkFilters(form.filters);
-  const publisherFilters = buildPublisherFilters(form);
+  const publisherFilters = buildPublisherFilters(form.filters);
+  const adIntelFilters = buildAdIntelFilters(form.filters);
 
   if (appFilters) {
     result.filter.inputs.push(appFilters);
@@ -21,6 +22,10 @@ export function buildFilter (form) {
 
   if (publisherFilters) {
     result.filter.inputs.push(publisherFilters);
+  }
+
+  if (adIntelFilters) {
+    result.filter.inputs.push(adIntelFilters);
   }
 
   if (sdkFilters) {
@@ -72,7 +77,7 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   return result;
 }
 
-export function buildPublisherFilters ({ filters }) {
+export function buildPublisherFilters (filters) {
   const result = {
     operator: 'filter',
     predicates: [],
@@ -126,6 +131,26 @@ export function buildPlatformCategoryFilter (filter, platform) {
   return result;
 }
 
+export function buildAdIntelFilters (filters) {
+  const result = {
+    operator: 'filter',
+    object: 'mobile_ad_data_summary',
+    predicates: [],
+  };
+
+  for (const key in filters) {
+    if (models.isAdIntelFilter(key)) {
+      result.predicates.push(generatePredicate(key, filters[key]));
+    }
+  }
+
+  if (result.predicates.length === 0) {
+    return null;
+  }
+
+  return result;
+}
+
 // TODO: clean this up someday
 function generatePredicate(type, { value, value: { operator, condition } }) {
   const result = [];
@@ -136,14 +161,16 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       return null;
     }
     value.forEach((x) => {
+      const n = [];
       let val = x;
       if (type === 'headquarters') {
         val = x.key;
       }
-      result.push([
-        filterType,
-        val,
-      ]);
+      if (filterType.length > 0) {
+        n.push(filterType);
+      }
+      n.push(val);
+      result.push(n);
     });
   } else if (typeof value === 'number') {
     result.push([
