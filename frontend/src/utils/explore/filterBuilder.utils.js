@@ -2,6 +2,7 @@ import _ from 'lodash';
 import * as models from './models.utils';
 import { buildSdkFilters } from './sdkFilterBuilder.utils';
 import { requirePlatformFilter } from './queryBuilder.utils';
+import { generateQueryDateRange } from './general.utils';
 
 export function buildFilter (form) {
   const result = {
@@ -15,6 +16,7 @@ export function buildFilter (form) {
   const sdkFilters = buildSdkFilters(form.filters);
   const publisherFilters = buildPublisherFilters(form.filters);
   const adIntelFilters = buildAdIntelFilters(form.filters);
+  const adNetworkFilters = buildAdNetworkFilters(form.filters);
 
   if (appFilters) {
     result.filter.inputs.push(appFilters);
@@ -30,6 +32,10 @@ export function buildFilter (form) {
 
   if (sdkFilters) {
     result.filter.inputs.push(sdkFilters);
+  }
+
+  if (adNetworkFilters) {
+    result.filter.inputs.push(adNetworkFilters);
   }
 
   if (form.filters.iosCategories || form.filters.androidCategories) {
@@ -147,6 +153,44 @@ export function buildAdIntelFilters (filters) {
   if (result.predicates.length === 0) {
     return null;
   }
+
+  return result;
+}
+
+export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
+  if (!adNetworksFilter) {
+    return null;
+  }
+
+  const {
+    adNetworks,
+    operator,
+    firstSeenDateRange,
+    firstSeenDate,
+    lastSeenDateRange,
+    lastSeenDate,
+  } = adNetworksFilter.value;
+
+  const result = {
+    operator: operator === 'and' ? 'intersect' : 'union',
+    inputs: [],
+  };
+
+  adNetworks.forEach((network) => {
+    const filter = {
+      operator: 'filter',
+      object: 'mobile_ad_data_summary',
+      predicates: [
+        ['ad_network', network.key],
+        generateQueryDateRange('first_seen_ads_date', firstSeenDateRange, firstSeenDate),
+        generateQueryDateRange('last_seen_ads_date', lastSeenDateRange, lastSeenDate),
+      ],
+    };
+
+    filter.predicates = _.compact(filter.predicates);
+
+    result.inputs.push(filter);
+  });
 
   return result;
 }

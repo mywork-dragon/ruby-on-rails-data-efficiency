@@ -142,3 +142,60 @@ export function updateCategorySdks (sdks, values) {
 
   return newSdks;
 }
+
+export function generateQueryDateRange (label, dateRange, dates) {
+  if (dateRange === 'anytime') {
+    return null;
+  }
+
+  let result = [label];
+  switch (dateRange) {
+    case 'week':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { days: 7 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'month':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { months: 1 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'three-months':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { months: 3 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'six-months':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { months: 6 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'year':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { years: 1 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'custom':
+      dates.forEach(x => result.push(x));
+      break;
+    case 'before-date':
+      result = result.concat([
+        null, dates,
+      ]);
+      break;
+    case 'after-date':
+      result = result.concat([
+        dates, null,
+      ]);
+      break;
+    default:
+      break;
+  }
+
+  return result;
+}

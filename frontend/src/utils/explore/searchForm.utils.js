@@ -19,6 +19,7 @@ function updateSearchForm(state, action) {
     case 'iosCategories':
     case 'androidCategories':
     case 'creativeFormats':
+    case 'adNetworks':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -58,6 +59,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'inAppPurchases':
     case 'iosCategories':
     case 'androidCategories':
+    case 'adNetworks':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

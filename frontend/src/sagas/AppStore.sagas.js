@@ -16,7 +16,7 @@ function* requestCategories () {
     yield put(actions.categories.success(data));
   } catch (err) {
     console.log(err);
-    yield put(actions.categories.failure);
+    yield put(actions.categories.failure());
   }
 }
 

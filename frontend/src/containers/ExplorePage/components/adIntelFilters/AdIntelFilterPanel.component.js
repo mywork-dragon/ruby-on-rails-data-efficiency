@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 
+import AdNetworkFilter from './AdNetworkFilter.component';
 import CreativeFormatFilter from './CreativeFormatFilter.component';
 
 const AdIntelFilterPanel = ({
   filters: {
+    adNetworks,
     creativeFormats,
   },
   togglePanel,
@@ -22,6 +24,7 @@ const AdIntelFilterPanel = ({
     </Panel.Heading>
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
+        <AdNetworkFilter filter={adNetworks} panelKey={panelKey} {...rest} />
         <CreativeFormatFilter filter={creativeFormats} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>

@@ -1,7 +1,4 @@
-import {
-  FETCH_AD_NETWORKS,
-  LOAD_AD_NETWORKS,
-} from 'actions/Account.actions';
+import { AD_NETWORKS } from 'actions/Account.actions';
 
 const initialState = {
   fetching: false,
@@ -11,12 +8,12 @@ const initialState = {
 
 function adNetworks (state = initialState, action) {
   switch (action.type) {
-    case FETCH_AD_NETWORKS:
+    case AD_NETWORKS.REQUEST:
       return {
         ...state,
         fetching: true,
       };
-    case LOAD_AD_NETWORKS:
+    case AD_NETWORKS.SUCCESS:
       return loadNetworks(action);
     default:
       return state;

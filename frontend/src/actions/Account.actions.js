@@ -1,10 +1,8 @@
-export const FETCH_AD_NETWORKS = 'FETCH_AD_NETWORKS';
-export const LOAD_AD_NETWORKS = 'LOAD_AD_NETWORKS';
+import { action, createRequestTypes } from 'utils/action.utils';
 
-export function fetchAdNetworks() {
-  return { type: FETCH_AD_NETWORKS };
-}
-
-export function loadAdNetworks(networks) {
-  return { type: LOAD_AD_NETWORKS, payload: { networks } };
-}
+export const AD_NETWORKS = createRequestTypes('AD_NETWORKS');
+export const adNetworks = {
+  request: () => action(AD_NETWORKS.REQUEST),
+  success: networks => action(AD_NETWORKS.SUCCESS, { networks }),
+  failure: () => action(AD_NETWORKS.FAILURE),
+};

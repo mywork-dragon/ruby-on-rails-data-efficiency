@@ -17,6 +17,12 @@ function categories(state = initialCategoryState, action) {
       };
     case CATEGORIES.SUCCESS:
       return loadCategories(action);
+    case CATEGORIES.FAILURE:
+      return {
+        ...state,
+        fetching: false,
+        loaded: true,
+      };
     default:
       return state;
   }
@@ -47,6 +53,12 @@ function availableCountries (state = initialAvailableCountriesState, action) {
       return {
         ...state,
         availableCountries: action.payload.countries,
+        loaded: true,
+        fetching: false,
+      };
+    case AVAILABLE_COUNTRIES.FAILURE:
+      return {
+        ...state,
         loaded: true,
         fetching: false,
       };

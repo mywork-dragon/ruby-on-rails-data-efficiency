@@ -91,21 +91,29 @@
     .options-group {
       margin-bottom: 10px;
     }
+  }
 
-    .li-select {
+  .li-select {
+    width: 100%;
+
+    &.categories {
+      margin-bottom: 10px;
+    }
+
+    .ant-select {
       width: 100%;
+    }
 
-      &.categories {
-        margin-bottom: 10px;
-      }
+    li {
+      padding: 0 20px 0 10px;
+    }
+  }
 
-      .ant-select {
-        width: 100%;
-      }
+  .ad-date-options-group {
+    margin-bottom: 5px;
 
-      li {
-        padding: 0 20px 0 10px;
-      }
+    .ant-select {
+      margin: 0 10px;
     }
   }
 }

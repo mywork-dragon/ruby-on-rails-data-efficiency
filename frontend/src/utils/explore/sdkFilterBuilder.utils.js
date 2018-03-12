@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { requirePlatformFilter } from './queryBuilder.utils';
+import { generateQueryDateRange } from './general.utils';
 
 export function buildSdkFilters ({ sdks }) {
   const result = {
@@ -100,48 +101,9 @@ export function generateTypeItem (eventType) {
 }
 
 export function generateDateRange ({ dateRange, dates, eventType }) {
-  if (dateRange === 'anytime' || ['never-seen', 'is-installed', 'is-not-installed'].includes(eventType)) {
+  if (['never-seen', 'is-installed', 'is-not-installed'].includes(eventType)) {
     return null;
   }
 
-  let result = ['date'];
-  switch (dateRange) {
-    case 'week':
-      result = result.concat([
-        ['-', ['utcnow'], ['timedelta', { days: 7 }]],
-        ['utcnow'],
-      ]);
-      break;
-    case 'month':
-      result = result.concat([
-        ['-', ['utcnow'], ['timedelta', { months: 1 }]],
-        ['utcnow'],
-      ]);
-      break;
-    case 'three-months':
-      result = result.concat([
-        ['-', ['utcnow'], ['timedelta', { months: 3 }]],
-        ['utcnow'],
-      ]);
-      break;
-    case 'six-months':
-      result = result.concat([
-        ['-', ['utcnow'], ['timedelta', { months: 6 }]],
-        ['utcnow'],
-      ]);
-      break;
-    case 'year':
-      result = result.concat([
-        ['-', ['utcnow'], ['timedelta', { years: 1 }]],
-        ['utcnow'],
-      ]);
-      break;
-    case 'custom':
-      dates.forEach(x => result.push(x));
-      break;
-    default:
-      break;
-  }
-
-  return result;
+  return generateQueryDateRange('date', dateRange, dates);
 }
