@@ -244,6 +244,12 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       return ['not', [filterType]];
     }
     return [filterType];
+  } else if (type === 'adNetworkCount') {
+    return [
+      filterType,
+      value.start,
+      value.end,
+    ];
   }
 
   return result;

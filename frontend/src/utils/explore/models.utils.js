@@ -24,6 +24,7 @@ export const appFilterKeys = {
   userBase: 'user_base',
   price: 'free',
   inAppPurchases: 'in_app_purchases',
+  adNetworkCount: 'count_advertising_networks',
 };
 
 export const publisherFilterKeys = {

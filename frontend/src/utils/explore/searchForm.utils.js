@@ -20,6 +20,7 @@ function updateSearchForm(state, action) {
     case 'androidCategories':
     case 'creativeFormats':
     case 'adNetworks':
+    case 'adNetworkCount':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -60,6 +61,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'iosCategories':
     case 'androidCategories':
     case 'adNetworks':
+    case 'adNetworkCount':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

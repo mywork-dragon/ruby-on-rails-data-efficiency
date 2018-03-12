@@ -21,6 +21,12 @@ function getDisplayText (parameter, value) {
       return `Price: ${capitalize(value)}`;
     case 'inAppPurchases':
       return `In App Purchases: ${capitalize(value)}`;
+    case 'creativeFormats':
+      return creativeFormatsText(value);
+    case 'adNetworks':
+      return adNetworkText(value);
+    case 'adNetworkCount':
+      return `Advertising on ${value.start} ${value.start === value.end ? '' : `to ${value.end}`} networks`;
     default:
       return '';
   }
@@ -115,6 +121,23 @@ function availableCountriesText ({ countries, condition }) {
   }
 
   return `${availableText} ${countries.map(x => x.label).join(', ')}`;
+}
+
+function creativeFormatsText (value) {
+  const map = {
+    html_game: 'Game',
+    video: 'Video',
+  };
+
+  const formats = value.map(x => map[x]).join(', ');
+
+  return `Creative Formats: ${formats}`;
+}
+
+function adNetworkText ({ adNetworks }) {
+  const networks = adNetworks.map(x => x.label).join(', ');
+
+  return `Advertising on ${networks}`;
 }
 
 export default getDisplayText;

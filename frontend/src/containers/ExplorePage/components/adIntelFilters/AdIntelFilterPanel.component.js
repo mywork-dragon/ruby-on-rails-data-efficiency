@@ -4,11 +4,13 @@ import { Panel } from 'react-bootstrap';
 
 import AdNetworkFilter from './AdNetworkFilter.component';
 import CreativeFormatFilter from './CreativeFormatFilter.component';
+import NetworkCountFilter from './NetworkCountFilter.component';
 
 const AdIntelFilterPanel = ({
   filters: {
     adNetworks,
     creativeFormats,
+    adNetworkCount,
   },
   togglePanel,
   panelKey,
@@ -25,6 +27,7 @@ const AdIntelFilterPanel = ({
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
         <AdNetworkFilter filter={adNetworks} panelKey={panelKey} {...rest} />
+        <NetworkCountFilter filter={adNetworkCount} panelKey={panelKey} {...rest} />
         <CreativeFormatFilter filter={creativeFormats} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>
