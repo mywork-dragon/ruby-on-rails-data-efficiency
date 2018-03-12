@@ -624,7 +624,8 @@ class IosApp < ActiveRecord::Base
         "countries_available_in",
         "taken_down",
         "icon_url",
-        "first_scraped"
+        "first_scraped",
+        "ratings_by_country"
       ]
 
       # List of attributes to pluck from respective collections
@@ -650,7 +651,8 @@ class IosApp < ActiveRecord::Base
         "version",
         "ratings_current_count",
         "ratings_current_stars",
-        "icon_url_350x350"
+        "icon_url_350x350",
+        "ratings_per_day_current_release"
       ]
 
       first_international_snapshot_attributes = [
@@ -670,6 +672,23 @@ class IosApp < ActiveRecord::Base
         "ratings_all_count",
         "ratings_current_count",
         "ratings_current_stars"
+      ]
+
+      # Used to generate raw map of app store attributes for quick lookup
+      app_store_map_attributes = [
+        "id",
+        "country_code",
+        "name"
+      ]
+
+      all_storefront_snapshot_attributes = [
+        "ios_app_id",
+        "app_store_id",
+        "ratings_all_stars",
+        "ratings_all_count",
+        "ratings_current_stars",
+        "ratings_current_count",
+        "ratings_per_day_current_release"
       ]
       
       snapshot_category_join_attributes = [
@@ -731,9 +750,7 @@ class IosApp < ActiveRecord::Base
       rename = [
         ['version', 'current_version'],
         ['ratings_current_count', 'current_version_ratings_count'],
-        ['ratings_current_stars', 'current_version_rating'],
-        ['ratings_all_stars', 'all_version_rating'],
-        ['ratings_all_count', 'all_version_ratings_count']
+        ['ratings_current_stars', 'current_version_rating']
       ]
 
       ##
@@ -801,6 +818,49 @@ class IosApp < ActiveRecord::Base
         end
       end
       app_store_results = nil
+
+
+      # Build app_id => storefront snapshot attributes
+      # 
+      # {
+      #   app_id => [
+      #     [ ios_app_id, app_store_id, ratings_all_stars, ratings_all_count, ratings_current_stars, etc. ]
+      #   ]
+      # }
+      #
+
+      storefront_clauses = []
+      app_country_codes_map.each do |app_id, storefront_list|
+        storefront_list.each do |storefront_details|
+          storefront_clauses << "(ios_app_id = '#{app_id}' and app_store_id = '#{storefront_details[app_store_attributes.index("id")+1]}')" # add 1 to index because first element is ios_app_id
+        end
+      end
+
+      app_to_storefront_snapshot_attributes = {}
+      if storefront_clauses.any?
+        storefront_snapshot_results = IosAppCurrentSnapshot.where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
+        storefront_snapshot_results.each do |result|
+          app_id = result[all_storefront_snapshot_attributes.index("ios_app_id")]
+          if app_to_storefront_snapshot_attributes[app_id]
+            app_to_storefront_snapshot_attributes[app_id] << result
+          else
+            app_to_storefront_snapshot_attributes[app_id] = [ result ]
+          end
+        end
+      end
+
+      # Build app_store_id => store details
+      #
+      # {
+      #   app_store_id => [ app_store_id, country_code, name ]
+      # }
+      #
+
+      app_store_details_map = {}
+      enabled_app_stores_attributes = AppStore.where(:enabled => true).pluck(*app_store_map_attributes)
+      enabled_app_stores_attributes.each do |attributes|
+        app_store_details_map[attributes[app_store_map_attributes.index("id")]] = attributes
+      end
 
       # Build app_id => first international snapshot details mapping
       # 
@@ -1031,6 +1091,62 @@ class IosApp < ActiveRecord::Base
 
           if result['versions_history'] and result['versions_history'].any?
             result['first_scraped'] = result['versions_history'][0]["released"]
+          end
+        end
+
+        # Calculate aggregate ratings stats across the stores the app is currently available in
+
+        if app_to_storefront_snapshot_attributes[app.id]
+          ratings_by_country = []
+          app_to_storefront_snapshot_attributes[app.id].each do |storefront_snapshot_attributes|
+            app_store_id = storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("app_store_id")]
+            ratings_by_country << {
+              "current_rating" =>  storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_current_stars")],
+              "ratings_current_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_current_count")],
+              "ratings_per_day_current_release" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_per_day_current_release")],
+              "country_code" => app_store_details_map[app_store_id][app_store_map_attributes.index("country_code")],
+              "rating" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_stars")],
+              "ratings_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_count")],
+              "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")]
+            }
+          end
+          result["ratings_by_country"] = ratings_by_country
+        elsif us_snapshot_attributes_map[app.id]
+          result["ratings_by_country"] = [
+            {
+              "current_rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_current_stars")],
+              "ratings_current_count" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_current_count")],
+              "ratings_per_day_current_release" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_per_day_current_release")],
+              "country_code" => "US",
+              "rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_all_stars")],
+              "ratings_count" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_all_count")],
+              "country" => "United States"
+            }
+          ]
+        end
+
+        if result["ratings_by_country"]
+          ratings_details = result["ratings_by_country"]
+
+          all_ratings_count = ratings_details.map { |storefront_rating| 
+            storefront_rating["ratings_count"] 
+          }.compact.inject(0, &:+) # sums all the ratings_counts in list
+      
+          result["all_version_ratings_count"] = all_ratings_count
+          result["all_version_rating"] = 0
+
+          if all_ratings_count != nil and all_ratings_count > 0
+            storefront_ratings_average = 0
+            ratings_details.each do |storefront_rating|
+              ratings_count = storefront_rating["ratings_count"]
+              rating_stars = storefront_rating["rating"]
+              next if ratings_count.nil? or rating_stars.nil?
+              
+              weight = ratings_count.to_f / all_ratings_count
+              storefront_ratings_average = storefront_ratings_average + ( weight * rating_stars )
+            end
+        
+            result["all_version_rating"] = storefront_ratings_average
           end
         end
 

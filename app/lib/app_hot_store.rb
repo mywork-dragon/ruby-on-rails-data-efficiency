@@ -62,9 +62,6 @@ class AppHotStore < HotStore
         app_attributes.delete("uninstalled_sdks")
       end
 
-      # TODO: probably merge this into iOS version of bulk_export:
-      # add_ios_storefront_ratings(app_object, app_attributes) if platform == "ios"
-
       delete_app_fields(platform, app_attributes)
 
       begin
@@ -100,34 +97,6 @@ class AppHotStore < HotStore
   end
 
 private
-
-  def add_ios_storefront_ratings(app_object, app_attributes)
-    ratings_details = app_object.ratings_info
-    app_attributes["ratings_by_country"] = ratings_details
-
-    all_ratings_count = ratings_details.map { |storefront_rating|
-      storefront_rating[:ratings_count]
-    }.compact.inject(0, &:+) # sums all the ratings_counts in list
-
-    app_attributes["all_version_ratings_count"] = all_ratings_count
-
-    if all_ratings_count.nil? or all_ratings_count == 0
-      app_attributes["all_version_rating"] = 0
-      return
-    end
-
-    storefront_ratings_average = 0
-    ratings_details.each do |storefront_rating|
-      ratings_count = storefront_rating[:ratings_count]
-      rating_stars = storefront_rating[:rating]
-      next if ratings_count.nil? or rating_stars.nil?
-
-      weight = ratings_count.to_f / all_ratings_count
-      storefront_ratings_average = storefront_ratings_average + ( weight * rating_stars )
-    end
-
-    app_attributes["all_version_rating"] = storefront_ratings_average
-  end
 
   def delete_app_fields(platform, app_attributes)
     @@APP_FIELDS_TO_DELETE[platform].each do |field|
