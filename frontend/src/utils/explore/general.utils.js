@@ -1,6 +1,6 @@
 
 import _ from 'lodash';
-import { capitalize } from 'utils/format.utils';
+import { capitalize, getMaxDate, getMinDate } from 'utils/format.utils';
 import { selectMap } from './models.utils';
 
 export function formatResults (data, params, count) {
@@ -11,7 +11,7 @@ export function formatResults (data, params, count) {
   } = params;
   const result = {};
 
-  result.results = Object.values(data.pages)[0].map(x => addItemType(x));
+  result.results = Object.values(data.pages)[0].map(x => formatApp(x));
   result.pageNum = parseInt(Object.keys(data.pages)[0], 10);
   result.pageSize = pageSize;
   result.resultsCount = count;
@@ -21,11 +21,57 @@ export function formatResults (data, params, count) {
   return result;
 }
 
+function formatApp (app) {
+  return {
+    ...app,
+    ...(addItemType(app)),
+    categories: formatCategories(app.categories),
+    ...formatAdintelInfo(app),
+  };
+}
+
+function formatCategories (categories) {
+  if (categories.length === 1) {
+    return categories.map(x => x.name);
+  }
+
+  const primary = categories.find(x => x.type === 'primary');
+  const secondary = categories.find(x => x.type === 'secondary');
+
+  return [`${primary.name} (${secondary.name})`];
+}
+
 export function addItemType (app) {
   return {
     ...app,
     type: app.platform === 'ios' ? 'IosApp' : 'AndroidApp',
   };
+}
+
+function formatAdintelInfo ({ ad_summaries }) {
+  const result = {
+    ad_networks: [],
+    first_seen_ads_date: null,
+    last_seen_ads_date: null,
+    creative_formats: [],
+    adSpend: !ad_summaries,
+  };
+
+  if (ad_summaries) {
+    ad_summaries.forEach((summary) => {
+      result.ad_networks.push({ id: summary.ad_network });
+      result.first_seen_ads_date = result.first_seen_ads_date ? getMinDate(result.first_seen_ads_date, summary.first_seen_ads_date) : summary.first_seen_ads_date;
+      result.last_seen_ads_date = result.last_seen_ads_date ? getMaxDate(result.last_seen_ads_date, summary.last_seen_ads_date) : summary.last_seen_ads_date;
+      if (summary.html_game && !result.creative_formats.some(x => x === 'html')) {
+        result.creative_formats.push('html');
+      }
+      if (summary.video && !result.creative_formats.some(x => x === 'video')) {
+        result.creative_formats.push('video');
+      }
+    });
+  }
+
+  return result;
 }
 
 export const convertToTableSort = (sorts) => {

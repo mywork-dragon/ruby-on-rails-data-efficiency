@@ -11,18 +11,19 @@ const mapDispatchToProps = dispatch => ({
   updatePageSize: pageSize => dispatch(tableActions.updatePageSize(pageSize)),
 });
 
-const mapStateToProps = ({ explorePage: { resultsTable, searchForm } }) => ({
+const mapStateToProps = ({ explorePage: { resultsTable, searchForm }, account: { adNetworks } }) => ({
   isManual: true,
   showControls: true,
   showColumnDropdown: true,
   title: 'Results',
   canFetch: Object.keys(searchForm.filters).length !== 0,
   searchForm,
+  adNetworks: adNetworks.adNetworks,
   ...resultsTable,
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const { searchForm, ...other } = stateProps;
+  const { searchForm, adNetworks, ...other } = stateProps;
   return {
     ...other,
     ...dispatchProps,
@@ -31,7 +32,7 @@ const mergeProps = (stateProps, dispatchProps) => {
         pageSize,
         pageNum,
       };
-      const query = buildExploreRequest(searchForm, other.columns, pageSettings, sort);
+      const query = buildExploreRequest(searchForm, other.columns, pageSettings, sort, adNetworks);
       dispatchProps.requestResults(query);
     },
   };

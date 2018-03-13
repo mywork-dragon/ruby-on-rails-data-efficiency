@@ -45,35 +45,41 @@ class ColumnPicker extends Component {
             }}
             open={this.state.open}
           >
-            <button>
-              Columns
-              <i className="fa fa-caret-down" />
-            </button>
-            <ul className="dropdown-menu-form">
-              {
-                Object.keys(this.state.columns).map((column) => {
-                  const isActive = this.state.columns[column] === true;
-                  const isLocked = this.state.columns[column] === 'LOCKED';
-                  return isLocked ? null : (
-                    <li key={column}>
-                      <div className="option">
-                        <div className="checkbox">
-                          <label>
-                            <input
-                              checked={isActive}
-                              className="checkboxInput"
-                              onChange={() => this.toggleColumn(column)}
-                              type="checkbox"
-                            />
-                            <span>{column}</span>
-                          </label>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })
-              }
-            </ul>
+            <div className={`ant-select-sm ant-select ant-select-enabled ${this.state.open ? 'ant-select-open' : ''}`}>
+              <div className="ant-select-selection ant-select-selection--single">
+                <div className="ant-select-selection__rendered">
+                  <div className="ant-select-selection-selected-value">
+                    Columns
+                  </div>
+                </div>
+                <span className="ant-select-arrow" />
+              </div>
+            </div>
+            <div className="column-picker" style={{ position: 'absolute' }}>
+              <div>
+                <div className="ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft">
+                  <div style={{ overflow: 'auto' }}>
+                    <ul className="ant-select-dropdown-menu ant-select-dropdown-menu-root ant-select-dropdown-menu-vertical">
+                      {
+                        Object.keys(this.state.columns).map((column) => {
+                          const isActive = this.state.columns[column] === true;
+                          const isLocked = this.state.columns[column] === 'LOCKED';
+                          return isLocked ? null : (
+                            <li
+                              key={column}
+                              className={`ant-select-dropdown-menu-item ${isActive ? 'ant-select-dropdown-menu-item-selected' : ''}`}
+                              onClick={() => this.toggleColumn(column)}
+                            >
+                              {column}
+                            </li>
+                          );
+                        })
+                      }
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ButtonDropdown>
         </span>
       </span>

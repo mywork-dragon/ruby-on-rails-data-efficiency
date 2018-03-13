@@ -36,6 +36,7 @@ const initialColumns = [
   headerNames.PLATFORM,
   headerNames.MOBILE_PRIORITY,
   headerNames.USER_BASE,
+  headerNames.CATEGORY,
   headerNames.LAST_UPDATED,
 ];
 

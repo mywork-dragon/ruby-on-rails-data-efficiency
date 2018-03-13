@@ -18,6 +18,18 @@ const AdNetworkCell = ({
     return null;
   }
 
+  if (networks.length === 0) {
+    return (
+      <div className="creative-cell">
+        No ad data
+      </div>
+    );
+  }
+
+  if (networks.some(x => !x.name)) {
+    networks = networks.map(x => ({ id: x.id, name: visibleNetworks.find(y => y.id === x.id).name }));
+  }
+
   return (
     <div className="creative-cell">
       {

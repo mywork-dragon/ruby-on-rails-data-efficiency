@@ -96,7 +96,7 @@ export const columnModels = [
     accessor: 'first_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: d => longDate(d.value),
+    Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
   },
   {
     Header: headerNames.FORTUNE_RANK,
@@ -111,7 +111,7 @@ export const columnModels = [
     accessor: 'last_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: d => longDate(d.value),
+    Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
   },
   {
     Header: headerNames.LAST_UPDATED,

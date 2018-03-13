@@ -5,7 +5,10 @@ import CreativeFormatList from 'components/ad-intel-tab/components/CreativeForma
 
 const CreativeFormatCell = ({ formats }) => (
   <div>
-    <CreativeFormatList formats={formats} />
+    { formats.length ? (
+      <CreativeFormatList formats={formats} />
+    ) : 'No ad data'
+    }
   </div>
 );
 

@@ -80,4 +80,16 @@
       margin-left: 5px;
     }
   }
+
+  .column-select {
+    .ant-select {
+      width: 160px;
+    }
+
+    .ant-select-dropdown {
+      left: 0;
+      position: static;
+      top: 0;
+    }
+  }
 }

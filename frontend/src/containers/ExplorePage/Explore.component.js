@@ -13,7 +13,7 @@ const Explore = ({
   shouldFetchCategories,
   requestCategories,
 }) => {
-  if (queryId && queryId !== existingId) {
+  if (queryId && existingId === '' && queryId !== existingId) {
     populateFromQueryId(queryId);
   }
 

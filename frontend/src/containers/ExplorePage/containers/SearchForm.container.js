@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = (state) => {
-  const { explorePage: { explore, searchForm, resultsTable }, account: { adNetworks } } = state;
+  const { explorePage: { explore, searchForm, resultsTable }, account: { adNetworks: networkStore } } = state;
 
   return {
     canFetch: hasFilters(searchForm.filters),
@@ -35,7 +35,7 @@ const mapStateToProps = (state) => {
     iosCategories: appStore.getIosCategories(state),
     androidCategories: appStore.getAndroidCategories(state),
     availableCountries: appStore.getAvailableCountries(state),
-    networkStore: adNetworks,
+    networkStore,
   };
 };
 
@@ -48,16 +48,18 @@ const mergeProps = (storeProps, dispatchProps) => {
         pageSize,
         sort,
       },
+    networkStore,
     ...rest
   } = storeProps;
 
   return {
+    networkStore,
     ...searchForm,
     ...dispatchProps,
     ...rest,
     requestResults: () => () => {
       const pageSettings = { pageSize, pageNum: 0 };
-      const query = buildExploreRequest(searchForm, columns, pageSettings, sort);
+      const query = buildExploreRequest(searchForm, columns, pageSettings, sort, networkStore.adNetworks);
       dispatchProps.getResults(query);
     },
   };
