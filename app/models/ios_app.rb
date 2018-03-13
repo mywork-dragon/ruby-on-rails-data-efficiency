@@ -625,7 +625,8 @@ class IosApp < ActiveRecord::Base
         "taken_down",
         "icon_url",
         "first_scraped",
-        "ratings_by_country"
+        "ratings_by_country",
+        "user_base_by_country"
       ]
 
       # List of attributes to pluck from respective collections
@@ -688,7 +689,8 @@ class IosApp < ActiveRecord::Base
         "ratings_all_count",
         "ratings_current_stars",
         "ratings_current_count",
-        "ratings_per_day_current_release"
+        "ratings_per_day_current_release",
+        "user_base"
       ]
       
       snapshot_category_join_attributes = [
@@ -1098,6 +1100,7 @@ class IosApp < ActiveRecord::Base
 
         if app_to_storefront_snapshot_attributes[app.id]
           ratings_by_country = []
+          user_base_by_country = []
           app_to_storefront_snapshot_attributes[app.id].each do |storefront_snapshot_attributes|
             app_store_id = storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("app_store_id")]
             ratings_by_country << {
@@ -1109,8 +1112,15 @@ class IosApp < ActiveRecord::Base
               "ratings_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_count")],
               "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")]
             }
+            
+            user_base_by_country << {
+              "country_code" => app_store_details_map[app_store_id][app_store_map_attributes.index("country_code")],
+              "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")],
+              "user_base" => user_base_map[storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("user_base")]]
+            }
           end
           result["ratings_by_country"] = ratings_by_country
+          result["user_base_by_country"] = user_base_by_country
         elsif us_snapshot_attributes_map[app.id]
           result["ratings_by_country"] = [
             {
