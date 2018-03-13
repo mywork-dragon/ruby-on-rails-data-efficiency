@@ -1,0 +1,36 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | Data Feed
+  #subtitle
+    | An API on Steroids
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@feeds_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | About the Data Feed
+      .description
+        | Our Data Feed is like an API on steroids. It's the solution for your needs when you need to work with our data at massive scale. 
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Feed Me', button_id: 'data-feed-about'
+  
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

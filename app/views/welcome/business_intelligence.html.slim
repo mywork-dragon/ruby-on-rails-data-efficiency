@@ -5,56 +5,71 @@
   #title
     | Business Intelligence
   #subtitle
-    | Integrate data into Salesforce and other internal platforms.
+    | Examine your market wholistically to inform high-level strategies.
   - 2.times
     .row
       p
 
   .row
     .column.medium-5.medium-offset-1.graphic
-      img src=@sfdc_graphic width=1500
+      img src=@competitor_graphic width=200
     .column.medium-5.end.about-graphic
       .name
-        | Salesforce Integration
+        | Track Your Competitors
       .description
-        | Store MightySignal data directly in Salesforce so your reps have all important data in one place. Generate reports based on SDK makeup alongside your current data. Set alerts for when existing accounts install competitive SDKs. Score and tier your leads based on MightySignal data.
+        | Constantly have an eye on what your competitors are doing across the entire mobile market. Know what types of customers they're signing, know how fast they're growing, and know when new competitors arise.
       row
         p
       row
-        = render 'contact_us_button', title: 'Integrate with SFDC', button_id: 'bi-sfdc'
+        = render 'contact_us_button', title: 'Keep an Eye on the Competition', button_id: 'bi-competitors'
   - 4.times do
     .row
       p
   .row
     .column.medium-5.medium-offset-1.about-graphic
       .name
-        | API
+        | Find Gaps in the Market
       .description
-        ' Our
-        a href='https://api.mightysignal.com/docs' target="_blank" API
-        '
-        | allows you to programatically ingest MightySignal data into any system you want, giving you ultimately flexibility to accomplish your business goals. Unlock new potential by utilizing the data inside tools/technologies such as Redshift, Marketo, and HubSpot.
-      row
+        | Using MightySignal for Business Intelligence, you can spot gaps in the market that no one else can see. Then, you can create high-level strategies to attack those gaps and profit. For example, you could discover through MightySignal data that a certain type of app that you weren't aware before is an great fit to buy your product, and you can have your sales and marketing teams immediately target that customer profile.
         p
       row
-        = render 'contact_us_button', title: 'Send API Requests', button_id: 'bi-api'
+        = render 'contact_us_button', title: 'Fill Big Gaps', button_id: 'bi-gaps'
     .column.medium-5.end.graphic
-      img src=@api_graphic width=1500
+      img src=@gaps_graphic width=200
   - 4.times do
     .row 
       p
   .row
     .column.medium-5.medium-offset-1.graphic
-        img src=@feeds_graphic width=1500
+        img src=@future_graphic width=200
     .column.medium-5.end.about-graphic
       .name
-        | Data Feed
+        | Predict the Future
       .description
-        | Our Data Feed is like an API on steroids. It's the solution for your BI needs when you need to work with our data at massive scale.
+        | Not only can you use MightySignal data to see past and current market trends, but you can also build intelligent models to predict the future of the mobile market. This will allow you to plan out your go-to-market strategies months or years in advance.
       row
         p
       row
-        = render 'contact_us_button', title: 'Feed Me!', button_id: 'bi-feed'
+        = render 'contact_us_button', title: 'See the Future', button_id: 'bi-feed'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | How to Implement Mighty BI
+      .description
+        | In order to harness the power of MightySignal data for your BI strategies, 
+        a href=the_api_path target="_blank" the MightySignal API 
+        | and 
+        a href=data_feed_path target="_blank" the MightySignal Data Feed 
+        | are perfect for accessing the data at scale so that you can have intelligence into the entire mobile market.
+
+        p
+      row
+        = render 'contact_us_button', title: 'Implement Business Intelligence', button_id: 'bi-implement'
+    .column.medium-5.end.graphic
+      img src=@networking_icon width=200
   - 4.times do
     .row 
       p

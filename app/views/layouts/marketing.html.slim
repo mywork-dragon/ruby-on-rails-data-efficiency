@@ -56,10 +56,42 @@ html lang="en"
         /! Collect the nav links, forms, and other content for toggling
         .collapse.navbar-collapse.navbar-ex1-collapse
           ul.nav.navbar-nav.navbar-right
-            li.active
-              = link_to 'HOME', root_path(anchor: 'home')
-            li
-              = link_to 'SOLUTIONS', root_path(anchor: 'solutions_anchor')
+            - if browser.device.mobile?
+              li
+                  = link_to 'The Mightiest Mobile Data', data_path
+              li
+                  = link_to 'Web Portal', web_portal_path
+              li
+                  = link_to 'Salesforce Integration', salesforce_integration_path
+              li
+                  = link_to 'API', the_api_path
+              li
+                  = link_to 'Data Feed', data_feed_path
+            - else
+              li.custom-menu-item
+                .dropdown.show
+                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Capabilities
+                  .dropdown-menu aria-labelledby="dropdownMenuLink"
+                    a class="dropdown-item" href=data_path The Mightiest Mobile Data
+                    a class="dropdown-item" href=web_portal_path Web Portal
+                    a class="dropdown-item" href=salesforce_integration_path Salesforce Integration
+                    a class="dropdown-item" href=the_api_path API
+                    a class="dropdown-item" href=data_feed_path Data Feed
+            - if browser.device.mobile?
+              li
+                = link_to 'Lead Generation', lead_generation_path
+              li
+                  = link_to 'Account Based Marketing', abm_path
+              li
+                  = link_to 'Business Intelligence', business_intelligence_path
+            - else
+              li.custom-menu-item
+                .dropdown.show
+                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Solutions
+                  .dropdown-menu aria-labelledby="dropdownMenuLink"
+                    a class="dropdown-item" href=lead_generation_path Lead Generation
+                    a class="dropdown-item" href=abm_path Account Based Marketing
+                    a class="dropdown-item" href=business_intelligence_path Business Intelligence
             li
               = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
             li

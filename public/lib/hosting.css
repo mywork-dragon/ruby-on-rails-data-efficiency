@@ -1249,8 +1249,13 @@ a.anchor{
 	text-align: left;
 	font-size: 2.5rem;
 }
+
 .solution-page .about-graphic .description {
 	text-align: left;
+	font-size: 1.25rem;
+}
+
+.solution-page .about-graphic li {
 	font-size: 1.25rem;
 }
 

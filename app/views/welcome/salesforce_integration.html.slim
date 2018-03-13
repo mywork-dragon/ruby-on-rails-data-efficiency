@@ -1,0 +1,98 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | Salesforce Integration
+  #subtitle
+    | Enable ABM4M (Account Based Marketing for Mobile)
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@sfdc_graphic width=600
+    .column.medium-5.end.about-graphic 
+      .name
+        | Enable ABM4M
+      .description
+        | MightySignal's Salesforce integration unlocks the power of  
+        a href=abm_path target="_blank" ABM4M (Account Based Marketing for Mobile)
+        | . 
+        | Once you install our Salesforce Integration, you'll be able to use ABM4M to power all go-to-market functions of your business.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Implement AB4M', button_id: 'sfdc-abm4m'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Supercharge Account Objects
+      .description
+        | Hydrate your Account objects in Salesforce with the most important data on the mobile market. You'll be able to know all apps that belong to a given Account. In addition, you'll have an Account-level view of SDK makeup of all apps belonging to the Account. This data is highly actionable and available in Salesforce, where your whole team can act on it.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Supercharge Your Accounts', button_id: 'sfdc-accounts'
+    .column.medium-5.end.graphic
+      img src=@account_graphic width=1500
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@reporting_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | Reporting with MightySignal Data
+      .description
+        | Run Salesforce reports with MightySignal data. For example, you can run a report on any account with apps using a certain SDK. You can do anything you can do normally with Salesforce reports--such as adding a report to a dashboard or having the report emailed to you on a regular basis.  
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Create Mighty Reports', button_id: 'sfdc-reporting'
+  - 4.times do 
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Export
+      .description
+        | If your team is using the Web Portal and they come upon apps that they want to add to Salesforce, all they have to do is click the Export button.
+      row
+        p
+      row
+        = render 'contact_us_button', title: "Export to SFDC", button_id: 'sfdc-export'
+    .column.medium-5.end.graphic
+      img src=@export_graphic width=1500
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@sync_graphic width=300
+    .column.medium-5.end.about-graphic
+      .name
+        | Auto-Sync
+      .description
+        | Any Accounts and Leads that you already have in your Salesforce will be automatically synced with MightySignal data. If an Account or Lead releases a new app, it'll be automatically added to Salesforce. If any SDK data changes for any of the Accounts or Leads, it will be automatically updated in Salesforce. MightySignal's accurate, real-time data will be constantly synced with your Salesforce.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Sync MightySignal & SFDC', button_id: 'sfdc-sync'
+  - 4.times do 
+    .row
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

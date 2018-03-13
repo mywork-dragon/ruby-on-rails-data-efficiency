@@ -1,0 +1,96 @@
+.solution-page
+  - if @creative.present?
+    img src=@creative style="display: none;"
+  - 4.times
+    .row
+      p
+  #title
+    | ABM4M
+  #subtitle
+    | Account Based Marketing for Mobile
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@sfdc_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | It Starts with Salesforce
+      .description
+        | The key to unlocking the power of ABM4M is 
+        a href=salesforce_integration_path target="_blank" MightySignal's Salesforce Integration
+        | . 
+        | Once you install our Salesforce Integration, you'll have an ongoing record of every account in your target market. As a result, you won't waste time aimlessly searching for customers--you'll always know who they are are which ones are most important. You'll be able to use ABM4M to power all go-to-market functions of your business.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Integrate with Salesforce', button_id: 'abm-salesforce'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Sales
+      .description
+        | Assign high-quality territories with ease. Feed your outbound with an ongoing supply of the best mobile accounts in your target market. Massively improve conversion rates throughout the sales funnel.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Sell with Precision', button_id: 'abm-sales'
+    .column.medium-5.end.graphic
+      img src=@sales_graphic width=200
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@marketing_graphic width=200
+    .column.medium-5.end.about-graphic
+      .name
+        | Marketing
+      .description
+        | Automatically score inbound leads based on their mobile data and assign high-value leads to reps accordingly. Send marketing emails to the highest-value leads at the best accounts, improving conversion rates. Run ads only at your target customers and massively improve CPC. 
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Fish in the Right Pond', button_id: 'abm-marketing'
+  - 4.times do 
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Customer Success
+      .description
+        | Identify churn risks pre-emptively by seeing when your customer is trialing a competitor. Know which of your current customers are ripest for upsell. Be cognizant of your “frenemies” encroaching on your accounts.  
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Make Your Customers Successful', button_id: 'abm-cs'
+    .column.medium-5.end.graphic
+      img src=@customer_success_graphic width=200
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@learning_graphic width=200
+    .column.medium-5.end.about-graphic
+      .name
+        | Learn More about ABM4M
+      .description
+        | More to come!
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

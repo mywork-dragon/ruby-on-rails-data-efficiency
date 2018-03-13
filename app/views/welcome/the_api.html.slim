@@ -1,0 +1,38 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | API
+  #subtitle
+    | Access MightySignal data programatically
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@api_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | About the API
+      .description
+        | Our API allows you to programatically ingest MightySignal data into any system you want, giving you ultimate flexibility to accomplish your business goals. 
+        a href='https://api.mightysignal.com/docs' target="_blank" Check out our documentation to see endpoints and available data.
+        '
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Get an API Key', button_id: 'api-key'
+  
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

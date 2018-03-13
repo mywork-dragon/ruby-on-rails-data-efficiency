@@ -1,0 +1,80 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | The Mightiest Data
+  #subtitle
+    | The Most Accurate and Real-Time Mobile App Data
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@dna_graphic width=200
+    .column.medium-5.end.about-graphic
+      .name
+        | Data Engineering DNA
+      .description
+        | We're experts in gathering mobile data. Our engineering team has years of deep expertise building performant data systems. Our engineers come from backgrounds including Apple (iPhone team), Amazon, Facebook, AppNexus, Princeton, UC Berkeley, Duke, and Cornell.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Get Mobile Data from the Best', button_id: 'data-dna'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Our Data is Real-Time
+      .description
+        | The mobile industry in constantly in flux, so it's critical that data be available at a moment's notice. We've built a high-performance backend that can find mobile data--on command.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'See the Freshest Data', button_id: 'data-freshest'
+    .column.medium-5.end.graphic
+      img src=@live_graphic width=200
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@scope_graphic width=200
+    .column.medium-5.end.about-graphic
+      .name
+        | Our Data is Accurate
+      .description
+        | Not only is our data real-time, but it's also accurate. When you're using data to make important business decision, it's of the utmost important for it to be correct. We've dedicated much engineering effort to build intelligent systems that classify data correctly.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Use Accurate Data', button_id: 'data-accurate'
+  - 4.times do 
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Our Data is Scalable
+      .description
+        | Building an infrastructure which scales across millions of apps and types of data is a technically difficult problem. Luckily, we've been able to solve it, using advanced technologies like self-healing servers, machine learning, and advanced data pipelines.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Give Me All the Data', button_id: 'data-scalable'
+    .column.medium-5.end.graphic
+      img src=@legos_graphic width=200
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

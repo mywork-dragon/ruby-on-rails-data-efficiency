@@ -28,7 +28,14 @@ Rails.application.routes.draw do
 
   get 'fastest-growing-sdks' => 'welcome#fastest_growing_sdks', as: 'fastest-growing-sdks'
 
+  get 'data' => 'welcome#data'
+  get 'web-portal' => 'welcome#web_portal'
+  get 'the-api' => 'welcome#the_api', as: 'the-api'
+  get 'data-feed' => 'welcome#data_feed', as: 'data-feed'
+  get 'salesforce-integration' => 'welcome#salesforce_integration', as: 'salesforce-integration'
+
   get 'lead-generation' => 'welcome#lead_generation', as: 'lead-generation'
+  get 'abm' => 'welcome#abm', as: 'abm'
   get 'business-intelligence' => 'welcome#business_intelligence', as: 'business-intelligence'
   get 'user-acquisition' => 'welcome#user_acquisition', as: 'user-acquisition'
   get 'lead-generation-ad-affiliate-networks' => 'welcome#lead_generation_ad_affiliate_networks', as: 'lead-generation-ad-affiliate-networks'

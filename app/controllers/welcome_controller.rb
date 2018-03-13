@@ -31,6 +31,7 @@ class WelcomeController < ApplicationController
     @funnel_icon = icons_folder + 'funnel.svg'
     @networking_icon = icons_folder + 'networking.svg'
     @team_icon = icons_folder + 'team.svg'
+    @target_icon = icons_folder + 'target.svg'
   end
 
   def ios_app_sdks
@@ -143,6 +144,47 @@ class WelcomeController < ApplicationController
     @blog_post = "https://mightysignal.com/fastest-growing-android-sdks-blog-post"
   end
 
+  def data
+    get_logos
+
+    @dna_graphic = graphics_folder + 'dna.svg'
+    @scope_graphic = graphics_folder + 'scope.svg'
+    @live_graphic = graphics_folder + 'live.svg'
+    @legos_graphic = graphics_folder + 'legos.svg'
+  end
+
+  def web_portal
+    get_logos
+
+    @timeline_graphic = graphics_folder + 'timeline.gif'
+    @explore_graphic = graphics_folder + 'explore.gif'
+    @live_scan_graphic = graphics_folder + 'live_scan.gif'
+    @popular_apps_graphic = graphics_folder + 'popular_apps.gif'
+    @ad_intelligence_graphic = graphics_folder + 'ad_intel.gif'
+  end
+
+  def the_api
+    get_logos
+
+    @api_graphic = graphics_folder + 'api.png'
+  end
+
+  def data_feed
+    get_logos
+
+    @feeds_graphic = graphics_folder + 'feeds.png'
+  end
+
+  def salesforce_integration
+    get_logos
+
+    @sfdc_graphic = graphics_folder + 'mightysignal_plus_salesforce.png'
+    @account_graphic = graphics_folder + 'sfdc_account.gif'
+    @reporting_graphic = graphics_folder + 'sfdc_reporting.gif'
+    @export_graphic = graphics_folder + 'sfdc_export.gif'
+    @sync_graphic = graphics_folder + 'sync.png'
+  end
+
   def lead_generation
     get_creative
     get_logos
@@ -153,12 +195,23 @@ class WelcomeController < ApplicationController
     @newcomers_graphic = graphics_folder + 'newcomers.png'
   end
 
+  def abm
+    get_logos
+
+    @sfdc_graphic = graphics_folder + 'mightysignal_plus_salesforce.png'
+    @sales_graphic = graphics_folder + 'hunting.svg'
+    @marketing_graphic = graphics_folder + 'fishing.svg'
+    @customer_success_graphic = graphics_folder + 'thumbs_up.svg'
+    @learning_graphic = graphics_folder + 'learning.svg'
+  end
+
   def business_intelligence
     get_logos
 
-    @sfdc_graphic = graphics_folder + 'sfdc_integration.png'
-    @api_graphic = graphics_folder + 'api.png'
-    @feeds_graphic = graphics_folder + 'feeds.png'
+    @competitor_graphic = graphics_folder + 'track_competitor.svg'
+    @gaps_graphic = graphics_folder + 'puzzle.svg'
+    @future_graphic = graphics_folder + 'crystal_ball.svg'
+    @networking_icon = icons_folder + 'networking.svg'
   end
 
   def user_acquisition
