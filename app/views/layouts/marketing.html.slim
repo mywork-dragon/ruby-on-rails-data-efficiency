@@ -157,6 +157,7 @@ html lang="en"
     script type="text/javascript" id="hs-script-loader" async='true' defer='true' src="//js.hs-scripts.com/565753.js"
     = render 'shared/linkedin_insight_tag'
     = render 'shared/facebook_pixel_1'
-    = yield :repuso_g2crowd_widget
+    = render 'shared/drift.html'
+    / = yield :repuso_g2crowd_widget
     = yield :web_form_modal
     = render 'shared/heap_analytics_tag'
