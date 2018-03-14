@@ -115,7 +115,7 @@ const Table = ({
             showPaginationTop={showControls && !error}
             sorted={sort}
             style={{
-              minHeight: results.length ? '0px' : '750px',
+              minHeight: results.length ? '0px' : '500px',
             }}
           />
         ) : (

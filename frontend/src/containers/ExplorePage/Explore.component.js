@@ -13,7 +13,7 @@ const Explore = ({
   shouldFetchCategories,
   requestCategories,
 }) => {
-  if (queryId && existingId === '' && queryId !== existingId) {
+  if (queryId && !existingId) {
     populateFromQueryId(queryId);
   }
 
@@ -36,7 +36,7 @@ const Explore = ({
 Explore.propTypes = {
   populateFromQueryId: PropTypes.func.isRequired,
   queryId: PropTypes.string,
-  existingId: PropTypes.string.isRequired,
+  existingId: PropTypes.string,
   shouldFetchCountries: PropTypes.bool.isRequired,
   requestAvailableCountries: PropTypes.func.isRequired,
   shouldFetchCategories: PropTypes.bool.isRequired,
@@ -45,6 +45,7 @@ Explore.propTypes = {
 
 Explore.defaultProps = {
   queryId: '',
+  existingId: null,
 };
 
 export default Explore;

@@ -12,7 +12,7 @@ import {
 const initialState = {
   expanded: true,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
-  queryId: '',
+  queryId: null,
 };
 
 const columnOptions = [
@@ -43,7 +43,7 @@ const initialColumns = [
 const tableOptions = {
   columns: initializeColumns(columnOptions, initialColumns, [headerNames.APP]),
   sort: [
-    { id: headerNames.APP, desc: false },
+    { id: headerNames.LAST_UPDATED, desc: true },
   ],
 };
 

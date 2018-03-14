@@ -76,7 +76,13 @@ class Pagination extends React.Component {
 
     let pagination;
 
-    if (showPageJump && pages > 50) {
+    if (pages === 1) {
+      pagination = (
+        <span className="-currentPage">
+          {page + 1}
+        </span>
+      );
+    } else if (showPageJump && pages > 50) {
       pagination = (
         <div className="-pageJump">
           <InputNumber
@@ -115,12 +121,6 @@ class Pagination extends React.Component {
           </Select>
         </div>
       );
-    } else {
-      pagination = (
-        <span className="-currentPage">
-          {page + 1}
-        </span>
-      );
     }
 
     return (
@@ -134,17 +134,18 @@ class Pagination extends React.Component {
           }
           {showPageSizeOptions &&
             <span className="select-wrap -pageSizeOptions">
-              <select
-                onChange={e => onPageSizeChange(Number(e.target.value))}
+              <Select
+                onChange={val => onPageSizeChange(val)}
+                size="small"
                 value={pageSize}
               >
                 {pageSizeOptions.map((option, i) => (
                     // eslint-disable-next-line react/no-array-index-key
-                  <option key={i} value={option}>
+                  <Option key={i} value={option}>
                     {option} {'rows'}
-                  </option>
+                  </Option>
                   ))}
-              </select>
+              </Select>
             </span>}
           <span className="-pageInfo">
             {'Page'}{' '}

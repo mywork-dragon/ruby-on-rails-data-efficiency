@@ -4,8 +4,8 @@ import { Panel } from 'react-bootstrap';
 import { panelFilterCount } from 'utils/explore/general.utils';
 
 import FilterCountLabel from '../FilterCountLabel.component';
-import FortuneRankFilter from '../publisherFilters/FortuneRankFilter.component';
-import HeadquarterFilter from '../publisherFilters/HeadquarterFilter.component';
+import FortuneRankFilter from './FortuneRankFilter.component';
+import HeadquarterFilter from './HeadquarterFilter.component';
 
 const PublisherFilterPanel = ({
   filters,

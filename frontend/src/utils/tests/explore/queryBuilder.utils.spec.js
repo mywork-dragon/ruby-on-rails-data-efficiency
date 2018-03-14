@@ -40,7 +40,7 @@ describe('buildExploreRequest', () => {
 
   describe('buildSelect', () => {
     it('should take in a result type and map of columns and return an object containing the select parameters for the query', () => {
-      const select = utils.buildSelect(testData.form.resultType, testData.columns);
+      const select = utils.buildSelect(testData.form.resultType, testData.columns, testData.accountNetworks);
 
       expect(select).toMatchObject(sampleQuery.select);
     });
@@ -48,7 +48,7 @@ describe('buildExploreRequest', () => {
 
   describe('buildExploreRequest', () => {
     it('should take in the search form, the columns, the page settings, and the sort and return a formatted query', () => {
-      const query = utils.buildExploreRequest(testData.form, testData.columns, testData.pageSettings, testData.sort);
+      const query = utils.buildExploreRequest(testData.form, testData.columns, testData.pageSettings, testData.sort, testData.accountNetworks);
 
       expect(query).toMatchObject(sampleQuery);
       expect(query.page_settings.page).toBe(1);

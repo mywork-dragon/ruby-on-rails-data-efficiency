@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
+import { Button } from 'antd';
 
 import AdditionalFilters from './AdditionalFilters.component';
 import AdIntelFilterPanel from './adIntelFilters/AdIntelFilterPanel.component';
-import AppFilterPanel from './panels/AppFilterPanel.component';
+import AppFilterPanel from './appFilters/AppFilterPanel.component';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
-import PublisherFilterPanel from './panels/PublisherFilterPanel.component';
-import RankingsFilterPanel from './panels/RankingsFilterPanel.component';
+import PublisherFilterPanel from './publisherFilters/PublisherFilterPanel.component';
+import RankingsFilterPanel from './RankingsFilterPanel.component';
 import ResultTypeFilter from './ResultTypeFilter.component';
-import SdkFilterPanel from './panels/SdkFilterPanel.component';
+import SdkFilterPanel from './sdkFilters/SdkFilterPanel.component';
 
 const SearchForm = ({
   canFetch,
@@ -21,6 +22,7 @@ const SearchForm = ({
   resultType,
   requestResults,
   toggleForm,
+  loading,
   ...rest
 }) => {
   const toggleFormPanel = () => (e) => {
@@ -46,7 +48,6 @@ const SearchForm = ({
         <Panel.Body>
           <div className="explore-search-form">
             <div className="basic-filter-group form-group">
-              <ResultTypeFilter resultType={resultType} {...rest} />
               <PlatformFilter platform={platform} {...rest} />
               <AdditionalFilters includeTakenDown={includeTakenDown} {...rest} />
             </div>
@@ -55,11 +56,10 @@ const SearchForm = ({
               <div className="col-md-6">
                 <SdkFilterPanel panelKey="1" platform={platform} {...rest} />
                 <AppFilterPanel panelKey="2" platform={platform} {...rest} />
-                <PublisherFilterPanel panelKey="3" {...rest} />
               </div>
               <div className="col-md-6">
+                <PublisherFilterPanel panelKey="3" {...rest} />
                 <AdIntelFilterPanel panelKey="4" {...rest} />
-                <RankingsFilterPanel panelKey="5" {...rest} />
               </div>
             </div>
             <div className="form-review form-group">
@@ -68,12 +68,21 @@ const SearchForm = ({
             </div>
             <div className="search-form-footer form-group">
               <div>
-                <button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</button>
-                <button className="btn btn-primary" onClick={toggleFormPanel()}>Hide Form</button>
+                <Button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</Button>
+                <Button className="btn btn-primary" onClick={toggleFormPanel()}>Hide Form</Button>
               </div>
               <div className="search-form-submit">
-                <button className="btn btn-primary" disabled={!canFetch}>Save Search</button>
-                <button className="btn btn-primary" disabled={!canFetch} onClick={requestResults()}>Submit Search</button>
+                <Button className="btn btn-primary" disabled={!canFetch}>Save Search</Button>
+                <Button
+                  className="btn btn-primary"
+                  disabled={!canFetch}
+                  loading={loading}
+                  onClick={requestResults()}
+                  style={{ width: 130 }}
+                  type="primary"
+                >
+                  {loading ? 'Loading' : 'Submit Search'}
+                </Button>
               </div>
             </div>
           </div>
@@ -92,6 +101,7 @@ SearchForm.propTypes = {
   requestResults: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 SearchForm.defaultProps = {

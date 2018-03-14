@@ -53,6 +53,14 @@ export const sort = [
   },
 ];
 
+export const accountNetworks = {
+  facebook: { id: 'facebook', can_access: true },
+  applovin: { id: 'applovin', can_access: true },
+  chartboost: { id: 'chartboost', can_access: true },
+  mopub: { id: 'mopub', can_access: true },
+  'unity-ads': { id: 'unity-ads', can_access: true },
+};
+
 export const mockResultsResponse = {
   pages: {
     2: [
@@ -65,6 +73,16 @@ export const mockResultsResponse = {
         'current_version': '2.17',
         'publisher_id': 131716,
         'id': 2729366,
+        ad_summaries: [
+          {
+            ad_network: 'applovin',
+            first_seen_ads_date: '2017-10-10',
+            last_seen_ads_date: '2018-10-02',
+            html_game: false,
+            video: true,
+          },
+        ],
+        categories: [{ type: 'primary', name: 'Games' }, { type: 'secondary', name: 'Puzzle' }],
       },
     ],
   },

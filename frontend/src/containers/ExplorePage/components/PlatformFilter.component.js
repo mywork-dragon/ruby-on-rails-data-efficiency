@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'antd';
 
 const PlatformFilter = ({
   platform,
@@ -14,7 +15,7 @@ const PlatformFilter = ({
         ['All', 'iOS', 'Android'].map((text) => {
           const type = text.toLowerCase();
           return (
-            <button key={type} className={`btn ${platform === type ? 'btn-primary' : 'btn-default'}`} onClick={updateFilter('platform', type)}>{text}</button>
+            <Button key={type} className={`btn ${platform === type ? 'btn-primary' : 'btn-default'}`} onClick={updateFilter('platform', type)}>{text}</Button>
           );
         })
       }

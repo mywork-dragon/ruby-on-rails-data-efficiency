@@ -47,6 +47,7 @@ const mergeProps = (storeProps, dispatchProps) => {
         columns,
         pageSize,
         sort,
+        loading,
       },
     networkStore,
     ...rest
@@ -56,6 +57,7 @@ const mergeProps = (storeProps, dispatchProps) => {
     networkStore,
     ...searchForm,
     ...dispatchProps,
+    loading,
     ...rest,
     requestResults: () => () => {
       const pageSettings = { pageSize, pageNum: 0 };

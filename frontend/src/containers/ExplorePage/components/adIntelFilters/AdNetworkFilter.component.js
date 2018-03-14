@@ -39,6 +39,7 @@ const AdNetworkFilter = ({
         return x;
       });
     }
+
     const newFilter = {
       ...value,
       [field]: val,
@@ -54,18 +55,18 @@ const AdNetworkFilter = ({
         <Select
           onChange={updateAdNetworkFilter('firstSeenDateRange')}
           size="small"
-          style={{ width: 150 }}
+          style={{ width: 175 }}
           value={firstSeenDateRange}
         >
           <Option value="anytime">Anytime</Option>
           <Option value="week">Last Week</Option>
           <Option value="month">Last Month</Option>
           <Option value="three-months">Last Three Months</Option>
-          <Option value="before">Before date</Option>
-          <Option value="after">After date</Option>
+          <Option value="before-date">Before date</Option>
+          <Option value="after-date">After date</Option>
         </Select>
         {
-          ['before', 'after'].includes(firstSeenDateRange) && (
+          ['before-date', 'after-date'].includes(firstSeenDateRange) && (
             <DatePicker
               onChange={updateAdNetworkFilter('firstSeenDate')}
               size="small"
@@ -79,7 +80,7 @@ const AdNetworkFilter = ({
         <Select
           onChange={updateAdNetworkFilter('lastSeenDateRange')}
           size="small"
-          style={{ width: 150 }}
+          style={{ width: 175 }}
           value={lastSeenDateRange}
         >
           <Option value="anytime">Anytime</Option>
@@ -90,7 +91,7 @@ const AdNetworkFilter = ({
           <Option value="after-date">After date</Option>
         </Select>
         {
-          ['before', 'after'].includes(lastSeenDateRange) && (
+          ['before-date', 'after-date'].includes(lastSeenDateRange) && (
             <DatePicker
               onChange={updateAdNetworkFilter('lastSeenDate')}
               size="small"

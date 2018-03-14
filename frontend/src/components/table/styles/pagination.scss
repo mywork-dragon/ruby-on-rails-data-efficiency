@@ -29,6 +29,10 @@
     justify-content: flex-end;
     width: 50%;
 
+    .-page-info {
+      margin: 3px 5px;
+    }
+
     .-center {
       justify-content: flex-end;
     }
@@ -54,15 +58,18 @@
     input {
       border: 0;
     }
+
+    .-pageSizeOptions {
+      margin: 3px 5px;
+    }
   }
 
   .-columnOptions {
-    margin: 3px 10px;
+    margin: 3px 5px;
   }
 
   .column-select {
     background: $white;
-    border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 5px;
     display: inline-block;
     font-size: inherit;
@@ -90,6 +97,10 @@
       left: 0;
       position: static;
       top: 0;
+
+      .ant-select-dropdown-menu-item-selected {
+        background-color: #e6f7ff;
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ import {
   DUPLICATE_SDK_FILTER,
 } from './Explore.actions';
 
-const sdkFilterModel = {
+export const sdkFilterModel = {
   dateRange: 'anytime',
   dates: [],
   eventType: 'install',

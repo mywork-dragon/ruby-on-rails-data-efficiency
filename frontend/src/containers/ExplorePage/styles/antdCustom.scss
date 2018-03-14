@@ -15,4 +15,8 @@
   .ant-radio-wrapper {
     @extend %button-wrapper-override;
   }
+
+  .ant-btn.btn.btn-primary {
+    color: $white;
+  }
 }

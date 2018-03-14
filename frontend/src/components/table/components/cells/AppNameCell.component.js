@@ -7,7 +7,8 @@ const AppNameCell = ({ app, isAdIntel }) => (
       <a className="dotted-link" href={`#/app/${app.platform}/${app.id}${isAdIntel ? '/ad-intelligence' : ''}`} target="_blank">
         <img src={app.icon || app.icon_url} />
         {app.name.replace(/\u00AD/g, '')}
-        {app.price && <i className="fa fa-2 fa-usd" />}
+        {' '}
+        {(app.price || app.price_category === 'paid') && <i className="fa fa-2 fa-usd" />}
       </a>
     </span>
   </div>

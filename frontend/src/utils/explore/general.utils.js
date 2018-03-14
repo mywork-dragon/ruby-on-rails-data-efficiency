@@ -1,6 +1,7 @@
 
 import _ from 'lodash';
 import { capitalize, getMaxDate, getMinDate } from 'utils/format.utils';
+import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
 import { selectMap } from './models.utils';
 
 export function formatResults (data, params, count) {
@@ -54,7 +55,7 @@ function formatAdintelInfo ({ ad_summaries }) {
     first_seen_ads_date: null,
     last_seen_ads_date: null,
     creative_formats: [],
-    adSpend: !ad_summaries,
+    adSpend: ad_summaries !== null && ad_summaries.length > 0,
   };
 
   if (ad_summaries) {
@@ -123,6 +124,9 @@ export function cleanState (form) {
 
   if (sdkFilters.length > 1) {
     _.remove(sdkFilters, x => x.sdks.length === 0);
+    if (sdkFilters.length === 0) {
+      sdkFilters.push(sdkFilterModel);
+    }
   }
 
   cleanedState.filters.sdks.filters = sdkFilters.map((x) => {
@@ -136,7 +140,12 @@ export function cleanState (form) {
 
   if (cleanedState.filters.availableCountries && cleanedState.filters.availableCountries.value.countries.length === 0) {
     delete cleanedState.filters.availableCountries;
-  };
+  }
+
+  if (cleanedState.filters.adNetworks && cleanedState.filters.adNetworks.value.adNetworks.length === 0) {
+    delete cleanedState.filters.adNetworks;
+  }
+
 
   return cleanedState;
 }

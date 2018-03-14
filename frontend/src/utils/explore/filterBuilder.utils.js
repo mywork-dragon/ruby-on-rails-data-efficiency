@@ -158,7 +158,7 @@ export function buildAdIntelFilters (filters) {
 }
 
 export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
-  if (!adNetworksFilter) {
+  if (!adNetworksFilter || adNetworksFilter.value.adNetworks.length === 0) {
     return null;
   }
 

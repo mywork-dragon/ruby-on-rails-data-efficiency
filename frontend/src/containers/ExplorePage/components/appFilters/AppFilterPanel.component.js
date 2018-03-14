@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 import { panelFilterCount } from 'utils/explore/general.utils';
 
-import AvailableCountriesFilter from '../appFilters/AvailableCountriesFilter.component';
-import CategoriesFilter from '../appFilters/CategoriesFilter.component';
+import AvailableCountriesFilter from './AvailableCountriesFilter.component';
+import CategoriesFilter from './CategoriesFilter.component';
 import FilterCountLabel from '../FilterCountLabel.component';
-import InAppPurchaseFilter from '../appFilters/InAppPurchaseFilter.component';
-import MobilePriorityFilter from '../appFilters/MobilePriorityFilter.component';
-import PriceFilter from '../appFilters/PriceFilter.component';
-import UserbaseFilter from '../appFilters/UserbaseFilter.component';
+import InAppPurchaseFilter from './InAppPurchaseFilter.component';
+import MobilePriorityFilter from './MobilePriorityFilter.component';
+import PriceFilter from './PriceFilter.component';
+import UserbaseFilter from './UserbaseFilter.component';
 
 const AppFilterPanel = ({
   filters,
@@ -38,11 +38,11 @@ const AppFilterPanel = ({
     <Panel.Body collapsible>
       <ul className="panel-filters list-unstyled">
         <MobilePriorityFilter mobilePriority={mobilePriority} panelKey={panelKey} {...rest} />
+        <UserbaseFilter panelKey={panelKey} userBase={userBase} {...rest} />
         <PriceFilter filter={price} panelKey={panelKey} {...rest} />
         <InAppPurchaseFilter filter={inAppPurchases} panelKey={panelKey} {...rest} />
         <AvailableCountriesFilter filter={availableCountries} panelKey={panelKey} {...rest} />
         <CategoriesFilter androidFilter={androidCategories} iosFilter={iosCategories} panelKey={panelKey} {...rest} />
-        <UserbaseFilter panelKey={panelKey} userBase={userBase} {...rest} />
       </ul>
     </Panel.Body>
   </Panel>

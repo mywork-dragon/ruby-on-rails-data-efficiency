@@ -5,7 +5,7 @@ import { Button, Radio } from 'antd';
 import { panelFilterCount } from 'utils/explore/general.utils';
 
 import FilterCountLabel from '../FilterCountLabel.component';
-import SdkFilterGroup from '../SdkFilterGroup.component';
+import SdkFilterGroup from './SdkFilterGroup.component';
 
 const SdkFilterPanel = ({
   addSdkFilter,

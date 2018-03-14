@@ -165,7 +165,7 @@ class SdkFilterGroup extends React.Component {
             }}
             value={operator}
           >
-            {['any', 'all', 'none'].map(x => (
+            {['any', 'all'].map(x => (
               <Option key={`${index}sdk${x}`} value={x}>{capitalize(x)}</Option>
             ))}
           </Select>

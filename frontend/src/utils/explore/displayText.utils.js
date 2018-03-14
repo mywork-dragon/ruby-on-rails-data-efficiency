@@ -135,6 +135,10 @@ function creativeFormatsText (value) {
 }
 
 function adNetworkText ({ adNetworks }) {
+  if (adNetworks.length === 0) {
+    return null;
+  }
+
   const networks = adNetworks.map(x => x.label).join(', ');
 
   return `Advertising on ${networks}`;

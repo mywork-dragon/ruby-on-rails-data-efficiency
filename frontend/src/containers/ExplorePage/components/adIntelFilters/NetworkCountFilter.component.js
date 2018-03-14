@@ -6,7 +6,6 @@ import { Select } from 'antd';
 const Option = Select.Option;
 
 const NetworkCountFilter = ({
-  filter,
   filter: {
     value,
     value: {
@@ -25,7 +24,9 @@ const NetworkCountFilter = ({
     end = startRange[startRange.length - 1];
   }
 
-  const endRange = _.range(start, startRange[startRange.length - 1] + 1);
+  const endStart = start === 'x' ? 1 : start;
+
+  const endRange = _.range(endStart, startRange[startRange.length - 1] + 1);
 
   return (
     <li>
@@ -35,40 +36,59 @@ const NetworkCountFilter = ({
       <div className="input-group network-count">
         Between
         <Select
+          defaultValue="x"
           onChange={(val) => {
-            const newFilter = {
+            let newFilter = {
               ...value,
               start: val,
-              end,
             };
+
+            if (newFilter.end === 'x') {
+              newFilter.end = endRange[endRange.length - 1];
+            }
+
+            if (val === 'x') {
+              newFilter = null;
+            }
 
             updateFilter('adNetworkCount', newFilter, { panelKey })();
           }}
           size="small"
           value={start}
         >
+          <Option value="x">X</Option>
           {
             startRange.map(x => (
-              <Option value={x}>{x}</Option>
+              <Option key={x}>{x}</Option>
             ))
           }
         </Select>
         and
         <Select
+          defaultValue="x"
           onChange={(val) => {
-            const newFilter = {
+            let newFilter = {
               ...value,
               end: val,
             };
+
+            if (newFilter.start === 'x') {
+              newFilter.start = 1;
+            }
+
+            if (val === 'x') {
+              newFilter = null;
+            }
 
             updateFilter('adNetworkCount', newFilter, { panelKey })();
           }}
           size="small"
           value={end}
         >
+          <Option value="x">X</Option>
           {
             endRange.map(x => (
-              <Option value={x}>{x}</Option>
+              <Option key={x}>{x}</Option>
             ))
           }
         </Select>
@@ -92,8 +112,8 @@ NetworkCountFilter.propTypes = {
 NetworkCountFilter.defaultProps = {
   filter: {
     value: {
-      start: 1,
-      end: 0,
+      start: 'x',
+      end: 'x',
     },
   },
 };
