@@ -17,6 +17,12 @@ export const selectMap = {
   [headerNames.CATEGORY]: ['categories'],
 };
 
+export const sortMap = {
+  [headerNames.APP]: { field: 'name', object: 'app' },
+  [headerNames.LAST_UPDATED]: { field: 'last_updated', object: 'app' },
+  [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
+};
+
 export const isAppFilter = filter => Object.keys(appFilterKeys).includes(filter);
 export const isPubFilter = filter => Object.keys(publisherFilterKeys).includes(filter);
 export const isAdIntelFilter = filter => Object.keys(adIntelFilterKeys).includes(filter);

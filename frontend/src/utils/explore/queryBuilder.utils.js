@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { selectMap } from './models.utils';
+import { selectMap, sortMap } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
 import { cleanState } from './general.utils';
 
@@ -40,9 +40,9 @@ export function buildSortSettings (sorts) {
 }
 
 export const convertToQuerySort = sorts => sorts.map(sort => ({
-  field: selectMap[sort.id][0],
+  field: sortMap[sort.id].field,
   order: sort.desc ? 'desc' : 'asc',
-  object: 'app',
+  object: sortMap[sort.id].object,
 }));
 
 export function buildSelect (resultType, columns, accountNetworks) {

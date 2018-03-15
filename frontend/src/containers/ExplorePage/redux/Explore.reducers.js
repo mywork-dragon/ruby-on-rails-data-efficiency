@@ -20,7 +20,7 @@ const columnOptions = [
   headerNames.PUBLISHER,
   headerNames.PLATFORM,
   headerNames.MOBILE_PRIORITY,
-  headerNames.FORTUNE_RANK,
+  // headerNames.FORTUNE_RANK,
   headerNames.AD_NETWORKS,
   headerNames.FIRST_SEEN_ADS,
   headerNames.LAST_SEEN_ADS,

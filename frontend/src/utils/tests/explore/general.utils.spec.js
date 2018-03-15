@@ -44,9 +44,9 @@ describe('exploreUtils', () => {
   });
 
   describe('getSortName', () => {
-    it('should take in a select field and return the corresponding sort/display field', () => {
-      expect(utils.getSortName('name')).toBe(headerNames.APP);
-      expect(utils.getSortName('last_updated')).toBe(headerNames.LAST_UPDATED);
+    it('should take in a sort item and return the corresponding sort/display field', () => {
+      expect(utils.getSortName({ field: 'name', object: 'app' })).toBe(headerNames.APP);
+      expect(utils.getSortName({ field: 'last_updated', object: 'app' })).toBe(headerNames.LAST_UPDATED);
     });
   });
 

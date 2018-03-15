@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { capitalize, getMaxDate, getMinDate } from 'utils/format.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
-import { selectMap } from './models.utils';
+import { sortMap } from './models.utils';
 
 export function formatResults (data, params, count) {
   const {
@@ -79,10 +79,10 @@ export const convertToTableSort = (sorts) => {
   const tableSorts = [];
   const strippedSorts = sorts.slice(0, sorts.length - 2);
   strippedSorts.forEach((sort) => {
-    const sortName = getSortName(sort.field);
+    const sortName = getSortName(sort);
     if (sortName && sortName !== 'Platform') {
       tableSorts.push({
-        id: getSortName(sort.field),
+        id: sortName,
         desc: sort.order === 'desc',
       });
     }
@@ -91,11 +91,12 @@ export const convertToTableSort = (sorts) => {
   return tableSorts;
 };
 
-export const getSortName = (val) => {
-  for (const key in selectMap) {
-    if (selectMap[key]) {
-      const fields = selectMap[key];
-      if (fields && fields.includes(val) && fields[0] === val) {
+export const getSortName = (sort) => {
+  const { field, object } = sort;
+  for (const key in sortMap) {
+    if (sortMap[key]) {
+      const mappedSort = sortMap[key];
+      if (mappedSort && mappedSort.field === field && mappedSort.object === object) {
         return key;
       }
     }
