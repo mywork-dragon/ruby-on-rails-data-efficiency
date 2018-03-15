@@ -40,11 +40,16 @@ describe('buildSdkFilters', () => {
           operator: 'intersect',
           inputs: [
             {
-              object: 'sdk_event',
-              operator: 'filter',
-              predicates: [
-                ['not', ['installed']],
-                ['sdk_category', 'Analytics', 'ios'],
+              operator: 'not',
+              inputs: [
+                {
+                  object: 'sdk_event',
+                  operator: 'filter',
+                  predicates: [
+                    ['installed'],
+                    ['sdk_category', 'Analytics', 'ios'],
+                  ],
+                },
               ],
             },
             {

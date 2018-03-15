@@ -53,7 +53,7 @@ export function generateSdkFilter (filter) {
       sdkFilter.predicates.push(['platform', sdk.platform]);
     }
 
-    if (filter.eventType === 'never-seen') {
+    if (['never-seen', 'is-not-installed'].includes(filter.eventType)) {
       sdkFilter = {
         operator: 'not',
         inputs: [sdkFilter],
@@ -92,9 +92,8 @@ export function generateTypeItem (eventType) {
     case 'uninstall':
       return ['type', 'uninstall'];
     case 'is-installed':
-      return ['installed'];
     case 'is-not-installed':
-      return ['not', ['installed']];
+      return ['installed'];
     default:
       return ['type', 'install'];
   }

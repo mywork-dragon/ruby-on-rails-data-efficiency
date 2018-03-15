@@ -24,12 +24,17 @@ describe('buildSdkFilters', () => {
           operator: 'intersect',
           inputs: [
             {
-              object: 'sdk',
-              operator: 'filter',
-              predicates: [
-                ['not', ['installed']],
-                ['id', 114],
-                ['platform', 'ios'],
+              operator: 'not',
+              inputs: [
+                {
+                  object: 'sdk',
+                  operator: 'filter',
+                  predicates: [
+                    ['installed'],
+                    ['id', 114],
+                    ['platform', 'ios'],
+                  ],
+                },
               ],
             },
             {
