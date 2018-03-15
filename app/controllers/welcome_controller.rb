@@ -203,6 +203,8 @@ class WelcomeController < ApplicationController
     @marketing_graphic = graphics_folder + 'fishing.svg'
     @customer_success_graphic = graphics_folder + 'thumbs_up.svg'
     @learning_graphic = graphics_folder + 'learning.svg'
+
+    @abm4m_post_0 = 'https://blog.mightysignal.com/introducing-abm4m-account-based-marketing-for-mobile-fcc02a5f6097'
   end
 
   def business_intelligence
