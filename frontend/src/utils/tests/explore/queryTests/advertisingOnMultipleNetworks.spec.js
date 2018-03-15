@@ -11,7 +11,7 @@ test('', () => {
             { key: 'applovin', label: 'Applovin' },
             { key: 'unity-ads', label: 'Unity' },
           ],
-          operator: 'and',
+          operator: 'all',
           firstSeenDateRange: 'anytime',
           lastSeenDateRange: 'anytime',
           firstSeenDate: '2018-01-01',

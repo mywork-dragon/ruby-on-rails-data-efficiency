@@ -8,7 +8,7 @@ test('', () => {
       adNetworks: {
         value: {
           adNetworks: [{ key: 'applovin', label: 'Applovin' }],
-          operator: 'and',
+          operator: 'all',
           firstSeenDateRange: 'anytime',
           lastSeenDateRange: 'anytime',
           firstSeenDate: '2018-01-01',

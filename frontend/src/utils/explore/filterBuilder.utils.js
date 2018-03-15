@@ -172,7 +172,7 @@ export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
   } = adNetworksFilter.value;
 
   const result = {
-    operator: operator === 'and' ? 'intersect' : 'union',
+    operator: operator === 'all' ? 'intersect' : 'union',
     inputs: [],
   };
 
