@@ -5,7 +5,7 @@ class MightyReportController < ApplicationController
   def index
     @logos = [
       {image: 'ironsrc_color.png', width: 170},
-      {image: 'appsflyer_color.png', width: 170},
+      {image: 'leanplum_color.png', width: 170},
       {image: 'zendesk_color.png', width: 170},
       {image: 'adobe_color.png', width: 170},
       {image: 'amplitude_color.png', width: 170},

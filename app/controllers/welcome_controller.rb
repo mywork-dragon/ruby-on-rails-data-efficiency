@@ -22,7 +22,8 @@ class WelcomeController < ApplicationController
       #{image: 'realm.png', width: 135},
       #{image: 'neumob.png', width: 170},
       # {image: 'yahoo.png', width: 165},
-      {image: 'appsflyer.png', width: 180},
+      # {image: 'appsflyer.png', width: 180},
+      {image: 'leanplum.png', width: 180},
       {image: 'mixpanel.png', width: 160},
       {image: 'zendesk.png', width: 170},
       {image: 'adobe.png', width: 160}
@@ -233,7 +234,7 @@ class WelcomeController < ApplicationController
     @logos = [
       {image: 'taptica_color.png', width: 200},
       {image: 'verizon_color.png', width: 200},
-      {image: 'appsflyer_color.png', width: 200}
+      {image: 'liftoff_color.png', width: 200}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
 
     @new_advertisers_graphic = graphics_folder + 'new_advertisers.png'
@@ -335,7 +336,7 @@ class WelcomeController < ApplicationController
 
   def get_logos
     @logos = [
-      {image: 'appsflyer_color.png', width: 170},
+      {image: 'leanplum_color.png', width: 170},
       {image: 'taptica_color.png', width: 170},
       {image: 'zendesk_color.png', width: 170},
       {image: 'adobe_color.png', width: 170},
