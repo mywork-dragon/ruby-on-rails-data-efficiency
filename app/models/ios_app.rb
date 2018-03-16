@@ -1104,11 +1104,11 @@ class IosApp < ActiveRecord::Base
           app_to_storefront_snapshot_attributes[app.id].each do |storefront_snapshot_attributes|
             app_store_id = storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("app_store_id")]
             ratings_by_country << {
-              "current_rating" =>  storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_current_stars")],
+              "current_rating" =>  storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_current_stars")].to_f,
               "ratings_current_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_current_count")],
-              "ratings_per_day_current_release" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_per_day_current_release")],
+              "ratings_per_day_current_release" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_per_day_current_release")].to_f,
               "country_code" => app_store_details_map[app_store_id][app_store_map_attributes.index("country_code")],
-              "rating" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_stars")],
+              "rating" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_stars")].to_f,
               "ratings_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_count")],
               "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")]
             }
@@ -1124,11 +1124,11 @@ class IosApp < ActiveRecord::Base
         elsif us_snapshot_attributes_map[app.id]
           result["ratings_by_country"] = [
             {
-              "current_rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_current_stars")],
+              "current_rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_current_stars")].to_f,
               "ratings_current_count" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_current_count")],
-              "ratings_per_day_current_release" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_per_day_current_release")],
+              "ratings_per_day_current_release" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_per_day_current_release")].to_f,
               "country_code" => "US",
-              "rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_all_stars")],
+              "rating" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_all_stars")].to_f,
               "ratings_count" => us_snapshot_attributes_map[app.id][newest_ios_app_snapshot_attributes.index("ratings_all_count")],
               "country" => "United States"
             }
