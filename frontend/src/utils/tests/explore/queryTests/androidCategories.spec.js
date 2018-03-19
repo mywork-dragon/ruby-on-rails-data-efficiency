@@ -5,7 +5,7 @@ import { buildCategoryFilters } from '../../../explore/filterBuilder.utils';
 test('', () => {
   const filters = {
     androidCategories: {
-      value: ['GAME_EDUCATIONAL', 'GAME_CARD'],
+      value: [{ value: 'GAME_EDUCATIONAL', label: 'Game Education' }, { value: 'GAME_CARD' }],
     },
   };
 

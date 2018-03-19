@@ -7,10 +7,6 @@
     text-decoration-style: dotted;
   }
 
-  &:visited {
-    color: $visited-link;
-  }
-
   &:hover {
     color: $link;
     text-decoration: underline;

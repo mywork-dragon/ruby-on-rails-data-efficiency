@@ -1,14 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const AppNameCell = ({ app, isAdIntel }) => (
+const AppNameCell = ({
+  app: {
+    icon,
+    icon_url,
+    platform,
+    id,
+    name,
+    price,
+    price_category,
+  },
+  isAdIntel,
+}) => (
   <div className="resultsTableAppIcon">
     <span>
-      <a className="dotted-link" href={`#/app/${app.platform}/${app.id}${isAdIntel ? '/ad-intelligence' : ''}`} target="_blank">
-        <img src={app.icon || app.icon_url} />
-        {app.name.replace(/\u00AD/g, '')}
+      <a className="dotted-link" href={`#/app/${platform}/${id}${isAdIntel ? '/ad-intelligence' : ''}`} target="_blank">
+        {(icon || icon_url) && <img src={icon || icon_url} />}
+        {name ? name.replace(/\u00AD/g, '') : 'No name'}
         {' '}
-        {(app.price || app.price_category === 'paid') && <i className="fa fa-2 fa-usd" />}
+        {(price || price_category === 'paid') && <i className="fa fa-2 fa-usd" />}
       </a>
     </span>
   </div>

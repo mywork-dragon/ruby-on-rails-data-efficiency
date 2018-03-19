@@ -131,7 +131,7 @@ export function buildPlatformCategoryFilter (filter, platform) {
 
   const ids = ['or'];
 
-  filter.value.forEach(x => ids.push(['id', x]));
+  filter.value.forEach(x => ids.push(['id', x.value]));
   result.predicates.push(ids);
 
   return result;

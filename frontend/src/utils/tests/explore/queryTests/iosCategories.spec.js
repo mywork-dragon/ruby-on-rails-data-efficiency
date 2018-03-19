@@ -5,7 +5,7 @@ import { buildCategoryFilters } from '../../../explore/filterBuilder.utils';
 test('', () => {
   const filters = {
     iosCategories: {
-      value: ['36', '6016'],
+      value: [{ value: '36', label: 'Overall' }, { value: '6016', label: 'Games' }],
     },
   };
 

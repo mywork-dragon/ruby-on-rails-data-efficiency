@@ -3,8 +3,10 @@ import { capitalize } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
   switch (parameter) {
-    case 'app_category':
-      return categoryText(value);
+    case 'iosCategories':
+      return categoryText(value, 'ios');
+    case 'androidCategories':
+      return categoryText(value, 'android');
     case 'fortuneRank':
       return `Fortune Rank: ${value}`;
     case 'mobilePriority':
@@ -36,9 +38,8 @@ function listText(base, value) {
   return base + value.map(x => capitalize(x)).join(', ');
 }
 
-function categoryText (value) {
-  const base = 'Categories: ';
-  return base + value.join(', ');
+function categoryText (value, platform) {
+  return `${capitalize(platform)} Categories: ${value.map(x => x.label).join(', ')}`;
 }
 
 function sdkText ({ eventType, sdks, dateRange, dates }) {
@@ -47,7 +48,7 @@ function sdkText ({ eventType, sdks, dateRange, dates }) {
   }
 
   let eventTypeText;
-  let dateText;
+  const dateText = generateDateText(dateRange, dates);
 
   switch (eventType) {
     case 'install':
@@ -64,30 +65,6 @@ function sdkText ({ eventType, sdks, dateRange, dates }) {
       break;
     case 'is-not-installed':
       eventTypeText = 'Currently Not Installed';
-      break;
-  }
-
-  switch (dateRange) {
-    case 'anytime':
-      dateText = 'Anytime';
-      break;
-    case 'week':
-      dateText = 'in the Last Week';
-      break;
-    case 'month':
-      dateText = 'in the Last Month';
-      break;
-    case 'three-months':
-      dateText = 'in the Last Three Months';
-      break;
-    case 'six-months':
-      dateText = 'in the Last Six Months';
-      break;
-    case 'year':
-      dateText = 'in the Last Year';
-      break;
-    case 'custom':
-      dateText = dates[0] ? `between ${moment(dates[0]).format('L')} and ${moment(dates[1]).format('L')}` : 'in Custom Date Range';
       break;
   }
 
@@ -134,14 +111,59 @@ function creativeFormatsText (value) {
   return `Creative Formats: ${formats}`;
 }
 
-function adNetworkText ({ adNetworks }) {
+function adNetworkText ({
+  adNetworks,
+  firstSeenDateRange,
+  firstSeenDate,
+  lastSeenDateRange,
+  lastSeenDate,
+}) {
   if (adNetworks.length === 0) {
     return null;
   }
 
   const networks = adNetworks.map(x => x.label).join(', ');
 
-  return `Advertising on ${networks}`;
+  const firstSeenText = `First Seen ${generateDateText(firstSeenDateRange, firstSeenDate)}`;
+  const lastSeenText = `Last Seen ${generateDateText(lastSeenDateRange, lastSeenDate)}`;
+
+  return `Advertising on ${networks}, ${firstSeenText}, ${lastSeenText}`;
+}
+
+function generateDateText (dateRange, dates) {
+  let result;
+
+  switch (dateRange) {
+    case 'anytime':
+      result = 'Anytime';
+      break;
+    case 'week':
+      result = 'in the Last Week';
+      break;
+    case 'month':
+      result = 'in the Last Month';
+      break;
+    case 'three-months':
+      result = 'in the Last Three Months';
+      break;
+    case 'six-months':
+      result = 'in the Last Six Months';
+      break;
+    case 'year':
+      result = 'in the Last Year';
+      break;
+    case 'before-date':
+      result = `Before ${moment(dates).format('L')}`;
+      break;
+    case 'after-date':
+      result = `After ${moment(dates).format('L')}`;
+      break;
+    case 'custom':
+      result = dates[0] ? `between ${moment(dates[0]).format('L')} and ${moment(dates[1]).format('L')}` : 'in Custom Date Range';
+      break;
+  }
+
+  return result;
 }
 
 export default getDisplayText;

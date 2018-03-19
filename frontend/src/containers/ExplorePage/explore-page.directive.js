@@ -43,14 +43,15 @@ function explore($stateParams) {
   return directive;
 }
 
-ExploreController.$inject = ['$rootScope', '$state'];
+ExploreController.$inject = ['$rootScope', '$state', 'pageTitleService'];
 
-function ExploreController($rootScope, $state) {
+function ExploreController($rootScope, $state, pageTitleService) {
   activate();
 
   function activate () {
     if (!$rootScope.isAdminAccount) {
       $state.go('search');
     }
+    pageTitleService.setTitle('MightySignal - Explore');
   }
 }

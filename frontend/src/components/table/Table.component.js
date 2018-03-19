@@ -6,6 +6,7 @@ import { headerNames } from './redux/column.models';
 import ListDropdownContainer from './containers/ListDropdown.container';
 import Pagination from './components/Pagination.component';
 import LoadingSpinner from './components/Spinner.component';
+import CustomHeaderCell from './components/headerCells/CustomHeaderCell.component';
 
 Object.assign(ReactTableDefaults, {
   className: '-striped',
@@ -74,6 +75,12 @@ const Table = ({
     }
   };
 
+  const getTheadThProps = ({ sorted }, rowInfo, column) => ({
+    column,
+    sorted: sorted.find(col => col.id === column.id),
+    sortable: column.sortable,
+  });
+
   return (
     <section className="panel panel-default table-dynamic">
       <div className="panel-heading" id="dashboardResultsTableHeading">
@@ -96,6 +103,7 @@ const Table = ({
               showColumnDropdown,
               updateColumns,
             })}
+            getTheadThProps={getTheadThProps}
             getTrProps={(state, rowInfo) => ({
               className: rowInfo && !rowInfo.original.appAvailable && rowInfo.original.taken_down && 'faded',
             })}
@@ -117,16 +125,19 @@ const Table = ({
             style={{
               minHeight: results.length ? '0px' : '500px',
             }}
+            ThComponent={CustomHeaderCell}
           />
         ) : (
           <ReactTable
             columns={columnHeaders}
             data={results}
             defaultSorted={sort}
+            getTheadThProps={getTheadThProps}
             loading={loading}
             minRows={0}
             showPaginationBottom={false}
             showPaginationTop={false}
+            ThComponent={CustomHeaderCell}
           />
         )
       }

@@ -118,7 +118,7 @@ const AdNetworkFilter = ({
           labelInValue
           mode="multiple"
           onChange={updateAdNetworkFilter('adNetworks')}
-          placeHolder="Add ad networks"
+          placeholder="Add ad networks"
           style={{ width: '100%' }}
           value={adNetworks}
         >

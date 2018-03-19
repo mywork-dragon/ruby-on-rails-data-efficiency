@@ -16,7 +16,19 @@
     @extend %button-wrapper-override;
   }
 
+  .ant-radio-button-wrapper {
+    border-radius: 0;
+  }
+
   .ant-btn.btn.btn-primary {
     color: $white;
+  }
+
+  .ant-select-selection {
+    border-radius: 0;
+  }
+
+  .ant-btn {
+    border-radius: 0;
   }
 }

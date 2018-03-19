@@ -40,6 +40,7 @@ const CategoriesDropdown = ({
     <div className="li-select categories">
       <TreeSelect
         disabled={!['all', platform].includes(selectedPlatform)}
+        labelInValue
         multiple
         onChange={values => updateFilter(`${platform}Categories`, values, { panelKey })()}
         placeholder={`${capitalize(platform)} Categories`}

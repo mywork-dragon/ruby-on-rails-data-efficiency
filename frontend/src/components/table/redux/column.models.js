@@ -80,8 +80,7 @@ export const columnModels = [
     accessor: 'categories',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    sortable: false, // TODO: remove
-    Cell: cell => <div>{cell.value.join(', ')}</div>,
+    Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : 'No data'}</div>,
   },
   {
     Header: headerNames.CREATIVE_FORMATS,
@@ -98,7 +97,6 @@ export const columnModels = [
     accessor: 'first_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    sortable: false, // TODO: remove
     Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
   },
   {
@@ -114,7 +112,6 @@ export const columnModels = [
     accessor: 'last_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    sortable: false, // TODO: remove
     Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
   },
   {
@@ -131,7 +128,7 @@ export const columnModels = [
     accessor: d => ['low', 'medium', 'high'].indexOf(d.mobilePriority || d.mobile_priority),
     headerClassName: 'med-small-cell',
     className: 'med-small-cell',
-    sortable: false, // TODO: remove
+    sortable: false,
     Cell: cell => <MobilePriorityCell mobilePriority={cell.value} />,
   },
   {
@@ -162,7 +159,6 @@ export const columnModels = [
     accessor: 'number_of_creatives',
     headerClassName: 'large-cell',
     className: 'large-cell',
-    sortable: false, // TODO: remove
   },
   {
     Header: <UserBaseHeaderCell />,
@@ -170,7 +166,7 @@ export const columnModels = [
     accessor: 'userBase',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    sortable: false, // TODO: remove
+    // sortable: false, // TODO: remove
     Cell: cell => <UserBaseCell app={cell.original} />,
   },
 ];

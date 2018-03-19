@@ -39,7 +39,6 @@
 
   .sdk-filter-group {
     border: 1px solid #daedf2;
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
     margin: 0 10px 10px;
@@ -122,6 +121,12 @@
   .input-group.network-count {
     .ant-select {
       margin: 0 5px;
+    }
+  }
+
+  .available-countries {
+    .ant-select {
+      margin: 0 10px 0 0;
     }
   }
 }
