@@ -12,6 +12,8 @@ import AdNetworkCellContainer from '../containers/AdNetworkCell.container';
 import AdSpendCell from '../components/cells/AdSpendCell.component';
 import AppNameCell from '../components/cells/AppNameCell.component';
 import CreativeFormatCell from '../components/cells/CreativeFormatCell.component';
+import FirstSeenAdsCell from '../components/cells/FirstSeenAdsCell.component';
+import LastSeenAdsCell from '../components/cells/LastSeenAdsCell.component';
 import LastUpdatedCell from '../components/cells/LastUpdatedCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
 import PlatformCell from '../components/cells/PlatformCell.component';
@@ -97,7 +99,7 @@ export const columnModels = [
     accessor: 'first_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
+    Cell: cell => <FirstSeenAdsCell app={cell.original} />,
   },
   {
     Header: headerNames.FORTUNE_RANK,
@@ -112,7 +114,7 @@ export const columnModels = [
     accessor: 'last_seen_ads_date',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: d => (d.value ? longDate(d.value) : 'No ad data'),
+    Cell: cell => <LastSeenAdsCell app={cell.original} />,
   },
   {
     Header: headerNames.LAST_UPDATED,
