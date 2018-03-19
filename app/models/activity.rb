@@ -2,6 +2,8 @@ class Activity < ActiveRecord::Base
   has_many :weekly_batches_activities, dependent: :destroy
   has_many :weekly_batches, through: :weekly_batches_activities
 
+  TWITTER_BLACKLIST = ['IosSdk:200', 'AndroidSdk:442']
+
   def self.log_activity(activity_type, time, *owners)
     # create activity, could pass in data in the future
     return if activity_type.blank? || owners.empty?
@@ -63,14 +65,26 @@ class Activity < ActiveRecord::Base
   end
 
   def notify
+    TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify?
+  end
+
+  def should_notify?
     should_notify = false
+    blacklist = TWITTER_BLACKLIST.each do |object|
+      class_name,id = object.split(':')
+      class_name.constantize.find(id)
+    end
+
     self.weekly_batches.each do |batch|
-      if batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type) && (happened_at > Time.now - 2.days)
-        should_notify = true
+      if blacklist.include?(batch.owner)
+        should_notify = false
         break
+      elsif batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type) && (happened_at > Time.now - 2.days)
+        should_notify = true
       end
     end
-    TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify
+
+    should_notify
   end
 
   def activity_type
