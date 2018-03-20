@@ -1,5 +1,6 @@
 class GooglePlayService
   include AppAttributeChecker
+  class BadGoogleScrape < StandardError; end
 
   def attributes(app_identifier, proxy_type: :general)
     @proxy_type = proxy_type
@@ -44,6 +45,12 @@ class GooglePlayService
       rescue
         ret[key] = nil
       end
+    end
+
+    # Added to prevent bad snaps from getting into DB.
+    # I believe gplay is A/B testing different html formats.
+    if ret[:name].empty? or ret[:version].empty? or ret[:released].empty?
+      raise BadGoogleScrape.new(app_identifier)
     end
 
     ret
