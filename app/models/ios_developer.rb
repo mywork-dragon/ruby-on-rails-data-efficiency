@@ -56,7 +56,7 @@ class IosDeveloper < ActiveRecord::Base
       platform: :ios,
       publisher_identifier: identifier,
       websites: website_urls,
-      apps: ios_apps.pluck(:id).map {|x| {"id" => x,"" => "ios"}}
+      apps: ios_apps.pluck(:id).map {|x| {"id" => x,"platform" => "ios"}}
     }
   end
 
