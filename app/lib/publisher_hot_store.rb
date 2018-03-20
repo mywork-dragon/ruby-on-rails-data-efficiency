@@ -11,18 +11,14 @@ class PublisherHotStore < HotStore
     }
 
     @fields_to_normalize = {
-      "ios" => {
-        :app_store_id => "publisher_identifier"
-      },
-      "android" => {
-        :identifier => "publisher_identifier",
-      }
+      "ios" => {},
+      "android" => {}
     }
   end
 
   def write(platform, publisher_id)
     publisher_class = to_class(platform)
-    publisher_attributes = publisher_class.find(publisher_id).api_json
+    publisher_attributes = publisher_class.find(publisher_id).hotstore_json
     write_entry("publisher", platform, publisher_id, publisher_attributes)
   end
 

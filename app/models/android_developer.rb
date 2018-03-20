@@ -46,6 +46,17 @@ class AndroidDeveloper < ActiveRecord::Base
     data
   end
 
+  def hotstore_json(options = {})
+    {
+      id: id,
+      name: name,
+      platform: :ios,
+      identifier: identifier,
+      websites: website_urls,
+      apps: android_apps.pluck(:id).map {|x| {"id" => x,"" => "android"}}
+    }
+  end
+
   class << self
     def find_by_domain(domain)
       domain = UrlHelper.url_with_domain_only(domain)
