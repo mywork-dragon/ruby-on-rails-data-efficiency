@@ -27,10 +27,11 @@ describe('buildSdkFilters', () => {
           [5, 'jan'],
         ],
       }],
-      eventType: 'is-installed',
+      eventType: 'install',
       dateRange: 'anytime',
       dates: [],
       operator: 'any',
+      installState: 'is-installed',
     };
 
     const expected = {
@@ -43,7 +44,7 @@ describe('buildSdkFilters', () => {
               object: 'sdk_event',
               operator: 'filter',
               predicates: [
-                ['installed'],
+                ['type', 'install'],
                 ['sdk_category', 'Analytics', 'ios'],
               ],
             },
@@ -52,6 +53,14 @@ describe('buildSdkFilters', () => {
               operator: 'filter',
               predicates: [
                 ['platform', 'ios'],
+              ],
+            },
+            {
+              object: 'sdk_event',
+              operator: 'filter',
+              predicates: [
+                ['installed'],
+                ['sdk_category', 'Analytics', 'ios'],
               ],
             },
           ],
@@ -88,10 +97,11 @@ describe('buildSdkFilters', () => {
           [734, 'sue'],
         ],
       }],
-      eventType: 'is-installed',
+      eventType: 'install',
       dateRange: 'anytime',
       dates: [],
       operator: 'any',
+      installState: 'is-installed',
     };
 
     const expected = {
@@ -104,7 +114,7 @@ describe('buildSdkFilters', () => {
               object: 'sdk_event',
               operator: 'filter',
               predicates: [
-                ['installed'],
+                ['type', 'install'],
                 ['sdk_category', 'Analytics', 'ios', [34, 5]],
               ],
             },
@@ -113,6 +123,14 @@ describe('buildSdkFilters', () => {
               operator: 'filter',
               predicates: [
                 ['platform', 'ios'],
+              ],
+            },
+            {
+              object: 'sdk_event',
+              operator: 'filter',
+              predicates: [
+                ['installed'],
+                ['sdk_category', 'Analytics', 'ios', [34, 5]],
               ],
             },
           ],

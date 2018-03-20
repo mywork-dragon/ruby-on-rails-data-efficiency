@@ -42,14 +42,12 @@ function categoryText (value, platform) {
   return `${capitalize(platform)} Categories: ${value.map(x => x.label).join(', ')}`;
 }
 
-function sdkText ({ eventType, sdks, dateRange, dates }) {
+function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
   if (sdks.length === 0) {
     return '';
   }
 
   let eventTypeText;
-  const dateText = generateDateText(dateRange, dates);
-
   switch (eventType) {
     case 'install':
       eventTypeText = 'Installed';
@@ -60,17 +58,24 @@ function sdkText ({ eventType, sdks, dateRange, dates }) {
     case 'never-seen':
       eventTypeText = 'Never Seen';
       break;
+  }
+
+  let installText;
+  switch (installState) {
     case 'is-installed':
-      eventTypeText = 'Currently Installed';
+      installText = 'and is Currently Installed';
       break;
     case 'is-not-installed':
-      eventTypeText = 'Currently Not Installed';
+      installText = 'and is Currently Not Installed';
       break;
+    default:
+      installText = '';
   }
+  const dateText = generateDateText(dateRange, dates);
 
   const requiresDate = ['install', 'uninstall'].includes(eventType);
 
-  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''}`;
+  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''} ${installText}`;
 }
 
 function headquarterText (countries) {

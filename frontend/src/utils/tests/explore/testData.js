@@ -12,6 +12,7 @@ export const form = {
         eventType: 'install',
         dateRange: 'anytime',
         operator: 'any',
+        installState: 'any-installed',
       }],
       operator: 'any',
     },

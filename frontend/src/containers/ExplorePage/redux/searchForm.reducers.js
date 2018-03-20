@@ -12,6 +12,7 @@ export const sdkFilterModel = {
   eventType: 'install',
   operator: 'any',
   sdks: [],
+  installState: 'is-installed',
   panelKey: '1',
   displayText: '',
 };

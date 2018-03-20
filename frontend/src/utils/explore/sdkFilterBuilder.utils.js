@@ -34,13 +34,13 @@ export function generateSdkFilter (filter) {
 
   const dateItem = generateDateRange(filter);
 
-  const sdkTemplate = (sdk) => {
-    const typeItem = generateTypeItem(filter.eventType);
-    const sdkItem = generateSdkItem(sdk, filter.eventType);
-    const filterObject = ['is-installed', 'is-not-installed'].includes(filter.eventType) && !sdk.sdks ? 'sdk' : 'sdk_event';
+  const sdkTemplate = (sdk, installState) => {
+    const typeItem = generateTypeItem(installState || filter.eventType);
+    const sdkItem = generateSdkItem(sdk, installState || filter.eventType);
+    const objectItem = installState && !sdk.sdks ? 'sdk' : 'sdk_event';
 
     let sdkFilter = {
-      object: filterObject,
+      object: objectItem,
       operator: 'filter',
       predicates: _.compact([
         typeItem,
@@ -53,14 +53,23 @@ export function generateSdkFilter (filter) {
       sdkFilter.predicates.push(['platform', sdk.platform]);
     }
 
-    if (['never-seen', 'is-not-installed'].includes(filter.eventType)) {
+    if (['never-seen', 'is-not-installed'].includes(installState || filter.eventType)) {
       sdkFilter = {
         operator: 'not',
         inputs: [sdkFilter],
       };
     }
 
-    return requirePlatformFilter(sdkFilter, sdk.platform);
+
+    if (!installState) {
+      sdkFilter = requirePlatformFilter(sdkFilter, sdk.platform);
+
+      if (filter.eventType !== 'never-seen' && filter.installState !== 'any-installed') {
+        sdkFilter.inputs.push(sdkTemplate(sdk, filter.installState));
+      }
+    }
+
+    return sdkFilter;
   };
 
   filter.sdks.forEach(sdk => query.inputs.push(sdkTemplate(sdk)));

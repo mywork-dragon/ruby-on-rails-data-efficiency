@@ -11,10 +11,11 @@ describe('buildSdkFilters', () => {
         type: 'sdk',
         platform: 'ios',
       }],
-      eventType: 'is-not-installed',
+      eventType: 'install',
       dateRange: 'anytime',
       dates: [],
       operator: 'any',
+      installState: 'is-not-installed',
     };
 
     const expected = {
@@ -23,6 +24,22 @@ describe('buildSdkFilters', () => {
         {
           operator: 'intersect',
           inputs: [
+            {
+              object: 'sdk_event',
+              operator: 'filter',
+              predicates: [
+                ['type', 'install'],
+                ['sdk_id', 114],
+                ['platform', 'ios'],
+              ],
+            },
+            {
+              object: 'app',
+              operator: 'filter',
+              predicates: [
+                ['platform', 'ios'],
+              ],
+            },
             {
               operator: 'not',
               inputs: [
@@ -35,13 +52,6 @@ describe('buildSdkFilters', () => {
                     ['platform', 'ios'],
                   ],
                 },
-              ],
-            },
-            {
-              object: 'app',
-              operator: 'filter',
-              predicates: [
-                ['platform', 'ios'],
               ],
             },
           ],

@@ -15,6 +15,7 @@ describe('buildSdkFilters', () => {
       dateRange: 'anytime',
       dates: [],
       operator: 'any',
+      installState: 'any-installed',
     };
 
     const expected = {

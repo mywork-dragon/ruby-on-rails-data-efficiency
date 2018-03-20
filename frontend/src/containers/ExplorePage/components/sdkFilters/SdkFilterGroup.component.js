@@ -70,6 +70,7 @@ class SdkFilterGroup extends React.Component {
         eventType,
         sdks,
         operator,
+        installState,
       },
       index,
       updateFilter,
@@ -101,15 +102,13 @@ class SdkFilterGroup extends React.Component {
             }}
             size="small"
             style={{
-              width: '180px',
+              width: '150px',
             }}
             value={eventType}
           >
             <Option value="install">Installed</Option>
             <Option value="uninstall">Uninstalled</Option>
             <Option value="never-seen">Never Seen</Option>
-            <Option value="is-installed">Currently Installed</Option>
-            <Option value="is-not-installed">Currently Not Installed</Option>
           </Select>
           {
             showDateOptions && (
@@ -151,6 +150,29 @@ class SdkFilterGroup extends React.Component {
               value={dates}
             />
           ) }
+          {eventType !== 'never-seen' && (
+            <div style={{ marginRight: 10, display: 'inline' }}>
+              and
+            </div>
+          )}
+          {eventType !== 'never-seen' && (
+            <Select
+              onChange={(value) => {
+                const newFilter = {
+                  ...filter,
+                  installState: value,
+                };
+                updateFilter('sdks', newFilter, { index })();
+              }}
+              size="small"
+              style={{ width: 300 }}
+              value={installState}
+            >
+              <Option key="is-installed">Currently Installed</Option>
+              <Option key="is-not-installed">Currently Not Installed</Option>
+              <Option key="any-installed">Either Currently Installed or Not Installed</Option>
+            </Select>
+          )}
           <Select
             onChange={(value) => {
               const newFilter = {
@@ -227,10 +249,12 @@ SdkFilterGroup.propTypes = {
   deleteFilter: PropTypes.func.isRequired,
   duplicateSdkFilter: PropTypes.func.isRequired,
   filter: PropTypes.shape({
-    eventType: PropTypes.string,
     dateRange: PropTypes.string,
+    dates: PropTypes.array,
+    eventType: PropTypes.string,
     sdks: PropTypes.array,
     operator: PropTypes.string,
+    installState: PropTypes.string,
   }).isRequired,
   index: PropTypes.number.isRequired,
   platform: PropTypes.string.isRequired,
