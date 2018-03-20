@@ -9,7 +9,7 @@ class AppStoreDevelopersWorker
     send(method, *args)
   end
 
-  def create_by_ios_app_id(ios_app_id, ensure_required: true)
+  def create_by_ios_app_id(ios_app_id, ensure_required: false)
     @ios_app_id = ios_app_id
     return if ensure_required && already_populated?
     developer_identifier = find_developer_app_store_identifier

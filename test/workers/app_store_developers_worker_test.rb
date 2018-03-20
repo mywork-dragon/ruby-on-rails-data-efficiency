@@ -30,7 +30,7 @@ class AppStoreDevelopersTestWorkerTest < ActiveSupport::TestCase
   test 'quits developer creation early if ios_developer_id is defined' do
     @first_app.update!(ios_developer_id: 123123)
 
-    AppStoreDevelopersWorker.new.create_by_ios_app_id(@first_app.id)
+    AppStoreDevelopersWorker.new.create_by_ios_app_id(@first_app.id, ensure_required: true)
     @second_app.reload
 
     assert_equal 123123, @first_app.ios_developer_id
