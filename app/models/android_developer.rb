@@ -50,7 +50,7 @@ class AndroidDeveloper < ActiveRecord::Base
     {
       id: id,
       name: name,
-      platform: :ios,
+      platform: :android,
       publisher_identifier: identifier,
       websites: website_urls,
       apps: android_apps.pluck(:id).map {|x| {"id" => x,"" => "android"}}

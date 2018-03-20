@@ -50,12 +50,18 @@ module PublisherHotStoreSchema
       "fortune_1000_rank"=> Integer
     }
 
+  @@APP_SCHEMA = {
+    "id" => Integer,
+    "platform" => String
+  }
+
   @@PUBLISHER_SCHEMA = {
-    "details" => [ @@DETAIL_SCHEMA ],
+    # "details" => [ @@DETAIL_SCHEMA ],
     "publisher_identifier" => String,
     "name" => String,
     "id" => Integer,
     "platform" => String,
+    "apps" => [@@APP_SCHEMA],
     "websites" => [ String ]
   }
 
