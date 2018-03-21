@@ -2,9 +2,6 @@ class GooglePlaySnapshotService
   class InvalidDom < RuntimeError; end
 
   class << self
-    def check_dom
-      raise InvalidDom unless GooglePlayService.dom_valid?
-    end
 
     def initiate_proxy_spinup
       Slackiq.message('Starting temporary proxies', webhook_name: :main)
@@ -50,7 +47,6 @@ class GooglePlaySnapshotService
       # can also be called with an active record query which
       # determines which android apps to scan.
 
-      check_dom
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
       AndroidApp.where(query).pluck(:id).each do |app_id|
@@ -68,7 +64,6 @@ class GooglePlaySnapshotService
       # can also be called with an active record query which
       # determines which android apps to scan.
 
-      check_dom
       initiate_proxy_spinup
       j = AndroidAppSnapshotJob.create!(notes: notes)
       batch = Sidekiq::Batch.new

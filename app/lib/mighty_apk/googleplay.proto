@@ -383,12 +383,31 @@ message BulkDetailsRequest {
 message BulkDetailsResponse {
   repeated BulkDetailsEntry entry = 1;
 }
+
+message DetailsCardLinkN1 {
+  optional string link = 2
+}
+
+message DetailsCardLinkN0 {
+  optional DetailsCardLinkN1 n = 2
+}
+
+message DetailsCardLink {
+  optional DetailsCardLinkN0 n = 1;
+}
+
+message DetailsCard {
+  optional string name = 1;
+  optional DetailsCardLink link = 4;
+}
+
 message DetailsResponse {
   optional DocV1 docV1 = 1;
   optional string analyticsCookie = 2;
   optional Review userReview = 3;
   optional DocV2 docV2 = 4;
   optional string footerHtml = 5;
+  repeated DetailsCard cards = 7;
 }
 message DeviceConfigurationProto {
   optional int32 touchScreen = 1;
@@ -705,6 +724,21 @@ message DocV1 {
   optional PlusOneData plusOneData = 16;
   optional string warningMessage = 17;
 }
+
+message AppCategoryV2 {
+  optional string appType = 1;
+  optional string category_id = 2;
+}
+
+
+message AppContentRating {
+  optional string rating_string = 1;
+  optional bytes rating_url = 2;
+  optional string rating_info_link = 4;
+  optional string rating_string2 = 5;
+}
+
+
 message Annotations {
   optional SectionMetadata sectionRelated = 1;
   optional SectionMetadata sectionMoreBy = 2;
@@ -723,7 +757,25 @@ message Annotations {
   repeated DocV2 subscription = 16;
   optional Reason reason = 17;
   optional string privacyPolicyUrl = 18;
+
+  optional AppContentRating app_content_rating = 29;
+
+  optional AppCategoryV2 category = 53;
 }
+
+message MoreOfferDetailMessageValue {
+  optional string value = 2;
+}
+
+message MoreOfferDetailMessage {
+  optional string key = 1;
+  optional MoreOfferDetailMessageValue key = 3;
+}
+
+message MoreOfferDetails {
+  repeated MoreOfferDetailMessage details = 2;
+}
+
 message DocV2 {
   optional string docid = 1;
   optional string backendDocid = 2;
@@ -747,6 +799,7 @@ message DocV2 {
   optional string purchaseDetailsUrl = 20;
   optional bool detailsReusable = 21;
   optional string subtitle = 22;
+  optional MoreOfferDetails more_offer_details = 25
 }
 message EncryptedSubscriberInfo {
   optional string data = 1;

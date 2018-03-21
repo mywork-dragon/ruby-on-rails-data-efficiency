@@ -62,6 +62,9 @@ module MightyApk
     class BulkDetailsRequest < ::ProtocolBuffers::Message; end
     class BulkDetailsResponse < ::ProtocolBuffers::Message; end
     class DetailsResponse < ::ProtocolBuffers::Message; end
+    class DetailsCardLinkN1 < ::ProtocolBuffers::Message; end
+    class DetailsCardLinkN0 < ::ProtocolBuffers::Message; end
+    class DetailsCardLink < ::ProtocolBuffers::Message; end
     class DeviceConfigurationProto < ::ProtocolBuffers::Message; end
     class Document < ::ProtocolBuffers::Message; end
     class DocumentVariant < ::ProtocolBuffers::Message; end
@@ -101,6 +104,8 @@ module MightyApk
     class Bucket < ::ProtocolBuffers::Message; end
     class ListResponse < ::ProtocolBuffers::Message; end
     class DocV1 < ::ProtocolBuffers::Message; end
+    class AppCategoryV2 < ::ProtocolBuffers::Message; end
+    class AppContentRating < ::ProtocolBuffers::Message; end
     class Annotations < ::ProtocolBuffers::Message; end
     class DocV2 < ::ProtocolBuffers::Message; end
     class EncryptedSubscriberInfo < ::ProtocolBuffers::Message; end
@@ -246,6 +251,10 @@ module MightyApk
     class StatusBarNotificationProto < ::ProtocolBuffers::Message; end
     class UninstallReasonRequestProto < ::ProtocolBuffers::Message; end
     class UninstallReasonResponseProto < ::ProtocolBuffers::Message; end
+
+    class MoreOfferDetailMessageValue < ::ProtocolBuffers::Message; end
+    class MoreOfferDetailMessage < ::ProtocolBuffers::Message; end
+    class MoreOfferDetails < ::ProtocolBuffers::Message; end
 
     class AckNotificationResponse < ::ProtocolBuffers::Message
       set_fully_qualified_name "MightyApk.ProtocolBuffers.AckNotificationResponse"
@@ -827,6 +836,27 @@ module MightyApk
       repeated ::MightyApk::ProtocolBuffers::BulkDetailsEntry, :entry, 1
     end
 
+    class DetailsCardLinkN1 < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.DetailsCardLinkN1"
+      optional :string, :link, 2
+    end
+
+    class DetailsCardLinkN0 < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.DetailsCardLinkN0"
+      optional ::MightyApk::ProtocolBuffers::DetailsCardLinkN1, :n, 2
+    end
+
+    class DetailsCardLink < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.DetailsCardLink"
+      optional ::MightyApk::ProtocolBuffers::DetailsCardLinkN0, :n, 1
+    end
+
+    class DetailsCard < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.DetailsCard"
+      optional :string, :name, 1
+      optional ::MightyApk::ProtocolBuffers::DetailsCardLink, :link, 4
+    end
+
     class DetailsResponse < ::ProtocolBuffers::Message
       set_fully_qualified_name "MightyApk.ProtocolBuffers.DetailsResponse"
 
@@ -835,6 +865,7 @@ module MightyApk
       optional ::MightyApk::ProtocolBuffers::Review, :userReview, 3
       optional ::MightyApk::ProtocolBuffers::DocV2, :docV2, 4
       optional :string, :footerHtml, 5
+      repeated ::MightyApk::ProtocolBuffers::DetailsCard, :cards, 7
     end
 
     class DeviceConfigurationProto < ::ProtocolBuffers::Message
@@ -1290,6 +1321,21 @@ module MightyApk
       optional :string, :warningMessage, 17
     end
 
+    class AppCategoryV2 < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.AppCategoryV2"
+      optional :string, :type, 1
+      optional :string, :category_id, 2
+    end
+
+    class AppContentRating < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.AppContentRating"
+
+      optional :string, :rating_string, 1
+      optional :bytes, :rating_url, 2
+      optional :string, :rating_info_link, 4
+      optional :string, :rating_string2, 5
+    end
+
     class Annotations < ::ProtocolBuffers::Message
       set_fully_qualified_name "MightyApk.ProtocolBuffers.Annotations"
 
@@ -1310,6 +1356,25 @@ module MightyApk
       repeated ::MightyApk::ProtocolBuffers::DocV2, :subscription, 16
       optional ::MightyApk::ProtocolBuffers::Reason, :reason, 17
       optional :string, :privacyPolicyUrl, 18
+      optional ::MightyApk::ProtocolBuffers::AppContentRating, :app_content_rating, 29
+      optional ::MightyApk::ProtocolBuffers::AppCategoryV2, :app_category, 53
+    end
+
+
+    class MoreOfferDetailMessageValue < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.MoreOfferDetailMessageValue"
+      optional :string, :value, 2
+    end
+
+    class MoreOfferDetailMessage < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.MoreOfferDetailMessage"
+      optional :string, :key, 1
+      optional ::MightyApk::ProtocolBuffers::MoreOfferDetailMessageValue, :value, 3
+    end
+
+    class MoreOfferDetails < ::ProtocolBuffers::Message
+      set_fully_qualified_name "MightyApk.ProtocolBuffers.MoreOfferDetails"
+      repeated ::MightyApk::ProtocolBuffers::MoreOfferDetailMessage, :tags, 2
     end
 
     class DocV2 < ::ProtocolBuffers::Message
@@ -1337,6 +1402,8 @@ module MightyApk
       optional :string, :purchaseDetailsUrl, 20
       optional :bool, :detailsReusable, 21
       optional :string, :subtitle, 22
+      optional ::MightyApk::ProtocolBuffers::MoreOfferDetails, :more_offer_details, 25
+
     end
 
     class EncryptedSubscriberInfo < ::ProtocolBuffers::Message

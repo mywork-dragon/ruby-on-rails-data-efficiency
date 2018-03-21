@@ -1,13 +1,15 @@
 module MightyApk
   class MarketApi
-    class NotFound < RuntimeError; end
-    class Unauthorized < RuntimeError; end
-    class Forbidden < RuntimeError; end
-    class InternalError < RuntimeError; end
-    class UnknownCondition < RuntimeError; end
-    class UnsupportedCountry < RuntimeError; end
-    class RateLimited < RuntimeError; end
-    class IncompatibleDevice < RuntimeError; end
+    class MarketError < RuntimeError; end
+
+    class NotFound < MarketError; end
+    class Unauthorized < MarketError; end
+    class Forbidden < MarketError; end
+    class InternalError < MarketError; end
+    class UnknownCondition < MarketError; end
+    class UnsupportedCountry < MarketError; end
+    class RateLimited < MarketError; end
+    class IncompatibleDevice < MarketError; end
 
     include HTTParty
     include ProxyParty
@@ -38,6 +40,17 @@ module MightyApk
         )
       end
       validate(res)
+      res
+    end
+
+    def other(link, query)
+      res = self.class.proxy_request(proxy_type: :android_classification) do
+        self.class.get(
+          '/' + link,
+          headers: api_request_headers,
+          query: query
+        )
+      end
       res
     end
 

@@ -40,7 +40,7 @@ module AndroidCloud
   # checks if app is still available in the play store
   # side effect: sets attributes instance variable
   def is_available?
-    @attributes = GooglePlayService.attributes(@android_app.app_identifier)
+    @attributes = GooglePlayDeviceApiService.attributes(@android_app.app_identifier)
     true
   rescue GooglePlayStore::NotFound
     handle_not_found

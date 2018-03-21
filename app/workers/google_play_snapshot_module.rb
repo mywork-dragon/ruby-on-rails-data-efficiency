@@ -28,7 +28,7 @@ module GooglePlaySnapshotModule
 
   def generate_attributes
     raise UnregisteredProxyType unless proxy_type.present?
-    @attributes = GooglePlayService.attributes(
+    @attributes = GooglePlayDeviceApiService.attributes(
       @android_app.app_identifier,
       proxy_type: proxy_type
     )

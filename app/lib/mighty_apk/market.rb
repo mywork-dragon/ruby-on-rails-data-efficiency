@@ -12,6 +12,17 @@ module MightyApk
         .payload.detailsResponse.docV2
     end
 
+    def raw_app_details(app_identifier)
+      resp = @api.details(app_identifier)
+      MightyApk::ProtocolBuffers::ResponseWrapper
+        .new.parse(resp.body)
+    end
+
+    def other(link, query = {})
+      MightyApk::ProtocolBuffers::ResponseWrapper
+        .new.parse(@api.other(link, query).body)
+    end
+
     # assumes app is free...should verify?
     def purchase!(app_identifier, offer_type, version_code)
       # Returns [MightyApk::ProtocolBuffers::ResponseWrapper, region]

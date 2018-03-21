@@ -37,9 +37,11 @@ class GoogleAccountReserver
 
     while account.nil? && Time.now - start_time < @max_wait
       any_exist?(scrape_type, requirements)
-      puts "sleeping"
-      sleep(Random.new.rand(DEFAULT_SLEEP_RANGE))
       account = try_reserve(scrape_type, requirements)
+      if account.nil?
+        puts "sleeping"
+        sleep(Random.new.rand(DEFAULT_SLEEP_RANGE))
+      end
     end
 
     raise UnavailableAccount if account.nil?

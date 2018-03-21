@@ -49,7 +49,7 @@ class GooglePlayService
 
     # Added to prevent bad snaps from getting into DB.
     # I believe gplay is A/B testing different html formats.
-    if ret[:name].empty? or ret[:version].empty? or ret[:released].empty?
+    if ret[:name].nil? or ret[:version].nil? or ret[:released].nil?
       raise BadGoogleScrape.new(app_identifier)
     end
 
