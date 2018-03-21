@@ -8,6 +8,7 @@ class IosSdkSyncWorker
     sdk = create_or_update_sdk(uid, info)
     adjust_header_info(sdk, info['classes']) if info['classes']
     adjust_framework_info(sdk, info['frameworks']) if info['frameworks']
+    adjust_file_regex_info(sdk, info['file_regexes']) if info['file_regexes']
   end
 
   def create_or_update_sdk(uid, info)
@@ -28,6 +29,14 @@ class IosSdkSyncWorker
       )
     end
     sdk
+  end
+
+  def adjust_file_regex_info(sdk, file_regexes)
+    regexes = file_regexes.map { |x| Regexp.new(x) }
+    existing = sdk.sdk_file_regexes.pluck(:regex)
+    to_remove = existing - regexes
+    SdkFileRegex.where(regex: to_remove, ios_sdk_id: sdk.id).delete_all if to_remove.present?
+    to_add = (regexes - existing).each { |r| SdkFileRegex.create!(regex: r, ios_sdk_id: sdk.id) }
   end
 
   def sdk_info_changed?(sdk, info)
