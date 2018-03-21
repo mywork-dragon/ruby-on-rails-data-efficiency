@@ -20,7 +20,10 @@ class GooglePlayDeviceApiService
       raise GooglePlayStore::Unavailable
     rescue MightyApk::MarketApi::MarketError
       raise GooglePlayStore::UnknownCondition
-
+    rescue MightyApk::MarketApi::MarketError
+      raise GooglePlayStore::UnknownCondition
+    rescue MightyApk::MarketApi::RateLimited
+      raise MightyApk::MarketApi::RateLimited
     end
   end
 
