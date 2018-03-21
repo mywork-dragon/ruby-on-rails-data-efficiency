@@ -33,6 +33,9 @@ class WelcomeController < ApplicationController
     @networking_icon = icons_folder + 'networking.svg'
     @team_icon = icons_folder + 'team.svg'
     @target_icon = icons_folder + 'target.svg'
+
+    @abm4m_post_0 = 'https://blog.mightysignal.com/introducing-abm4m-account-based-marketing-for-mobile-fcc02a5f6097'
+    @abm_blog_icon = graphics_folder + 'mightysignal_plus_salesforce_equals.png'
   end
 
   def ios_app_sdks
