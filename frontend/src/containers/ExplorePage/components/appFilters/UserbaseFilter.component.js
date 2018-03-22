@@ -10,7 +10,7 @@ const UserbaseFilter = ({
   },
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Userbase:
     </label>

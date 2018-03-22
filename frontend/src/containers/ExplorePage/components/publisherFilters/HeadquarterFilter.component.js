@@ -47,15 +47,16 @@ class HeadquarterFilter extends React.Component {
     const { countryOptions, fetching } = this.state;
 
     return (
-      <li>
+      <li className="li-filter">
         <label className="filter-label">
           Headquartered in any:
         </label>
-        <div className="input-group headquarter">
+        <div className="input-group headquarter" id="headquarter-filter">
           <div className="li-select">
             <Select
               allowClear
               filterOption={false}
+              getPopupContainer={() => document.getElementById('headquarter-filter')}
               labelInValue
               mode="multiple"
               notFoundContent={fetching ? <Spin size="small" /> : null}

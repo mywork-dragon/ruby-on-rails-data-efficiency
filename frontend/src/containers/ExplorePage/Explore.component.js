@@ -12,6 +12,8 @@ const Explore = ({
   requestAvailableCountries,
   shouldFetchCategories,
   requestCategories,
+  shouldFetchSdkCategories,
+  requestSdkCategories,
 }) => {
   if (queryId && !existingId) {
     populateFromQueryId(queryId);
@@ -23,6 +25,10 @@ const Explore = ({
 
   if (shouldFetchCategories) {
     requestCategories();
+  }
+
+  if (shouldFetchSdkCategories) {
+    requestSdkCategories();
   }
 
   return (
@@ -41,6 +47,8 @@ Explore.propTypes = {
   requestAvailableCountries: PropTypes.func.isRequired,
   shouldFetchCategories: PropTypes.bool.isRequired,
   requestCategories: PropTypes.func.isRequired,
+  shouldFetchSdkCategories: PropTypes.bool.isRequired,
+  requestSdkCategories: PropTypes.func.isRequired,
 };
 
 Explore.defaultProps = {

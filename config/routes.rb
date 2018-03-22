@@ -107,7 +107,7 @@ Rails.application.routes.draw do
   get 'api/sdk/ios' => 'api#get_ios_sdk'
   post 'api/sdk/:platform/tags' => 'api#update_sdk_tags'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
-  get 'api/sdks_and_categories/autocomplete' => 'api#get_sdks_and_categories_autocomplete'
+  get 'api/sdks/autocomplete/v2' => 'api#get_sdks_autocomplete_v2'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 
   get 'api/location/autocomplete' => 'api#get_location_autocomplete'

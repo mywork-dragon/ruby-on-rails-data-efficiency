@@ -29,7 +29,7 @@ const NetworkCountFilter = ({
   const endRange = _.range(endStart, startRange[startRange.length - 1] + 1);
 
   return (
-    <li>
+    <li className="li-filter">
       <label className="filter-label">
         Number of Networks Advertised On:
       </label>

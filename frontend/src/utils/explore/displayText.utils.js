@@ -63,10 +63,10 @@ function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
   let installText;
   switch (installState) {
     case 'is-installed':
-      installText = 'and is Currently Installed';
+      installText = 'and Currently Installed';
       break;
     case 'is-not-installed':
-      installText = 'and is Currently Not Installed';
+      installText = 'and Currently Not Installed';
       break;
     default:
       installText = '';
@@ -75,7 +75,7 @@ function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
 
   const requiresDate = ['install', 'uninstall'].includes(eventType);
 
-  return `${sdks.map(x => x.name).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''} ${installText}`;
+  return `${sdks.map(x => `${x.name} (${capitalize(x.platform)})`).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''} ${installText}`;
 }
 
 function headquarterText (countries) {

@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux';
-import { CATEGORIES, AVAILABLE_COUNTRIES } from 'actions/AppStore.actions';
+import {
+  CATEGORIES,
+  AVAILABLE_COUNTRIES,
+  SDK_CATEGORIES,
+} from 'actions/AppStore.actions';
 
 const initialCategoryState = {
   loaded: false,
@@ -16,7 +20,11 @@ function categories(state = initialCategoryState, action) {
         fetching: true,
       };
     case CATEGORIES.SUCCESS:
-      return loadCategories(action);
+      return {
+        ...initialCategoryState,
+        ...action.payload.categories,
+        loaded: true,
+      };
     case CATEGORIES.FAILURE:
       return {
         ...state,
@@ -26,14 +34,6 @@ function categories(state = initialCategoryState, action) {
     default:
       return state;
   }
-}
-
-function loadCategories(action) {
-  return {
-    ...initialCategoryState,
-    ...action.payload.categories,
-    loaded: true,
-  };
 }
 
 const initialAvailableCountriesState = {
@@ -67,9 +67,41 @@ function availableCountries (state = initialAvailableCountriesState, action) {
   }
 }
 
+const initialSdkCategoriesState = {
+  loaded: false,
+  fetching: false,
+  iosCategoriesById: {},
+  androidCategoriesById: {},
+};
+
+function sdkCategories (state = initialSdkCategoriesState, action) {
+  switch (action.type) {
+    case SDK_CATEGORIES.REQUEST:
+      return {
+        ...state,
+        fetching: true,
+      };
+    case SDK_CATEGORIES.SUCCESS:
+      return {
+        ...initialCategoryState,
+        ...action.payload.sdkCategories,
+        loaded: true,
+      };
+    case SDK_CATEGORIES.FAILURE:
+      return {
+        ...state,
+        fetching: false,
+        loaded: true,
+      };
+    default:
+      return state;
+  }
+}
+
 const appStoreInfo = combineReducers({
   categories,
   availableCountries,
+  sdkCategories,
 });
 
 export default appStoreInfo;

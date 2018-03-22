@@ -9,7 +9,7 @@ const FortuneRankFilter = ({
   panelKey,
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Fortune Rank:
     </label>

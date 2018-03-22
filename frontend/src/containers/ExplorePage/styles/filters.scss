@@ -5,7 +5,7 @@
   .panel-filters {
     margin-bottom: 0;
 
-    li {
+    li.li-filter {
       padding: 10px;
 
       &:not(:last-child) {
@@ -86,6 +86,10 @@
 
   .following {
     margin: 0 5px 10px;
+
+    &.categories {
+      margin-top: 10px;
+    }
   }
 
   .input-group {

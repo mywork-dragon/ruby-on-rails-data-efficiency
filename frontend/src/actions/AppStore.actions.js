@@ -13,3 +13,10 @@ export const availableCountries = {
   success: countries => action(AVAILABLE_COUNTRIES.SUCCESS, { countries }),
   failure: () => action(AVAILABLE_COUNTRIES.FAILURE),
 };
+
+export const SDK_CATEGORIES = createRequestTypes('SDK_CATEGORIES');
+export const sdkCategories = {
+  request: () => action(SDK_CATEGORIES.REQUEST),
+  success: data => action(SDK_CATEGORIES.SUCCESS, { sdkCategories: data }),
+  failure: error => action(SDK_CATEGORIES.FAILURE, { error }),
+};

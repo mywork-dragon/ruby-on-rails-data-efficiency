@@ -10,7 +10,7 @@ const InAppPurchaseFilter = ({
   panelKey,
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       In-App Purchases:
     </label>

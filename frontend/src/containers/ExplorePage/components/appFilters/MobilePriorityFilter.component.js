@@ -10,7 +10,7 @@ const MobilePriorityFilter = ({
   panelKey,
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Mobile Priority:
     </label>

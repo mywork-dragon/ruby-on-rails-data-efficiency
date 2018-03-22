@@ -10,13 +10,25 @@ const CategoriesFilter = ({
   platform,
   ...rest
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Categories:
     </label>
-    <div className="input-group">
-      <CategoriesDropdown categories={iosCategories} filter={iosFilter} platform="ios" selectedPlatform={platform} {...rest} />
-      <CategoriesDropdown categories={androidCategories} filter={androidFilter} platform="android" selectedPlatform={platform} {...rest} />
+    <div className="input-group" id="categories-input">
+      <CategoriesDropdown
+        categories={iosCategories}
+        filter={iosFilter}
+        platform="ios"
+        selectedPlatform={platform}
+        {...rest}
+      />
+      <CategoriesDropdown
+        categories={androidCategories}
+        filter={androidFilter}
+        platform="android"
+        selectedPlatform={platform}
+        {...rest}
+      />
     </div>
   </li>
 );

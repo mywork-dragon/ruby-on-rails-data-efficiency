@@ -12,7 +12,7 @@ describe('buildSdkFilters', () => {
         platform: 'ios',
       }],
       eventType: 'install',
-      dateRange: 'anytime',
+      dateRange: 'year',
       dates: [],
       operator: 'any',
       installState: 'is-installed',
@@ -29,6 +29,11 @@ describe('buildSdkFilters', () => {
               operator: 'filter',
               predicates: [
                 ['type', 'install'],
+                [
+                  'date',
+                  ['-', ['utcnow'], ['timedelta', { years: 1 }]],
+                  ['utcnow'],
+                ],
                 ['sdk_id', 114],
                 ['platform', 'ios'],
               ],

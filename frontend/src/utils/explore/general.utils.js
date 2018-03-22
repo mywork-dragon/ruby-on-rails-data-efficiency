@@ -153,25 +153,50 @@ export function cleanState (form) {
   return cleanedState;
 }
 
-export function formatCategorySdksTree (sdks) {
-  return sdks.filter(x => x.type === 'sdkCategory').map(category => ({
-    value: `${category.id}_${category.platform}_${category.name}`,
-    label: `${category.name} (${capitalize(category.platform)}) (${category.sdks.length} SDKs)`,
-    children: category.sdks.map(x => ({
-      value: `${x[0]}_${category.platform}_${x[1]}_${category.id}`,
-      label: x[1],
-    })),
-  }));
+export function formatCategorySdksTree (iosSdkCategories, androidSdkCategories) {
+  const treeData = [];
+
+  for (const key in iosSdkCategories) {
+    if (iosSdkCategories[key]) {
+      treeData.push({
+        label: `${key} (iOS)`,
+        value: `${key}_ios`,
+        key: `${key}_ios`,
+        children: iosSdkCategories[key].sdks.map(x => ({
+          label: `${x.name} (iOS)`,
+          value: `${x.id}_ios_${x.name}_${key}`,
+          key: `${x.id}_ios_${x.name}_${key}`,
+        })),
+      });
+    }
+  }
+
+  for (const key in androidSdkCategories) {
+    if (androidSdkCategories[key]) {
+      treeData.push({
+        label: `${key} (Android)`,
+        value: `${key}_android`,
+        key: `${key}_android`,
+        children: androidSdkCategories[key].sdks.map(x => ({
+          label: `${x.name} (Android)`,
+          value: `${x.id}_android_${x.name}_${key}`,
+          key: `${x.id}_android_${x.name}_${key}`,
+        })),
+      });
+    }
+  }
+
+  return treeData;
 }
 
 export function formatCategorySdksValue (sdks) {
   const result = [];
-  sdks.filter(x => x.type === 'sdkCategory').forEach((x) => {
+  sdks.filter(x => x.sdks).forEach((x) => {
     if (x.sdks.length === x.includedSdks.length) {
-      result.push(`${x.id}_${x.platform}_${x.name}`);
+      result.push(`${x.name}_${x.platform}`);
     } else {
       x.includedSdks.forEach((y) => {
-        result.push(`${y[0]}_${x.platform}_${y[1]}_${x.id}`);
+        result.push(`${y.id}_${x.platform}_${y.name}_${x.name}`);
       });
     }
   });
@@ -179,22 +204,34 @@ export function formatCategorySdksValue (sdks) {
   return result;
 }
 
-export function updateCategorySdks (sdks, values) {
-  const newSdks = sdks.slice(0);
-  newSdks.forEach((x) => {
-    if (x.type === 'sdkCategory') {
-      x.includedSdks = [];
-    }
-  });
+export function updateCategorySdks (sdks, values, iosSdkCategories, androidSdkCategories) {
+  const newSdks = sdks.slice(0).filter(x => !x.sdks); // remove all sdk categories
 
-  values.forEach((val) => {
-    const [id, platform, name, parentId] = val.split('_');
+  values.forEach((value) => {
+    const [id, platform, name, parentId] = value.split('_');
+    const platformCategories = platform === 'ios' ? iosSdkCategories : androidSdkCategories;
     if (!parentId) {
-      const idx = newSdks.findIndex(x => x.platform === platform && x.id === parseInt(id, 10) && x.type === 'sdkCategory');
-      newSdks[idx].includedSdks = newSdks[idx].sdks;
+      const category = {
+        ...platformCategories[id],
+        id,
+        platform,
+      };
+      category.includedSdks = category.sdks;
+      newSdks.push(category);
     } else {
-      const idx = newSdks.findIndex(x => x.platform === platform && x.id === parseInt(parentId, 10) && x.type === 'sdkCategory');
-      newSdks[idx].includedSdks.push([parseInt(id, 10), name]);
+      const idx = newSdks.findIndex(x => x.platform === platform && x.id === parentId && x.sdks);
+      if (idx === -1) {
+        const category = {
+          ...platformCategories[parentId],
+          id: parentId,
+          platform,
+        };
+        category.includedSdks = [{ id: parseInt(id, 10), name }];
+        newSdks.push(category);
+      } else {
+        newSdks[idx].includedSdks.push({ id: parseInt(id, 10), name });
+      }
+
     }
   });
 

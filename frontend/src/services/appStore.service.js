@@ -10,6 +10,12 @@ const AppStoreService = (client = httpClient) => ({
   getCountryAutocompleteResults: (status, query) => (
     client.get(`/api/location/autocomplete?status=${status}&query=${query}`)
   ),
+  getIosSdkCategories: () => (
+    client.get('/api/get_ios_sdk_categories')
+  ),
+  getAndroidSdkCategories: () => (
+    client.get('/api/get_android_sdk_categories')
+  ),
 });
 
 export default AppStoreService;

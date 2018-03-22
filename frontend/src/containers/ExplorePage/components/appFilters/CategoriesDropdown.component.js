@@ -40,6 +40,8 @@ const CategoriesDropdown = ({
     <div className="li-select categories">
       <TreeSelect
         disabled={!['all', platform].includes(selectedPlatform)}
+        dropdownStyle={{ maxHeight: 200 }}
+        getPopupContainer={() => document.getElementById('categories-input')}
         labelInValue
         multiple
         onChange={values => updateFilter(`${platform}Categories`, values, { panelKey })()}

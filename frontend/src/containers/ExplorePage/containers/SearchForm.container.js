@@ -35,6 +35,8 @@ const mapStateToProps = (state) => {
     iosCategories: appStore.getIosCategories(state),
     androidCategories: appStore.getAndroidCategories(state),
     availableCountries: appStore.getAvailableCountries(state),
+    iosSdkCategories: appStore.getIosSdkCategories(state),
+    androidSdkCategories: appStore.getAndroidSdkCategories(state),
     networkStore,
   };
 };

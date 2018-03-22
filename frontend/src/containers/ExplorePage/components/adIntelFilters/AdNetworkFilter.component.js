@@ -49,10 +49,11 @@ const AdNetworkFilter = ({
   };
 
   return (
-    <li>
-      <div className="ad-date-options-group">
+    <li className="li-filter">
+      <div className="ad-date-options-group" id="ad-network-filter">
         First Seen Ads:
         <Select
+          getPopupContainer={() => document.getElementById('ad-network-filter')}
           onChange={updateAdNetworkFilter('firstSeenDateRange')}
           size="small"
           style={{ width: 175 }}
@@ -68,6 +69,7 @@ const AdNetworkFilter = ({
         {
           ['before-date', 'after-date'].includes(firstSeenDateRange) && (
             <DatePicker
+              getCalendarContainer={() => document.getElementById('ad-network-filter')}
               onChange={updateAdNetworkFilter('firstSeenDate')}
               size="small"
               value={firstSeenDate}
@@ -78,6 +80,7 @@ const AdNetworkFilter = ({
       <div className="ad-date-options-group">
         Last Seen Ads:
         <Select
+          getPopupContainer={() => document.getElementById('ad-network-filter')}
           onChange={updateAdNetworkFilter('lastSeenDateRange')}
           size="small"
           style={{ width: 175 }}
@@ -93,6 +96,7 @@ const AdNetworkFilter = ({
         {
           ['before-date', 'after-date'].includes(lastSeenDateRange) && (
             <DatePicker
+              getCalendarContainer={() => document.getElementById('ad-network-filter')}
               onChange={updateAdNetworkFilter('lastSeenDate')}
               size="small"
               value={lastSeenDate}
@@ -103,6 +107,7 @@ const AdNetworkFilter = ({
       <div className="ad-date-options-group">
         on
         <Select
+          getPopupContainer={() => document.getElementById('ad-network-filter')}
           onChange={updateAdNetworkFilter('operator')}
           size="small"
           value={operator}
@@ -115,6 +120,7 @@ const AdNetworkFilter = ({
       <div className="li-select">
         <Select
           allowClear
+          getPopupContainer={() => document.getElementById('ad-network-filter')}
           labelInValue
           mode="multiple"
           onChange={updateAdNetworkFilter('adNetworks')}

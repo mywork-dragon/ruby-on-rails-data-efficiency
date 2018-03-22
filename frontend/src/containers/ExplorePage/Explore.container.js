@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
-import { categories, availableCountries } from 'actions/AppStore.actions';
+import * as appStore from 'actions/AppStore.actions';
 import { populateFromQueryId } from './redux/Explore.actions';
 import Explore from './Explore.component';
 
 const mapDispatchToProps = dispatch => ({
   populateFromQueryId: id => dispatch(populateFromQueryId.request(id)),
-  requestAvailableCountries: () => dispatch(availableCountries.request()),
-  requestCategories: () => dispatch(categories.request()),
+  requestAvailableCountries: () => dispatch(appStore.availableCountries.request()),
+  requestCategories: () => dispatch(appStore.categories.request()),
+  requestSdkCategories: () => dispatch(appStore.sdkCategories.request()),
 });
 
 const mapStateToProps = ({
@@ -21,6 +22,10 @@ const mapStateToProps = ({
       loaded: categoriesLoaded,
       fetching: categoriesFetching,
     },
+    sdkCategories: {
+      loaded: sdkCategoriesLoaded,
+      fetching: sdkCategoriesFetching,
+    },
     availableCountries: {
       loaded: countriesLoaded,
       fetching: countriesFetching,
@@ -31,6 +36,7 @@ const mapStateToProps = ({
   existingId: queryId,
   shouldFetchCategories: !categoriesLoaded && !categoriesFetching,
   shouldFetchCountries: !countriesLoaded && !countriesFetching,
+  shouldFetchSdkCategories: !sdkCategoriesLoaded && !sdkCategoriesFetching,
 });
 
 const ExploreContainer = connect(

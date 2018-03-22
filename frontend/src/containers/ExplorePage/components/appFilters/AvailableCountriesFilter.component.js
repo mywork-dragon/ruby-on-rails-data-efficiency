@@ -41,13 +41,14 @@ const AvailableCountriesFilter = ({
   };
 
   return (
-    <li>
+    <li className="li-filter">
       <label className="filter-label">
         Available Countries:
       </label>
-      <div className="input-group available-countries">
+      <div className="input-group available-countries" id="available-countries-filter">
         <div className="options-group">
           <Select
+            getPopupContainer={() => document.getElementById(('available-countries-filter'))}
             onChange={updateCondition}
             size="small"
             style={{
@@ -62,6 +63,7 @@ const AvailableCountriesFilter = ({
           {
             allowMultiple &&
               <Select
+                getPopupContainer={() => document.getElementById(('available-countries-filter'))}
                 onChange={updateOperator}
                 size="small"
                 value={operator || 'any'}
@@ -81,6 +83,7 @@ const AvailableCountriesFilter = ({
           <Select
             allowClear={allowMultiple}
             filterOption={false}
+            getPopupContainer={() => document.getElementById(('available-countries-filter'))}
             labelInValue
             mode={allowMultiple ? 'multiple' : ''}
             onChange={updateCountries}

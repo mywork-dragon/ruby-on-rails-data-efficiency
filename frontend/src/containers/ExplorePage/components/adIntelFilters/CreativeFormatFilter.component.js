@@ -9,7 +9,7 @@ const CreativeFormatFilter = ({
   panelKey,
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Creative Formats:
     </label>

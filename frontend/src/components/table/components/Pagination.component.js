@@ -103,8 +103,9 @@ class Pagination extends React.Component {
       );
     } else if (showPageJump && pages <= 50) {
       pagination = (
-        <div className="-pageJump">
+        <div className="-pageJump" id="page-number-select">
           <Select
+            getPopupContainer={() => document.getElementById('page-number-select')}
             onChange={(val) => {
               const newPage = val - 1;
               onPageChange(newPage);
@@ -133,8 +134,9 @@ class Pagination extends React.Component {
             />
           }
           {showPageSizeOptions &&
-            <span className="select-wrap -pageSizeOptions">
+            <span className="select-wrap -pageSizeOptions" id="page-size-option">
               <Select
+                getPopupContainer={() => document.getElementById('page-size-option')}
                 onChange={val => onPageSizeChange(val)}
                 size="small"
                 value={pageSize}

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, DatePicker, Icon, Spin, Tooltip, TreeSelect } from 'antd';
+import { Select, DatePicker, Icon, Spin, Tooltip } from 'antd';
 import { capitalize } from 'utils/format.utils';
 import ExploreService from 'services/explore.service';
-import { formatCategorySdksTree, updateCategorySdks, formatCategorySdksValue } from 'utils/explore/general.utils';
+
+import SdkCategoryFilter from './SdkCategoryFilter.component';
 
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
@@ -44,16 +45,13 @@ class SdkFilterGroup extends React.Component {
     const { updateFilter, index, filter } = this.props;
     const options = filter.sdks.concat(this.state.sdkOptions);
     const newSdks = values.map((val) => {
-      const [id, platform, type] = val.key.split(' ');
-      const sdk = options.find(x => x.id === parseInt(id, 10) && x.platform === platform && x.type === type);
-      if (type === 'sdkCategory' && !sdk.includedSdks) {
-        sdk.includedSdks = sdk.sdks;
-      }
+      const [id, platform] = val.key.split('_');
+      const sdk = options.find(x => x.id === parseInt(id, 10) && x.platform === platform && !x.sdks);
       return { ...sdk, ...val, label: `${sdk.name} (${capitalize(sdk.platform)})` };
     });
     const newFilter = {
       ...filter,
-      sdks: newSdks,
+      sdks: newSdks.concat(filter.sdks.filter(x => x.sdks)),
     };
     updateFilter('sdks', newFilter, { index })();
   }
@@ -74,17 +72,16 @@ class SdkFilterGroup extends React.Component {
       },
       index,
       updateFilter,
+      ...rest
     } = this.props;
 
     const { sdkOptions, fetching } = this.state;
 
     const showDateOptions = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType);
     const showDatePicker = !['never-seen', 'is-installed', 'is-not-installed'].includes(eventType) && dateRange === 'custom';
-    const treeData = formatCategorySdksTree(sdks);
-    const treeValues = formatCategorySdksValue(sdks);
 
     return (
-      <div className="sdk-filter-group">
+      <div className="sdk-filter-group" id={`sdk-filter-${index}`}>
         <div className="options-group">
           <div className="action-items">
             { canDelete && <Icon onClick={() => deleteFilter('sdks', index)} type="delete" /> }
@@ -93,6 +90,7 @@ class SdkFilterGroup extends React.Component {
             </Tooltip>
           </div>
           <Select
+            getPopupContainer={() => document.getElementById((`sdk-filter-${index}`))}
             onChange={(value) => {
               const newFilter = {
                 ...filter,
@@ -113,6 +111,7 @@ class SdkFilterGroup extends React.Component {
           {
             showDateOptions && (
               <Select
+                getPopupContainer={() => document.getElementById((`sdk-filter-${index}`))}
                 onChange={(value) => {
                   const newFilter = {
                     ...filter,
@@ -138,6 +137,7 @@ class SdkFilterGroup extends React.Component {
           }
           { showDatePicker && (
             <RangePicker
+              getCalendarContainer={() => document.getElementById((`sdk-filter-${index}`))}
               onChange={(value) => {
                 const newFilter = {
                   ...filter,
@@ -157,6 +157,7 @@ class SdkFilterGroup extends React.Component {
           )}
           {eventType !== 'never-seen' && (
             <Select
+              getPopupContainer={() => document.getElementById((`sdk-filter-${index}`))}
               onChange={(value) => {
                 const newFilter = {
                   ...filter,
@@ -174,6 +175,7 @@ class SdkFilterGroup extends React.Component {
             </Select>
           )}
           <Select
+            getPopupContainer={() => document.getElementById((`sdk-filter-${index}`))}
             onChange={(value) => {
               const newFilter = {
                 ...filter,
@@ -193,21 +195,22 @@ class SdkFilterGroup extends React.Component {
           </Select>
         </div>
         <div className="following">
-          of the following
+          of the following SDKs
         </div>
         <Select
           allowClear
           filterOption={false}
+          getPopupContainer={() => document.getElementById((`sdk-filter-${index}`))}
           labelInValue
           mode="multiple"
           notFoundContent={fetching ? <Spin size="small" /> : null}
           onChange={this.updateSdkFilter}
           onSearch={this.fetchSdkOptions}
-          placeholder="Add SDKs or SDK categories"
-          value={sdks}
+          placeholder="Add SDKs"
+          value={sdks.filter(x => !x.sdks)}
         >
           {sdkOptions.map(x => (
-            <Option key={`${x.name}${x.id}`} value={`${x.id} ${x.platform} ${x.type}`}>
+            <Option key={`${x.id}_${x.platform}`} value={`${x.id}_${x.platform}`}>
               <div className="sdk-select-option">
                 <i alt={x.platform} className={`fa fa-${x.platform === 'ios' ? 'apple' : 'android'}`} />
                 {x.name}
@@ -217,28 +220,10 @@ class SdkFilterGroup extends React.Component {
             </Option>
           ))}
         </Select>
-        {
-          sdks.some(x => x.type === 'sdkCategory') &&
-          <div className="sdk-categories">
-            Specify category SDKs:
-            <TreeSelect
-              multiple
-              onChange={(values) => {
-                const newFilter = {
-                  ...filter,
-                  sdks: updateCategorySdks(sdks, values),
-                };
-
-                updateFilter('sdks', newFilter, { index })();
-              }}
-              showCheckedStrategy={TreeSelect.SHOW_PARENT}
-              style={{ width: '100%' }}
-              treeCheckable
-              treeData={treeData}
-              value={treeValues}
-            />
-          </div>
-        }
+        <div className="following categories">
+          and SDK categories
+        </div>
+        <SdkCategoryFilter filter={filter} index={index} updateFilter={updateFilter} {...rest} />
       </div>
     );
   }

@@ -44,7 +44,7 @@ export function generateSdkFilter (filter) {
       operator: 'filter',
       predicates: _.compact([
         typeItem,
-        dateItem,
+        installState ? null : dateItem,
         sdkItem,
       ]),
     };

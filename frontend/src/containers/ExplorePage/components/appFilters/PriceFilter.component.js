@@ -10,7 +10,7 @@ const PriceFilter = ({
   panelKey,
   updateFilter,
 }) => (
-  <li>
+  <li className="li-filter">
     <label className="filter-label">
       Price:
     </label>

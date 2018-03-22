@@ -38,7 +38,7 @@ const ExploreService = (client = httpClient) => {
       exploreClient.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
     ),
     getSdkAutocompleteResults: (platform, query) => (
-      client.get(`/api/sdks_and_categories/autocomplete?platform=${platform}&query=${query}`)
+      client.get(`/api/sdks/autocomplete/v2?platform=${platform}&query=${query}`)
     ),
   };
 };
