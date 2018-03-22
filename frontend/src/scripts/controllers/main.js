@@ -76,7 +76,7 @@ angular.module('appApp')
               'Account Type': 'Affiliate Network',
             });
           }
-          mixpanel.track('Logged In')
+          mixpanel.track('App Loaded')
         });
 
         // Sets user permissions
