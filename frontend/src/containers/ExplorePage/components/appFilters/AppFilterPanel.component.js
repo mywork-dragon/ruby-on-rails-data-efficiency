@@ -9,6 +9,8 @@ import FilterCountLabel from '../FilterCountLabel.component';
 import InAppPurchaseFilter from './InAppPurchaseFilter.component';
 import MobilePriorityFilter from './MobilePriorityFilter.component';
 import PriceFilter from './PriceFilter.component';
+import RatingFilter from './RatingFilter.component';
+import RatingsCountFilter from './RatingsCountFilter.component';
 import UserbaseFilter from './UserbaseFilter.component';
 
 const AppFilterPanel = ({
@@ -21,6 +23,8 @@ const AppFilterPanel = ({
     userBase,
     iosCategories,
     androidCategories,
+    ratingsCount,
+    rating,
   },
   panels,
   panelKey,
@@ -43,6 +47,8 @@ const AppFilterPanel = ({
         <InAppPurchaseFilter filter={inAppPurchases} panelKey={panelKey} {...rest} />
         <AvailableCountriesFilter filter={availableCountries} panelKey={panelKey} {...rest} />
         <CategoriesFilter androidFilter={androidCategories} iosFilter={iosCategories} panelKey={panelKey} {...rest} />
+        <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
+        <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>
   </Panel>

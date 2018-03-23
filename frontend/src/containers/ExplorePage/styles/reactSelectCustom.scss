@@ -1,0 +1,31 @@
+@import './node_modules/react-select/scss/select.scss';
+
+#search-form-panel {
+  .Select {
+    width: 150px;
+
+    .Select-control {
+      border: 1px solid #d9d9d9;
+      border-radius: 0;
+      height: 22px;
+    }
+
+    .Select-value {
+      line-height: 22px;
+    }
+
+    .Select-input {
+      height: 22px;
+    }
+
+    .Select-placeholder {
+      line-height: 22px;
+    }
+  }
+}
+
+@import './node_modules/react-select/scss/control.scss';
+@import './node_modules/react-select/scss/menu.scss';
+@import './node_modules/react-select/scss/mixins.scss';
+@import './node_modules/react-select/scss/multi.scss';
+@import './node_modules/react-select/scss/spinner.scss';

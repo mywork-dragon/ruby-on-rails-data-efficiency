@@ -250,6 +250,16 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       value.start,
       value.end,
     ];
+  } else if (type === 'ratingsCount' || type === 'rating') {
+    if (value.value.every(x => typeof x !== 'number')) {
+      return null;
+    }
+
+    const values = value.value.slice();
+
+    if (value.operator === 'less-than' && values[1] < 10) values[1] -= 0.1;
+
+    return [filterType].concat(values);
   }
 
   return result;

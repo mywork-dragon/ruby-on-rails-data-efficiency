@@ -133,4 +133,20 @@
       margin: 0 10px 0 0;
     }
   }
+
+  .input-group.ratings-count {
+    .ant-input-number {
+      margin: 0 5px;
+    }
+  }
+
+  .ratings-count {
+    .Select {
+      margin-right: 10px;
+    }
+
+    .and-text {
+      margin-right: 10px;
+    }
+  }
 }

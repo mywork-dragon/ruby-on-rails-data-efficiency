@@ -27,6 +27,8 @@ const columnOptions = [
   headerNames.USER_BASE,
   headerNames.AD_SPEND,
   headerNames.CATEGORY,
+  headerNames.RATING,
+  headerNames.RATINGS_COUNT,
   headerNames.LAST_UPDATED,
 ];
 

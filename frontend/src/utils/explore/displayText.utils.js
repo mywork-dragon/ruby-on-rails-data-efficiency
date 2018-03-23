@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { capitalize } from 'utils/format.utils';
+import { capitalize, numberWithCommas } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
   switch (parameter) {
@@ -29,6 +29,10 @@ function getDisplayText (parameter, value) {
       return adNetworkText(value);
     case 'adNetworkCount':
       return `Advertising on ${value.start} ${value.start === value.end ? '' : `to ${value.end}`} networks`;
+    case 'ratingsCount':
+      return ratingText(value, true);
+    case 'rating':
+      return ratingText(value);
     default:
       return '';
   }
@@ -169,6 +173,45 @@ function generateDateText (dateRange, dates) {
   }
 
   return result;
+}
+
+function ratingText ({ operator, value }, isCount) {
+  if (value.length === 0 || (value[1] == null && operator === 'less-than') || (value[0] == null && operator === 'more-than') || (value.some(x => x == null) && operator === 'between')) {
+    return '';
+  }
+
+  const base = isCount ? 'Ratings Count' : 'Rating'
+
+  let operatorText;
+
+  switch (operator) {
+    case 'more-than':
+      operatorText = 'Greater Than';
+      break;
+    case 'less-than':
+      operatorText = 'Less Than';
+      break;
+    case 'between':
+      operatorText = 'Between';
+      break;
+  }
+
+  let countText;
+  const [start, end] = value;
+
+  switch (operator) {
+    case 'more-than':
+      countText = numberWithCommas(start);
+      break;
+    case 'less-than':
+      countText = numberWithCommas(end);
+      break;
+    case 'between':
+      countText = `${numberWithCommas(start)} and ${numberWithCommas(end)}`;
+      break;
+  }
+
+  return `${base} ${operatorText} ${countText}${isCount ? '' : ' stars'}`;
 }
 
 export default getDisplayText;

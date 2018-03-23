@@ -1,9 +1,11 @@
 import React from 'react';
-import { longDate } from 'utils/format.utils';
+import { numberWithCommas } from 'utils/format.utils';
+import Rating from 'components/rating/Rating.component';
 
 // header cells
 import AdSpendHeaderCell from '../components/headerCells/AdSpendHeaderCell.component';
 import MobilePriorityHeaderCell from '../components/headerCells/MobilePriorityHeaderCell.component';
+import RatingHeaderCell from '../components/headerCells/RatingHeaderCell.component';
 import UserBaseHeaderCell from '../components/headerCells/UserBaseHeaderCell.component';
 
 // row cells
@@ -35,7 +37,8 @@ export const headerNames = {
   MOBILE_PRIORITY: 'Mobile Priority',
   PLATFORM: 'Platform',
   PUBLISHER: 'Publisher',
-  RATINGS: 'Ratings',
+  RATING: 'Rating',
+  RATINGS_COUNT: 'Ratings Count',
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
   USER_BASE: 'User Base',
 };
@@ -150,10 +153,26 @@ export const columnModels = [
     className: 'name-cell',
     Cell: (cell) => {
       if (cell.original.publisher) {
-        return <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />
+        return <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />;
       }
       return '';
     },
+  },
+  {
+    Header: <RatingHeaderCell />,
+    id: headerNames.RATING,
+    accessor: 'all_version_rating',
+    headerClassName: 'small-cell',
+    className: 'small-cell rating-cell',
+    Cell: cell => <Rating rating={cell.value} />,
+  },
+  {
+    Header: headerNames.RATINGS_COUNT,
+    id: headerNames.RATINGS_COUNT,
+    accessor: 'all_version_ratings_count',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => numberWithCommas(cell.value),
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,
