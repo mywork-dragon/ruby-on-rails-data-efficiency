@@ -11,6 +11,7 @@ import MobilePriorityFilter from './MobilePriorityFilter.component';
 import PriceFilter from './PriceFilter.component';
 import RatingFilter from './RatingFilter.component';
 import RatingsCountFilter from './RatingsCountFilter.component';
+import ReleaseDateFilter from './ReleaseDateFilter.component';
 import UserbaseFilter from './UserbaseFilter.component';
 
 const AppFilterPanel = ({
@@ -25,6 +26,7 @@ const AppFilterPanel = ({
     androidCategories,
     ratingsCount,
     rating,
+    releaseDate,
   },
   panels,
   panelKey,
@@ -49,6 +51,7 @@ const AppFilterPanel = ({
         <CategoriesFilter androidFilter={androidCategories} iosFilter={iosCategories} panelKey={panelKey} {...rest} />
         <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
         <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
+        <ReleaseDateFilter filter={releaseDate} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>
   </Panel>

@@ -23,6 +23,7 @@ function updateSearchForm(state, action) {
     case 'adNetworkCount':
     case 'ratingsCount':
     case 'rating':
+    case 'releaseDate':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -66,6 +67,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'adNetworkCount':
     case 'ratingsCount':
     case 'rating':
+    case 'releaseDate':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

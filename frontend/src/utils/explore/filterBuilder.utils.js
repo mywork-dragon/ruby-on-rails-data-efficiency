@@ -260,6 +260,8 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
     if (value.operator === 'less-than' && values[1] < 10) values[1] -= 0.1;
 
     return [filterType].concat(values);
+  } else if (type === 'releaseDate') {
+    return generateQueryDateRange('released', value.dateRange, value.dates);
   }
 
   return result;

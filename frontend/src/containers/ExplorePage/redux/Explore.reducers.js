@@ -29,6 +29,7 @@ const columnOptions = [
   headerNames.CATEGORY,
   headerNames.RATING,
   headerNames.RATINGS_COUNT,
+  headerNames.RELEASE_DATE,
   headerNames.LAST_UPDATED,
 ];
 
@@ -39,6 +40,7 @@ const initialColumns = [
   headerNames.MOBILE_PRIORITY,
   headerNames.USER_BASE,
   headerNames.CATEGORY,
+  headerNames.RELEASE_DATE,
   headerNames.LAST_UPDATED,
 ];
 

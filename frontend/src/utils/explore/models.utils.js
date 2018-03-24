@@ -3,7 +3,17 @@ import { headerNames } from 'Table/redux/column.models';
 // map between frontend display fields and backend field
 // place sort field at beginning of the list
 export const selectMap = {
-  [headerNames.APP]: ['name', 'id', 'current_version', 'icon_url', 'taken_down', 'app_identifier', 'first_scanned_date', 'price_category'],
+  [headerNames.APP]: [
+    'name',
+    'id',
+    'current_version',
+    'icon_url',
+    'taken_down',
+    'app_identifier',
+    'first_scanned_date',
+    'price_category',
+    'original_release_date',
+  ],
   [headerNames.COUNTRIES_AVAILABLE_IN]: ['countries_available_in'],
   [headerNames.FIRST_SEEN_ADS]: ['ad_summaries'],
   [headerNames.LAST_SEEN_ADS]: ['ad_summaries'],
@@ -40,6 +50,7 @@ export const appFilterKeys = {
   adNetworkCount: 'count_advertising_networks',
   ratingsCount: 'all_version_ratings_count',
   rating: 'all_version_rating',
+  releaseDate: 'released',
 };
 
 export const publisherFilterKeys = {

@@ -33,6 +33,8 @@ function getDisplayText (parameter, value) {
       return ratingText(value, true);
     case 'rating':
       return ratingText(value);
+    case 'releaseDate':
+      return `Released ${generateDateText(value.dateRange, value.dates)}`;
     default:
       return '';
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas } from 'utils/format.utils';
+import { numberWithCommas, longDate } from 'utils/format.utils';
 import Rating from 'components/rating/Rating.component';
 
 // header cells
@@ -39,6 +39,7 @@ export const headerNames = {
   PUBLISHER: 'Publisher',
   RATING: 'Rating',
   RATINGS_COUNT: 'Ratings Count',
+  RELEASE_DATE: 'Release Date',
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
   USER_BASE: 'User Base',
 };
@@ -173,6 +174,14 @@ export const columnModels = [
     headerClassName: 'small-cell',
     className: 'small-cell',
     Cell: cell => numberWithCommas(cell.value),
+  },
+  {
+    Header: headerNames.RELEASE_DATE,
+    id: headerNames.RELEASE_DATE,
+    accessor: 'original_release_date',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => longDate(cell.value),
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,
