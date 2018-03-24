@@ -18,6 +18,12 @@ module MightyApk
         .new.parse(resp.body)
     end
 
+    def bulk_details(app_identifiers)
+      resp = @api.bulk_details(app_identifiers)
+      MightyApk::ProtocolBuffers::ResponseWrapper
+        .new.parse(resp.body)
+    end
+
     def other(link, query = {})
       MightyApk::ProtocolBuffers::ResponseWrapper
         .new.parse(@api.other(link, query).body)

@@ -31,6 +31,22 @@ module MightyApk
       end
     end
 
+    def bulk_details(app_identifiers, childDocs: false)
+      data = MightyApk::ProtocolBuffers::BulkDetailsRequest
+        .new(docid: app_identifiers, includeChildDocs: childDocs)
+        .serialize_to_string
+      res = self.class.proxy_request do
+        self.class.post(
+          '/bulkDetails',
+          params: { 'au' => '1' },
+          body: data,
+          headers: api_request_headers.merge({ 'Content-Type' => 'application/x-protobuf' })
+        )
+      end
+      validate(res)
+      res
+    end
+
     def details(app_identifier)
       res = self.class.proxy_request(proxy_type: :android_classification) do
         self.class.get(
