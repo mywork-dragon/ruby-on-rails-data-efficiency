@@ -1,6 +1,6 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import ExploreService from 'services/explore.service';
-import { formatResults } from 'utils/explore/general.utils';
+import { formatResults, setExploreColumns } from 'utils/explore/general.utils';
 import toastr from 'toastr';
 
 import {
@@ -59,6 +59,10 @@ function* populateFromQuery ({ payload: { id } }) {
   }
 }
 
+function updateExploreTableColumns ({ payload: { columns }}) {
+  setExploreColumns(columns);
+}
+
 function* watchResultsRequest() {
   yield takeLatest(TABLE_TYPES.ALL_ITEMS.REQUEST, requestResults);
 }
@@ -67,9 +71,14 @@ function* watchQueryPopulation() {
   yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, populateFromQuery);
 }
 
+function* watchColumnUpdate() {
+  yield takeLatest(TABLE_TYPES.UPDATE_COLUMNS, updateExploreTableColumns);
+}
+
 export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
     watchQueryPopulation(),
+    watchColumnUpdate(),
   ]);
 }

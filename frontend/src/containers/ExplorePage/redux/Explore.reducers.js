@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
+import { setExploreColumns, getExploreColumns } from 'utils/explore/general.utils';
 import searchForm from './searchForm.reducers';
 import {
   TABLE_TYPES,
@@ -44,8 +45,17 @@ const initialColumns = [
   headerNames.LAST_UPDATED,
 ];
 
+const initializedColumns = initializeColumns(columnOptions, initialColumns, [headerNames.APP]);
+
+let savedColumns = getExploreColumns();
+
+if (!savedColumns) {
+  setExploreColumns(initializedColumns);
+  savedColumns = initializedColumns;
+}
+
 const tableOptions = {
-  columns: initializeColumns(columnOptions, initialColumns, [headerNames.APP]),
+  columns: savedColumns,
   sort: [
     { id: headerNames.LAST_UPDATED, desc: true },
   ],

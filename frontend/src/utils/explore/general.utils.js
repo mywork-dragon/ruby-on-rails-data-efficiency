@@ -1,6 +1,6 @@
-
 import _ from 'lodash';
-import { capitalize, getMaxDate, getMinDate } from 'utils/format.utils';
+import { getMaxDate, getMinDate } from 'utils/format.utils';
+import { $localStorage } from 'utils/localStorage.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
 import { sortMap } from './models.utils';
 
@@ -293,4 +293,12 @@ export function generateQueryDateRange (label, dateRange, dates) {
   }
 
   return result;
+}
+
+export function setExploreColumns (columns) {
+  $localStorage.set('exploreTableColumns', columns);
+}
+
+export function getExploreColumns () {
+  return $localStorage.get('exploreTableColumns');
 }
