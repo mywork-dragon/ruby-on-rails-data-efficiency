@@ -10,13 +10,21 @@ const LastUpdatedCell = ({ date }) => {
     );
   }
 
+  const numDays = daysAgo(date);
+
   return (
     <div>
       <span className={getUpdateDateClass(date)}>
-        <strong>{daysAgo(date)}</strong>
+        <strong>{numDays === 0 ? 'Today' : numDays}</strong>
       </span>
-      {' '}
-      days ago
+      {
+        numDays > 0 && (
+          <span>
+            {' '}
+            day{numDays > 1 ? 's' : ''} ago
+          </span>
+        )
+      }
     </div>
   );
 };

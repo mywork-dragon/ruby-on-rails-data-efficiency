@@ -123,7 +123,7 @@ export const columnModels = [
   {
     Header: headerNames.LAST_UPDATED,
     id: headerNames.LAST_UPDATED,
-    accessor: d => d.lastUpdated || d.last_updated,
+    accessor: d => d.lastUpdated || d.current_version_release_date,
     headerClassName: 'med-cell',
     className: 'med-cell',
     Cell: cell => <LastUpdatedCell date={cell.value} />,

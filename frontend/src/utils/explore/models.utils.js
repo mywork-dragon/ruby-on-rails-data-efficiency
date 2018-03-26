@@ -17,7 +17,7 @@ export const selectMap = {
   [headerNames.COUNTRIES_AVAILABLE_IN]: ['countries_available_in'],
   [headerNames.FIRST_SEEN_ADS]: ['ad_summaries'],
   [headerNames.LAST_SEEN_ADS]: ['ad_summaries'],
-  [headerNames.LAST_UPDATED]: ['last_updated'],
+  [headerNames.LAST_UPDATED]: ['current_version_release_date'],
   [headerNames.MOBILE_PRIORITY]: ['mobile_priority'],
   [headerNames.PLATFORM]: ['platform'],
   [headerNames.PUBLISHER]: ['publisher'],
@@ -30,7 +30,7 @@ export const selectMap = {
 
 export const sortMap = {
   [headerNames.APP]: { field: 'name', object: 'app' },
-  [headerNames.LAST_UPDATED]: { field: 'last_updated', object: 'app' },
+  [headerNames.LAST_UPDATED]: { field: 'current_version_release_date', object: 'app' },
   [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
   [headerNames.RATING]: { field: 'all_version_rating', object: 'app' },
   [headerNames.RATINGS_COUNT]: { field: 'all_version_ratings_count', object: 'app' },
