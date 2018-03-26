@@ -32,7 +32,9 @@ function formatApp (app) {
 }
 
 function formatCategories (categories) {
-  if (categories.length === 1) {
+  if (!categories) {
+    return [];
+  } else if (categories.length === 1) {
     return categories.map(x => x.name);
   } else if (categories.length === 0) {
     return categories;

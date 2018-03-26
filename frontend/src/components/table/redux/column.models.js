@@ -173,7 +173,7 @@ export const columnModels = [
     accessor: 'all_version_ratings_count',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => numberWithCommas(cell.value),
+    Cell: cell => (cell.value ? numberWithCommas(cell.value) : 'No ratings'),
   },
   {
     Header: headerNames.RELEASE_DATE,

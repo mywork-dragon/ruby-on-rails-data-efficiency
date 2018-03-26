@@ -46,7 +46,7 @@ describe('exploreUtils', () => {
   describe('getSortName', () => {
     it('should take in a sort item and return the corresponding sort/display field', () => {
       expect(utils.getSortName({ field: 'name', object: 'app' })).toBe(headerNames.APP);
-      expect(utils.getSortName({ field: 'last_updated', object: 'app' })).toBe(headerNames.LAST_UPDATED);
+      expect(utils.getSortName({ field: 'current_version_release_date', object: 'app' })).toBe(headerNames.LAST_UPDATED);
     });
   });
 
