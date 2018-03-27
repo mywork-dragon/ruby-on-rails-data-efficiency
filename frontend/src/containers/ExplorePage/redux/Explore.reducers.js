@@ -28,6 +28,7 @@ const columnOptions = [
   headerNames.USER_BASE,
   headerNames.AD_SPEND,
   headerNames.CATEGORY,
+  headerNames.DOWNLOADS,
   headerNames.RATING,
   headerNames.RATINGS_COUNT,
   headerNames.RELEASE_DATE,
@@ -52,6 +53,8 @@ let savedColumns = getExploreColumns();
 if (!savedColumns) {
   setExploreColumns(initializedColumns);
   savedColumns = initializedColumns;
+} else if (Object.keys(savedColumns).length !== Object.keys(initializedColumns).length) {
+  savedColumns = { ...initializedColumns, ...savedColumns };
 }
 
 const tableOptions = {

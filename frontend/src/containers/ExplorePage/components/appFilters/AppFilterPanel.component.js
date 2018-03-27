@@ -5,6 +5,7 @@ import { panelFilterCount } from 'utils/explore/general.utils';
 
 import AvailableCountriesFilter from './AvailableCountriesFilter.component';
 import CategoriesFilter from './CategoriesFilter.component';
+import DownloadsFilter from './DownloadsFilter.component';
 import FilterCountLabel from '../FilterCountLabel.component';
 import InAppPurchaseFilter from './InAppPurchaseFilter.component';
 import MobilePriorityFilter from './MobilePriorityFilter.component';
@@ -27,6 +28,7 @@ const AppFilterPanel = ({
     ratingsCount,
     rating,
     releaseDate,
+    downloads,
   },
   panels,
   panelKey,
@@ -51,6 +53,7 @@ const AppFilterPanel = ({
         <CategoriesFilter androidFilter={androidCategories} iosFilter={iosCategories} panelKey={panelKey} {...rest} />
         <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
         <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
+        <DownloadsFilter filter={downloads} panelKey={panelKey} {...rest} />
         <ReleaseDateFilter filter={releaseDate} panelKey={panelKey} {...rest} />
       </ul>
     </Panel.Body>

@@ -250,8 +250,8 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       value.start,
       value.end,
     ];
-  } else if (type === 'ratingsCount' || type === 'rating') {
-    if (value.value.every(x => typeof x !== 'number')) {
+  } else if (type === 'ratingsCount' || type === 'rating' || type === 'downloads') {
+    if (value.value.every(x => !x)) {
       return null;
     }
 

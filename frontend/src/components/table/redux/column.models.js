@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas, longDate } from 'utils/format.utils';
+import { numberWithCommas, longDate, numberShorthand } from 'utils/format.utils';
 import Rating from 'components/rating/Rating.component';
 
 // header cells
@@ -30,6 +30,7 @@ export const headerNames = {
   CATEGORY: 'Category',
   COUNTRIES_AVAILABLE_IN: 'Available In',
   CREATIVE_FORMATS: 'Formats',
+  DOWNLOADS: 'Downloads',
   FIRST_SEEN_ADS: 'First Seen Ads',
   FORTUNE_RANK: 'Fortune Rank',
   LAST_SEEN_ADS: 'Last Seen Ads',
@@ -96,6 +97,14 @@ export const columnModels = [
     headerClassName: 'small-cell',
     sortable: false,
     Cell: cell => <CreativeFormatCell formats={cell.value} />,
+  },
+  {
+    Header: 'Downloads (Android only)',
+    id: headerNames.DOWNLOADS,
+    accessor: 'downloads',
+    className: 'small-cell',
+    headerClassName: 'small-cell',
+    Cell: cell => (cell.original.platform === 'ios' ? 'Not available' : numberShorthand(cell.value)),
   },
   {
     Header: headerNames.FIRST_SEEN_ADS,

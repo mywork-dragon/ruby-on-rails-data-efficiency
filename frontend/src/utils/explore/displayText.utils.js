@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { capitalize, numberWithCommas } from 'utils/format.utils';
+import { capitalize, numberShorthand } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
   switch (parameter) {
@@ -30,11 +30,13 @@ function getDisplayText (parameter, value) {
     case 'adNetworkCount':
       return `Advertising on ${value.start} ${value.start === value.end ? '' : `to ${value.end}`} networks`;
     case 'ratingsCount':
-      return ratingText(value, true);
+      return rangeText('Ratings Count', value);
     case 'rating':
-      return ratingText(value);
+      return rangeText('Rating', value);
     case 'releaseDate':
       return `Released ${generateDateText(value.dateRange, value.dates)}`;
+    case 'downloads':
+      return rangeText('Downloads', value);
     default:
       return '';
   }
@@ -177,12 +179,10 @@ function generateDateText (dateRange, dates) {
   return result;
 }
 
-function ratingText ({ operator, value }, isCount) {
+function rangeText (base, { operator, value }) {
   if (value.length === 0 || (value[1] == null && operator === 'less-than') || (value[0] == null && operator === 'more-than') || (value.some(x => x == null) && operator === 'between')) {
     return '';
   }
-
-  const base = isCount ? 'Ratings Count' : 'Rating'
 
   let operatorText;
 
@@ -199,21 +199,22 @@ function ratingText ({ operator, value }, isCount) {
   }
 
   let countText;
+
   const [start, end] = value;
 
   switch (operator) {
     case 'more-than':
-      countText = numberWithCommas(start);
+      countText = numberShorthand(start);
       break;
     case 'less-than':
-      countText = numberWithCommas(end);
+      countText = numberShorthand(end);
       break;
     case 'between':
-      countText = `${numberWithCommas(start)} and ${numberWithCommas(end)}`;
+      countText = `${numberShorthand(start)} and ${numberShorthand(end)}`;
       break;
   }
 
-  return `${base} ${operatorText} ${countText}${isCount ? '' : ' stars'}`;
+  return `${base} ${operatorText} ${countText}${base === 'Rating' ? ' stars' : ''}`;
 }
 
 export default getDisplayText;

@@ -26,6 +26,7 @@ export const selectMap = {
   [headerNames.USER_BASE]: ['user_base'],
   [headerNames.AD_NETWORKS]: ['ad_summaries'],
   [headerNames.CATEGORY]: ['categories'],
+  [headerNames.DOWNLOADS]: ['downloads'],
 };
 
 export const sortMap = {
@@ -51,6 +52,7 @@ export const appFilterKeys = {
   ratingsCount: 'all_version_ratings_count',
   rating: 'all_version_rating',
   releaseDate: 'released',
+  downloads: 'downloaded',
 };
 
 export const publisherFilterKeys = {

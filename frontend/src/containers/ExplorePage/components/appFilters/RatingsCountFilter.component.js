@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { numberWithCommas } from 'utils/format.utils';
+import { numberShorthand } from 'utils/format.utils';
 
 const options = [
   0,
@@ -13,7 +13,7 @@ const options = [
   10000000,
   50000000,
   100000000,
-].map(x => ({ value: x, label: numberWithCommas(x) }));
+].map(x => ({ value: x, label: numberShorthand(x) }));
 
 const operatorOptions = [
   { value: 'more-than', label: 'Greater Than' },
@@ -65,7 +65,7 @@ const RatingsCountFilter = ({
         simpleValue
         value={operator}
       />
-      <div style={{ display: 'inline-flex', marginTop: operator === 'between' ? 10 : 0 }}>
+      <div className="between-container">
         {['more-than', 'between'].includes(operator) && (
           <Select
             clearable

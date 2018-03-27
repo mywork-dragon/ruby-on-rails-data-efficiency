@@ -65,4 +65,24 @@ export function getUpdateDateClass (date) {
   return 'last-updated-days-old';
 }
 
+export const numberShorthand = (x) => {
+  const map = {
+    0: '0',
+    1000: '1K',
+    10000: '10K',
+    50000: '50K',
+    100000: '100K',
+    500000: '500K',
+    1000000: '1M',
+    10000000: '10M',
+    50000000: '50M',
+    100000000: '100M',
+    500000000: '500M',
+    1000000000: '1B',
+    5000000000: '5B',
+  };
+
+  return map[x] ? map[x] : x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 export const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

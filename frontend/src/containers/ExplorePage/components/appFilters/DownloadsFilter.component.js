@@ -1,20 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { numberShorthand } from 'utils/format.utils';
 
 const options = [
-  { value: 0, label: '0 stars' },
-  { value: 0.5, label: '0.5 star' },
-  { value: 1.0, label: '1.0 star' },
-  { value: 1.5, label: '1.5 stars' },
-  { value: 2.0, label: '2.0 stars' },
-  { value: 2.5, label: '2.5 stars' },
-  { value: 3.0, label: '3.0 stars' },
-  { value: 3.5, label: '3.5 stars' },
-  { value: 4.0, label: '4.0 stars' },
-  { value: 4.5, label: '4.5 stars' },
-  { value: 5.0, label: '5.0 stars' },
-];
+  0,
+  50000,
+  500000,
+  10000000,
+  100000000,
+  1000000000,
+  5000000000,
+].map(x => ({ value: x, label: numberShorthand(x) }));
 
 const operatorOptions = [
   { value: 'more-than', label: 'Greater Than' },
@@ -22,7 +19,7 @@ const operatorOptions = [
   { value: 'between', label: 'Between' },
 ];
 
-const RatingFilter = ({
+const DownloadsFilter = ({
   filter: {
     value: {
       value,
@@ -34,7 +31,7 @@ const RatingFilter = ({
 }) => (
   <li className="li-filter">
     <label className="filter-label">
-      All Version Rating:
+      Downloads (Android only):
     </label>
     <div className="input-group ratings-count">
       <Select
@@ -59,7 +56,7 @@ const RatingFilter = ({
               break;
           }
 
-          updateFilter('rating', newFilter, { panelKey })();
+          updateFilter('downloads', newFilter, { panelKey })();
         }}
         options={operatorOptions}
         searchable={false}
@@ -78,7 +75,7 @@ const RatingFilter = ({
 
               if (!val) newFilter.value = [];
 
-              updateFilter('rating', newFilter, { panelKey })();
+              updateFilter('downloads', newFilter, { panelKey })();
             }}
             options={options}
             searchable={false}
@@ -98,7 +95,7 @@ const RatingFilter = ({
 
               if (!val) newFilter.value = [];
 
-              updateFilter('rating', newFilter, { panelKey })();
+              updateFilter('downloads', newFilter, { panelKey })();
             }}
             options={options}
             searchable={false}
@@ -111,7 +108,7 @@ const RatingFilter = ({
   </li>
 );
 
-RatingFilter.propTypes = {
+DownloadsFilter.propTypes = {
   filter: PropTypes.shape({
     value: PropTypes.shape({
       value: PropTypes.array,
@@ -122,7 +119,7 @@ RatingFilter.propTypes = {
   updateFilter: PropTypes.func.isRequired,
 };
 
-RatingFilter.defaultProps = {
+DownloadsFilter.defaultProps = {
   filter: {
     value: {
       value: [],
@@ -131,5 +128,4 @@ RatingFilter.defaultProps = {
   },
 };
 
-export default RatingFilter;
-
+export default DownloadsFilter;
