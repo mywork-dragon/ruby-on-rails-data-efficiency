@@ -13,6 +13,7 @@ export const selectMap = {
     'first_scanned_date',
     'price_category',
     'original_release_date',
+    'in_app_purchases',
   ],
   [headerNames.COUNTRIES_AVAILABLE_IN]: ['countries_available_in'],
   [headerNames.FIRST_SEEN_ADS]: ['ad_summaries'],
@@ -36,6 +37,28 @@ export const sortMap = {
   [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
   [headerNames.RATING]: { field: 'all_version_rating', object: 'app' },
   [headerNames.RATINGS_COUNT]: { field: 'all_version_ratings_count', object: 'app' },
+};
+
+export const csvSelect = {
+  object: 'app',
+  fields: {
+    app: {
+      name: true,
+      id: true,
+      app_identifier: true,
+      platform: true,
+      mobile_priority: true,
+      original_release_date: true,
+      current_version_release_date: true,
+      in_app_purchases: true,
+      categories: true,
+      publisher_id: true,
+      publisher_name: true,
+      all_version_rating: true,
+      all_version_ratings_count: true,
+      downloads: true,
+    },
+  },
 };
 
 export const isAppFilter = filter => Object.keys(appFilterKeys).includes(filter);

@@ -8,12 +8,14 @@ import {
   TOGGLE_PANEL,
   UPDATE_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
+  GET_CSV_QUERY_ID,
 } from './Explore.actions';
 
 const initialState = {
   expanded: true,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: null,
+  csvQueryId: null,
 };
 
 const columnOptions = [
@@ -91,6 +93,11 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryId: '',
+      };
+    case GET_CSV_QUERY_ID.SUCCESS:
+      return {
+        ...state,
+        csvQueryId: payload.id,
       };
     default:
       return state;

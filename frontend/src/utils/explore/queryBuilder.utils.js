@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { selectMap, sortMap } from './models.utils';
+import { selectMap, sortMap, csvSelect } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
 import { cleanState } from './general.utils';
 
@@ -10,6 +10,15 @@ export function buildExploreRequest (form, columns, pageSettings, sort, accountN
   result.query = buildFilter(form);
   result.select = buildSelect(form.resultType, columns, accountNetworks);
   result.formState = JSON.stringify(cleanState(form));
+  return result;
+}
+
+export function buildCsvRequest (query) {
+  const result = {
+    ...query,
+  };
+  result.page_settings = { page_size: 20000 };
+  result.select = csvSelect;
   return result;
 }
 

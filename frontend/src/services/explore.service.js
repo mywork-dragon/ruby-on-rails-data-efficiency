@@ -40,7 +40,10 @@ const ExploreService = (client = httpClient) => {
     getSdkAutocompleteResults: (platform, query) => (
       client.get(`/api/sdks/autocomplete/v2?platform=${platform}&query=${query}`)
     ),
+    getCsvByQueryResultId: id => (
+      exploreClient.get(`${url}/query_result/${id}/pages/*?formatter=csv`)
+    ),
   };
 };
 
-export default ExploreService;
+export default ExploreService();

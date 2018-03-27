@@ -30,7 +30,7 @@ class SdkFilterGroup extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ sdkOptions: [], fetching: true });
-    ExploreService().getSdkAutocompleteResults(this.props.platform, value)
+    ExploreService.getSdkAutocompleteResults(this.props.platform, value)
       .then((response) => {
         if (fetchId !== this.lastFetchId) {
           return;

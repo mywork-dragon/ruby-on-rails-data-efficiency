@@ -18,6 +18,7 @@ const Table = ({
   canFetch,
   columns,
   error,
+  csvLink,
   isAdIntel,
   isManual,
   loading,
@@ -89,6 +90,22 @@ const Table = ({
         <span id="dashboardResultsTableHeadingNumDisplayed">
           | {resultsCount} Apps
         </span>
+        {canFetch && csvLink ? (
+          <a href={csvLink}>
+            <button
+              className="btn btn-primary pull-right"
+            >
+              Export to CSV
+            </button>
+          </a>
+        ) : (
+          <button
+            className="btn btn-primary pull-right"
+            disabled
+          >
+            Export to CSV
+          </button>
+        )}
         <ListDropdownContainer
           selectedItems={selectedItems}
         />
@@ -152,6 +169,7 @@ Table.propTypes = {
     Publisher: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   }).isRequired,
   error: PropTypes.bool.isRequired,
+  csvLink: PropTypes.string,
   isAdIntel: PropTypes.bool,
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
@@ -181,6 +199,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   canFetch: false,
+  csvLink: null,
   isAdIntel: false,
   isManual: false,
   loading: false,

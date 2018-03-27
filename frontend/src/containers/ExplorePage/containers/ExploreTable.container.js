@@ -11,19 +11,32 @@ const mapDispatchToProps = dispatch => ({
   updatePageSize: pageSize => dispatch(tableActions.updatePageSize(pageSize)),
 });
 
-const mapStateToProps = ({ explorePage: { resultsTable, searchForm }, account: { adNetworks } }) => ({
+const mapStateToProps = ({
+  explorePage: {
+    resultsTable,
+    searchForm,
+    explore: { csvQueryId },
+  },
+  account: { adNetworks },
+}) => ({
   isManual: true,
   showControls: true,
   showColumnDropdown: true,
   title: 'Results',
-  canFetch: Object.keys(searchForm.filters).length !== 0,
-  searchForm,
+  canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
   adNetworks: adNetworks.adNetworks,
+  searchForm,
+  csvLink: csvQueryId ? `https://query.mightysignal.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv` : null,
   ...resultsTable,
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const { searchForm, adNetworks, ...other } = stateProps;
+  const {
+    searchForm,
+    adNetworks,
+    ...other
+  } = stateProps;
+
   return {
     ...other,
     ...dispatchProps,
