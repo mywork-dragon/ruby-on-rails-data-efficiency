@@ -9,7 +9,6 @@ const tableActionTypes = [
   'TOGGLE_ALL_ITEMS',
   'UPDATE_COLUMNS',
   'UPDATE_FILTER',
-  'UPDATE_PAGE_SIZE',
 ];
 
 const tableRequestTypes = [
@@ -29,7 +28,6 @@ export function createTableActions (types) {
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
     updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
     updateFilter: (parameter, value, options) => action(types.UPDATE_FILTER, { parameter, value, options }),
-    updatePageSize: pageSize => action(types.UPDATE_PAGE_SIZE, { pageSize }),
   };
 }
 

@@ -5,19 +5,22 @@ import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers
 import { sortMap } from './models.utils';
 
 export function formatResults (data, params, count) {
-  const {
-    page_settings: { page_size: pageSize },
-    sort: { fields },
-    select: { object: resultType },
-  } = params;
   const result = {};
 
   result.results = Object.values(data.pages)[0].map(x => formatApp(x));
   result.pageNum = parseInt(Object.keys(data.pages)[0], 10);
-  result.pageSize = pageSize;
-  result.resultsCount = count;
-  result.sort = convertToTableSort(fields);
-  result.resultType = resultType;
+  if (params) {
+    const {
+      page_settings: { page_size: pageSize },
+      sort: { fields },
+      select: { object: resultType },
+    } = params;
+
+    result.pageSize = pageSize;
+    result.sort = convertToTableSort(fields);
+    result.resultType = resultType;
+  }
+  if (count) result.resultsCount = count;
 
   return result;
 }

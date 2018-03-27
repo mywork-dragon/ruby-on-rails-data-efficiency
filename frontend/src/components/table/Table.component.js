@@ -23,9 +23,11 @@ const Table = ({
   isManual,
   loading,
   message,
+  onPageChange,
+  onPageSizeChange,
+  onSortedChange,
   pageNum,
   pageSize,
-  requestResults,
   results,
   resultsCount,
   selectedItems,
@@ -37,43 +39,15 @@ const Table = ({
   toggleItem,
   updateColumns,
   updateDefaultPageSize,
-  updatePageSize,
 }) => {
   const allSelected = selectedItems.length === results.length;
   const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll, isAdIntel);
-  const pages = totalNumPages(resultsCount, pageSize)
+  const pages = totalNumPages(resultsCount, pageSize);
   const minRows = loading ? 10 : 0;
 
-  const onPageChange = (pageIndex) => {
-    if (canFetch) {
-      requestResults({
-        pageNum: pageIndex,
-        pageSize,
-        sort,
-      });
-    }
-  };
-
-  const onPageSizeChange = (newSize) => {
-    updatePageSize(newSize);
+  const handlePageSizeChange = (newSize) => {
     updateDefaultPageSize(newSize);
-    if (canFetch) {
-      requestResults({
-        pageNum: 0,
-        pageSize: newSize,
-        sort,
-      });
-    }
-  };
-
-  const onSortedChange = (newSort) => {
-    if (canFetch) {
-      requestResults({
-        pageNum: 0,
-        pageSize,
-        sort: newSort,
-      });
-    }
+    onPageSizeChange(newSize);
   };
 
   const getTheadThProps = ({ sorted }, rowInfo, column) => ({
@@ -130,7 +104,7 @@ const Table = ({
             minRows={minRows}
             noDataText={message}
             onPageChange={onPageChange}
-            onPageSizeChange={onPageSizeChange}
+            onPageSizeChange={handlePageSizeChange}
             onSortedChange={onSortedChange}
             page={pageNum}
             pages={pages}
@@ -174,7 +148,9 @@ Table.propTypes = {
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
   message: PropTypes.string,
-  requestResults: PropTypes.func,
+  onPageChange: PropTypes.func,
+  onPageSizeChange: PropTypes.func,
+  onSortedChange: PropTypes.func,
   pageNum: PropTypes.number,
   pageSize: PropTypes.number,
   results: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -194,7 +170,6 @@ Table.propTypes = {
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
-  updatePageSize: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -204,9 +179,11 @@ Table.defaultProps = {
   isManual: false,
   loading: false,
   message: 'No results',
+  onPageChange: null,
+  onPageSizeChange: null,
+  onSortedChange: null,
   pageNum: 0,
   pageSize: 20,
-  requestResults: null,
   sort: [
     {
       id: headerNames.LAST_UPDATED,
@@ -217,7 +194,6 @@ Table.defaultProps = {
   showColumnDropdown: false,
   showControls: false,
   updateColumns: null,
-  updatePageSize: () => {},
 };
 
 export default Table;

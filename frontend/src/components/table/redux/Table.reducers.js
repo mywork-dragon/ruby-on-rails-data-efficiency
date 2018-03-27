@@ -54,11 +54,6 @@ export function table(actionTypes, tableOptions) {
           ...state,
           columns: action.payload.columns,
         };
-      case actionTypes.UPDATE_PAGE_SIZE:
-        return {
-          ...state,
-          pageSize: action.payload.pageSize,
-        };
       default:
         return state;
     }
@@ -66,7 +61,7 @@ export function table(actionTypes, tableOptions) {
 
   // data format: { results, resultsCount, pageSize, pageNum, sort, columns }
   function loadResults(state, { payload: { data } }) {
-    if (data.resultsCount === 0) {
+    if (data.resultsCount && data.resultsCount === 0) {
       return {
         ...initialState,
         message: 'No Results',
@@ -76,7 +71,7 @@ export function table(actionTypes, tableOptions) {
     return {
       ...state,
       ...data,
-      columns: reconcileColumns(state.columns, data.columns),
+      columns: data.columns ? reconcileColumns(state.columns, data.columns) : state.columns,
       loading: false,
       error: false,
     };

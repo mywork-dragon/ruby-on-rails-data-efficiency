@@ -8,9 +8,11 @@ import {
   POPULATE_FROM_QUERY_ID,
   TABLE_TYPES,
   GET_CSV_QUERY_ID,
+  REQUEST_QUERY_PAGE,
   populateFromQueryId,
   tableActions,
   updateQueryId,
+  updateQueryResultId,
   getCsvQueryId,
 } from './Explore.actions';
 
@@ -28,14 +30,16 @@ function* requestResults ({ payload }) {
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
+    throw error;
   }
 }
 
 function* requestResultsByQueryId (id, params, pageNum) {
   try {
-    yield put(updateQueryId(id));
+    yield put(updateQueryId(id, JSON.parse(params.formState)));
     const res = yield call(service.getQueryResultInfo, id);
     const { number_results, query_result_id } = res.data;
+    yield put(updateQueryResultId(query_result_id));
     if (number_results === 0) {
       yield put(tableActions.allItems.success({ resultsCount: 0 }));
     } else {
@@ -46,6 +50,20 @@ function* requestResultsByQueryId (id, params, pageNum) {
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
+    throw error;
+  }
+}
+
+function* requestResultsByQueryResultId ({ payload: { id, page } }) {
+  try {
+    yield put(tableActions.setLoading(true));
+    const { data } = yield call(service.getResultsByResultId, id, page);
+    const items = formatResults(data);
+    yield put(tableActions.allItems.success(items));
+  } catch (error) {
+    console.log(error);
+    yield put(tableActions.allItems.failure());
+    throw error;
   }
 }
 
@@ -61,6 +79,7 @@ function* populateFromQuery ({ payload: { id } }) {
     toastr.error("We're sorry, there was a problem loading the query.");
     yield put(populateFromQueryId.failure());
     yield put(tableActions.allItems.failure());
+    throw error;
   }
 }
 
@@ -73,6 +92,7 @@ function* requestCsvQueryId ({ payload: { params } }) {
   } catch (error) {
     console.log(error);
     yield put(getCsvQueryId.failure());
+    throw error;
   }
 }
 
@@ -96,11 +116,16 @@ function* watchColumnUpdate() {
   yield takeLatest(TABLE_TYPES.UPDATE_COLUMNS, updateExploreTableColumns);
 }
 
+function* watchPageChange() {
+  yield takeLatest(REQUEST_QUERY_PAGE, requestResultsByQueryResultId);
+}
+
 export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
     watchQueryPopulation(),
     watchCsvRequest(),
     watchColumnUpdate(),
+    watchPageChange(),
   ]);
 }

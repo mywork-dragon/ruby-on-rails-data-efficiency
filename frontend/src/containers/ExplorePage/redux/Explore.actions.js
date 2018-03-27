@@ -23,7 +23,10 @@ export const TOGGLE_PANEL = 'TOGGLE_PANEL';
 export const togglePanel = index => action(TOGGLE_PANEL, { index });
 
 export const UPDATE_QUERY_ID = 'UPDATE_QUERY_ID';
-export const updateQueryId = id => action(UPDATE_QUERY_ID, { id });
+export const updateQueryId = (id, query) => action(UPDATE_QUERY_ID, { id, query });
+
+export const UPDATE_QUERY_RESULT_ID = 'UPDATE_QUERY_RESULT_ID';
+export const updateQueryResultId = id => action(UPDATE_QUERY_RESULT_ID, { id });
 
 export const POPULATE_FROM_QUERY_ID = createRequestTypes('POPULATE_FROM_QUERY_ID');
 export const populateFromQueryId = {
@@ -44,3 +47,6 @@ export const getCsvQueryId = {
   success: id => action(GET_CSV_QUERY_ID.SUCCESS, { id }),
   failure: () => action(GET_CSV_QUERY_ID.FAILURE),
 };
+
+export const REQUEST_QUERY_PAGE = 'REQUEST_QUERY_PAGE';
+export const requestQueryPage = (id, page) => action(REQUEST_QUERY_PAGE, { id, page });

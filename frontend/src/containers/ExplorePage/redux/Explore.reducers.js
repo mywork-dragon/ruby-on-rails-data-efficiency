@@ -9,13 +9,16 @@ import {
   UPDATE_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
   GET_CSV_QUERY_ID,
+  UPDATE_QUERY_RESULT_ID,
 } from './Explore.actions';
 
 const initialState = {
   expanded: true,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: null,
+  queryResultId: null,
   csvQueryId: null,
+  currentLoadedQuery: {},
 };
 
 const columnOptions = [
@@ -88,6 +91,7 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryId: payload.id,
+        currentLoadedQuery: payload.query,
       };
     case POPULATE_FROM_QUERY_ID.FAILURE:
       return {
@@ -98,6 +102,11 @@ function explore (state = initialState, action) {
       return {
         ...state,
         csvQueryId: payload.id,
+      };
+    case UPDATE_QUERY_RESULT_ID:
+      return {
+        ...state,
+        queryResultId: payload.id,
       };
     default:
       return state;
