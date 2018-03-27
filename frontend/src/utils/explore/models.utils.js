@@ -31,6 +31,7 @@ export const selectMap = {
 
 export const sortMap = {
   [headerNames.APP]: { field: 'name', object: 'app' },
+  [headerNames.DOWNLOADS]: { field: 'downloads_min', object: 'app' },
   [headerNames.LAST_UPDATED]: { field: 'current_version_release_date', object: 'app' },
   [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
   [headerNames.RATING]: { field: 'all_version_rating', object: 'app' },
