@@ -104,7 +104,7 @@ export const columnModels = [
     accessor: 'downloads',
     className: 'small-cell',
     headerClassName: 'small-cell',
-    Cell: cell => (cell.original.platform === 'ios' ? 'Not available' : numberShorthand(cell.value)),
+    Cell: cell => (typeof cell.value !== 'number' ? 'Not available' : numberShorthand(cell.value)),
   },
   {
     Header: headerNames.FIRST_SEEN_ADS,
