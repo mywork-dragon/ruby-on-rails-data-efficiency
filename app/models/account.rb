@@ -2,6 +2,8 @@ class Account < ActiveRecord::Base
   include Follower
   include AdDataPermissions
   include EncryptedAttributes
+  include FeaturePermissions
+
   has_many :users
 
   has_many :api_keys
@@ -13,6 +15,7 @@ class Account < ActiveRecord::Base
   enum salesforce_status: [:setup, :ready]
 
   serialize :ad_data_permissions, JSON
+  serialize :feature_permissions, JSON
 
   @@kms_key = ENV["SALESFORCE_KMS_KEY_ID"]
 

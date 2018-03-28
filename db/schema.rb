@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180130185118) do
+ActiveRecord::Schema.define(version: 20180328185640) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20180130185118) do
     t.integer  "salesforce_status",        limit: 4,     default: 0
     t.text     "ad_data_permissions",      limit: 65535
     t.boolean  "salesforce_syncing",                     default: false
+    t.text     "feature_permissions",      limit: 65535
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
@@ -1066,6 +1067,13 @@ ActiveRecord::Schema.define(version: 20180130185118) do
     t.text     "status",     limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "feature_permission_flags", force: :cascade do |t|
+    t.string   "name",       limit: 191, null: false
+    t.boolean  "enabled",                null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "follow_relationships", force: :cascade do |t|
