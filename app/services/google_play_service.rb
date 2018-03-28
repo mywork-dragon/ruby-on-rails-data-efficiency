@@ -1,6 +1,50 @@
 class GooglePlayService
   include AppAttributeChecker
-  class BadGoogleScrape < StandardError; end
+
+  class BadGoogleScrape < RuntimeError
+    def initialize(app_identifier, attrs)
+      msg = "#{app_identifier} invalid attributes: #{attrs}"
+      super(msg)
+    end
+  end
+
+  def is_compiled_css?
+    return @compiled if @compiled.present?
+    @compiled = !@html.at_css('div.details-section-contents')
+  end
+
+  # to reduce repeated doc queries
+  def cached_attributes
+    return @cached_attributes if @cached_attributes.present?
+    res = {}
+    m = /<div[^>]+class="([\w]+)">(\s*Offered By\s*)<\/div>/.match(@html.to_html)
+    node = @html.css("div.#{m[1]}").select {|n| n.text == m[2]}.first
+    meta_info = node.parent
+    res[:details_section_node] = meta_info.parent
+    res[:meta_info_nodes] = res[:details_section_node].css("div.#{meta_info.attributes['class'].value}")
+    @cached_attributes = res
+  end
+
+  def initialize(page=nil)
+    @page = page
+  end
+
+  def validate_attrs(res)
+    failed_attributes = []
+    failed_attributes << :name unless res[:name].present?
+    failed_attributes << :released if res[:released].nil?
+    failed_attributes << :category_id unless res[:category_id].present?
+    failed_attributes << :developer_google_play_identifier unless res[:developer_google_play_identifier].present?
+    failed_attributes << :description if res[:description].nil?
+    failed_attributes << :seller unless res[:seller].present?
+    if d = res[:downloads]
+      failed_attributes << :downloads if d.min.nil? || d.max.nil?
+    end
+    if res[:similar_apps].present?
+      failed_attributes << :similar_apps if res[:similar_apps].select { |x| /[^\w.]/.match(x) }.present?
+    end
+    failed_attributes
+  end
 
   def attributes(app_identifier, proxy_type: :general)
     @proxy_type = proxy_type
@@ -48,21 +92,22 @@ class GooglePlayService
     end
 
     # Added to prevent bad snaps from getting into DB.
-    # I believe gplay is A/B testing different html formats.
-    if ret[:name].nil? or ret[:version].nil? or ret[:released].nil?
-      raise BadGoogleScrape.new(app_identifier)
+    incorrect = validate_attrs(ret)
+    if incorrect.present?
+      raise BadGoogleScrape.new(app_identifier, incorrect)
     end
 
     ret
   end
 
   def google_play_html(app_identifier)
-    page = GooglePlayStore.lookup(app_identifier, proxy_type: @proxy_type)
-    Nokogiri::HTML(page.body)
+    page = @page || GooglePlayStore.lookup(app_identifier, proxy_type: @proxy_type).body
+    Nokogiri::HTML(page)
   end
 
   def name
-    @html.at_css('h1.document-title').text.strip
+    n = unique_itemprop('h1', 'name') || unique_itemprop('div', 'name')
+    n.text.strip
   end
 
   def description
@@ -78,29 +123,35 @@ class GooglePlayService
   end
 
   def seller
-    unique_itemprop('span', 'name', base: unique_itemprop('div', 'author')).text.strip
+    meta_info_content_by_title('Offered By')
   end
 
   def seller_url
-    url = @html.css('a.dev-link').first['href']
-    url = UrlHelper.url_from_google_play(url)
+    node = meta_info_with_title('Developer')
+    url = node.css('a').first['href']
+    url = if /google\.com\/url/.match(url)
+            UrlHelper.url_from_google_play(url)
+          else
+            url
+          end
     UrlHelper.url_with_http_only(url)
   rescue
     nil
   end
 
   def category_name
-    unique_itemprop('span', 'genre').text.strip
+    n = unique_itemprop('a', 'genre') || unique_itemprop('span', 'genre')
+    n.text.strip
   end
 
   def category_id
-    @html.css('.document-subtitle.category').first['href'].split('/')[-1]
+    n = unique_itemprop('a', 'genre') || @html.at_css('.document-subtitle.category')
+    n['href'].split('/')[-1]
   end
 
   def released
-    date_text = unique_itemprop('div', 'datePublished').text.strip
+    date_text = meta_info_content_by_title('Updated') || meta_info_content_by_title('Released')
     date = Date.parse(date_text)
-    
     raise 'Release date is in the future' if date.future?
 
     date
@@ -108,7 +159,7 @@ class GooglePlayService
 
   # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
   def size
-    size_text = unique_itemprop('div', 'fileSize').text.strip
+    size_text = meta_info_content_by_title('Size')
 
     if size_text == "Varies with device"
       size = nil
@@ -149,12 +200,12 @@ class GooglePlayService
 
   # Returns true if app offers in-app purchases, false if not
   def in_app_purchases
-    !!@html.at_css('div.info-box-top').at_css('div.inapp-msg')
+    !!meta_info_with_title('In-app Products')
   end
 
   # Returns string of price range if in app purchases available, nil not (in cents)
   def in_app_purchases_range
-    iap_s = meta_infos_with_title('In-app Products')
+    iap_s = meta_info_content_by_title('In-app Products')
 
     return unless iap_s.present?
 
@@ -165,25 +216,36 @@ class GooglePlayService
 
   # Returns string of Android version required or "Varies with device"
   def required_android_version
-    unique_itemprop('div', 'operatingSystems').text.strip
+    unique_itemprop('div', 'operatingSystems').try(:text).try(:strip) || meta_info_content_by_title('Requires Android')
   end
 
   # Returns string of current (app) version required or "Varies with device"
   def version
-    unique_itemprop('div', 'softwareVersion').text.strip
+    meta_info_content_by_title('Current Version')
+    # unique_itemprop('div', 'softwareVersion').text.strip
   end
 
   # Returns string of range detailing how many installs the app has, returns nil if data not available
   def downloads
-    downloads_s = unique_itemprop('div', 'numDownloads').text.strip
-    downloads_a = downloads_s.split(' - ').map{ |x| x.strip.gsub(',', '').to_i }
-    
-    (if downloads_a[0].nil? then 0 else downloads_a[0] end ..if downloads_a[1].nil? then 0 else downloads_a[1] end)
+    downloads_s = meta_info_content_by_title('Installs')
+    downloads_a = downloads_s.split(' - ').map{ |x| x.strip.gsub(',', '').to_i }.sort
+
+    # infer max for now. it's order of magnitude / 2
+    # 100+ = 1000..5000
+    # 5000+ = 5000..10000
+    if downloads_a.count == 1
+      min = downloads_a[0]
+      max = 10**(Math.log10(min).floor + 1)
+      max = max / 2 == min ? max : max / 2
+      min..max
+    else
+      downloads_a[0]..downloads_a[1]
+    end
   end
 
   # Returns a string containing the content rating, or nil if data not available
   def content_rating
-    unique_itemprop('div', 'contentRating').text.strip
+    meta_info_content_by_title('Content Rating', child_index: 1).split("\n")[0].strip
   end
 
   # Returns float of app review rating (out of 5)
@@ -198,33 +260,45 @@ class GooglePlayService
 
   # Finds all listed "similar" apps on Play store
   def similar_apps
-    @html.css('div.card-content[data-docid]')
-      .map { |x| x.attributes['data-docid'].value }.uniq.compact
+    @html.to_html.scan(/<a[^>]+href="\S*\/store\/apps\/details\?id=([\w.]+?)"/).flatten.uniq
   end
 
   def screenshot_urls
-    @html.css('img[itemprop="screenshot"]').map { |x| x['src'] }
+    urls = @html.css('img[itemprop="screenshot"]').map { |x| x['src'] }
+    return urls if urls.present?
+    @html.css('div[data-screenshot-item-index] img').map do |x|
+      x['src'].gsub(/^https?:/, '')
+    end
   end
   
   def icon_url_300x300
     unique_itemprop('img', 'image')['src']
   end
-  
+
+  # get a developer link on the page with contents that roughly match
+  # the seller name
   def developer_google_play_identifier
-    dev_url = unique_itemprop('meta', 'url', base: unique_itemprop('div', 'author')).attributes['content'].value
-    /id=(.+)\z/.match(dev_url)[1]
+    parts = seller.gsub(/\W/, ' ').split
+    r = /<a[^>]*href="\S*\/store\/apps\/dev(?:eloper)?\?id=([^"]+?)"(.+?)<\/a>/
+    match = @html.to_html.scan(r).find do |m|
+      parts.reject { |p| m[1].include?(p) }.empty?
+    end
+    match[0]
   end
 
   def unique_itemprop(tag, itemprop, base: @html)
     base.at_css("#{tag}[itemprop=\"#{itemprop}\"]")
   end
 
-  def meta_infos_with_title(title)
-    details = @html.css('div.details-section-contents div.meta-info').find do |node|
+  def meta_info_with_title(title)
+    details = cached_attributes[:meta_info_nodes].find do |node|
       /#{title}/.match(node.text)
     end
+  end
 
-    details.at_css('div.content').text.strip if details
+  def meta_info_content_by_title(title, child_index: -1)
+    details = meta_info_with_title(title)
+    details.children().reject {|x| x.class == Nokogiri::XML::Text}[child_index].text.strip if details
   end
 
   # Makes sure the scraping logic is still valid
@@ -233,8 +307,6 @@ class GooglePlayService
   def dom_valid?
 
     attributes = self.attributes('com.ubercab')
-
-    ap attributes
 
     attributes_expected = 
       {

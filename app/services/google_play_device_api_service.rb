@@ -1,30 +1,26 @@
 class GooglePlayDeviceApiService
   class BadGoogleScrape < StandardError; end
 
-  def initialize()
+  def initialize
     @google_account = GoogleAccountReserver.new.reserve(:full)
     @market_api = MightyApk::Market.new(@google_account)
     @required_keys = [:name, :released]
   end
 
   def get_response(app_identifier)
-    begin
     @market_api.raw_app_details(app_identifier)
-    rescue MightyApk::MarketApi::NotFound
-      raise GooglePlayStore::NotFound
-    rescue MightyApk::MarketApi::Unauthorized
-      raise GooglePlayStore::Unavailable
-    rescue MightyApk::MarketApi::Forbidden
-      raise GooglePlayStore::Unavailable
-    rescue MightyApk::MarketApi::UnsupportedCountry
-      raise GooglePlayStore::Unavailable
-    rescue MightyApk::MarketApi::MarketError
-      raise GooglePlayStore::UnknownCondition
-    rescue MightyApk::MarketApi::RateLimited
-      raise MightyApk::MarketApi::RateLimited
-    rescue MightyApk::MarketApi::MarketError
-      raise GooglePlayStore::UnknownCondition
-    end
+  rescue MightyApk::MarketApi::NotFound
+    raise GooglePlayStore::NotFound
+  rescue MightyApk::MarketApi::Unauthorized
+    raise GooglePlayStore::Unavailable
+  rescue MightyApk::MarketApi::Forbidden
+    raise GooglePlayStore::Unavailable
+  rescue MightyApk::MarketApi::UnsupportedCountry
+    raise GooglePlayStore::Unavailable
+  rescue MightyApk::MarketApi::RateLimited
+    raise MightyApk::MarketApi::RateLimited
+  rescue MightyApk::MarketApi::MarketError
+    raise GooglePlayStore::UnknownCondition
   end
 
   def attributes(app_identifier, proxy_type: :general)

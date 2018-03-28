@@ -28,7 +28,7 @@ module GooglePlaySnapshotModule
 
   def generate_attributes
     raise UnregisteredProxyType unless proxy_type.present?
-    @attributes = GooglePlayDeviceApiService.attributes(
+    @attributes = GooglePlayService.attributes(
       @android_app.app_identifier,
       proxy_type: proxy_type
     )
@@ -76,7 +76,8 @@ module GooglePlaySnapshotModule
 
     if downloads = @attributes[:downloads]
       @snapshot.downloads_min = downloads.min
-      @snapshot.downloads_max = downloads.max
+      # handle when google play specifies lower bound like "100+"
+      @snapshot.downloads_max = downloads.max if downloads.max != downloads.min else nil
     end
   end
 
