@@ -171,6 +171,29 @@ export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
     lastSeenDate,
   } = adNetworksFilter.value;
 
+  const generateAppFilter = () => {
+    const networks = adNetworks.map(x => x.key);
+    let predicates = [
+      generateQueryDateRange('first_seen_ads_date', firstSeenDateRange, firstSeenDate),
+      generateQueryDateRange('last_seen_ads_date', lastSeenDateRange, lastSeenDate),
+    ];
+
+    predicates = _.compact(predicates);
+    predicates.forEach(x => x.push(networks));
+
+    return {
+      operator: 'filter',
+      object: 'app',
+      predicates,
+    };
+  };
+
+  const hasDateRange = firstSeenDateRange !== 'anytime' || lastSeenDateRange !== 'anytime';
+
+  if (hasDateRange && operator === 'any') {
+    return generateAppFilter();
+  }
+
   const result = {
     operator: operator === 'all' ? 'intersect' : 'union',
     inputs: [],
@@ -182,15 +205,15 @@ export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
       object: 'mobile_ad_data_summary',
       predicates: [
         ['ad_network', network.key],
-        generateQueryDateRange('first_seen_ads_date', firstSeenDateRange, firstSeenDate),
-        generateQueryDateRange('last_seen_ads_date', lastSeenDateRange, lastSeenDate),
       ],
     };
 
-    filter.predicates = _.compact(filter.predicates);
-
     result.inputs.push(filter);
   });
+
+  if (hasDateRange) {
+    result.inputs.push(generateAppFilter());
+  }
 
   return result;
 }
