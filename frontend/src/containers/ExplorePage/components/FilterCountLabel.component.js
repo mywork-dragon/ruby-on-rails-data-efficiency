@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Label } from 'react-bootstrap';
+import { Tag } from 'antd';
 
 const FilterCountLabel = ({ count }) => {
   if (count > 0) {
     return (
-      <Label className="label filter-count-label">
+      <Tag className="filter-count-label" color="blue">
         {`${count} filter${count > 1 ? 's' : ''}`}
-      </Label>
+      </Tag>
     );
   }
 

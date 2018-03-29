@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Label } from 'react-bootstrap';
+import { Tag } from 'antd';
 
 const FilterTag = ({
   deleteFilter,
@@ -12,17 +12,10 @@ const FilterTag = ({
     return null;
   }
 
-  const handleDelete = () => (e) => {
-    e.stopPropagation();
-    deleteFilter(filterKey, index);
-  };
-
   return (
-    <Label bsClass="label filter-tag-label">
+    <Tag afterClose={() => deleteFilter(filterKey, index)} className="filter-tag-label" closable color="blue">
       {displayText}
-      {' '}
-      <i className="fa fa-times" onClick={handleDelete()} />
-    </Label>
+    </Tag>
   );
 };
 

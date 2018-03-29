@@ -3,6 +3,8 @@
 
 #search-form-panel {
   .panel-title {
+    font-weight: 600;
+
     .fa {
       cursor: pointer;
       font-size: 20px;
@@ -15,12 +17,9 @@
     }
 
     .filter-count-label {
-      background-color: #c8ddf4;
-      color: $main-font;
-      font-size: 12px;
-      font-weight: 600;
+      cursor: default;
+      font-weight: 500;
       margin-left: 10px;
-      padding: 2px 5px;
     }
   }
 
@@ -100,7 +99,6 @@
     width: 100%;
 
     .filter-tags-container {
-      background-color: $light-grey-background;
       border: 1px solid $light-grey-border;
       display: flex;
       flex-wrap: wrap;
@@ -110,11 +108,8 @@
     }
 
     .filter-tag-label {
-      background-color: #c8ddf4;
-      color: $main-font;
-      font-size: 12px;
+      cursor: default;
       margin: 2px;
-      padding: 7px;
 
       .fa-times {
         cursor: pointer;
