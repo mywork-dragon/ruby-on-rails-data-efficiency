@@ -86,7 +86,8 @@ class AuthController < ApplicationController
                sf_admin_connected: user.account.salesforce_uid.present?,
                sf_user_connected: user.salesforce_uid.present?,
                sf_installed: user.account.ready?,
-               territories: user.territories
+               territories: user.territories,
+               features: account.feature_flag_map
            }
   end
 
