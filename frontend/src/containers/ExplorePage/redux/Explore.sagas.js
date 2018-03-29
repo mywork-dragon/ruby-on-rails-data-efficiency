@@ -1,6 +1,7 @@
-import { all, put, call, takeLatest } from 'redux-saga/effects';
+import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import ExploreService from 'services/explore.service';
 import { formatResults, setExploreColumns } from 'utils/explore/general.utils';
+import { isFacebookOnly } from 'selectors/account.selectors';
 import { buildCsvRequest } from 'utils/explore/queryBuilder.utils';
 import toastr from 'toastr';
 
@@ -24,7 +25,7 @@ function* requestResults ({ payload }) {
   try {
     yield put(tableActions.clearResults());
     const { data: { query_id } } = yield call(service.getQueryId, params);
-    yield put(getCsvQueryId.request(params));
+    put(getCsvQueryId.request(params));
     history.pushState(null, null, `#/search/v2/${query_id}`);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
@@ -85,7 +86,8 @@ function* populateFromQuery ({ payload: { id } }) {
 
 function* requestCsvQueryId ({ payload: { params } }) {
   try {
-    const csvParams = buildCsvRequest(params);
+    const facebookOnly = yield select(isFacebookOnly);
+    const csvParams = buildCsvRequest(params, facebookOnly);
     const { data: { query_id } } = yield call(service.getQueryId, csvParams);
     const { data: { query_result_id } } = yield call(service.getQueryResultInfo, query_id);
     yield put(getCsvQueryId.success(query_result_id));

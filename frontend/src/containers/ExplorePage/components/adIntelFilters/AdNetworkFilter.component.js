@@ -17,19 +17,11 @@ const AdNetworkFilter = ({
       lastSeenDate,
     },
   },
-  networkStore: {
-    loaded,
-    fetching,
-    adNetworks: accountNetworks,
-  },
-  getAdNetworks,
+  accountNetworks,
   panelKey,
   updateFilter,
+  facebookOnly,
 }) => {
-  if (!loaded && !fetching) {
-    getAdNetworks();
-  }
-
   const updateAdNetworkFilter = field => (val) => {
     if (field === 'adNetworks') {
       val = val.map((x) => {
@@ -63,8 +55,8 @@ const AdNetworkFilter = ({
           <Option value="week">Last Week</Option>
           <Option value="month">Last Month</Option>
           <Option value="three-months">Last Three Months</Option>
-          <Option value="before-date">Before date</Option>
-          <Option value="after-date">After date</Option>
+          <Option value="before-date">Before Date</Option>
+          <Option value="after-date">After Date</Option>
         </Select>
         {
           ['before-date', 'after-date'].includes(firstSeenDateRange) && (
@@ -90,8 +82,8 @@ const AdNetworkFilter = ({
           <Option value="week">Last Week</Option>
           <Option value="month">Last Month</Option>
           <Option value="three-months">Last Three Months</Option>
-          <Option value="before-date">Before date</Option>
-          <Option value="after-date">After date</Option>
+          <Option value="before-date">Before Date</Option>
+          <Option value="after-date">After Date</Option>
         </Select>
         {
           ['before-date', 'after-date'].includes(lastSeenDateRange) && (
@@ -104,19 +96,21 @@ const AdNetworkFilter = ({
           )
         }
       </div>
-      <div className="ad-date-options-group">
-        on
-        <Select
-          getPopupContainer={() => document.getElementById('ad-network-filter')}
-          onChange={updateAdNetworkFilter('operator')}
-          size="small"
-          value={operator}
-        >
-          <Option value="any">Any</Option>
-          <Option value="all">All</Option>
-        </Select>
-        of the following
-      </div>
+      {!facebookOnly && (
+        <div className="ad-date-options-group">
+          on
+          <Select
+            getPopupContainer={() => document.getElementById('ad-network-filter')}
+            onChange={updateAdNetworkFilter('operator')}
+            size="small"
+            value={operator}
+          >
+            <Option value="any">Any</Option>
+            <Option value="all">All</Option>
+          </Select>
+          of the following
+        </div>
+      )}
       <div className="li-select">
         <Select
           allowClear
@@ -129,7 +123,7 @@ const AdNetworkFilter = ({
           value={adNetworks}
         >
           {
-            Object.values(accountNetworks).filter(x => x.can_access).map(x => (
+            accountNetworks.map(x => (
               <Option
                 key={x.id}
                 value={x.id}
@@ -152,15 +146,12 @@ AdNetworkFilter.propTypes = {
   }),
   updateFilter: PropTypes.func.isRequired,
   panelKey: PropTypes.string.isRequired,
-  networkStore: PropTypes.shape({
-    fetching: PropTypes.bool,
-    loaded: PropTypes.bool,
-    adNetworks: PropTypes.object,
-  }).isRequired,
-  getAdNetworks: PropTypes.func.isRequired,
+  accountNetworks: PropTypes.arrayOf(PropTypes.object),
+  facebookOnly: PropTypes.bool.isRequired,
 };
 
 AdNetworkFilter.defaultProps = {
+  accountNetworks: [],
   filter: {
     value: {
       adNetworks: [],

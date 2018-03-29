@@ -19,7 +19,7 @@ const CreativeFormatFilter = ({
         checked={value.includes('html_game')}
         onChange={updateFilter('creativeFormats', 'html_game', { panelKey })}
       >
-        Game
+        Playable
       </Checkbox>
       <Checkbox
         key="video"

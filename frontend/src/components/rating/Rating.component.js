@@ -26,12 +26,13 @@ const Rating = ({
 };
 
 Rating.propTypes = {
-  rating: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  rating: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   count: PropTypes.number,
 };
 
 Rating.defaultProps = {
   count: 5,
+  rating: 0,
 };
 
 export default Rating;

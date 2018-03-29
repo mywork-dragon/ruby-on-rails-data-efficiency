@@ -13,12 +13,12 @@ export function buildExploreRequest (form, columns, pageSettings, sort, accountN
   return result;
 }
 
-export function buildCsvRequest (query) {
+export function buildCsvRequest (query, facebookOnly) {
   const result = {
     ...query,
   };
   result.page_settings = { page_size: 20000 };
-  result.select = csvSelect;
+  result.select = csvSelect(facebookOnly);
   return result;
 }
 
@@ -64,8 +64,7 @@ export function buildSelect (resultType, columns, accountNetworks) {
     }
   });
 
-  const accessibleNetworks = Object.values(accountNetworks).filter(x => x.can_access);
-  const facebookOnly = accessibleNetworks.length === 1 && accessibleNetworks[0].id === 'facebook';
+  const facebookOnly = accountNetworks.length === 1 && accountNetworks[0].id === 'facebook';
 
   const mappedFields = {};
 

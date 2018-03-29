@@ -87,7 +87,7 @@ export const columnModels = [
     accessor: 'categories',
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : 'No data'}</div>,
+    Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : <span className="invalid">No data</span>}</div>,
   },
   {
     Header: headerNames.CREATIVE_FORMATS,
@@ -104,7 +104,9 @@ export const columnModels = [
     accessor: 'downloads',
     className: 'small-cell',
     headerClassName: 'small-cell',
-    Cell: cell => (typeof cell.value !== 'number' ? 'Not available' : numberShorthand(cell.value)),
+    Cell: cell => (typeof cell.value !== 'number' ? (
+      <span className="invalid">Not available</span>
+    ) : numberShorthand(cell.value)),
   },
   {
     Header: headerNames.FIRST_SEEN_ADS,
@@ -161,12 +163,7 @@ export const columnModels = [
     accessor: d => (d.publisher ? d.publisher.name : ''),
     headerClassName: 'name-cell',
     className: 'name-cell',
-    Cell: (cell) => {
-      if (cell.original.publisher) {
-        return <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />;
-      }
-      return '';
-    },
+    Cell: (cell) => <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />,
   },
   {
     Header: <RatingHeaderCell />,
@@ -182,7 +179,7 @@ export const columnModels = [
     accessor: 'all_version_ratings_count',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => (cell.value ? numberWithCommas(cell.value) : 'No ratings'),
+    Cell: cell => (cell.value ? numberWithCommas(cell.value) : <span className="invalid">No ratings</span>),
   },
   {
     Header: headerNames.RELEASE_DATE,

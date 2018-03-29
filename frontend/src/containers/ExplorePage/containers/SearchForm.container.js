@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { hasFilters } from 'utils/explore/general.utils';
 import * as appStore from 'selectors/appStore.selectors';
+import * as account from 'selectors/account.selectors';
 import { adNetworks } from 'actions/Account.actions';
 import SearchForm from '../components/SearchForm.component';
 import {
@@ -25,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = (state) => {
-  const { explorePage: { explore, searchForm, resultsTable }, account: { adNetworks: networkStore } } = state;
+  const { explorePage: { explore, searchForm, resultsTable } } = state;
 
   return {
     canFetch: hasFilters(searchForm.filters),
@@ -37,7 +38,9 @@ const mapStateToProps = (state) => {
     availableCountries: appStore.getAvailableCountries(state),
     iosSdkCategories: appStore.getIosSdkCategories(state),
     androidSdkCategories: appStore.getAndroidSdkCategories(state),
-    networkStore,
+    adNetworks: account.accessibleNetworks(state),
+    shouldFetchAdNetworks: account.shouldFetchAdNetworks(state),
+    facebookOnly: account.isFacebookOnly(state),
   };
 };
 
@@ -51,19 +54,19 @@ const mergeProps = (storeProps, dispatchProps) => {
         sort,
         loading,
       },
-    networkStore,
+    adNetworks: accountNetworks,
     ...rest
   } = storeProps;
 
   return {
-    networkStore,
+    adNetworks: accountNetworks,
     ...searchForm,
     ...dispatchProps,
     loading,
     ...rest,
     requestResults: () => () => {
       const pageSettings = { pageSize, pageNum: 0 };
-      const query = buildExploreRequest(searchForm, columns, pageSettings, sort, networkStore.adNetworks);
+      const query = buildExploreRequest(searchForm, columns, pageSettings, sort, accountNetworks);
       dispatchProps.getResults(query);
     },
   };

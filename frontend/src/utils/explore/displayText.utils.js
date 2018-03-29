@@ -115,7 +115,7 @@ function availableCountriesText ({ countries, condition }) {
 
 function creativeFormatsText (value) {
   const map = {
-    html_game: 'Game',
+    html_game: 'Playable',
     video: 'Video',
   };
 

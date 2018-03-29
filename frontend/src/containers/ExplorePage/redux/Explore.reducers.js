@@ -98,6 +98,11 @@ function explore (state = initialState, action) {
         ...state,
         queryId: '',
       };
+    case GET_CSV_QUERY_ID.REQUEST:
+      return {
+        ...state,
+        csvQueryId: null,
+      };
     case GET_CSV_QUERY_ID.SUCCESS:
       return {
         ...state,

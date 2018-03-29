@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const PublisherCell = ({ platform, publisher: { id, name } }) => (
+const PublisherCell = ({ platform, publisher }) => (
   <div className="resultsTableAppPublisher">
-    <a className="dotted-link" href={`#/publisher/${platform}/${id}`} target="_blank">{name}</a>
+    {publisher ? (
+      <a className="dotted-link" href={`#/publisher/${platform}/${publisher.id}`} target="_blank">{publisher.name}</a>
+    ) : <span>Not available</span>}
   </div>
 );
 
@@ -12,7 +14,11 @@ PublisherCell.propTypes = {
   publisher: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-  }).isRequired,
+  }),
+};
+
+PublisherCell.defaultProps = {
+  publisher: null,
 };
 
 export default PublisherCell;

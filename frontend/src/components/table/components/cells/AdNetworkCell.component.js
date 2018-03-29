@@ -21,7 +21,9 @@ const AdNetworkCell = ({
   if (networks.length === 0) {
     return (
       <div className="creative-cell">
-        No ad data
+        <span className="invalid">
+          No ad data
+        </span>
       </div>
     );
   }

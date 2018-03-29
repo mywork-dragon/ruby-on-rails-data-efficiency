@@ -6,7 +6,7 @@ import { daysAgo, getUpdateDateClass } from 'utils/format.utils';
 const LastUpdatedCell = ({ date }) => {
   if (!date) {
     return (
-      <div>Not available</div>
+      <div className="invalid">Not available</div>
     );
   }
 

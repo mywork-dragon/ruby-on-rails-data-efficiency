@@ -33,6 +33,11 @@ const Explore = ({
 
   return (
     <div className="page">
+      <h4 className="page-title explore-title">
+        Explore V2
+        {' '}
+        <span className="beta-flag">BETA</span>
+      </h4>
       <SearchFormContainer />
       <ExploreTableContainer />
     </div>

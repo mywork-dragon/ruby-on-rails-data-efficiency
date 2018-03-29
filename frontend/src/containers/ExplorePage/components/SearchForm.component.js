@@ -37,7 +37,7 @@ const SearchForm = ({
           Build Your Search
           {
             expanded ? (
-              <i className="fa fa-times pull-right" onClick={toggleFormPanel()} />
+              <i className="fa fa-angle-up pull-right" onClick={toggleFormPanel()} />
             ) : (
               <i className="fa fa-angle-down pull-right" />
             )
@@ -69,10 +69,9 @@ const SearchForm = ({
             <div className="search-form-footer form-group">
               <div>
                 <Button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</Button>
-                <Button className="btn btn-primary" onClick={toggleFormPanel()}>Hide Form</Button>
               </div>
               <div className="search-form-submit">
-                <Button className="btn btn-primary" disabled={!canFetch}>Save Search</Button>
+                {/* <Button className="btn btn-primary" disabled={!canFetch}>Save Search</Button> */}
                 <Button
                   className="btn btn-primary"
                   disabled={!canFetch}

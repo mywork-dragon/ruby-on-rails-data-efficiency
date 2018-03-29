@@ -15,11 +15,9 @@ const NetworkCountFilter = ({
   },
   panelKey,
   updateFilter,
-  networkStore: {
-    adNetworks,
-  },
+  adNetworks,
 }) => {
-  const startRange = _.range(1, Object.values(adNetworks).filter(x => x.can_access).length + 1);
+  const startRange = _.range(1, adNetworks.length + 1);
   if (end === 0 || end > startRange[startRange.length - 1]) {
     end = startRange[startRange.length - 1];
   }
@@ -104,12 +102,11 @@ NetworkCountFilter.propTypes = {
   }),
   panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
-  networkStore: PropTypes.shape({
-    adNetworks: PropTypes.object,
-  }).isRequired,
+  adNetworks: PropTypes.arrayOf(PropTypes.object),
 };
 
 NetworkCountFilter.defaultProps = {
+  adNetworks: [],
   filter: {
     value: {
       start: 'x',
