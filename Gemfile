@@ -72,7 +72,7 @@ gem 'PageRankr', '4.2.1'
 
 gem 'newrelic_rpm'
 
-gem 'restforce', '2.3.0'
+gem 'restforce', '2.5.3'
 gem 'metaforce', '~> 1.0.8', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git'
 gem 'omniauth-salesforce'
 gem 'salesforce_bulk_api', github: 'yatish27/salesforce_bulk_api'
