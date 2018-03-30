@@ -10,10 +10,10 @@
         <li ui-sref="timeline" ui-sref-active="active">
             <a class="nav-link" href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
         </li>
-        <li ui-sref="explore" ui-sref-active="active" ng-show="!$root.isAdminAccount">
+        <li ui-sref="explore" ui-sref-active="active" ng-show="!$root.canAccessFeature('explore-v2')">
             <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
-        <li ng-show="$root.isAdminAccount">
+        <li ng-show="$root.canAccessFeature('explore-v2')">
             <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
             <ul>
               <li>

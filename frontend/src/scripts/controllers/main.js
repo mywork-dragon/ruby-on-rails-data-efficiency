@@ -107,9 +107,15 @@ angular.module('appApp')
             $rootScope.sfUserConnected = data.sf_user_connected;
             $rootScope.sfInstalled = data.sf_installed;
 
+            $rootScope.canAccessFeature = function (feature) {
+              return data.features[feature] === true;
+            }
+
             if (!$rootScope.connectedOauth) {
               $window.location.href = `#/login?token=${authToken.get()}`;
             }
+
+            $rootScope.$broadcast("permissions_success");
           })
           .error(() => {
             $scope.canViewSupportDesk = false;
@@ -118,6 +124,12 @@ angular.module('appApp')
             $rootScope.isAdmin = false;
             $rootScope.isAdminAccount = false;
             $rootScope.connectedOauth = true;
+
+            $rootScope.canAccessFeature = function (feature) {
+              return false;
+            }
+
+            $rootScope.$broadcast("permissions_failure");
           });
 
 

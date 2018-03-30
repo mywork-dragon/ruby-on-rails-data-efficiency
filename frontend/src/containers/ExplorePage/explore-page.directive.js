@@ -46,11 +46,16 @@ function explore($stateParams) {
 ExploreController.$inject = ['$rootScope', '$state', 'pageTitleService'];
 
 function ExploreController($rootScope, $state, pageTitleService) {
-  activate();
+  if ($rootScope.canAccessFeature) {
+    activate();
+  } else {
+    $rootScope.$on('permissions_success', activate);
+    $rootScope.$on('permissions_failure', activate);
+  }
 
   function activate () {
-    if (!$rootScope.isAdminAccount) {
-      $state.go('search');
+    if (!$rootScope.canAccessFeature("explore-v2")) {
+      $state.go("explore");
     }
     pageTitleService.setTitle('MightySignal - Explore');
   }
