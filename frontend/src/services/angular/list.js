@@ -5,12 +5,24 @@ const API_URI_BASE = window.API_URI_BASE;
 
 angular.module('appApp')
   .factory('listApiService', ['$http', 'loggitService', function($http, loggitService) {
+    var outstanding_get_lists = false;
+
     return {
       getLists() {
-        return $http({
+        if (outstanding_get_lists) {
+          return outstanding_get_lists;
+        }
+        outstanding_get_lists = $http({
           method: 'GET',
           url: `${API_URI_BASE}api/list/get_lists`,
         });
+        // Cache response for 5 seconds.
+        outstanding_get_lists.then((response) => {
+          setTimeout(function(){
+            outstanding_get_lists = false;
+          }, 5000);
+        });
+        return outstanding_get_lists;
       },
       modifyCheckbox(selectedAppId, selectedAppType, list) {
         // Check if app id is already in list
@@ -22,6 +34,7 @@ angular.module('appApp')
         }
       },
       createNewList(listName) {
+        outstanding_get_lists = false;
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track('New List Created', {
           listName,
@@ -61,6 +74,7 @@ angular.module('appApp')
         });
       },
       deleteList(listId) {
+        outstanding_get_lists = false;
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track('Deleted List', {
           listId,
