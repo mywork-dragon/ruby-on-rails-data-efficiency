@@ -19,6 +19,23 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
+  # Use default logging formatter so that PID and timestamp are not suppressed.
+  # config.log_formatter = ::Logger::Formatter.new
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::Json.new
+  config.lograge.custom_options = lambda do |event|
+    {
+      request_id: event.payload[:request_id],
+      params: event.payload[:params],
+      headers: event.payload[:headers],
+    }
+  end
+
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+  end
+
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
