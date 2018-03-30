@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest, select } from 'redux-saga/effects';
+import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
 import ExploreService from 'services/explore.service';
 import { formatResults, setExploreColumns } from 'utils/explore/general.utils';
 import { isFacebookOnly } from 'selectors/account.selectors';
@@ -25,7 +25,7 @@ function* requestResults ({ payload }) {
   try {
     yield put(tableActions.clearResults());
     const { data: { query_id } } = yield call(service.getQueryId, params);
-    put(getCsvQueryId.request(params));
+    yield fork(requestCsvQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
@@ -73,7 +73,7 @@ function* populateFromQuery ({ payload: { id } }) {
     const { data: params, data: { formState } } = yield call(service.getQueryParams, id);
     yield put(populateFromQueryId.success(id, JSON.parse(formState)));
     yield put(tableActions.setLoading(true));
-    yield put(getCsvQueryId.request(params));
+    yield fork(requestCsvQueryId, params);
     yield call(requestResultsByQueryId, id, params, 0);
   } catch (error) {
     console.log(error);
@@ -84,8 +84,9 @@ function* populateFromQuery ({ payload: { id } }) {
   }
 }
 
-function* requestCsvQueryId ({ payload: { params } }) {
+function* requestCsvQueryId (params) {
   try {
+    yield put(getCsvQueryId.request());
     const facebookOnly = yield select(isFacebookOnly);
     const csvParams = buildCsvRequest(params, facebookOnly);
     const { data: { query_id } } = yield call(service.getQueryId, csvParams);
@@ -110,10 +111,6 @@ function* watchQueryPopulation() {
   yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, populateFromQuery);
 }
 
-function* watchCsvRequest() {
-  yield takeLatest(GET_CSV_QUERY_ID.REQUEST, requestCsvQueryId);
-}
-
 function* watchColumnUpdate() {
   yield takeLatest(TABLE_TYPES.UPDATE_COLUMNS, updateExploreTableColumns);
 }
@@ -126,7 +123,6 @@ export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
     watchQueryPopulation(),
-    watchCsvRequest(),
     watchColumnUpdate(),
     watchPageChange(),
   ]);
