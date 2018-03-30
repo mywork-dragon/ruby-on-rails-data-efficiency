@@ -38,6 +38,10 @@ const CategoriesDropdown = ({
 
   return (
     <div className="li-select categories">
+      <div className="platform-category-label">
+        <i className={`fa fa-${platform === 'ios' ? 'apple' : 'android'}`} />
+        Categories
+      </div>
       <TreeSelect
         disabled={!['all', platform].includes(selectedPlatform)}
         dropdownStyle={{ maxHeight: 200 }}

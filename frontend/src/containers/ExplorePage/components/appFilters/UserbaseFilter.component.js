@@ -16,7 +16,7 @@ const UserbaseFilter = ({
     </label>
     <div className="input-group">
       {
-        ['weak', 'moderate', 'strong', 'elite'].map(option => (
+        ['elite', 'strong', 'moderate', 'weak'].map(option => (
           <Checkbox
             key={option}
             checked={value.includes(option)}

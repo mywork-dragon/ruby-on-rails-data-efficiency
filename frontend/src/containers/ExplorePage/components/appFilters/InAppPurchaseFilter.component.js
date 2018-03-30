@@ -14,19 +14,21 @@ const InAppPurchaseFilter = ({
     <label className="filter-label">
       In-App Purchases:
     </label>
-    {
-      ['yes', 'no'].map(option => (
-        <Radio
-          key={option}
-          checked={value === option}
-          onClick={updateFilter('inAppPurchases', option, { panelKey })}
-          type="radio"
-          value={option}
-        >
-          {capitalize(option)}
-        </Radio>
-      ))
-    }
+    <div className="input-group">
+      {
+        ['yes', 'no'].map(option => (
+          <Radio
+            key={option}
+            checked={value === option}
+            onClick={updateFilter('inAppPurchases', option, { panelKey })}
+            type="radio"
+            value={option}
+          >
+            {capitalize(option)}
+          </Radio>
+        ))
+      }
+    </div>
   </li>
 );
 

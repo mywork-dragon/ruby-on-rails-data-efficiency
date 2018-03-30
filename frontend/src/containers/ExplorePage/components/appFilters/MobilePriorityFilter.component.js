@@ -16,7 +16,7 @@ const MobilePriorityFilter = ({
     </label>
     <div className="input-group">
       {
-        ['low', 'medium', 'high'].map(option => (
+        ['high', 'medium', 'low'].map(option => (
           <Checkbox
             key={option}
             checked={value.includes(option)}

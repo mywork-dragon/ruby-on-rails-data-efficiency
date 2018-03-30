@@ -14,19 +14,21 @@ const PriceFilter = ({
     <label className="filter-label">
       Price:
     </label>
-    {
-      ['free', 'paid'].map(option => (
-        <Radio
-          key={option}
-          checked={value === option}
-          onClick={updateFilter('price', option, { panelKey })}
-          type="radio"
-          value={option}
-        >
-          {capitalize(option)}
-        </Radio>
-      ))
-    }
+    <div className="input-group">
+      {
+        ['free', 'paid'].map(option => (
+          <Radio
+            key={option}
+            checked={value === option}
+            onClick={updateFilter('price', option, { panelKey })}
+            type="radio"
+            value={option}
+          >
+            {capitalize(option)}
+          </Radio>
+        ))
+      }
+    </div>
   </li>
 );
 

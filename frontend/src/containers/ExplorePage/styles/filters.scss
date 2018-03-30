@@ -23,18 +23,78 @@
     width: 35%;
   }
 
-  .ui-select {
-    margin: 0;
-  }
-
-  select {
-    margin-right: 15px;
-  }
-
   .input-group {
     display: inline-flex;
     flex-wrap: wrap;
     width: 60%;
+    margin-top: -10px;
+  }
+
+  .following {
+    margin: 10px 5px 0;
+
+    &.categories {
+      margin-top: 10px;
+    }
+  }
+
+  .li-select {
+    width: 100%;
+
+    &.categories {
+      margin-top: 10px;
+    }
+
+    .ant-select {
+      width: 100%;
+    }
+
+    li {
+      padding: 0 20px 0 10px;
+    }
+  }
+
+  .ad-date-options-group {
+    margin-bottom: 10px;
+
+    .ant-select {
+      margin: 0 10px;
+    }
+  }
+
+  .input-group.network-count {
+    .ant-select {
+      margin: 0 5px;
+    }
+  }
+
+  .available-countries {
+    .ant-select {
+      margin: 10px 10px 0 0;
+    }
+  }
+
+  .ratings-count {
+    .Select {
+      margin: 10px 10px 0 0;
+    }
+
+    .and-text {
+      margin: 10px 10px 0 0;
+    }
+  }
+
+  .between-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+  }
+
+  .platform-category-label {
+    margin-bottom: 5px;
+
+    i {
+      margin-right: 0;
+    }
   }
 
   .sdk-filter-group {
@@ -82,78 +142,5 @@
         margin-top: 10px;
       }
     }
-  }
-
-  .following {
-    margin: 0 5px 10px;
-
-    &.categories {
-      margin-top: 10px;
-    }
-  }
-
-  .input-group {
-    .options-group {
-      margin-bottom: 10px;
-    }
-  }
-
-  .li-select {
-    width: 100%;
-
-    &.categories {
-      margin-bottom: 10px;
-    }
-
-    .ant-select {
-      width: 100%;
-    }
-
-    li {
-      padding: 0 20px 0 10px;
-    }
-  }
-
-  .ad-date-options-group {
-    margin-bottom: 5px;
-
-    .ant-select {
-      margin: 0 10px;
-    }
-  }
-
-  .input-group.network-count {
-    .ant-select {
-      margin: 0 5px;
-    }
-  }
-
-  .available-countries {
-    .ant-select {
-      margin: 0 10px 0 0;
-    }
-  }
-
-  .input-group.ratings-count {
-    .ant-input-number {
-      margin: 0 5px;
-    }
-  }
-
-  .ratings-count {
-    margin-top: -10px;
-
-    .Select {
-      margin: 10px 10px 0 0;
-    }
-
-    .and-text {
-      margin: 10px 10px 0 0;
-    }
-  }
-
-  .between-container {
-    display: inline-flex;
-    flex-wrap: wrap;
   }
 }
