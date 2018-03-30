@@ -158,6 +158,11 @@ class AndroidApp < ActiveRecord::Base
     developer = self.android_developer
     newest_snapshot = self.newest_android_app_snapshot
     hqs = self.headquarters(1)
+    domains = ''
+
+    if ! developer.nil?
+      domains = DomainLinker.new.publisher_to_domains('android', developer.id).try(:first, 10).try(:join, ', ')
+    end
 
     row = [
       self.id,
@@ -176,7 +181,7 @@ class AndroidApp < ActiveRecord::Base
       developer.try(:name),
       developer.try(:identifier),
       self.fortune_rank,
-      DomainLinker.new.publisher_to_domains('android', developer.id).try(:first, 10).try(:join, ', '),
+      domains,
       self.link,
       developer.try(:link),
       self.ratings_all_count,
