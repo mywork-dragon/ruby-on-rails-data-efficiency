@@ -2,6 +2,7 @@ import accountSaga from 'sagas/Account.sagas';
 import appSaga from 'containers/AppPage/redux/App.sagas';
 import appStoreSaga from 'sagas/AppStore.sagas';
 import exploreSaga from 'containers/ExplorePage/redux/Explore.sagas';
+import exploreMixpanelSaga from 'containers/ExplorePage/redux/Mixpanel.sagas';
 import listSaga from 'sagas/List.sagas';
 import publisherSaga from 'containers/PublisherPage/redux/Publisher.sagas';
 import tableSaga from 'Table/redux/Table.sagas';
@@ -11,6 +12,7 @@ const runSagas = (sagaMiddleware) => {
   sagaMiddleware.run(appSaga);
   sagaMiddleware.run(appStoreSaga);
   sagaMiddleware.run(exploreSaga);
+  sagaMiddleware.run(exploreMixpanelSaga);
   sagaMiddleware.run(listSaga);
   sagaMiddleware.run(publisherSaga);
   sagaMiddleware.run(tableSaga);

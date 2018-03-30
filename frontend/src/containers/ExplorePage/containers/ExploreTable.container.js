@@ -1,12 +1,14 @@
 import { connect } from 'react-redux';
 import TableContainer from 'Table/Table.container';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
-import { tableActions, requestQueryPage } from '../redux/Explore.actions';
+import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
   requestResults: params => dispatch(tableActions.allItems.request(params)),
   toggleItem: (id, type) => () => dispatch(tableActions.toggleItem({ id, type })),
   toggleAll: () => dispatch(tableActions.toggleAllItems()),
+  onCsvExport: () => dispatch(tableActions.csvExported()),
+  trackSort: sort => dispatch(trackTableSort(sort)),
   updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
   updatePageNum: (queryResultId, page) => dispatch(requestQueryPage(queryResultId, page)),
 });
@@ -48,7 +50,9 @@ const mergeProps = (stateProps, dispatchProps) => {
   } = stateProps;
 
   const {
+    trackSort,
     updatePageNum,
+    ...rest
   } = dispatchProps;
 
   const requestResults = ({ pageSize: size, pageNum: page, sort: currentSort }) => {
@@ -66,7 +70,7 @@ const mergeProps = (stateProps, dispatchProps) => {
     sort,
     pageNum,
     ...other,
-    ...dispatchProps,
+    ...rest,
     onPageChange: page => updatePageNum(queryResultId, page),
     onPageSizeChange: (newSize) => {
       if (canFetch) {
@@ -78,6 +82,7 @@ const mergeProps = (stateProps, dispatchProps) => {
       }
     },
     onSortedChange: (newSort) => {
+      trackSort(newSort);
       if (canFetch) {
         requestResults({
           pageNum: 0,

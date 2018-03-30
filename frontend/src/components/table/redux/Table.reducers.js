@@ -61,10 +61,14 @@ export function table(actionTypes, tableOptions) {
 
   // data format: { results, resultsCount, pageSize, pageNum, sort, columns }
   function loadResults(state, { payload: { data } }) {
-    if (data.resultsCount && data.resultsCount === 0) {
+    if (typeof data.resultsCount === 'number' && data.resultsCount === 0) {
       return {
-        ...initialState,
+        ...state,
         message: 'No Results',
+        loading: false,
+        error: false,
+        resultsCount: 0,
+        pageNum: 0,
       };
     }
 

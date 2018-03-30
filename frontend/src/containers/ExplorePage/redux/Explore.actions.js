@@ -50,3 +50,6 @@ export const getCsvQueryId = {
 
 export const REQUEST_QUERY_PAGE = 'REQUEST_QUERY_PAGE';
 export const requestQueryPage = (id, page) => action(REQUEST_QUERY_PAGE, { id, page });
+
+export const TRACK_TABLE_SORT = 'TRACK_TABLE_SORT';
+export const trackTableSort = sort => action(TRACK_TABLE_SORT, { sort });

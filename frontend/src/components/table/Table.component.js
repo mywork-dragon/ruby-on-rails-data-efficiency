@@ -23,6 +23,7 @@ const Table = ({
   isManual,
   loading,
   message,
+  onCsvExport,
   onPageChange,
   onPageSizeChange,
   onSortedChange,
@@ -68,6 +69,7 @@ const Table = ({
           <a href={csvLink}>
             <button
               className="btn btn-primary pull-right"
+              onClick={() => onCsvExport()}
             >
               Export to CSV
             </button>
@@ -148,6 +150,7 @@ Table.propTypes = {
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
   message: PropTypes.string,
+  onCsvExport: PropTypes.func,
   onPageChange: PropTypes.func,
   onPageSizeChange: PropTypes.func,
   onSortedChange: PropTypes.func,
@@ -179,6 +182,7 @@ Table.defaultProps = {
   isManual: false,
   loading: false,
   message: 'No results',
+  onCsvExport: () => {},
   onPageChange: null,
   onPageSizeChange: null,
   onSortedChange: null,

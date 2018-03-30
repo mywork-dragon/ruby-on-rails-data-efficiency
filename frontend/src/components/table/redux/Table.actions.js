@@ -9,6 +9,7 @@ const tableActionTypes = [
   'TOGGLE_ALL_ITEMS',
   'UPDATE_COLUMNS',
   'UPDATE_FILTER',
+  'CSV_EXPORTED',
 ];
 
 const tableRequestTypes = [
@@ -26,6 +27,7 @@ export function createTableActions (types) {
     setLoading: state => action(types.SET_LOADING, { state }),
     toggleItem: item => action(types.TOGGLE_ITEM, { item }),
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
+    csvExported: () => action(types.CSV_EXPORTED),
     updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
     updateFilter: (parameter, value, options) => action(types.UPDATE_FILTER, { parameter, value, options }),
   };
