@@ -4,13 +4,14 @@ class Api::SavedSearchesController < ApplicationController
   before_action :set_current_user, :authenticate_request
 
   def get_saved_searches
-    render json: @current_user.saved_searches.select(:id, :name, :search_params)
+    render json: @current_user.saved_searches.select(:id, :name, :search_params, :version)
   end
 
   def create_new_saved_search
     search_name = params['name']
     search_params = params['queryString']
-    render json: @current_user.saved_searches.create(name: search_name, search_params: search_params)
+    version = params['version']
+    render json: @current_user.saved_searches.create(name: search_name, search_params: search_params, version: version)
   end
 
   def edit_saved_search

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328185640) do
+ActiveRecord::Schema.define(version: 20180330183550) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -2250,8 +2250,9 @@ ActiveRecord::Schema.define(version: 20180328185640) do
     t.string   "name",          limit: 191
     t.integer  "user_id",       limit: 4
     t.text     "search_params", limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.string   "version",       limit: 191,   default: "v1", null: false
   end
 
   add_index "saved_searches", ["user_id"], name: "index_saved_searches_on_user_id", using: :btree

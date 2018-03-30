@@ -739,7 +739,7 @@ angular.module('appApp')
       savedSearchApiService.getSavedSearches().success((data) => {
         searchCtrl.savedSearches = {};
         searchCtrl.searchName = '';
-        data.forEach((search) => {
+        data.filter(search => search.version === 'v1').forEach((search) => {
           searchCtrl.savedSearches[search.id] = search;
         });
         searchCtrl.hasSearches = checkSearches();

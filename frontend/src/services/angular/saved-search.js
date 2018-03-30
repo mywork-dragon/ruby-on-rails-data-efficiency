@@ -14,7 +14,7 @@ angular.module('appApp').factory('savedSearchApiService', ['$http', 'loggitServi
       return $http({
         method: 'POST',
         url: `${API_URI_BASE}api/saved_searches/create`,
-        params: { name, queryString },
+        params: { name, queryString, version: 'v1' },
       });
     },
     updateSavedSearch(id, queryString) {
