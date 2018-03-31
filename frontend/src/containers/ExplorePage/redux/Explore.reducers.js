@@ -93,11 +93,6 @@ function explore (state = initialState, action) {
         queryId: payload.id,
         currentLoadedQuery: payload.query,
       };
-    case POPULATE_FROM_QUERY_ID.FAILURE:
-      return {
-        ...state,
-        queryId: '',
-      };
     case GET_CSV_QUERY_ID.REQUEST:
       return {
         ...state,
