@@ -41,7 +41,7 @@ const AdNetworkFilter = ({
   };
 
   return (
-    <li className="li-filter">
+    <li className="li-filter ad-networks">
       <div className="ad-date-options-group" id="ad-network-filter">
         First Seen Ads:
         <Select

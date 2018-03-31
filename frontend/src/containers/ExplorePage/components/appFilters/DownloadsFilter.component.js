@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import Select from 'components/select/CustomSelect.component';
 import { numberShorthand } from 'utils/format.utils';
 
 const options = [
@@ -28,6 +28,7 @@ const DownloadsFilter = ({
   },
   panelKey,
   updateFilter,
+  platform,
 }) => (
   <li className="li-filter">
     <label className="filter-label">
@@ -36,6 +37,7 @@ const DownloadsFilter = ({
     <div className="input-group ratings-count">
       <Select
         clearable={false}
+        disabled={platform === 'ios'}
         onChange={(val) => {
           const newFilter = {
             operator: val,
@@ -67,6 +69,7 @@ const DownloadsFilter = ({
         {['more-than', 'between'].includes(operator) && (
           <Select
             clearable
+            disabled={platform === 'ios'}
             onChange={(val) => {
               const newFilter = {
                 operator,
@@ -87,6 +90,7 @@ const DownloadsFilter = ({
         {['less-than', 'between'].includes(operator) && (
           <Select
             clearable
+            disabled={platform === 'ios'}
             onChange={(val) => {
               const newFilter = {
                 operator,
@@ -117,6 +121,7 @@ DownloadsFilter.propTypes = {
   }),
   panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
+  platform: PropTypes.string.isRequired,
 };
 
 DownloadsFilter.defaultProps = {

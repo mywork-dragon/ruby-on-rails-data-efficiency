@@ -32,7 +32,7 @@ const Explore = ({
   }
 
   return (
-    <div className="page">
+    <div className="page explore-page">
       <h4 className="page-title explore-title">
         Explore V2
         {' '}

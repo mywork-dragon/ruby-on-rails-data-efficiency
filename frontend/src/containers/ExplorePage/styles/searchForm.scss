@@ -27,6 +27,12 @@
     cursor: pointer;
     min-height: 35px;
   }
+
+  .additional-filters {
+    .explore-checkbox {
+      margin: 0;
+    }
+  }
 }
 
 .explore-search-form {

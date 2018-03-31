@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox } from 'antd';
 
 const AdditionalFilters = ({ includeTakenDown, updateFilter }) => (
   <div className="basic-filter">
@@ -7,10 +8,13 @@ const AdditionalFilters = ({ includeTakenDown, updateFilter }) => (
       Additional Settings
     </h4>
     <div className="additional-filters">
-      <label className="explore-checkbox">
-        <input checked={includeTakenDown} onChange={updateFilter('includeTakenDown')} type="checkbox" />
+      <Checkbox
+        checked={includeTakenDown}
+        className="explore-checkbox"
+        onChange={updateFilter('includeTakenDown')}
+      >
         Include unavailable apps
-      </label>
+      </Checkbox>
     </div>
   </div>
 );

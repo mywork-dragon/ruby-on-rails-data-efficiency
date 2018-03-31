@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import Select from 'components/select/CustomSelect.component';
 
 const options = [
   { value: 0, label: '0 stars' },
