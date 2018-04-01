@@ -29,14 +29,18 @@ function* requestAdNetworks () {
 
 function* requestSavedSearches () {
   try {
-    const { data } = yield call(SavedSearchService().getSavedSearches2);
-    for (const key in data) {
-      if (data[key]) {
-        const { data: { formState } } = yield call(ExploreService.getQueryParams, data[key].queryId);
-        data[key].formState = formState;
-      }
+    const { data } = yield call(SavedSearchService().getSavedSearches);
+    const v2Searches = data.filter(x => x.version === 'v2');
+    const searches = {};
+    for (let i = 0; i < v2Searches.length; i++) {
+      const search = v2Searches[i];
+      search.queryId = search.search_params;
+      delete search.search_params;
+      const { data: { formState } } = yield call(ExploreService.getQueryParams, search.queryId);
+      search.formState = formState;
+      searches[search.id] = search;
     }
-    yield put(getSavedSearches.success(data));
+    yield put(getSavedSearches.success(searches));
   } catch (error) {
     console.log(error);
     yield put(getSavedSearches.failure());
@@ -48,7 +52,7 @@ function* createSavedSearch (action) {
   const { name, params } = action.payload;
   const { data: { query_id } } = yield call(ExploreService.getQueryId, params);
   try {
-    const res = yield call(SavedSearchService().createSavedSearch2, name, query_id);
+    const res = yield call(SavedSearchService().createSavedSearch, name, query_id);
     toastr.success('Search saved successfully!');
     const newSearch = { ...res.data, formState: params.formState };
     yield put(saveNewSearch.success(newSearch));
@@ -65,7 +69,7 @@ function* createSavedSearch (action) {
 function* handleSavedSearchDelete (action) {
   const { id } = action.payload;
   try {
-    yield call(SavedSearchService().deleteSavedSearch2, id);
+    yield call(SavedSearchService().deleteSavedSearch, id);
     toastr.success('Search deleted successfully.');
     yield put(deleteSavedSearch.success(id));
   } catch (error) {
