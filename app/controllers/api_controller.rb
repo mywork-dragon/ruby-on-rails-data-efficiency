@@ -459,34 +459,28 @@ class ApiController < ApplicationController
   end
 
   def get_ios_sdk_categories
-    expires_in 10.minutes
-    categories = Rails.cache.fetch('api_controller:get_ios_sdk_categories', expires: 15.minutes) do
-      categories = {}
-      Tag.select(:id, :name).order(:name).joins(:ios_sdks).group(:tag_id).having('count(tag_id) > ?', 0).each do |tag|
-        categories[tag.name] = {
-          id: tag.id,
-          name: tag.name,
-          sdks: tag.ios_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
-        }
-      end
-      categories
+    categories = {}
+    Tag.select(:id, :name).order(:name).joins(:ios_sdks).group(:tag_id).having('count(tag_id) > ?', 0).each do |tag|
+      categories[tag.name] = {
+        id: tag.id,
+        name: tag.name,
+        sdks: tag.ios_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
+      }
     end
+
     render json: categories
   end
 
   def get_android_sdk_categories
-    expires_in 10.minutes
-    categories = Rails.cache.fetch('api_controller:get_android_sdk_categories', expires: 15.minutes) do
-      categories = {}
-      Tag.select(:id, :name).order(:name).joins(:android_sdks).group(:tag_id).having('count(tag_id) > ?', 0).map do |tag|
-        categories[tag.name] = {
-          id: tag.id,
-          name: tag.name,
-          sdks: tag.android_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
-        }
-        categories
-      end
+    categories = {}
+    Tag.select(:id, :name).order(:name).joins(:android_sdks).group(:tag_id).having('count(tag_id) > ?', 0).map do |tag|
+      categories[tag.name] = {
+        id: tag.id,
+        name: tag.name,
+        sdks: tag.android_sdks.where(flagged: false).as_json.sort_by { |sdk| sdk[:name] }
+      }
     end
+
     render json: categories
   end
 
