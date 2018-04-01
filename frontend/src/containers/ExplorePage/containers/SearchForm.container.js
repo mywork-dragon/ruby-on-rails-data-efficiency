@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { hasFilters } from 'utils/explore/general.utils';
 import * as appStore from 'selectors/appStore.selectors';
+import { adNetworks, saveNewSearch } from 'actions/Account.actions';
 import * as account from 'selectors/account.selectors';
-import { adNetworks } from 'actions/Account.actions';
 import SearchForm from '../components/SearchForm.component';
 import {
   tableActions,
@@ -19,17 +19,18 @@ const mapDispatchToProps = dispatch => ({
   deleteFilter: (filterKey, index) => dispatch(tableActions.deleteFilter(filterKey, index)),
   duplicateSdkFilter: index => () => dispatch(duplicateSdkFilter(index)),
   getResults: params => dispatch(tableActions.allItems.request(params)),
-  toggleForm: () => dispatch(toggleForm()),
+  toggleForm: type => dispatch(toggleForm(type)),
   togglePanel: index => () => dispatch(togglePanel(index)),
   updateFilter: (parameter, value, options) => () => dispatch(tableActions.updateFilter(parameter, value, options)),
   getAdNetworks: () => dispatch(adNetworks.request()),
+  saveSearch: (name, params) => dispatch(saveNewSearch.request(name, params)),
 });
 
 const mapStateToProps = (state) => {
   const { explorePage: { explore, searchForm, resultsTable } } = state;
 
   return {
-    canFetch: hasFilters(searchForm.filters),
+    canFetch: hasFilters(searchForm.filters) && !resultsTable.loading,
     ...explore,
     searchForm,
     resultsTable,
@@ -58,16 +59,24 @@ const mergeProps = (storeProps, dispatchProps) => {
     ...rest
   } = storeProps;
 
+  const { getResults, saveSearch, ...other } = dispatchProps;
+
   return {
     adNetworks: accountNetworks,
     ...searchForm,
-    ...dispatchProps,
+    ...other,
     loading,
     ...rest,
-    requestResults: () => () => {
+    requestResults: () => {
       const pageSettings = { pageSize, pageNum: 0 };
       const query = buildExploreRequest(searchForm, columns, pageSettings, sort, accountNetworks);
-      dispatchProps.getResults(query);
+      getResults(query);
+    },
+    saveSearch: (name) => {
+      const pageSettings = { pageSize, pageNum: 0 };
+      const query = buildExploreRequest(searchForm, columns, pageSettings, sort, accountNetworks);
+      saveSearch(name, query);
+      getResults(query);
     },
   };
 };

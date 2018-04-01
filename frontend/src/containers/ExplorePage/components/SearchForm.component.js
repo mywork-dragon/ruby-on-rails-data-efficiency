@@ -9,14 +9,13 @@ import AppFilterPanel from './appFilters/AppFilterPanel.component';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
 import PublisherFilterPanel from './publisherFilters/PublisherFilterPanel.component';
-import RankingsFilterPanel from './RankingsFilterPanel.component';
-import ResultTypeFilter from './ResultTypeFilter.component';
+import SaveSearchButton from './SaveSearchButton.component';
 import SdkFilterPanel from './sdkFilters/SdkFilterPanel.component';
 
 const SearchForm = ({
   canFetch,
   clearFilters,
-  expanded,
+  searchFormExpanded,
   includeTakenDown,
   platform,
   resultType,
@@ -27,16 +26,16 @@ const SearchForm = ({
 }) => {
   const toggleFormPanel = () => (e) => {
     e.stopPropagation();
-    toggleForm();
+    toggleForm('searchForm');
   };
 
   return (
-    <Panel expanded={expanded} id="search-form-panel" onToggle={toggleFormPanel()}>
+    <Panel expanded={searchFormExpanded} id="search-form-panel" onToggle={toggleFormPanel()}>
       <Panel.Heading onClick={toggleFormPanel()}>
         <Panel.Title>
           Build Your Search
           {
-            expanded ? (
+            searchFormExpanded ? (
               <i className="fa fa-angle-up pull-right" onClick={toggleFormPanel()} />
             ) : (
               <i className="fa fa-angle-down pull-right" />
@@ -71,12 +70,12 @@ const SearchForm = ({
                 <Button className="btn btn-primary" onClick={clearFilters()}>Clear Filters</Button>
               </div>
               <div className="search-form-submit">
-                {/* <Button className="btn btn-primary" disabled={!canFetch}>Save Search</Button> */}
+                <SaveSearchButton canFetch={canFetch} {...rest} />
                 <Button
                   className="btn btn-primary"
                   disabled={!canFetch}
                   loading={loading}
-                  onClick={requestResults()}
+                  onClick={() => requestResults()}
                   style={{ width: 130 }}
                   type="primary"
                 >
@@ -94,7 +93,7 @@ const SearchForm = ({
 SearchForm.propTypes = {
   canFetch: PropTypes.bool,
   clearFilters: PropTypes.func.isRequired,
-  expanded: PropTypes.bool,
+  searchFormExpanded: PropTypes.bool,
   includeTakenDown: PropTypes.bool.isRequired,
   platform: PropTypes.string.isRequired,
   requestResults: PropTypes.func.isRequired,
@@ -105,7 +104,7 @@ SearchForm.propTypes = {
 
 SearchForm.defaultProps = {
   canFetch: false,
-  expanded: true,
+  searchFormExpanded: true,
 };
 
 export default SearchForm;

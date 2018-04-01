@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ExploreTableContainer from './containers/ExploreTable.container';
+import SavedSearchContainer from './containers/SavedSearch.container';
 import SearchFormContainer from './containers/SearchForm.container';
 
 const Explore = ({
@@ -38,6 +39,7 @@ const Explore = ({
         {' '}
         <span className="beta-flag">BETA</span>
       </h4>
+      <SavedSearchContainer />
       <SearchFormContainer />
       <ExploreTableContainer />
     </div>

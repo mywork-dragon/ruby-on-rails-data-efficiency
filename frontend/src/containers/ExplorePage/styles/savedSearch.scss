@@ -1,0 +1,44 @@
+@import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+.saved-search-panel-body {
+  .spinner-container {
+    margin: 0 auto;
+    width: 40px;
+  }
+
+  .table {
+    tr {
+      cursor: pointer;
+    }
+
+    .search-params {
+      width: 300px;
+    }
+
+    .search-name {
+      min-width: 200px;
+    }
+
+    span.active {
+      font-weight: bold;
+    }
+  }
+
+  .no-searches {
+    text-align: center;
+  }
+
+  .delete-btn {
+    cursor: pointer;
+  }
+
+
+  .saved-search-tags-container {
+    margin-top: -5px;
+
+    .ant-tag {
+      margin-top: 5px;
+    }
+  }
+}

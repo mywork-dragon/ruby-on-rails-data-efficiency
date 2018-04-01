@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
+import { LOAD_SAVED_SEARCH } from 'actions/Account.actions';
 import { setExploreColumns, getExploreColumns } from 'utils/explore/general.utils';
 import searchForm from './searchForm.reducers';
 import {
@@ -13,9 +14,11 @@ import {
 } from './Explore.actions';
 
 const initialState = {
-  expanded: true,
+  savedSearchExpanded: true,
+  searchFormExpanded: true,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: null,
+  savedSearchId: null,
   queryResultId: null,
   csvQueryId: null,
   currentLoadedQuery: {},
@@ -75,7 +78,7 @@ function explore (state = initialState, action) {
     case TOGGLE_FORM:
       return {
         ...state,
-        expanded: !state.expanded,
+        [`${payload.type}Expanded`]: !state[`${payload.type}Expanded`],
       };
     case TOGGLE_PANEL:
       return {
@@ -91,7 +94,12 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryId: payload.id,
-        currentLoadedQuery: payload.query,
+        currentLoadedQuery: payload.formState,
+      };
+    case LOAD_SAVED_SEARCH.SUCCESS:
+      return {
+        ...state,
+        savedSearchId: payload.id,
       };
     case GET_CSV_QUERY_ID.REQUEST:
       return {

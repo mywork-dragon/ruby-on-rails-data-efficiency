@@ -300,6 +300,12 @@ export function generateQueryDateRange (label, dateRange, dates) {
   return result;
 }
 
+export function isCurrentQuery(query) {
+  const location = window.location.href;
+  const currentQuery = location.substr(location.lastIndexOf('/') + 1);
+  return currentQuery !== 'v2' && query === currentQuery;
+}
+
 export function setExploreColumns (columns) {
   $localStorage.set('exploreTableColumns', columns);
 }

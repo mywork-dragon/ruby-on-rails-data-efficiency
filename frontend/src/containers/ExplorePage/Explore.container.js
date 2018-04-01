@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { needAppCategories, needAvailableCountries, needSdkCategories } from 'selectors/appStore.selectors';
 import * as appStore from 'actions/AppStore.actions';
 import { populateFromQueryId } from './redux/Explore.actions';
 import Explore from './Explore.component';
@@ -10,34 +11,24 @@ const mapDispatchToProps = dispatch => ({
   requestSdkCategories: () => dispatch(appStore.sdkCategories.request()),
 });
 
-const mapStateToProps = ({
-  explorePage: {
-    explore: {
-      loaded,
-      queryId,
+const mapStateToProps = (state) => {
+  const {
+    explorePage: {
+      explore: {
+        loaded,
+        queryId,
+      },
     },
-  },
-  appStoreInfo: {
-    categories: {
-      loaded: categoriesLoaded,
-      fetching: categoriesFetching,
-    },
-    sdkCategories: {
-      loaded: sdkCategoriesLoaded,
-      fetching: sdkCategoriesFetching,
-    },
-    availableCountries: {
-      loaded: countriesLoaded,
-      fetching: countriesFetching,
-    },
-  },
-}) => ({
-  loaded,
-  existingId: queryId,
-  shouldFetchCategories: !categoriesLoaded && !categoriesFetching,
-  shouldFetchCountries: !countriesLoaded && !countriesFetching,
-  shouldFetchSdkCategories: !sdkCategoriesLoaded && !sdkCategoriesFetching,
-});
+  } = state;
+
+  return {
+    loaded,
+    existingId: queryId,
+    shouldFetchCategories: needAppCategories(state),
+    shouldFetchCountries: needAvailableCountries(state),
+    shouldFetchSdkCategories: needSdkCategories(state),
+  };
+};
 
 const ExploreContainer = connect(
   mapStateToProps,

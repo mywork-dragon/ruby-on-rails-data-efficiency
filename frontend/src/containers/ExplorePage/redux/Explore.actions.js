@@ -17,13 +17,13 @@ export const TABLE_TYPES = Object.assign({}, EXPLORE_TABLE_ACTION_TYPES, EXPLORE
 export const tableActions = Object.assign({}, exploreTableActions, exploreTableRequestActions);
 
 export const TOGGLE_FORM = 'TOGGLE_FORM';
-export const toggleForm = () => action(TOGGLE_FORM);
+export const toggleForm = type => action(TOGGLE_FORM, { type });
 
 export const TOGGLE_PANEL = 'TOGGLE_PANEL';
 export const togglePanel = index => action(TOGGLE_PANEL, { index });
 
 export const UPDATE_QUERY_ID = 'UPDATE_QUERY_ID';
-export const updateQueryId = (id, query) => action(UPDATE_QUERY_ID, { id, query });
+export const updateQueryId = (id, formState) => action(UPDATE_QUERY_ID, { id, formState });
 
 export const UPDATE_QUERY_RESULT_ID = 'UPDATE_QUERY_RESULT_ID';
 export const updateQueryResultId = id => action(UPDATE_QUERY_RESULT_ID, { id });

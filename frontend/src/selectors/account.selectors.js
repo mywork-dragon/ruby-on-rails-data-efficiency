@@ -1,3 +1,9 @@
+export const getSearches = state => Object.values(state.account.savedSearches.searches);
+
+export const getSavedSearchById = (state, id) => state.account.savedSearches.searches[id];
+
+export const needSavedSearches = state => !state.account.savedSearches.loaded && !state.account.savedSearches.fetching;
+
 export const shouldFetchAdNetworks = state => !state.account.adNetworks.loaded && !state.account.adNetworks.fetching;
 
 export const accessibleNetworks = state => Object.values(state.account.adNetworks.adNetworks).filter(x => x.can_access);

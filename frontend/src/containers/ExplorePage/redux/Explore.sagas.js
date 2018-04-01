@@ -1,14 +1,17 @@
 import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
-import ExploreService from 'services/explore.service';
-import { formatResults, setExploreColumns } from 'utils/explore/general.utils';
+import service from 'services/explore.service';
+import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
 import { isFacebookOnly } from 'selectors/account.selectors';
 import { buildCsvRequest } from 'utils/explore/queryBuilder.utils';
 import toastr from 'toastr';
+import {
+  LOAD_SAVED_SEARCH,
+  loadSavedSearch,
+} from 'actions/Account.actions';
 
 import {
   POPULATE_FROM_QUERY_ID,
   TABLE_TYPES,
-  GET_CSV_QUERY_ID,
   REQUEST_QUERY_PAGE,
   populateFromQueryId,
   tableActions,
@@ -17,14 +20,12 @@ import {
   getCsvQueryId,
 } from './Explore.actions';
 
-const service = ExploreService;
-
 function* requestResults ({ payload }) {
   const { params, params: { page_settings: { page: pageNum } } } = payload;
   delete params.page_settings.page;
   try {
-    yield put(tableActions.clearResults());
     const { data: { query_id } } = yield call(service.getQueryId, params);
+    yield put(tableActions.clearResults());
     yield fork(requestCsvQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
@@ -36,9 +37,13 @@ function* requestResults ({ payload }) {
 }
 
 function* requestResultsByQueryId (id, params, pageNum) {
+  if (!isCurrentQuery(id)) {
+    history.pushState(null, null, `#/search/v2/${id}`);
+  }
   try {
     yield put(updateQueryId(id, JSON.parse(params.formState)));
     const res = yield call(service.getQueryResultInfo, id);
+    // this failure doesn't get caught
     const { number_results, query_result_id } = res.data;
     yield put(updateQueryResultId(query_result_id));
     if (number_results === 0) {
@@ -68,11 +73,14 @@ function* requestResultsByQueryResultId ({ payload: { id, page } }) {
   }
 }
 
-function* populateFromQuery ({ payload: { id } }) {
+function* populateFromQuery ({ payload: { id, searchId } }) {
   try {
     const { data: params, data: { formState } } = yield call(service.getQueryParams, id);
     yield put(populateFromQueryId.success(id, JSON.parse(formState)));
     yield put(tableActions.setLoading(true));
+    if (searchId) {
+      yield put(loadSavedSearch.success(searchId));
+    }
     yield fork(requestCsvQueryId, params);
     yield call(requestResultsByQueryId, id, params, 0);
   } catch (error) {
@@ -111,6 +119,10 @@ function* watchQueryPopulation() {
   yield takeLatest(POPULATE_FROM_QUERY_ID.REQUEST, populateFromQuery);
 }
 
+function* watchSavedSearchLoad() {
+  yield takeLatest(LOAD_SAVED_SEARCH.REQUEST, populateFromQuery);
+}
+
 function* watchColumnUpdate() {
   yield takeLatest(TABLE_TYPES.UPDATE_COLUMNS, updateExploreTableColumns);
 }
@@ -123,6 +135,7 @@ export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
     watchQueryPopulation(),
+    watchSavedSearchLoad(),
     watchColumnUpdate(),
     watchPageChange(),
   ]);

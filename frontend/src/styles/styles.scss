@@ -2,6 +2,7 @@
 
 .dotted-link {
   color: $link;
+  cursor: pointer;
 
   &:focus {
     text-decoration-style: dotted;
