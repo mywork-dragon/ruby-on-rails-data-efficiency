@@ -53,3 +53,6 @@ export const requestQueryPage = (id, page) => action(REQUEST_QUERY_PAGE, { id, p
 
 export const TRACK_TABLE_SORT = 'TRACK_TABLE_SORT';
 export const trackTableSort = sort => action(TRACK_TABLE_SORT, { sort });
+
+export const UPDATE_SAVED_SEARCH_PAGE = 'UPDATED_SAVED_SEARCH_PAGE';
+export const updateSavedSearchPage = page => action(UPDATE_SAVED_SEARCH_PAGE, { page });

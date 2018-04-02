@@ -11,11 +11,13 @@ import {
   POPULATE_FROM_QUERY_ID,
   GET_CSV_QUERY_ID,
   UPDATE_QUERY_RESULT_ID,
+  UPDATE_SAVED_SEARCH_PAGE,
 } from './Explore.actions';
 
 const initialState = {
   savedSearchExpanded: true,
   searchFormExpanded: true,
+  searchPage: 0,
   panels: { 1: false, 2: false, 3: false, 4: false, 5: false },
   queryId: null,
   savedSearchId: null,
@@ -115,6 +117,11 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryResultId: payload.id,
+      };
+    case UPDATE_SAVED_SEARCH_PAGE:
+      return {
+        ...state,
+        searchPage: payload.page,
       };
     default:
       return state;

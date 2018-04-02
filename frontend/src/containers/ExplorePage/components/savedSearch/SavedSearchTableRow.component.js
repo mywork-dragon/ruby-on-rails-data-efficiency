@@ -14,7 +14,7 @@ const SavedSearchTableRow = ({
     className={classNames({ active: isCurrentQuery(search.queryId) })}
     onClick={() => loadSavedSearch(search.id, search.queryId)}
   >
-    <td>{search.id}</td>
+    {/* <td>{search.id}</td> */}
     <td className="search-name">
       <span className="dotted-link">
         {search.name}
