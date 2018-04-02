@@ -22,7 +22,11 @@ test('', () => {
     predicates: [
       ['platform', 'ios'],
       ['not', ['taken_down']],
-      ['downloaded', 10000000, null],
+      [
+        'or',
+        ['downloaded', 10000000, null],
+        ['platform', 'ios'],
+      ],
     ],
   };
 

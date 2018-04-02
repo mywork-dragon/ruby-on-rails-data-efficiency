@@ -282,7 +282,17 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
 
     if (value.operator === 'less-than' && values[1] < 10) values[1] -= 0.1;
 
-    return [filterType].concat(values);
+    const filter = [filterType].concat(values);
+
+    if (type === 'downloads') {
+      return [
+        'or',
+        filter,
+        ['platform', 'ios'],
+      ];
+    }
+
+    return filter;
   } else if (type === 'releaseDate') {
     return generateQueryDateRange('released', value.dateRange, value.dates);
   }
