@@ -158,36 +158,40 @@ export function cleanState (form) {
   return cleanedState;
 }
 
-export function formatCategorySdksTree (iosSdkCategories, androidSdkCategories) {
+export function formatCategorySdksTree (iosSdkCategories, androidSdkCategories, platform) {
   const treeData = [];
 
-  for (const key in iosSdkCategories) {
-    if (iosSdkCategories[key]) {
-      treeData.push({
-        label: `${key} (iOS)`,
-        value: `${key}_ios`,
-        key: `${key}_ios`,
-        children: iosSdkCategories[key].sdks.map(x => ({
-          label: `${x.name} (iOS)`,
-          value: `${x.id}_ios_${x.name}_${key}`,
-          key: `${x.id}_ios_${x.name}_${key}`,
-        })),
-      });
+  if (platform !== 'android') {
+    for (const key in iosSdkCategories) {
+      if (iosSdkCategories[key]) {
+        treeData.push({
+          label: `${key} (iOS)`,
+          value: `${key}_ios`,
+          key: `${key}_ios`,
+          children: iosSdkCategories[key].sdks.map(x => ({
+            label: `${x.name} (iOS)`,
+            value: `${x.id}_ios_${x.name}_${key}`,
+            key: `${x.id}_ios_${x.name}_${key}`,
+          })),
+        });
+      }
     }
   }
 
-  for (const key in androidSdkCategories) {
-    if (androidSdkCategories[key]) {
-      treeData.push({
-        label: `${key} (Android)`,
-        value: `${key}_android`,
-        key: `${key}_android`,
-        children: androidSdkCategories[key].sdks.map(x => ({
-          label: `${x.name} (Android)`,
-          value: `${x.id}_android_${x.name}_${key}`,
-          key: `${x.id}_android_${x.name}_${key}`,
-        })),
-      });
+  if (platform !== 'ios') {
+    for (const key in androidSdkCategories) {
+      if (androidSdkCategories[key]) {
+        treeData.push({
+          label: `${key} (Android)`,
+          value: `${key}_android`,
+          key: `${key}_android`,
+          children: androidSdkCategories[key].sdks.map(x => ({
+            label: `${x.name} (Android)`,
+            value: `${x.id}_android_${x.name}_${key}`,
+            key: `${x.id}_android_${x.name}_${key}`,
+          })),
+        });
+      }
     }
   }
 

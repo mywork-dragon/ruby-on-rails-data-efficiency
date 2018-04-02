@@ -9,10 +9,11 @@ const SdkCategoryFilter = ({
   updateFilter,
   filter,
   index,
+  platform,
 }) => {
   const value = formatCategorySdksValue(filter.sdks);
 
-  const treeData = formatCategorySdksTree(iosSdkCategories, androidSdkCategories);
+  const treeData = formatCategorySdksTree(iosSdkCategories, androidSdkCategories, platform);
 
   return (
     <TreeSelect
@@ -42,6 +43,7 @@ SdkCategoryFilter.propTypes = {
   updateFilter: PropTypes.func.isRequired,
   filter: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
+  platform: PropTypes.string.isRequired,
 };
 
 export default SdkCategoryFilter;

@@ -72,6 +72,7 @@ class SdkFilterGroup extends React.Component {
       },
       index,
       updateFilter,
+      platform,
       ...rest
     } = this.props;
 
@@ -223,7 +224,7 @@ class SdkFilterGroup extends React.Component {
         <div className="following categories">
           and SDK categories
         </div>
-        <SdkCategoryFilter filter={filter} index={index} updateFilter={updateFilter} {...rest} />
+        <SdkCategoryFilter filter={filter} index={index} platform={platform} updateFilter={updateFilter} {...rest} />
       </div>
     );
   }
