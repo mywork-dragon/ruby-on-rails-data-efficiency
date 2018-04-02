@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180330183550) do
+ActiveRecord::Schema.define(version: 20180402225535) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1158,10 +1158,12 @@ ActiveRecord::Schema.define(version: 20180330183550) do
     t.datetime "updated_at"
     t.integer  "category_identifier", limit: 4
     t.boolean  "is_ranking_label",                default: false
+    t.integer  "parent_identifier",   limit: 4
   end
 
   add_index "ios_app_categories", ["category_identifier"], name: "index_ios_app_categories_on_category_identifier", unique: true, using: :btree
   add_index "ios_app_categories", ["name"], name: "index_ios_app_categories_on_name", using: :btree
+  add_index "ios_app_categories", ["parent_identifier"], name: "index_ios_app_categories_on_parent_identifier", using: :btree
 
   create_table "ios_app_categories_current_snapshot_backups", force: :cascade do |t|
     t.integer  "ios_app_category_id",         limit: 4
