@@ -267,13 +267,7 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       return ['not', [filterType]];
     }
     return [filterType];
-  } else if (type === 'adNetworkCount') {
-    return [
-      filterType,
-      value.start,
-      value.end,
-    ];
-  } else if (type === 'ratingsCount' || type === 'rating' || type === 'downloads') {
+  } else if (type === 'ratingsCount' || type === 'rating' || type === 'downloads' || type === 'adNetworkCount') {
     if (value.value.every(x => !x)) {
       return null;
     }

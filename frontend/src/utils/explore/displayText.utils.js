@@ -28,7 +28,7 @@ function getDisplayText (parameter, value) {
     case 'adNetworks':
       return adNetworkText(value);
     case 'adNetworkCount':
-      return `Advertising on ${value.start} ${value.start === value.end ? '' : `to ${value.end}`} networks`;
+      return rangeText('Advertising on', value);
     case 'ratingsCount':
       return rangeText('Ratings Count', value);
     case 'rating':
@@ -214,7 +214,20 @@ function rangeText (base, { operator, value }) {
       break;
   }
 
-  return `${base} ${operatorText} ${countText}${base === 'Rating' ? ' stars' : ''}`;
+  let itemText;
+
+  switch (base) {
+    case 'Rating':
+      itemText = ' Stars';
+      break;
+    case 'Advertising on':
+      itemText = ' Networks';
+      break;
+    default:
+      itemText = '';
+  }
+
+  return `${base} ${operatorText} ${countText}${itemText}`;
 }
 
 export default getDisplayText;

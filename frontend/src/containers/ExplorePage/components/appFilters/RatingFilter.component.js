@@ -76,7 +76,7 @@ const RatingFilter = ({
                 value: [val, value[1]],
               };
 
-              if (!val) newFilter.value = [];
+              if (typeof val !== 'number') newFilter.value = [];
 
               updateFilter('rating', newFilter, { panelKey })();
             }}
@@ -96,7 +96,7 @@ const RatingFilter = ({
                 value: [value[0], val],
               };
 
-              if (!val) newFilter.value = [];
+              if (typeof val !== 'number') newFilter.value = [];
 
               updateFilter('rating', newFilter, { panelKey })();
             }}

@@ -9,8 +9,8 @@ test('', () => {
     filters: {
       adNetworkCount: {
         value: {
-          start: 2,
-          end: 4,
+          value: [1, 5],
+          operator: 'between',
         },
       },
     },
@@ -22,7 +22,7 @@ test('', () => {
     predicates: [
       ['platform', 'ios'],
       ['not', ['taken_down']],
-      ['count_advertising_networks', 2, 4],
+      ['count_advertising_networks', 1, 5],
     ],
   };
 

@@ -76,7 +76,7 @@ const DownloadsFilter = ({
                 value: [val, value[1]],
               };
 
-              if (!val) newFilter.value = [];
+              if (typeof val !== 'number') newFilter.value = [];
 
               updateFilter('downloads', newFilter, { panelKey })();
             }}
@@ -97,7 +97,7 @@ const DownloadsFilter = ({
                 value: [value[0], val],
               };
 
-              if (!val) newFilter.value = [];
+              if (typeof val !== 'number') newFilter.value = [];
 
               updateFilter('downloads', newFilter, { panelKey })();
             }}
