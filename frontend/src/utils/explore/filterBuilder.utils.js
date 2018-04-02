@@ -280,7 +280,7 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
 
     const values = value.value.slice();
 
-    if (value.operator === 'less-than' && values[1] < 10) values[1] -= 0.1;
+    if (value.operator === 'less-than') values[0] = null;
 
     const filter = [filterType].concat(values);
 

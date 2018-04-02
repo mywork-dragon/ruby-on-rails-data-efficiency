@@ -24,7 +24,7 @@ test('', () => {
       ['not', ['taken_down']],
       [
         'or',
-        ['downloaded', 0, 10000000],
+        ['downloaded', null, 10000000],
         ['platform', 'ios'],
       ],
     ],

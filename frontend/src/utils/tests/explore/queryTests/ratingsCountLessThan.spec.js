@@ -22,7 +22,7 @@ test('', () => {
     predicates: [
       ['platform', 'ios'],
       ['not', ['taken_down']],
-      ['all_version_ratings_count', 0, 10000],
+      ['all_version_ratings_count', null, 10000],
     ],
   };
 
