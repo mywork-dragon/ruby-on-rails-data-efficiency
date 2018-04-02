@@ -49,9 +49,8 @@ export function buildSortSettings (sorts) {
 }
 
 export const convertToQuerySort = sorts => sorts.map(sort => ({
-  field: sortMap[sort.id].field,
+  ...sortMap[sort.id],
   order: sort.desc ? 'desc' : 'asc',
-  object: sortMap[sort.id].object,
 }));
 
 export function buildSelect (resultType, columns, accountNetworks) {

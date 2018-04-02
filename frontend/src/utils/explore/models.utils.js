@@ -32,11 +32,16 @@ export const selectMap = {
 
 export const sortMap = {
   [headerNames.APP]: { field: 'name', object: 'app' },
+  // [headerNames.CATEGORY]: { field: 'name', object: 'app_category' },
   [headerNames.DOWNLOADS]: { field: 'downloads_min', object: 'app' },
+  [headerNames.FIRST_SEEN_ADS]: { field: 'first_seen_ads_date', object: 'mobile_ad_data_summary', function: 'min' },
+  [headerNames.LAST_SEEN_ADS]: { field: 'last_seen_ads_date', object: 'mobile_ad_data_summary', function: 'max' },
   [headerNames.LAST_UPDATED]: { field: 'current_version_release_date', object: 'app' },
+  [headerNames.MOBILE_PRIORITY]: { field: 'current_version_release_date', object: 'app' },
   [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
   [headerNames.RATING]: { field: 'all_version_rating', object: 'app' },
   [headerNames.RATINGS_COUNT]: { field: 'all_version_ratings_count', object: 'app' },
+  [headerNames.RELEASE_DATE]: { field: 'original_release_date', object: 'app' },
 };
 
 export const csvSelect = (facebookOnly) => {

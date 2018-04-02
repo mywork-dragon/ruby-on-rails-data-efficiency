@@ -87,6 +87,7 @@ export const columnModels = [
     accessor: 'categories',
     headerClassName: 'med-cell',
     className: 'med-cell',
+    sortable: false,
     Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : <span className="invalid">No data</span>}</div>,
   },
   {
@@ -145,7 +146,6 @@ export const columnModels = [
     accessor: d => ['low', 'medium', 'high'].indexOf(d.mobilePriority || d.mobile_priority),
     headerClassName: 'med-small-cell',
     className: 'med-small-cell',
-    sortable: false,
     Cell: cell => <MobilePriorityCell mobilePriority={cell.value} />,
   },
   {
@@ -202,7 +202,7 @@ export const columnModels = [
     accessor: 'userBase',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    // sortable: false, // TODO: remove
+    sortable: false,
     Cell: cell => <UserBaseCell app={cell.original} />,
   },
 ];
