@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import TableContainer from 'Table/Table.container';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
+import { $localStorage } from 'utils/localStorage.utils';
 import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -31,7 +32,7 @@ const mapStateToProps = ({
   title: 'Results',
   canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
   adNetworks: adNetworks.adNetworks,
-  csvLink: csvQueryId ? `https://query.mightysignal.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv` : null,
+  csvLink: csvQueryId ? `https://query.mightysignal.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}` : null,
   queryResultId,
   currentLoadedQuery,
   ...resultsTable,

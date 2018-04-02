@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { isValidToken } from 'utils/auth.utils';
+import { $localStorage } from 'utils/localStorage.utils';
 import { getQueryToken } from './auth';
 import httpClient from './httpClient';
 
@@ -20,6 +21,7 @@ const ExploreService = (client = httpClient) => {
     return getQueryToken().then((newToken) => {
       exploreClient.defaults.headers.Authorization = `${newToken}`;
       config.headers.Authorization = `${newToken}`;
+      $localStorage.set('queryToken', newToken);
       return Promise.resolve(config);
     });
   });
