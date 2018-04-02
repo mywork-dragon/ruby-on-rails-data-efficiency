@@ -6,7 +6,7 @@ import httpClient from './httpClient';
 
 
 const ExploreService = (client = httpClient) => {
-  const url = 'https://query.mightysignal.com';
+  const url = 'https://query.ms-static.com';
 
   const exploreClient = axios.create({
     headers: { Authorization: null },

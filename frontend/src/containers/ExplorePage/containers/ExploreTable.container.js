@@ -32,7 +32,7 @@ const mapStateToProps = ({
   title: 'Results',
   canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
   adNetworks: adNetworks.adNetworks,
-  csvLink: csvQueryId ? `https://query.mightysignal.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}` : null,
+  csvLink: csvQueryId ? `https://query.ms-static.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}` : null,
   queryResultId,
   currentLoadedQuery,
   ...resultsTable,

@@ -1056,7 +1056,7 @@ class ApiController < ApplicationController
     )
     end
 
-    @result = HTTParty.post('https://query.mightysignal.com/auth/token',
+    @result = HTTParty.post('https://query.ms-static.com/auth/token',
     :body => body.to_json,
     :headers => { 'JWT' => ENV['MIGHTYQUERY_AUTH_TOKEN_GENERATION_TOKEN'], 'Content-Type' => 'application/json' } )
     if @result.code == 200
