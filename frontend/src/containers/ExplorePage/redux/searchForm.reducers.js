@@ -39,6 +39,12 @@ function searchForm (state = initialFormState, action) {
     case TABLE_TYPES.CLEAR_FILTERS:
       return {
         ...initialFormState,
+        filters: {
+          sdks: {
+            filters: [{ ...sdkFilterModel }],
+            operator: 'and',
+          },
+        },
       };
     case TABLE_TYPES.DELETE_FILTER:
       return deleteFilter(state, action.payload);
@@ -57,6 +63,9 @@ function deleteFilter(state, { filterKey, index }) {
   const newState = { ...state };
   if (typeof index === 'number') {
     newState.filters[filterKey].filters.splice(index, 1);
+    if (filterKey === 'sdks' && newState.filters[filterKey].filters.length === 0) {
+      newState.filters[filterKey].filters.push(sdkFilterModel);
+    }
   } else {
     delete newState.filters[filterKey];
   }
