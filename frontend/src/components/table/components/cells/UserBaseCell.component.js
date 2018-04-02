@@ -47,11 +47,11 @@ const UserBaseCell = ({ app }) => {
     }
   }
 
-  const userBase = app.userBase || app.user_base || 'weak';
+  const userBase = app.userBase || app.user_base;
 
   return (
     <div className="resultsTableAppUserbase">
-      <span>{capitalize(userBase)}</span>
+      {userBase ? <span>{capitalize(userBase)}</span> : <span className="invalid">Not available</span>}
     </div>
   );
 };

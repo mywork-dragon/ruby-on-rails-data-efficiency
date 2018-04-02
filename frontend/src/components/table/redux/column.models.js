@@ -187,7 +187,7 @@ export const columnModels = [
     accessor: 'original_release_date',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => longDate(cell.value),
+    Cell: cell => (cell.value ? longDate(cell.value) : <span className="invalid">Not available</span>),
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,

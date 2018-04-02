@@ -5,7 +5,7 @@ const PublisherCell = ({ platform, publisher }) => (
   <div className="resultsTableAppPublisher">
     {publisher ? (
       <a className="dotted-link" href={`#/publisher/${platform}/${publisher.id}`} target="_blank">{publisher.name}</a>
-    ) : <span>Not available</span>}
+    ) : <span className="invalid">Not available</span>}
   </div>
 );
 

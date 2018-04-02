@@ -18,7 +18,7 @@ const MobilePriorityCell = ({
           <i className={`fa fa-circle status-${mobilePriority}`} />
           {` ${capitalize(mobilePriority)}`}
         </span>
-      ) : <span>Not available</span>}
+      ) : <span className="invalid">Not available</span>}
     </div>
   );
 };
