@@ -13,21 +13,28 @@ const FilterTag = ({
   }
 
   return (
-    <Tag afterClose={() => deleteFilter(filterKey, index)} className="filter-tag-label" closable color="blue">
+    <Tag
+      afterClose={() => deleteFilter(filterKey, index)}
+      className="filter-tag-label"
+      closable={deleteFilter && filterKey}
+      color="blue"
+    >
       {displayText}
     </Tag>
   );
 };
 
 FilterTag.propTypes = {
-  deleteFilter: PropTypes.func.isRequired,
+  deleteFilter: PropTypes.func,
   displayText: PropTypes.string,
-  filterKey: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
   index: PropTypes.number,
 };
 
 FilterTag.defaultProps = {
+  deleteFilter: null,
   displayText: '',
+  filterKey: null,
   index: null,
 };
 

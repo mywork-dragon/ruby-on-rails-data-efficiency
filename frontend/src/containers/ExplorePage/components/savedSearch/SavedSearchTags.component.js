@@ -10,6 +10,7 @@ const SavedSearchTags = ({
   const form = JSON.parse(formState);
 
   tags.push(`Platform: ${capitalize(form.platform)}`);
+  if (form.includeTakenDown) tags.push('Include Taken Down Apps');
   for (const key in form.filters) {
     if (form.filters[key]) {
       if (key === 'sdks') {

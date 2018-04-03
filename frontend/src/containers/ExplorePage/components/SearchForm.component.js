@@ -63,7 +63,7 @@ const SearchForm = ({
             </div>
             <div className="form-review form-group">
               <h4>Review Filters</h4>
-              <FilterTagsDisplay {...rest} />
+              <FilterTagsDisplay includeTakenDown={includeTakenDown} platform={platform} {...rest} />
             </div>
             <div className="search-form-footer form-group">
               <div>
