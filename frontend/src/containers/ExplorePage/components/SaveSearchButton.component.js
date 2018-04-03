@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Input } from 'antd';
 import { Modal } from 'react-bootstrap';
 
-const { Body, Footer } = Modal;
+const { Body, Footer, Header, Title } = Modal;
 
 class SaveSearchButton extends React.Component {
   constructor () {
@@ -48,7 +48,12 @@ class SaveSearchButton extends React.Component {
       <span>
         <Button className="btn btn-primary" disabled={!canFetch} onClick={this.openModal}>Save Search</Button>
 
-        <Modal onHide={this.closeModal} show={visible}>
+        <Modal onHide={this.closeModal} show={visible} className="save-search-modal">
+          <Header>
+            <Title>
+              Name your search
+            </Title>
+          </Header>
           <Body>
             <Input
               autoFocus

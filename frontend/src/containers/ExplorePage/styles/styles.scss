@@ -39,3 +39,20 @@
     bottom: 100%
   }
 }
+
+.save-search-modal {
+  .modal-header {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .modal-title {
+    border: 0;
+    padding: 0;
+  }
+
+  .modal-footer {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
