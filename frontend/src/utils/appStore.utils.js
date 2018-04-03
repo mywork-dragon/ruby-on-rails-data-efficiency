@@ -14,7 +14,14 @@ export function formatCategories (categories) {
       }
       result[category.parent.id].subCategories.push(category);
     }
+
+
   });
+
+  if (result.FAMILY) {
+    result.FAMILY.subCategories.forEach(x => delete result[x.id]);
+    delete result.FAMILY;
+  }
 
   return result;
 }
