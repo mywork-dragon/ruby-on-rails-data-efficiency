@@ -65,7 +65,7 @@ const Table = ({
         <span id="dashboardResultsTableHeadingNumDisplayed">
           | {resultsCount} Apps
         </span>
-        {canFetch && csvLink ? (
+        {canFetch && csvLink && resultsCount ? (
           <a href={csvLink}>
             <button
               className="btn btn-primary pull-right"
