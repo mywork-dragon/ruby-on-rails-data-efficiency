@@ -1,7 +1,8 @@
 import { all, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import ExploreMixpanelService from 'services/mixpanel/explore.mixpanel';
-import * as selectors from 'selectors/explore.selectors';
-
+import * as exploreSelectors from 'selectors/explore.selectors';
+import * as accountSelectors from 'selectors/account.selectors';
+import * as account from 'actions/Account.actions';
 import {
   POPULATE_FROM_QUERY_ID,
   TABLE_TYPES,
@@ -9,13 +10,14 @@ import {
   TRACK_TABLE_SORT,
 } from './Explore.actions';
 
+
 const service = ExploreMixpanelService();
 
 function* trackFilterAdded (action) {
   const { parameter } = action.payload;
   let { value } = action.payload;
   if (parameter === 'includeTakenDown') {
-    const currentState = yield select(selectors.takenDownFilter);
+    const currentState = yield select(exploreSelectors.takenDownFilter);
     value = !currentState;
   }
   yield call(service.trackFilterAdded, parameter, value);
@@ -39,20 +41,34 @@ function* trackTableSort (action) {
 }
 
 function* trackResultsLoad (action) {
-  const queryId = yield select(selectors.currentQueryId);
-  const filters = yield select(selectors.activeFilters);
+  const queryId = yield select(exploreSelectors.currentQueryId);
+  const filters = yield select(exploreSelectors.activeFilters);
   const count = action.payload.data.resultsCount;
   yield call(service.trackResultsLoad, queryId, filters, count);
 }
 
 function* trackQueryFailure () {
-  const filters = yield select(selectors.activeFilters);
+  const filters = yield select(exploreSelectors.activeFilters);
   yield call(service.trackQueryFailure, filters);
 }
 
 function* trackCsvExport () {
-  const id = yield select(selectors.csvQueryId);
+  const id = yield select(exploreSelectors.csvQueryId);
   yield call(service.trackCsvExport, id);
+}
+
+function* trackSavedSearchCreate ({ payload: { search: { id, name, queryId } } }) {
+  yield call(service.trackSavedSearchCreate, id, name, queryId);
+}
+
+function* trackSavedSearchLoad ({ payload: { searchId } }) {
+  const search = yield select(accountSelectors.getSavedSearchById, searchId);
+  yield call(service.trackSavedSearchLoad, search.id, search.name, search.queryId);
+}
+
+function* trackSavedSearchDelete ({ payload: { id }}) {
+  const search = yield select(accountSelectors.getSavedSearchById, id);
+  yield call(service.trackSavedSearchDelete, search.id, search.name, search.queryId);
 }
 
 function* watchFilterAdd() {
@@ -87,6 +103,18 @@ function* watchCsvExport() {
   yield takeLatest(TABLE_TYPES.CSV_EXPORTED, trackCsvExport);
 }
 
+function* watchSavedSearchCreate() {
+  yield takeLatest(account.SAVE_NEW_SEARCH.SUCCESS, trackSavedSearchCreate);
+}
+
+function* watchSavedSearchLoad() {
+  yield takeLatest(account.LOAD_SAVED_SEARCH.REQUEST, trackSavedSearchLoad);
+}
+
+function* watchSavedSearchDelete() {
+  yield takeLatest(account.DELETE_SAVED_SEARCH.REQUEST, trackSavedSearchDelete);
+}
+
 export default function* exploreMixpanelSaga() {
   yield all([
     watchFilterAdd(),
@@ -97,5 +125,8 @@ export default function* exploreMixpanelSaga() {
     watchResultsLoad(),
     watchQueryFailure(),
     watchCsvExport(),
+    watchSavedSearchCreate(),
+    watchSavedSearchLoad(),
+    watchSavedSearchDelete(),
   ]);
 }

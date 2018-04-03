@@ -40,7 +40,6 @@ function loadSearches({ payload: { searches } }) {
 
 function addNewSearch(state, { payload: { search } }) {
   const newState = { ...state };
-  search.queryId = search.search_params;
   delete search.search_params;
   newState.searches[search.id] = search;
 

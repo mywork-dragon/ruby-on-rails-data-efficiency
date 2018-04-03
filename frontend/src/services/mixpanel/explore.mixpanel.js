@@ -54,6 +54,9 @@ const ExploreMixpanelService = () => ({
   }),
   trackQueryFailure: filters => mixpanel.track('Explore V2 Query Failed', { filters }),
   trackCsvExport: queryId => mixpanel.track('Explore V2 CSV Exported', { queryId }),
+  trackSavedSearchCreate: (id, name, queryId) => mixpanel.track('Explore V2 Saved Search Created', { name, id, queryId }),
+  trackSavedSearchLoad: (id, name, queryId) => mixpanel.track('Explore V2 Saved Search Loaded', { name, id, queryId }),
+  trackSavedSearchDelete: (id, name, queryId) => mixpanel.track('Explore V2 Saved Search Deleted', { name, id, queryId }),
 });
 
 export default ExploreMixpanelService;

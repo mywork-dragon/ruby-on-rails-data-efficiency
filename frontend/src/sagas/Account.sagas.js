@@ -54,7 +54,7 @@ function* createSavedSearch (action) {
   try {
     const res = yield call(SavedSearchService().createSavedSearch, name, query_id);
     toastr.success('Search saved successfully!');
-    const newSearch = { ...res.data, formState: params.formState };
+    const newSearch = { ...res.data, queryId: res.data.search_params, formState: params.formState };
     yield put(saveNewSearch.success(newSearch));
     if (!isCurrentQuery(query_id)) {
       yield put(populateFromQueryId.request(query_id));
