@@ -4,6 +4,7 @@ import AccountService from 'services/account.service';
 import SavedSearchService from 'services/savedSearch.service';
 import ExploreService from 'services/explore.service';
 import { isCurrentQuery } from 'utils/explore/general.utils';
+import { formatSavedSearches } from 'utils/account.utils';
 import { populateFromQueryId } from 'containers/ExplorePage/redux/Explore.actions';
 import {
   AD_NETWORKS,
@@ -31,15 +32,8 @@ function* requestSavedSearches () {
   try {
     const { data } = yield call(SavedSearchService().getSavedSearches);
     const v2Searches = data.filter(x => x.version === 'v2');
-    const searches = {};
-    for (let i = 0; i < v2Searches.length; i++) {
-      const search = v2Searches[i];
-      search.queryId = search.search_params;
-      delete search.search_params;
-      const { data: { formState } } = yield call(ExploreService.getQueryParams, search.queryId);
-      search.formState = formState;
-      searches[search.id] = search;
-    }
+    const queries = yield all(v2Searches.map(search => call(ExploreService.getQueryParams, search.search_params)));
+    const searches = formatSavedSearches(v2Searches, queries);
     yield put(getSavedSearches.success(searches));
   } catch (error) {
     console.log(error);
