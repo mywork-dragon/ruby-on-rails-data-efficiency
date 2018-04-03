@@ -35,6 +35,7 @@ const SavedSearchComponent = ({
               {/* <th>ID</th> */}
               <th className="search-name">Name</th>
               <th>Filters</th>
+              <th>Created At</th>
               <th style={{ textAlign: 'center' }}>Delete</th>
             </tr>
           </thead>

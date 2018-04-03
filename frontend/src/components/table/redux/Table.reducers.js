@@ -26,6 +26,7 @@ export function table(actionTypes, tableOptions) {
         return {
           ...state,
           loading: action.payload.state,
+          results: action.payload.state ? [] : state.results,
         };
       case actionTypes.ALL_ITEMS.REQUEST:
         return {

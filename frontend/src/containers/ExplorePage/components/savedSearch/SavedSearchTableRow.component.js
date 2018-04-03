@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import { isCurrentQuery } from 'utils/explore/general.utils';
+import { longDate } from 'utils/format.utils';
 import SavedSearchTags from './SavedSearchTags.component';
 
 const SavedSearchTableRow = ({
@@ -12,7 +13,10 @@ const SavedSearchTableRow = ({
 }) => (
   <tr
     className={classNames({ active: isCurrentQuery(search.queryId) })}
-    onClick={() => loadSavedSearch(search.id, search.queryId)}
+    onClick={() => {
+      // document.querySelector('.table-dynamic').scrollIntoView({ behavior: 'auto', block: 'nearest' });
+      loadSavedSearch(search.id, search.queryId);
+    }}
   >
     {/* <td>{search.id}</td> */}
     <td className="search-name">
@@ -23,6 +27,7 @@ const SavedSearchTableRow = ({
     <td>
       <SavedSearchTags formState={search.formState} />
     </td>
+    <td>{longDate(search.created_at)}</td>
     <td style={{ textAlign: 'center' }}>
       <Icon
         className="delete-btn"

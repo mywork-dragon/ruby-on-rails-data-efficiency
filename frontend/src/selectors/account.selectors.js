@@ -1,4 +1,6 @@
-export const getSearches = state => Object.values(state.account.savedSearches.searches);
+import _ from 'lodash';
+
+export const getSearches = state => _.orderBy(Object.values(state.account.savedSearches.searches), ['created_at'], ['desc']);
 
 export const getSavedSearchById = (state, id) => state.account.savedSearches.searches[id];
 
