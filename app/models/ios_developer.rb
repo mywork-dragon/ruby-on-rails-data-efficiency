@@ -48,6 +48,9 @@ class IosDeveloper < ActiveRecord::Base
     data
   end
 
+  def ios_apps
+    super.where.not(:display_type => IosApp.display_types['not_ios'])
+  end
 
   def hotstore_json(options = {})
     {
