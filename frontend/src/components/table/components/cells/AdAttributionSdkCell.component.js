@@ -14,7 +14,7 @@ const AdAttributionSdkCell = ({ app, platform }) => (
 AdAttributionSdkCell.propTypes = {
   app: PropTypes.shape({
     id: PropTypes.string,
-    name: PropTypes.name,
+    name: PropTypes.string,
   }).isRequired,
   platform: PropTypes.string,
 };

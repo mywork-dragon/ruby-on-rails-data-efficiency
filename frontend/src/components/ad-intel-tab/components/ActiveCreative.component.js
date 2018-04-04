@@ -85,7 +85,7 @@ const ActiveCreativeComponent = ({
 ActiveCreativeComponent.propTypes = {
   apps: PropTypes.arrayOf(PropTypes.object),
   creative: PropTypes.shape({
-    last_seen_creative_date: PropTypes.date,
+    last_seen_creative_date: PropTypes.instanceOf(Date),
     app_identifier: PropTypes.string,
     format: PropTypes.string,
     url: PropTypes.string,

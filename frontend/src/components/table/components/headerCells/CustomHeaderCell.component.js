@@ -42,7 +42,7 @@ const ColumnHeader = ({
 
 ColumnHeader.propTypes = {
   column: PropTypes.shape({
-    sortable: PropTypes.cool,
+    sortable: PropTypes.bool,
   }).isRequired,
   className: PropTypes.string.isRequired,
   sorted: PropTypes.shape({
