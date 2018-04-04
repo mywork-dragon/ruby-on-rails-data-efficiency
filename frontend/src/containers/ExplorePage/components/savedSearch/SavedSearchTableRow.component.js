@@ -6,6 +6,13 @@ import { isCurrentQuery } from 'utils/explore/general.utils';
 import { longDate } from 'utils/format.utils';
 import SavedSearchTags from './SavedSearchTags.component';
 
+const scroll = () => new Promise((resolve) => {
+  document.querySelector('.scroll-anchor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(() => {
+    resolve();
+  }, 500);
+});
+
 const SavedSearchTableRow = ({
   search,
   loadSavedSearch,
@@ -14,8 +21,7 @@ const SavedSearchTableRow = ({
   <tr
     className={classNames({ active: isCurrentQuery(search.queryId) })}
     onClick={() => {
-      // document.querySelector('.table-dynamic').scrollIntoView({ behavior: 'auto', block: 'nearest' });
-      loadSavedSearch(search.id, search.queryId);
+      scroll().then(() => loadSavedSearch(search.id, search.queryId));
     }}
   >
     {/* <td>{search.id}</td> */}

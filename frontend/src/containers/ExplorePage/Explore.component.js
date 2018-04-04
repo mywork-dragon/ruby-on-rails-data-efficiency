@@ -41,7 +41,12 @@ const Explore = ({
       </h4>
       <SavedSearchContainer />
       <SearchFormContainer />
-      <ExploreTableContainer />
+      <div className="table-container">
+        <div className="scroll-anchor" />
+        <div className="table-wrapper">
+          <ExploreTableContainer />
+        </div>
+      </div>
     </div>
   );
 };
