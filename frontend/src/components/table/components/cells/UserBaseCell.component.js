@@ -10,9 +10,9 @@ const UserBaseCell = ({ app }) => {
       return (
         <div className="resultsTableAppUserbase">
           <span>
-            <img src={`/lib/images/flags/${app.userBase.country_code.toLowerCase()}.png`} />
+            <img src={`/lib/images/flags/${app.userBases[0].country_code.toLowerCase()}.png`} />
             {' '}
-            {capitalize(app.userBase.user_base)}
+            {capitalize(app.userBases[0].user_base)}
           </span>
         </div>
       );
@@ -31,14 +31,14 @@ const UserBaseCell = ({ app }) => {
         </Popover>
       );
 
+      const userBase = app.userBase || app.user_base;
+
       return (
         <div className="resultsTableAppUserbase">
           <OverlayTrigger overlay={popover} placement="left" trigger={['hover', 'focus']}>
             <div>
-              <img src={`/lib/images/flags/${app.userBase.country_code.toLowerCase()}.png`} />
-              {' '}
               <span className="tooltip-item">
-                {capitalize(app.userBase.user_base)}
+                {capitalize(userBase)}
               </span>
             </div>
           </OverlayTrigger>

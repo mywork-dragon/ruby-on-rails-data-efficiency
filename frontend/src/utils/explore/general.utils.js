@@ -31,6 +31,7 @@ function formatApp (app) {
     ...(addItemType(app)),
     categories: formatCategories(app.categories),
     ...formatAdintelInfo(app),
+    userBases: app.international_user_bases,
   };
 }
 
