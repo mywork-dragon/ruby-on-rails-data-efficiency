@@ -9,7 +9,8 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
 
     @app = AndroidApp.create!(
       app_identifier: 'com.mightysignal.osman',
-      user_base: :elite
+      user_base: :elite,
+      created_at: @date2
     )
 
     @snapshot = AndroidAppSnapshot.create!(

@@ -577,9 +577,10 @@ class AndroidApp < ActiveRecord::Base
           app_obj[new_name] = app.send(field).as_json
       end
 
-      if app_obj['versions_history'] and app_obj['versions_history'].any?
-        app_obj['first_scraped'] = app_obj['versions_history'][0]["released"]
-      end
+      app_obj['first_scraped'] = [
+        app.created_at,
+        app.android_app_snapshots.pluck(:released).min
+      ].min.iso8601
 
       app_obj['last_seen_ads_date'] = app.last_seen_ads_date
       app_obj['first_seen_ads_date'] = app.first_seen_ads_date
@@ -871,9 +872,13 @@ class AndroidApp < ActiveRecord::Base
           app_versions_history = historical_snapshots.map{|s|[s[historical_attributes.index("version")],s[historical_attributes.index("released")]]}.uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
           result["versions_history"] = app_versions_history.as_json
 
-          if result['versions_history'] and result['versions_history'].any?
-            result['first_scraped'] = result['versions_history'][0]["released"]
-          end
+          # Take the earlier of the created_at or min(released) field as the
+          # first scraped
+          first_scraped_dates = [
+            historical_snapshots.map{|s|s[historical_attributes.index("released")]}.select {|x| x}.min,
+            app.created_at
+          ]
+          result['first_scraped'] = first_scraped_dates.min.iso8601
         end
 
         results[app.id] = result
