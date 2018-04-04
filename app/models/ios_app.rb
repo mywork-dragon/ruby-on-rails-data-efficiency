@@ -677,7 +677,8 @@ class IosApp < ActiveRecord::Base
         "ratings_all_stars",
         "ratings_all_count",
         "ratings_current_count",
-        "ratings_current_stars"
+        "ratings_current_stars",
+        "first_released"
       ]
 
       # Used to generate raw map of app store attributes for quick lookup
@@ -1045,6 +1046,14 @@ class IosApp < ActiveRecord::Base
         result["last_updated"] = result["released"].as_json
         result.delete("released")
 
+        # Sometimes apps change their original release date on a subsequent release,
+        # so overwrite the original_release_date from the IosApp object if the newest
+        # ios snapshot has a first_released date.
+        if result["first_released"]
+          result["original_release_date"] = result["first_released"].iso8601
+          result.delete("first_released")
+        end
+
         result["user_base"] = user_base_map[result["user_base"]]
         
         if app_id_to_category_map[id]
@@ -1375,6 +1384,10 @@ class IosApp < ActiveRecord::Base
       if app_obj['versions_history'] and app_obj['versions_history'].any?
         app_obj['first_scraped'] = app_obj['versions_history'][0]["released"]
       end
+
+      # Overwrite original_release_date from the snapshot first_released attribute
+      # since apps can change their original release date.
+      app_obj['original_release_date'] = app_obj['first_released'] if app_obj['first_released']
 
       app_obj['last_seen_ads_date'] = app.last_seen_ads_date
       app_obj['first_seen_ads_date'] = app.first_seen_ads_date
