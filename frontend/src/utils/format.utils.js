@@ -66,23 +66,22 @@ export function getUpdateDateClass (date) {
 }
 
 export const numberShorthand = (x) => {
-  const map = {
-    0: '0',
-    1000: '1K',
-    10000: '10K',
-    50000: '50K',
-    100000: '100K',
-    500000: '500K',
-    1000000: '1M',
-    10000000: '10M',
-    50000000: '50M',
-    100000000: '100M',
-    500000000: '500M',
-    1000000000: '1B',
-    5000000000: '5B',
-  };
+  var y = Math.abs(x);
+  var sign = Math.sign(x);
 
-  return map[x] ? map[x] : x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (y < 1000) {
+    return sign * y;
+  } else if (y < 1000000) {
+    return Math.round(sign * y / 1000).toString() + 'K';
+  } else if (y < 1000000000) {
+    return Math.round(sign * y / 1000000).toString() + 'M';
+  } else if (y < 1000000000000) {
+    return Math.round(sign * y / 1000000000).toString() + 'B';
+  } else if (y < 1000000000000000) {
+    return Math.round(sign * y / 1000000000000).toString() + 'T';
+  } else {
+    return x.toString();
+  }
 };
 
 export const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

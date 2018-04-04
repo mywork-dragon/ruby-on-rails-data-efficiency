@@ -33,7 +33,6 @@ const ReleaseDateFilter = ({
       <Select
         clearable
         onChange={(val) => {
-          debugger
           if (!val) {
             updateFilter('releaseDate', null, { panelKey })();
           } else {
