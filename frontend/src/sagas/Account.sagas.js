@@ -23,7 +23,7 @@ function* requestAdNetworks () {
     yield put(adNetworks.success(res.data));
   } catch (error) {
     console.log(error);
-    yield put(adNetworks.failure());
+    yield put(adNetworks.failure(error));
   }
 }
 
@@ -36,7 +36,7 @@ function* requestSavedSearches () {
     yield put(getSavedSearches.success(searches));
   } catch (error) {
     console.log(error);
-    yield put(getSavedSearches.failure());
+    yield put(getSavedSearches.failure(error));
   }
 }
 
@@ -54,6 +54,7 @@ function* createSavedSearch (action) {
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem saving your search.");
+    yield put(saveNewSearch.failure(error));
   }
 }
 
@@ -66,6 +67,7 @@ function* handleSavedSearchDelete (action) {
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem deleting your search.");
+    yield put(deleteSavedSearch.failure(error));
   }
 }
 

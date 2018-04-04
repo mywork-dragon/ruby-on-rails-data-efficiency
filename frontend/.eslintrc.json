@@ -83,6 +83,7 @@
       "no-continue": "warn",
       "no-debugger": "warn",
       "prefer-const": "warn",
-      "no-fallthrough": "warn"
+      "no-fallthrough": "warn",
+      "class-methods-use-this": "warn"
     }
 }

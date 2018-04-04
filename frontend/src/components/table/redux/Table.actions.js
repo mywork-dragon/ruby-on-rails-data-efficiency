@@ -38,7 +38,7 @@ export function createTableRequestActions (types) {
     allItems: {
       request: params => action(types.ALL_ITEMS.REQUEST, { params }),
       success: data => action(types.ALL_ITEMS.SUCCESS, { data }),
-      failure: () => action(types.ALL_ITEMS.FAILURE),
+      failure: error => action(types.ALL_ITEMS.FAILURE, { error }),
     },
   };
 }

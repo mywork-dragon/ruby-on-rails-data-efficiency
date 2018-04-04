@@ -32,7 +32,7 @@ export const POPULATE_FROM_QUERY_ID = createRequestTypes('POPULATE_FROM_QUERY_ID
 export const populateFromQueryId = {
   request: id => action(POPULATE_FROM_QUERY_ID.REQUEST, { id }),
   success: (id, formState) => action(POPULATE_FROM_QUERY_ID.SUCCESS, { id, formState }),
-  failure: () => action(POPULATE_FROM_QUERY_ID.FAILURE),
+  failure: error => action(POPULATE_FROM_QUERY_ID.FAILURE, { error }),
 };
 
 export const ADD_BLANK_SDK_FILTER = 'ADD_BLANK_SDK_FILTER';
@@ -45,7 +45,7 @@ export const GET_CSV_QUERY_ID = createRequestTypes('GET_CSV_QUERY_ID');
 export const getCsvQueryId = {
   request: params => action(GET_CSV_QUERY_ID.REQUEST, { params }),
   success: id => action(GET_CSV_QUERY_ID.SUCCESS, { id }),
-  failure: () => action(GET_CSV_QUERY_ID.FAILURE),
+  failure: error => action(GET_CSV_QUERY_ID.FAILURE, { error }),
 };
 
 export const REQUEST_QUERY_PAGE = 'REQUEST_QUERY_PAGE';

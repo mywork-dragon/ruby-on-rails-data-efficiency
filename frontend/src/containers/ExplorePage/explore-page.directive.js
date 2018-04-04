@@ -3,6 +3,7 @@ import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { store } from 'store';
 import { Provider } from 'react-redux';
+import ErrorBoundary from 'components/bugsnag-wrapper/BugsnagWrapper.component';
 
 import ExploreContainer from './Explore.container';
 
@@ -25,11 +26,13 @@ function explore($stateParams) {
 
       function renderReactElement() {
         render(
-          <Provider store={store}>
-            <ExploreContainer
-              queryId={$stateParams.queryId}
-            />
-          </Provider>
+          <ErrorBoundary>
+            <Provider store={store}>
+              <ExploreContainer
+                queryId={$stateParams.queryId}
+              />
+            </Provider>
+          </ErrorBoundary>
           , element[0],
         );
       }

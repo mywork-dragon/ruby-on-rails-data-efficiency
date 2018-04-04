@@ -31,7 +31,7 @@ function* requestResults ({ payload }) {
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
-    yield put(tableActions.allItems.failure());
+    yield put(tableActions.allItems.failure(error));
   }
 }
 
@@ -83,8 +83,8 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
-    yield put(populateFromQueryId.failure());
-    yield put(tableActions.allItems.failure());
+    yield put(populateFromQueryId.failure(error));
+    yield put(tableActions.allItems.failure(error));
   }
 }
 
@@ -98,7 +98,7 @@ function* requestCsvQueryId (params) {
     yield put(getCsvQueryId.success(query_result_id));
   } catch (error) {
     console.log(error);
-    yield put(getCsvQueryId.failure());
+    yield put(getCsvQueryId.failure(error));
   }
 }
 
