@@ -20,6 +20,7 @@ import LastUpdatedCell from '../components/cells/LastUpdatedCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
 import PlatformCell from '../components/cells/PlatformCell.component';
 import PublisherCell from '../components/cells/PublisherCell.component';
+import ReleaseDateCell from '../components/cells/ReleaseDateCell.component';
 import UserBaseCell from '../components/cells/UserBaseCell.component';
 
 export const headerNames = {
@@ -187,7 +188,7 @@ export const columnModels = [
     accessor: 'original_release_date',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => (cell.value ? longDate(cell.value) : <span className="invalid">Not available</span>),
+    Cell: cell => <ReleaseDateCell date={cell.value} />,
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,

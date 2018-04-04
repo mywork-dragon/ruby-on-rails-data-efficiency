@@ -28,3 +28,9 @@
 .invalid {
   color: $invalid-text;
 }
+
+.tooltip-inner {
+  p {
+    margin: 0;
+  }
+}

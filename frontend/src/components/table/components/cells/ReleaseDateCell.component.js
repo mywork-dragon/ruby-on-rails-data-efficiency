@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { daysAgo, getUpdateDateClass, longDate } from 'utils/format.utils';
+import { daysAgo, longDate } from 'utils/format.utils';
 
-const LastUpdatedCell = ({ date }) => {
+const ReleaseDateCell = ({ date }) => {
   if (!date) {
     return (
       <div className="invalid">Not available</div>
@@ -15,7 +15,7 @@ const LastUpdatedCell = ({ date }) => {
   if (Math.sign(numDays) === -1) {
     const tooltip = (
       <Tooltip className="help-tooltip" id="tooltip-right">
-        <p>To be updated</p>
+        <p>To be released</p>
       </Tooltip>
     );
 
@@ -29,28 +29,16 @@ const LastUpdatedCell = ({ date }) => {
   }
 
   return (
-    <div>
-      <span className={getUpdateDateClass(date)}>
-        <strong>{numDays === 0 ? 'Today' : numDays}</strong>
-      </span>
-      {
-        numDays > 0 && (
-          <span>
-            {' '}
-            day{numDays > 1 ? 's' : ''} ago
-          </span>
-        )
-      }
-    </div>
+    <span>{longDate(date)}</span>
   );
 };
 
-LastUpdatedCell.propTypes = {
+ReleaseDateCell.propTypes = {
   date: PropTypes.string,
 };
 
-LastUpdatedCell.defaultProps = {
+ReleaseDateCell.defaultProps = {
   date: null,
 };
 
-export default LastUpdatedCell;
+export default ReleaseDateCell;
