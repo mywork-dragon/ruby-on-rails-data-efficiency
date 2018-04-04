@@ -26,13 +26,12 @@ function* requestResults ({ payload }) {
   try {
     const { data: { query_id } } = yield call(service.getQueryId, params);
     yield put(tableActions.clearResults());
-    yield fork(requestCsvQueryId, params);
     history.pushState(null, null, `#/search/v2/${query_id}`);
+    yield fork(requestCsvQueryId, params);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
-    throw error;
   }
 }
 
@@ -56,7 +55,6 @@ function* requestResultsByQueryId (id, params, pageNum) {
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
-    throw error;
   }
 }
 
@@ -69,7 +67,6 @@ function* requestResultsByQueryResultId ({ payload: { id, page } }) {
   } catch (error) {
     console.log(error);
     yield put(tableActions.allItems.failure());
-    throw error;
   }
 }
 
@@ -81,14 +78,13 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
     if (searchId) {
       yield put(loadSavedSearch.success(searchId));
     }
-    yield fork(requestCsvQueryId, params);
     yield call(requestResultsByQueryId, id, params, 0);
+    yield fork(requestCsvQueryId, params);
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
     yield put(populateFromQueryId.failure());
     yield put(tableActions.allItems.failure());
-    throw error;
   }
 }
 
@@ -103,7 +99,6 @@ function* requestCsvQueryId (params) {
   } catch (error) {
     console.log(error);
     yield put(getCsvQueryId.failure());
-    throw error;
   }
 }
 
