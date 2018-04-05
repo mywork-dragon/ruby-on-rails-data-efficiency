@@ -136,7 +136,7 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
     assert_equal result["downloads_history"][0]["downloads_min"], 123
     assert_equal result["downloads_history"][0]["downloads_max"], 123123123
     assert_equal result["ratings_history"][0]["ratings_all_count"], 123
-    assert_equal result["ratings_history"][0]["ratings_all_stars"], "1.23"
+    assert_equal result["ratings_history"][0]["ratings_all_stars"], 1.23
     assert_equal result["versions_history"], [{"version"=>"osman1.0", "released"=>@date2.strftime("%Y-%m-%d")}]
   end
 

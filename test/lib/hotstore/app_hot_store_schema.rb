@@ -13,7 +13,7 @@ module AppHotStoreSchema
     "start_date"=>String,
     "stop_date"=>String,
     "ratings_all_count"=>Integer,
-    "ratings_all_stars"=>String
+    "ratings_all_stars"=>Float
   }
 
   @@CATEGORIES_SCHEMA = {
@@ -78,7 +78,7 @@ module AppHotStoreSchema
     "mobile_priority"=>String,
     "sdk_activity"=> [ @@SDK_ACTIVITY_SCHEMA ],
     "first_scanned_date"=>String,
-    "all_version_rating"=>String,
+    "all_version_rating"=>Float,
     "description"=>String,
     "last_updated"=>String,
     "in_app_purchases"=>TrueClass,

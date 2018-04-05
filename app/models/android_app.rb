@@ -871,6 +871,9 @@ class AndroidApp < ActiveRecord::Base
 
           historical_ratings_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("ratings_all_count")], s[historical_attributes.index("ratings_all_stars")], s[historical_attributes.index("created_at")]] }
           app_ratings_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_ratings_snapshots, [:ratings_all_count, :ratings_all_stars, :created_at])
+          app_ratings_history.each do |ratings_history_entry|
+            ratings_history_entry[:ratings_all_stars] = ratings_history_entry[:ratings_all_stars].to_f if ratings_history_entry[:ratings_all_stars]
+          end
           result["ratings_history"] = app_ratings_history.as_json
 
           app_versions_history = historical_snapshots.map{|s|[s[historical_attributes.index("version")],s[historical_attributes.index("released")]]}.uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
@@ -914,6 +917,10 @@ class AndroidApp < ActiveRecord::Base
           result["last_updated"] = result["released"].as_json
           
           result["mobile_priority"] = AndroidApp.mobile_priority_from_date(attributes_array[snapshot_attributes.index("released")])
+
+          if result["ratings_all_stars"]
+            result["ratings_all_stars"] = result["ratings_all_stars"].to_f 
+          end
 
           results[app_id] = results[app_id].merge(result)
         end
