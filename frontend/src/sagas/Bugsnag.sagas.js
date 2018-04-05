@@ -22,8 +22,8 @@ import {
   TABLE_TYPES,
 } from 'containers/ExplorePage/redux/Explore.actions';
 
-function sendToBugsnag ({ payload: { error } }) {
-  Bugsnag.notifyException(error, { user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id });
+function sendToBugsnag ({ type, payload: { error } }) {
+  Bugsnag.notifyException(error, { user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id, action_type: type });
 }
 
 function* watchError() {
