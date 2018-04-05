@@ -47,10 +47,11 @@ const ExploreMixpanelService = () => ({
     parameter: sort[0].id,
     order: sort[0].desc ? 'desc' : 'asc',
   }),
-  trackResultsLoad: (queryId, filters, resultsCount) => mixpanel.track('Explore V2 Results Loaded', {
+  trackResultsLoad: (queryId, filters, resultsCount, elapsedTime) => mixpanel.track('Explore V2 Query Successful', {
     queryId,
     filters,
     resultsCount,
+    elapsedTime,
   }),
   trackQueryFailure: filters => mixpanel.track('Explore V2 Query Failed', { filters }),
   trackCsvExport: queryId => mixpanel.track('Explore V2 CSV Exported', { queryId }),

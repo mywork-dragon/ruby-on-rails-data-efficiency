@@ -10,8 +10,8 @@ import {
   TRACK_TABLE_SORT,
 } from './Explore.actions';
 
-
 const service = ExploreMixpanelService();
+var startTime;
 
 function* trackFilterAdded (action) {
   const { parameter } = action.payload;
@@ -41,10 +41,11 @@ function* trackTableSort (action) {
 }
 
 function* trackResultsLoad (action) {
+  const elapsedTime = new Date().getTime() - startTime;
   const queryId = yield select(exploreSelectors.currentQueryId);
   const filters = yield select(exploreSelectors.activeFilters);
   const count = action.payload.data.resultsCount;
-  yield call(service.trackResultsLoad, queryId, filters, count);
+  yield call(service.trackResultsLoad, queryId, filters, count, elapsedTime);
 }
 
 function* trackQueryFailure () {
@@ -69,6 +70,10 @@ function* trackSavedSearchLoad ({ payload: { searchId } }) {
 function* trackSavedSearchDelete ({ payload: { id }}) {
   const search = yield select(accountSelectors.getSavedSearchById, id);
   yield call(service.trackSavedSearchDelete, search.id, search.name, search.queryId);
+}
+
+function resetStartTime () {
+  startTime = new Date().getTime();
 }
 
 function* watchFilterAdd() {
@@ -115,6 +120,14 @@ function* watchSavedSearchDelete() {
   yield takeLatest(account.DELETE_SAVED_SEARCH.REQUEST, trackSavedSearchDelete);
 }
 
+function* watchNewQuery() {
+  yield takeLatest([
+    TABLE_TYPES.ALL_ITEMS.REQUEST,
+    POPULATE_FROM_QUERY_ID.REQUEST,
+    account.LOAD_SAVED_SEARCH.REQUEST,
+  ], resetStartTime);
+}
+
 export default function* exploreMixpanelSaga() {
   yield all([
     watchFilterAdd(),
@@ -128,5 +141,6 @@ export default function* exploreMixpanelSaga() {
     watchSavedSearchCreate(),
     watchSavedSearchLoad(),
     watchSavedSearchDelete(),
+    watchNewQuery(),
   ]);
 }
