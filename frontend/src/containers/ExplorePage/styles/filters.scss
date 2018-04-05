@@ -104,6 +104,16 @@
     }
   }
 
+  .release-date {
+    .Select {
+      margin: 10px 10px 0 0;
+    }
+
+    .ant-calendar-picker {
+      margin-top: 10px;
+    }
+  }
+
   .sdk-filter-group {
     border: 1px solid #daedf2;
     display: flex;

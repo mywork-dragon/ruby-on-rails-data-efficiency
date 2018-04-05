@@ -3,6 +3,7 @@ import service from 'services/explore.service';
 import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
 import { isFacebookOnly } from 'selectors/account.selectors';
 import { buildCsvRequest } from 'utils/explore/queryBuilder.utils';
+import validateFormState from 'utils/explore/formStateValidation.utils';
 import toastr from 'toastr';
 import {
   LOAD_SAVED_SEARCH,
@@ -73,7 +74,8 @@ function* requestResultsByQueryResultId ({ payload: { id, page } }) {
 function* populateFromQuery ({ payload: { id, searchId } }) {
   try {
     const { data: params, data: { formState } } = yield call(service.getQueryParams, id);
-    yield put(populateFromQueryId.success(id, JSON.parse(formState)));
+    const validatedForm = validateFormState(JSON.parse(formState));
+    yield put(populateFromQueryId.success(id, validatedForm));
     yield put(tableActions.setLoading(true));
     if (searchId) {
       yield put(loadSavedSearch.success(searchId));

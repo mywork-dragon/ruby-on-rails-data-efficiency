@@ -29,7 +29,7 @@ const ReleaseDateFilter = ({
     <label className="filter-label">
       Release Date:
     </label>
-    <div className="input-group" id="release-date-filter">
+    <div className="input-group release-date" id="release-date-filter">
       <Select
         clearable
         onChange={(val) => {
