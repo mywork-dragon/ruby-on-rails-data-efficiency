@@ -883,7 +883,7 @@ class AndroidApp < ActiveRecord::Base
             app.created_at
           ].compact.min
           if first_scraped_date
-            result['first_scraped'] = first_scraped_date.iso8601
+            result['first_scraped'] = first_scraped_date.to_date.iso8601
           end
         end
 
