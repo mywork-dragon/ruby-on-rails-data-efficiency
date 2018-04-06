@@ -27,9 +27,13 @@ test('', () => {
       ['platform', 'ios'],
       ['not', ['taken_down']],
       [
-        'and',
-        ['not', ['available_in', 'US']],
-        ['not', ['available_in', 'JP']],
+        'or',
+        [
+          'and',
+          ['not', ['available_in', 'US']],
+          ['not', ['available_in', 'JP']],
+        ],
+        ['platform', 'android'],
       ],
     ],
   };

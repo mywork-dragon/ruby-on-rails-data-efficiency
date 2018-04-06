@@ -23,7 +23,11 @@ test('', () => {
     predicates: [
       ['platform', 'ios'],
       ['not', ['taken_down']],
-      ['only_available_in_country', 'US'],
+      [
+        'or',
+        ['only_available_in_country', 'US'],
+        ['platform', 'android'],
+      ],
     ],
   };
 
@@ -52,7 +56,11 @@ test('defaults to only available in if no condition provided', () => {
     predicates: [
       ['platform', 'ios'],
       ['not', ['taken_down']],
-      ['only_available_in_country', 'US'],
+      [
+        'or',
+        ['only_available_in_country', 'US'],
+        ['platform', 'android'],
+      ],
     ],
   };
 

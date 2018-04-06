@@ -251,7 +251,11 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
     }
 
     if (!condition || condition === 'only-available-in') {
-      return ['only_available_in_country', value.countries[0].key];
+      return [
+        'or',
+        ['only_available_in_country', value.countries[0].key],
+        ['platform', 'android'],
+      ]
     }
 
     value.countries.forEach((x) => {
@@ -262,6 +266,17 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
         result.push(['not', predicate]);
       }
     });
+
+    if (operator === 'any') {
+      result.push(['platform', 'android']);
+    } else {
+      return [
+        'or',
+        result,
+        ['platform', 'android'],
+      ];
+    }
+
   } else if (['price', 'inAppPurchases'].includes(type)) {
     if (['paid', 'no'].includes(value)) {
       return ['not', [filterType]];

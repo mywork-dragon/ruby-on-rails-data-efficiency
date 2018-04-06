@@ -13,6 +13,7 @@ test('', () => {
             { key: 'US', label: 'United States' },
             { key: 'JP', label: 'Japan' },
           ],
+          operator: 'any',
           condition: 'available-in',
         },
       },
@@ -29,6 +30,7 @@ test('', () => {
         'or',
         ['available_in', 'US'],
         ['available_in', 'JP'],
+        ['platform', 'android'],
       ],
     ],
   };
