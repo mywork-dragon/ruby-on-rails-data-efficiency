@@ -21,3 +21,7 @@ export const activeFilters = (state) => {
 };
 
 export const csvQueryId = state => state.explorePage.explore.csvQueryId;
+
+export const queryResultId = state => state.explorePage.explore.queryResultId;
+
+export const currentExplorePage = state => state.explorePage.resultsTable.pageNum;

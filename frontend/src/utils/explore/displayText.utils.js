@@ -83,7 +83,7 @@ function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
 
   const requiresDate = ['install', 'uninstall'].includes(eventType);
 
-  return `${sdks.map(x => `${x.name} (${capitalize(x.platform)})${x.sdks ? ` (${x.includedSdks.length} of ${x.sdks.length} SDKs)` : ''}`).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''} ${installText}`;
+  return `${sdks.map(x => `${x.name} (${capitalize(x.platform)})${x.sdks ? ` (${x.includedSdks.length} of ${x.sdks.length} SDKs)` : ''}`).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''}${eventType !== 'never-seen' ? installText : ''}`;
 }
 
 function headquarterText (countries) {

@@ -43,9 +43,19 @@ function* trackTableSort (action) {
 function* trackResultsLoad (action) {
   const elapsedTime = new Date().getTime() - startTime;
   const queryId = yield select(exploreSelectors.currentQueryId);
+  const queryResultId = yield select(exploreSelectors.queryResultId);
+  const currentPage = yield select(exploreSelectors.currentExplorePage);
   const filters = yield select(exploreSelectors.activeFilters);
   const count = action.payload.data.resultsCount;
-  yield call(service.trackResultsLoad, queryId, filters, count, elapsedTime);
+  yield call(service.trackResultsLoad, {
+    queryId,
+    filters,
+    count,
+    elapsedTime,
+    queryResultId,
+    currentPage,
+  });
+  yield call(resetStartTime);
 }
 
 function* trackQueryFailure () {
@@ -125,6 +135,7 @@ function* watchNewQuery() {
     TABLE_TYPES.ALL_ITEMS.REQUEST,
     POPULATE_FROM_QUERY_ID.REQUEST,
     account.LOAD_SAVED_SEARCH.REQUEST,
+    REQUEST_QUERY_PAGE,
   ], resetStartTime);
 }
 

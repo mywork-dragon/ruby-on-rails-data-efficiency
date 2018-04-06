@@ -84,10 +84,11 @@ export function generateSdkItem (sdk, eventType) {
       sdk.name,
       sdk.platform,
     ];
-    const excluded = _.difference(sdk.sdks.map(x => x[0]), sdk.includedSdks.map(x => x[0]));
+    const excluded = _.difference(sdk.sdks.map(x => x.id), sdk.includedSdks.map(x => x.id));
     if (excluded.length > 0) {
       result.push(excluded);
     }
+
     return result;
   }
   return [
