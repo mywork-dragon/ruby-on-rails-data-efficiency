@@ -171,6 +171,7 @@ class SalesforceExportService
       {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
+      {label: 'Category', type: 'Text', length: 255},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -276,6 +277,7 @@ class SalesforceExportService
   def default_mapping(app: nil, publisher: nil)
     mapping = {}
     mapping[WEBSITE] = {"id"=>"Website", "name"=>"Website"}
+    mapping[LAST_SYNCED] = {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"}
 
     platform = app.try(:platform) || publisher.try(:platform)
 
@@ -360,6 +362,8 @@ class SalesforceExportService
 
     Throttler.new(@user.id, 25, 1.month, prefix: 'salesforce-user-export').increment if basic_access?
 
+    puts "Import #{new_object.inspect}" if @logging 
+
     export = if object_id.present?
       @client.update!(@model_name, new_object)
       object_id
@@ -403,6 +407,7 @@ class SalesforceExportService
       #'App_Store_ID__c' => app.app_identifier.to_s,
       'MightySignal_Link__c' => app.link(utm_source: 'salesforce'),
       'Platform__c' => 'ios',
+      'Category__c' => app.categories.first,
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'User_Base__c' => app.international_userbase[:user_base],
@@ -427,6 +432,7 @@ class SalesforceExportService
       #'App_Store_ID__c' => app.app_identifier.to_s,
       'MightySignal_Link__c' => app.link(utm_source: 'salesforce'),
       'Platform__c' => 'android',
+      'Category__c' => app.categories.first,
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'User_Base__c' => app.user_base,
@@ -738,6 +744,7 @@ class SalesforceExportService
   WEBSITE = "Website"
   IOS_SDK_SUMMARY = "MightySignal iOS SDK Summary"
   ANDROID_SDK_SUMMARY = "MightySignal Android SDK Summary"
+  LAST_SYNCED = "MightySignal Last Synced"
 
   def data_fields(app: nil, publisher: nil)
     fields = { 
@@ -750,7 +757,8 @@ class SalesforceExportService
       ANDROID_PUB_ID => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
       #GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
       ANDROID_LINK => {type: 'Url', label: "MightySignal Android Link"},
-      ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
+      ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
+      LAST_SYNCED => {type: 'Date', label: 'MightySignal Last Synced'}
     }
 
     publisher ||= app.try(:publisher)
@@ -772,6 +780,8 @@ class SalesforceExportService
         fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
         fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
       end
+
+      fields[LAST_SYNCED][:data] = Date.today
 
       if @model_name == 'Lead'
         fields['Title'] = {label: 'Title'}

@@ -51,6 +51,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
+      {label: 'Category', type: 'Text', length: 255},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -122,7 +123,8 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal iOS SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
       "MightySignal Android Publisher ID" => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
       "MightySignal Android Link" => {type: 'Url', label: "MightySignal Android Link"},
-      "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
+      "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
+      "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"}
     }
     fields.each do |field_key, field|
       @sf.expects(:add_custom_field).with('Account', field)
@@ -256,6 +258,7 @@ end
   def test_that_default_mapping_maps_ios_fields
     assert_equal @sf.default_mapping(app: @ios_app), {
       "Website" => {"id"=>"Website", "name"=>"Website"},
+      "MightySignal Last Synced" => {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"},
       "MightySignal iOS Publisher ID" => {"id"=>"MightySignal_iOS_Publisher_ID__c", "name"=>"New Field: MightySignal iOS Publisher ID"},
       "MightySignal iOS Link" => {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
@@ -266,6 +269,7 @@ end
   def test_that_default_mapping_maps_android_fields
     assert_equal @sf.default_mapping(app: @android_app), {
       "Website" => {"id"=>"Website", "name"=>"Website"},
+      "MightySignal Last Synced" => {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"},
       "MightySignal Android Publisher ID" => {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"},
       "MightySignal Android Link" => {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
@@ -324,6 +328,7 @@ end
                   "MightySignal_iOS_Link__c" => "https://mightysignal.com/app/app#/publisher/ios/#{@ios_developer.id}?utm_source=salesforce",
                   "MightySignal_iOS_SDK_Summary__c" => "123",
                   "Name" => "3 Comma Studio LLC",
+                  "MightySignal_Last_Synced__c" => Date.today,
                   "AccountSource" => "MightySignal"}
 
     SalesforceWorker.expects(:perform_async)
@@ -336,6 +341,7 @@ end
       "MightySignal iOS Publisher ID" => {data: '123', type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
       "MightySignal iOS Link" => {data: '123', type: 'Url', label: "MightySignal iOS Link"},
       "MightySignal iOS SDK Summary" => {data: '123', length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
+      "MightySignal Last Synced" => {:type => "Date", :label => "MightySignal Last Synced"}
     }
 
     fields.each do |field_key, field|
