@@ -12,7 +12,7 @@ class AppHotStore < HotStore
 
     @key_set = "app_keys"
 
-    @required_fields = [ "app_identifier", "id" ]
+    @required_fields = [ "app_identifier", "id", "platform" ]
 
     @platform_to_class = {
       "ios" => IosApp,
