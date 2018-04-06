@@ -44,7 +44,7 @@ export const duplicateSdkFilter = index => action(DUPLICATE_SDK_FILTER, { index 
 export const GET_CSV_QUERY_ID = createRequestTypes('GET_CSV_QUERY_ID');
 export const getCsvQueryId = {
   request: params => action(GET_CSV_QUERY_ID.REQUEST, { params }),
-  success: id => action(GET_CSV_QUERY_ID.SUCCESS, { id }),
+  success: (id, numPages) => action(GET_CSV_QUERY_ID.SUCCESS, { id, numPages }),
   failure: error => action(GET_CSV_QUERY_ID.FAILURE, { error }),
 };
 

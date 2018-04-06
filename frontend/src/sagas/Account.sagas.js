@@ -15,6 +15,8 @@ import {
   getSavedSearches,
   saveNewSearch,
   deleteSavedSearch,
+  LOAD_PERMISSIONS,
+  loadPermissions,
 } from 'actions/Account.actions';
 
 function* requestAdNetworks () {
@@ -42,8 +44,8 @@ function* requestSavedSearches () {
 
 function* createSavedSearch (action) {
   const { name, params } = action.payload;
-  const { data: { query_id } } = yield call(ExploreService.getQueryId, params);
   try {
+    const { data: { query_id } } = yield call(ExploreService.getQueryId, params);
     const res = yield call(SavedSearchService().createSavedSearch, name, query_id);
     toastr.success('Search saved successfully!');
     const newSearch = { ...res.data, queryId: res.data.search_params, formState: params.formState };
@@ -55,6 +57,16 @@ function* createSavedSearch (action) {
     console.log(error);
     toastr.error("We're sorry, there was a problem saving your search.");
     yield put(saveNewSearch.failure(error));
+  }
+}
+
+function* requestPermissions (action) {
+  try {
+    const response = yield call(AccountService().getPermissions);
+    yield put(loadPermissions.success(response.data))
+  } catch (error) {
+    console.log(error);
+    yield put(loadPermissions.failure(error));
   }
 }
 
@@ -87,11 +99,17 @@ function* watchSavedSearchDelete() {
   yield takeEvery(DELETE_SAVED_SEARCH.REQUEST, handleSavedSearchDelete);
 }
 
+
+function* watchLoadPermissions() {
+  yield takeLatest(LOAD_PERMISSIONS.REQUEST, requestPermissions);
+}
+
 export default function* accountSaga() {
   yield all([
     watchAdNetworkFetch(),
     watchSavedSearchRequest(),
     watchNewSavedSearchRequest(),
     watchSavedSearchDelete(),
+    watchLoadPermissions(),
   ]);
 }

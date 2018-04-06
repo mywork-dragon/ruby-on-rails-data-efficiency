@@ -1004,6 +1004,7 @@ class ApiController < ApplicationController
   end
 
   def mightyquery_auth_token
+      extra_actions = @current_user.account.feature_flag_map.select {|k,v| k.starts_with?('mightyquery:') && v}.map {|x| x[0]}
       body = {
       "account_id" => "mri:mws:iam:varys-#{@current_user.account_id}:user/#{@current_user.email}",
       "statements" => [
@@ -1014,7 +1015,7 @@ class ApiController < ApplicationController
                 "mightyquery:fetch_result_page",
                 "mightyquery:describe_query",
                 "mightyquery:page_depth_level_20000"
-            ],
+            ] + extra_actions,
             "effect" => "allow",
             "resource" => [
                 "mri:mws:mightyquery/query",

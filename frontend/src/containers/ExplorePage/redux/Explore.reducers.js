@@ -24,6 +24,7 @@ const initialState = {
   queryResultId: null,
   csvQueryId: null,
   currentLoadedQuery: {},
+  csvNumPages: null,
 };
 
 const columnOptions = [
@@ -107,11 +108,13 @@ function explore (state = initialState, action) {
       return {
         ...state,
         csvQueryId: null,
+        csvNumPages: null,
       };
     case GET_CSV_QUERY_ID.SUCCESS:
       return {
         ...state,
         csvQueryId: payload.id,
+        csvNumPages: payload.numPages,
       };
     case UPDATE_QUERY_RESULT_ID:
       return {

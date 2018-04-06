@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import TableContainer from 'Table/Table.container';
-import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
-import { $localStorage } from 'utils/localStorage.utils';
+import { buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
 import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -22,9 +21,13 @@ const mapStateToProps = ({
       csvQueryId,
       queryResultId,
       currentLoadedQuery,
+      csvNumPages,
     },
   },
-  account: { adNetworks },
+  account: {
+    adNetworks,
+    permissions,
+  },
 }) => ({
   isManual: true,
   showControls: true,
@@ -32,7 +35,7 @@ const mapStateToProps = ({
   title: 'Results',
   canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
   adNetworks: adNetworks.adNetworks,
-  csvLink: csvQueryId ? `https://query.ms-static.com/query_result/${csvQueryId}/pages/0?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}` : null,
+  csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
   queryResultId,
   currentLoadedQuery,
   ...resultsTable,

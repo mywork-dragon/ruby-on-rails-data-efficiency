@@ -96,8 +96,8 @@ function* requestCsvQueryId (params) {
     const facebookOnly = yield select(isFacebookOnly);
     const csvParams = buildCsvRequest(params, facebookOnly);
     const { data: { query_id } } = yield call(service.getQueryId, csvParams);
-    const { data: { query_result_id } } = yield call(service.getQueryResultInfo, query_id);
-    yield put(getCsvQueryId.success(query_result_id));
+    const { data: { query_result_id, number_pages } } = yield call(service.getQueryResultInfo, query_id);
+    yield put(getCsvQueryId.success(query_result_id, number_pages));
   } catch (error) {
     console.log(error);
     yield put(getCsvQueryId.failure(error));

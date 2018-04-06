@@ -15,6 +15,8 @@ const Explore = ({
   requestCategories,
   shouldFetchSdkCategories,
   requestSdkCategories,
+  shouldFetchPermissions,
+  requestPermissions,
 }) => {
   if (queryId && !existingId) {
     populateFromQueryId(queryId);
@@ -30,6 +32,10 @@ const Explore = ({
 
   if (shouldFetchSdkCategories) {
     requestSdkCategories();
+  }
+
+  if (shouldFetchPermissions) {
+    requestPermissions();
   }
 
   return (
@@ -61,6 +67,8 @@ Explore.propTypes = {
   requestCategories: PropTypes.func.isRequired,
   shouldFetchSdkCategories: PropTypes.bool.isRequired,
   requestSdkCategories: PropTypes.func.isRequired,
+  requestPermissions: PropTypes.func.isRequired,
+  shouldFetchPermissions: PropTypes.bool.isRequired,
 };
 
 Explore.defaultProps = {

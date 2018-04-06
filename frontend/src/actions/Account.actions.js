@@ -34,3 +34,10 @@ export const deleteSavedSearch = {
   success: id => action(DELETE_SAVED_SEARCH.SUCCESS, { id }),
   failure: error => action(DELETE_SAVED_SEARCH.FAILURE, { error }),
 };
+
+export const LOAD_PERMISSIONS = createRequestTypes('LOAD_PERMISSIONS');
+export const loadPermissions = {
+  request: () => action(LOAD_PERMISSIONS.REQUEST),
+  success: (data) => action(LOAD_PERMISSIONS.SUCCESS, { data }),
+  failure: error => action(LOAD_PERMISSIONS.FAILURE, { error }),
+};

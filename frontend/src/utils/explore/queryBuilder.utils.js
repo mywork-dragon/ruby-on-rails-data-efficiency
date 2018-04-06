@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import { $localStorage } from 'utils/localStorage.utils';
 import { selectMap, sortMap, csvSelect } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
 import { cleanState } from './general.utils';
+
 
 export function buildExploreRequest (form, columns, pageSettings, sort, accountNetworks) {
   const result = {};
@@ -20,6 +22,34 @@ export function buildCsvRequest (query, facebookOnly) {
   result.page_settings = { page_size: 20000 };
   result.select = csvSelect(facebookOnly);
   return result;
+}
+
+
+export function buildCsvLink (csvQueryId, csvNumPages, permissions) {
+  var pages = '0';
+  const mquery_prefix = 'mightyquery:page_depth_level_';
+  const page_size = 20000;
+
+  if (csvQueryId) {
+    if (permissions.features) {
+      var page_depths = Object.entries(permissions.features).filter(
+          (x) => (x[1] && x[0].startsWith(mquery_prefix))).map((x) => (x[0].replace(mquery_prefix, '')));
+
+      if (page_depths.includes('all')) {
+        pages = '*';
+      } else {
+        page_depths = page_depths.filter((x) => (!isNaN(x))).map(parseInt);
+        if (page_depths) {
+          const page_depth = Math.max(...page_depths);
+          const max_page = Math.min(Math.floor(page_depth / page_size), csvNumPages);
+          pages = "0-" + max_page.toString();
+        }
+      }
+    }
+
+    return `https://query.ms-static.com/query_result/${csvQueryId}/pages/${pages}?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}`;
+  }
+  return null;
 }
 
 export function buildPageSettings ({ pageSize, pageNum }) {
