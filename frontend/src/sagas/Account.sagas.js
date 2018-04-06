@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest, takeEvery } from 'redux-saga/effects';
+import { all, put, call, takeLatest, takeEvery, select } from 'redux-saga/effects';
 import toastr from 'toastr';
 import AccountService from 'services/account.service';
 import SavedSearchService from 'services/savedSearch.service';
@@ -11,10 +11,12 @@ import {
   GET_SAVED_SEARCHES,
   SAVE_NEW_SEARCH,
   DELETE_SAVED_SEARCH,
+  UPDATE_SAVED_SEARCH,
   adNetworks,
   getSavedSearches,
   saveNewSearch,
   deleteSavedSearch,
+  updateSavedSearch,
   LOAD_PERMISSIONS,
   loadPermissions,
 } from 'actions/Account.actions';
@@ -57,6 +59,18 @@ function* createSavedSearch (action) {
     console.log(error);
     toastr.error("We're sorry, there was a problem saving your search.");
     yield put(saveNewSearch.failure(error));
+  }
+}
+
+function* savedSearchUpdate (action) {
+  const { id, params: { queryId, formState } } = action.payload;
+  try {
+    const { data } = yield call(SavedSearchService().updateSavedSearch, id, queryId);
+    const newSearch = { ...data, queryId: data.search_params, formState };
+    yield put(updateSavedSearch.success(newSearch));
+  } catch (error) {
+    console.log(error);
+    yield put(updateSavedSearch.failure(error));
   }
 }
 
@@ -104,6 +118,10 @@ function* watchLoadPermissions() {
   yield takeLatest(LOAD_PERMISSIONS.REQUEST, requestPermissions);
 }
 
+function* watchSavedSearchUpdate() {
+  yield takeLatest(UPDATE_SAVED_SEARCH.REQUEST, savedSearchUpdate);
+}
+
 export default function* accountSaga() {
   yield all([
     watchAdNetworkFetch(),
@@ -111,5 +129,6 @@ export default function* accountSaga() {
     watchNewSavedSearchRequest(),
     watchSavedSearchDelete(),
     watchLoadPermissions(),
+    watchSavedSearchUpdate(),
   ]);
 }

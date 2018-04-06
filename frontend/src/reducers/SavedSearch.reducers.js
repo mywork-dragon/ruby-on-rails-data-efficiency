@@ -2,6 +2,7 @@ import {
   GET_SAVED_SEARCHES,
   SAVE_NEW_SEARCH,
   DELETE_SAVED_SEARCH,
+  UPDATE_SAVED_SEARCH,
 } from 'actions/Account.actions';
 
 const initialState = {
@@ -20,6 +21,7 @@ function savedSearches (state = initialState, action) {
     case GET_SAVED_SEARCHES.SUCCESS:
       return loadSearches(action);
     case SAVE_NEW_SEARCH.SUCCESS:
+    case UPDATE_SAVED_SEARCH.SUCCESS:
       return addNewSearch(state, action);
     case DELETE_SAVED_SEARCH.SUCCESS:
       return deleteSearch(state, action);

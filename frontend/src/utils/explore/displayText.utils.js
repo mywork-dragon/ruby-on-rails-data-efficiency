@@ -71,10 +71,10 @@ function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
   let installText;
   switch (installState) {
     case 'is-installed':
-      installText = 'and Currently Installed';
+      installText = ' and Currently Installed';
       break;
     case 'is-not-installed':
-      installText = 'and Currently Not Installed';
+      installText = ' and Currently Not Installed';
       break;
     default:
       installText = '';

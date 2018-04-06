@@ -2,6 +2,10 @@ export const takenDownFilter = state => state.explorePage.searchForm.includeTake
 
 export const currentQueryId = state => state.explorePage.explore.queryId;
 
+export const csvQueryId = state => state.explorePage.explore.csvQueryId;
+
+export const queryResultId = state => state.explorePage.explore.queryResultId;
+
 export const activeFilters = (state) => {
   const currentFilters = state.explorePage.searchForm.filters;
 
@@ -20,8 +24,8 @@ export const activeFilters = (state) => {
   return filters;
 };
 
-export const csvQueryId = state => state.explorePage.explore.csvQueryId;
-
-export const queryResultId = state => state.explorePage.explore.queryResultId;
-
 export const currentExplorePage = state => state.explorePage.resultsTable.pageNum;
+
+export const currentFormVersion = state => state.explorePage.searchForm.version;
+
+export const getCurrentState = state => state.explorePage;

@@ -1,10 +1,15 @@
 import moment from 'moment';
+import getDisplayText from './displayText.utils';
 
-export default function validateFormState (form) {
+export default function validateFormState (form, currentVersion) {
   let result = { ...form };
   result = convertDatesToMoments(result);
+  result = updateDisplayTexts(result);
 
-  return result;
+  return {
+    form: result,
+    shouldUpdate: form.version !== currentVersion,
+  };
 }
 
 function convertDatesToMoments (form) {
@@ -24,6 +29,22 @@ function convertDatesToMoments (form) {
     filters.adNetworks.value.firstSeenDate = moment(filters.adNetworks.value.firstSeenDate);
     filters.adNetworks.value.lastSeenDate = moment(filters.adNetworks.value.lastSeenDate);
   }
+
+  return result;
+}
+
+function updateDisplayTexts (form) {
+  const result = { ...form };
+
+  Object.keys(form.filters).forEach((key) => {
+    if (form.filters[key].displayTest) {
+      form.filters[key].displayText = getDisplayText(key, form.filters[key].value);
+    } else if (key === 'sdks') {
+      form.filters.sdks.filters.forEach((filter) => {
+        filter.displayText = getDisplayText('sdk', filter);
+      });
+    }
+  });
 
   return result;
 }

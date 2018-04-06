@@ -27,7 +27,7 @@ const initialFormState = {
       operator: 'and',
     },
   },
-  version: '0.0.0',
+  version: '0.1.0',
 };
 
 function searchForm (state = initialFormState, action) {
@@ -51,6 +51,7 @@ function searchForm (state = initialFormState, action) {
     case POPULATE_FROM_QUERY_ID.SUCCESS:
       return {
         ...action.payload.formState,
+        version: state.version,
       };
     case DUPLICATE_SDK_FILTER:
       return duplicateSdkFilter(state, action.payload);

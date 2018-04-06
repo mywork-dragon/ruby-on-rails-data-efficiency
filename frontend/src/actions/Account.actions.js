@@ -35,6 +35,13 @@ export const deleteSavedSearch = {
   failure: error => action(DELETE_SAVED_SEARCH.FAILURE, { error }),
 };
 
+export const UPDATE_SAVED_SEARCH = createRequestTypes('UPDATE_SAVED_SEARCH');
+export const updateSavedSearch = {
+  request: (id, params) => action(UPDATE_SAVED_SEARCH.REQUEST, { id, params }),
+  success: search => action(UPDATE_SAVED_SEARCH.SUCCESS, { search }),
+  failure: error => action(UPDATE_SAVED_SEARCH.FAILURE, { error }),
+};
+
 export const LOAD_PERMISSIONS = createRequestTypes('LOAD_PERMISSIONS');
 export const loadPermissions = {
   request: () => action(LOAD_PERMISSIONS.REQUEST),

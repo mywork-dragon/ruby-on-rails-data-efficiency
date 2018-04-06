@@ -9,6 +9,7 @@ import {
   LOAD_SAVED_SEARCH,
   SAVE_NEW_SEARCH,
   LOAD_PERMISSIONS,
+  UPDATE_SAVED_SEARCH,
 } from 'actions/Account.actions';
 
 import {
@@ -41,6 +42,7 @@ function* watchError() {
     SDK_CATEGORIES.FAILURE,
     TABLE_TYPES.ALL_ITEMS.FAILURE,
     LOAD_PERMISSIONS.FAILURE,
+    UPDATE_SAVED_SEARCH.FAILURE,
   ], sendToBugsnag);
 }
 
