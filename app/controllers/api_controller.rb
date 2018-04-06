@@ -1040,7 +1040,7 @@ class ApiController < ApplicationController
           "resource" => @current_user.account.enabled_ad_networks.map {|x| "mri:mws:adsource/#{x}"}
         }
       ],
-      "expire" => Time.now.to_i + 20.minutes
+      "expire" => Time.now.to_i + 24.hours
     }
 
     if @current_user.account.ad_data_permissions['enabled_ad_network_tiers'].include? 'tier-2'
