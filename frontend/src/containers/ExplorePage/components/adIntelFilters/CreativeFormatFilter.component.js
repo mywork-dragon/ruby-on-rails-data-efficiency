@@ -28,6 +28,13 @@ const CreativeFormatFilter = ({
       >
         Video
       </Checkbox>
+      <Checkbox
+        key="other_formats"
+        checked={value.includes('other_formats')}
+        onChange={updateFilter('creativeFormats', 'other_formats', { panelKey })}
+      >
+        Other
+      </Checkbox>
     </div>
   </li>
 );

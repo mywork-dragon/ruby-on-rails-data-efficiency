@@ -5,7 +5,7 @@ import { buildAdIntelFilters } from '../../../explore/filterBuilder.utils';
 test('', () => {
   const filters = {
     creativeFormats: {
-      value: ['html_game', 'video'],
+      value: ['html_game', 'video', 'other_formats'],
     },
   };
 
@@ -17,6 +17,7 @@ test('', () => {
         'or',
         ['html_game'],
         ['video'],
+        ['other_formats'],
       ],
     ],
   };

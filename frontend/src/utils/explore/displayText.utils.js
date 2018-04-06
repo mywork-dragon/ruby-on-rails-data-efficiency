@@ -117,6 +117,7 @@ function creativeFormatsText (value) {
   const map = {
     html_game: 'Playable',
     video: 'Video',
+    other_formats: 'Other',
   };
 
   const formats = value.map(x => map[x]).join(', ');
