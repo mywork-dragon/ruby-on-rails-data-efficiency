@@ -60,7 +60,7 @@ angular.module('appApp').controller('NewsfeedCtrl', ['$scope', 'authService', '$
         }
         $scope.following = data.following;
         $scope.initialPageLoadComplete = true;
-      });
+      }).catch(() => { throw new Error('Failed Timeline load'); });
     };
 
     $scope.isSdk = function (type) {
@@ -104,7 +104,7 @@ angular.module('appApp').controller('NewsfeedCtrl', ['$scope', 'authService', '$
         batch.activities = data.activities;
         batch.isLoading = false;
         batch.currentPage = data.page;
-      });
+      }).catch(() => { throw Error('Failed Newsfeed Batch Load'); });
     };
 
     $scope.exportBatch = function(id, batch) {

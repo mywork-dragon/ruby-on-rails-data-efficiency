@@ -3,6 +3,7 @@ import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { store } from 'store';
 import { Provider } from 'react-redux';
+import ErrorBoundary from 'components/bugsnag-wrapper/BugsnagWrapper.component';
 
 import PublisherAdIntelTabContainer from 'containers/PublisherPage/containers/PublisherAdIntel.container';
 import AppAdIntelTabContainer from 'containers/AppPage/containers/AppAdIntel.container';
@@ -27,12 +28,14 @@ function adIntelTab() {
 
       function renderReactElement() {
         render(
-          <Provider store={store}>
-            { scope.type === 'app' ?
-              <AppAdIntelTabContainer itemId={scope.itemId} platform={scope.platform} />
-              : <PublisherAdIntelTabContainer itemId={scope.itemId} platform={scope.platform} />
-            }
-          </Provider>
+          <ErrorBoundary>
+            <Provider store={store}>
+              { scope.type === 'app' ?
+                <AppAdIntelTabContainer itemId={scope.itemId} platform={scope.platform} />
+                : <PublisherAdIntelTabContainer itemId={scope.itemId} platform={scope.platform} />
+              }
+            </Provider>
+          </ErrorBoundary>
           , element[0],
         );
       }

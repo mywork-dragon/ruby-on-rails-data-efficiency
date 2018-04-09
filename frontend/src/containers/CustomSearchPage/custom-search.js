@@ -41,6 +41,7 @@ angular.module('appApp')
             customSearchCtrl.appNum = 0;
             customSearchCtrl.numApps = 0;
             customSearchCtrl.queryInProgress = false;
+            throw Error('Failed Custom Search');
           });
       };
 

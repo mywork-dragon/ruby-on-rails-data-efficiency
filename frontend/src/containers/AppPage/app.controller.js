@@ -177,7 +177,8 @@ function AppController (
           app.rating = appUtils.formatRatings(app.ratings);
           app.userBases = appUtils.filterUnavailableCountries(data.userBases, data.appStores.availableIn);
         }
-      });
+      })
+      .catch(() => { throw Error('Failed App Page Load'); });
   }
 
   function getCompanyContacts(filter) {

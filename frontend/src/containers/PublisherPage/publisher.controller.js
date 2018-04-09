@@ -93,7 +93,7 @@ function PublisherController (
         publisher.id = $stateParams.id;
         pageTitleService.setTitle(publisher.name);
         publisherMixpanelService.trackPublisherPageView(publisher);
-      });
+      })
     getPublisherApps();
     getPublisherSdks();
     getCompanyContacts();
@@ -153,7 +153,8 @@ function PublisherController (
         $rootScope.numApps = data.numApps;
 
         publisher.publisherFetchComplete = true;
-      });
+      })
+      .catch(() => { throw Error('Failed Publisher Page Load'); });
   }
 
   function getPublisherApps (category, order) {

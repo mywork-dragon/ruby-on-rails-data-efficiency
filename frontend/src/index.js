@@ -83,3 +83,4 @@ require('directives/directives.js');
 
 /* Utils */
 require('AngularUtils/csv.utils.js');
+require('AngularUtils/bugsnag.utils');

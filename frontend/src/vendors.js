@@ -21,6 +21,7 @@ require('angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.min.css');
  *
 */
 var Bugsnag = require('bugsnag-js');
+var jwt = require('jsonwebtoken');
 
 /* Previous Bower Components */
 window.$ = require('jquery');
@@ -56,6 +57,9 @@ require('./js/slacktivity.js')
 /* Custom configuration */
 Bugsnag.apiKey = "3cd7afb86ca3972cfde605c1e0a64a73";
 Bugsnag.notifyReleaseStages = ["production"];
+Bugsnag.metaData = {
+  user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+};
 if (window && window.location.hostname === 'localhost') {
   Bugsnag.releaseStage = "development";
 }
