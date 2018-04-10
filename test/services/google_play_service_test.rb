@@ -8,6 +8,7 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     basic_presence_check(res, ignored: [
       :size, :in_app_purchases_range
     ])
+    validate_attributes(res)
     assert res[:similar_apps].count > 0
     assert_equal 100_000_000..500_000_000, res[:downloads]
   end
@@ -18,6 +19,7 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     basic_presence_check(res, ignored: [
       :size, :in_app_purchases_range
     ])
+    validate_attributes(res)
     assert res[:similar_apps].count > 0
     assert_equal 100_000_000..500_000_000, res[:downloads]
   end
@@ -28,6 +30,7 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     basic_presence_check(res, ignored: [
       :in_app_purchases_range, :seller_url
     ])
+    validate_attributes(res)
     assert_equal(100..500, res[:downloads])
   end
 
@@ -37,6 +40,7 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     basic_presence_check(res, ignored: [
       :size
     ])
+    validate_attributes(res)
     assert_equal true, res[:in_app_purchases]
     assert res[:in_app_purchases_range]
     assert res[:similar_apps].count > 0
@@ -48,12 +52,14 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     page = open('test/data/google_play_web_radio.html').read()
     res = GooglePlayService.new(page).attributes('radio.rama.web')
     basic_presence_check(res, ignored: [:size, :in_app_purchases_range])
+    validate_attributes(res)
   end
 
   test 'tricky developer name with slash is parsed' do
     page = open('test/data/google_play_newsradio.html').read()
     res = GooglePlayService.new(page).attributes('radio.rama.web')
     basic_presence_check(res, ignored: [:size, :in_app_purchases_range, :in_app_purchases])
+    validate_attributes(res)
   end
 
   def basic_presence_check(res, ignored: [])
@@ -86,5 +92,11 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     end
     # ensure valid app identifiers
     assert_equal([], res[:similar_apps].select { |x| /[^\w.]/.match(x) })
+  end
+
+  def validate_attributes(res, ignored: [])
+    if res[:content_rating]
+      assert_nil(/Learn More/i.match(res[:content_rating]))
+    end
   end
 end

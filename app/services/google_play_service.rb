@@ -245,7 +245,8 @@ class GooglePlayService
 
   # Returns a string containing the content rating, or nil if data not available
   def content_rating
-    meta_info_content_by_title('Content Rating', child_index: 1).split("\n")[0].strip
+    text = meta_info_content_by_title('Content Rating', child_index: 1).split("\n")[0].strip
+    text.gsub(/Learn More/i, '').strip
   end
 
   # Returns float of app review rating (out of 5)
