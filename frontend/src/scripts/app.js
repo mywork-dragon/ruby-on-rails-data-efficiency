@@ -82,7 +82,7 @@ angular
     const explorev2State = {
       name: 'explore-v2',
       url: '/search/v2',
-      template: '<explore />',
+      template: '<div><explore /><aside><list-create /></aside></div>',
     };
 
     const explorev2QueryState = {
