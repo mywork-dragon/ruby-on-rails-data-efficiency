@@ -57,8 +57,9 @@ require('./js/slacktivity.js')
 /* Custom configuration */
 Bugsnag.apiKey = "3cd7afb86ca3972cfde605c1e0a64a73";
 Bugsnag.notifyReleaseStages = ["production"];
+const token = localStorage.getItem('ms_jwt_auth_token');
 Bugsnag.metaData = {
-  user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+  user_id: token ? jwt.decode(token).user_id : 'Not logged in',
 };
 if (window && window.location.hostname === 'localhost') {
   Bugsnag.releaseStage = "development";
