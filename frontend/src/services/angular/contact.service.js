@@ -17,6 +17,7 @@ function contactService($window, $http) {
     getContactEmail,
     goToLinkedIn,
     trackCrunchbaseClick,
+    trackLinkedinContactClick,
   };
 
   return service;
@@ -90,6 +91,15 @@ function contactService($window, $http) {
   function trackCrunchbaseClick(company, source) {
     mixpanel.track('Crunchbase Link Clicked', {
       Company: company,
+      'Source Type': source,
+    });
+  }
+
+  function trackLinkedinContactClick(contact, source) {
+    mixpanel.track('LinkedIn Contact Clicked', {
+      email: contact.email,
+      name: contact.fullName,
+      linkedIn: contact.linkedIn,
       'Source Type': source,
     });
   }
