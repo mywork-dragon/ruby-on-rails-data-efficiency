@@ -45,7 +45,7 @@ const DownloadsFilter = ({
 }) => (
   <li className="li-filter">
     <label className="filter-label">
-      Downloads (Android only):
+      Downloads Min (Android only):
     </label>
     <div className="input-group ratings-count">
       <Select

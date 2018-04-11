@@ -187,10 +187,10 @@
                     <span ng-if="app.price && isApple">{{(app.price / 100.0) | isoCurrency:app.currency}}</span>
                     <span ng-if="app.price && !isApple">{{(app.price / 100.0) | currency}}</span>
                   </li>
-                  <li ng-if="app.downloadsMin && app.downloadsMax && !isApple">
+                  <li ng-if="app.downloadsMin && !isApple">
                     <span class="icon fa fa-download"></span>
                     <label>Total Downloads:</label>
-                    {{app.downloadsMin | humanizeNum}} - {{app.downloadsMax | humanizeNum}}
+                    {{app.downloadsMin | humanizeNum}}+
                   </li>
                   <li ng-if="isApple">
                     <span class="icon fa fa-shopping-cart"></span>

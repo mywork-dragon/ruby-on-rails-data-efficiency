@@ -108,7 +108,7 @@ export const columnModels = [
     headerClassName: 'small-cell',
     Cell: cell => (typeof cell.value !== 'number' ? (
       <span className="invalid">Not available</span>
-    ) : numberShorthand(cell.value)),
+    ) : numberShorthand(cell.value) + "+"),
   },
   {
     Header: headerNames.FIRST_SEEN_ADS,
