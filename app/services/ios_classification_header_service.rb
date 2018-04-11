@@ -12,7 +12,8 @@ class IosClassificationHeaderService
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model.table_name}")
     end
 
-    def swap_tables(automated: true)
+    def swap_tables(automated: true, validate: true)
+      validate_tables if validate
       ActiveRecord::Base.logger.level = 1
       ap "BEFORE"
       print_counts
@@ -36,6 +37,10 @@ class IosClassificationHeaderService
 
       ap "AFTER"
       print_counts
+    end
+
+    def validate_tables
+      raise RuntimeError, 'Table is not above min size'  unless IosClassificationHeadersBackup.count >= 30_000
     end
 
     def source_dest_syntax(source_table, dest_table)
