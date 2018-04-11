@@ -39,7 +39,7 @@ export function buildCsvLink (csvQueryId, csvNumPages, permissions) {
         pages = '*';
       } else {
         page_depths = page_depths.filter((x) => (!isNaN(x))).map(parseInt);
-        if (page_depths) {
+        if (page_depths.length > 0) {
           const page_depth = Math.max(...page_depths);
           const max_page = Math.min(Math.floor(page_depth / page_size), csvNumPages);
           pages = "0-" + max_page.toString();
