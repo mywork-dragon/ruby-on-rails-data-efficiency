@@ -4,8 +4,8 @@ import mixpanel from 'mixpanel-browser';
 import 'components/top-header/top-header.directive.js';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', 'slacktivity', 'searchService', '$window', 'pageTitleService',
-    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService) {
+  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', 'slacktivity', 'searchService', '$window', 'pageTitleService', 'bugsnagHelper',
+    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService, bugsnagHelper) {
       const customSearchCtrl = this;
       customSearchCtrl.platform = window.APP_PLATFORM; // default
       customSearchCtrl.newSearch = false;
@@ -41,7 +41,7 @@ angular.module('appApp')
             customSearchCtrl.appNum = 0;
             customSearchCtrl.numApps = 0;
             customSearchCtrl.queryInProgress = false;
-            throw Error('Failed Custom Search');
+            bugsnagHelper('Failed Custom Search', 'Failed Custom Search', { routeParams });
           });
       };
 

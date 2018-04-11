@@ -6,12 +6,23 @@ angular
   .module('appApp')
   .factory('$exceptionHandler', $exceptionHandler);
 
-// $exceptionHandler.$inject = ['$log', 'logErrorsToBackend'];
-
 function $exceptionHandler() {
   return function bugsnagExceptionHandler(exception) {
     Bugsnag.notifyException(exception, {
       user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+    });
+  };
+}
+
+angular
+  .module('appApp')
+  .service('bugsnagHelper', bugsnagHelper);
+
+function bugsnagHelper() {
+  return function (name, message, metaData) {
+    Bugsnag.notify(name, message, {
+      user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+      ...metaData,
     });
   };
 }
