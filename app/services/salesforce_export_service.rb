@@ -448,12 +448,17 @@ class SalesforceExportService
     end
   end
 
-  def import_app_ownership(app_id, lead_id)
+  def import_app_ownership(app_id, export_id)
     new_app_ownership = {
-      'MightySignal_Key__c' => app_id + lead_id,
-      'MightySignal_App__c' => app_id,
-      'Lead__c' => lead_id,
+      'MightySignal_Key__c' => app_id + export_id,
+      'MightySignal_App__c' => app_id
     }
+
+    if lead_import?
+      new_app_ownership['Lead__c'] = export_id
+    else
+      new_app_ownership['Account__c'] = export_id
+    end
 
     @upsert_records[@app_ownership_model] ||= []
     @upsert_records[@app_ownership_model] << new_app_ownership unless @upsert_records[@app_ownership_model].include?(new_app_ownership)
@@ -507,7 +512,8 @@ class SalesforceExportService
       record = @upsert_records[@app_model][i]
       
       # leads use app ownership, accounts have id directly on app object
-      if lead_import?
+      # adjust will use app ownership on accounts as well (maybe all accounts in the future)
+      if lead_import? || (@account.id == 12)
         export_ids = @app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
         export_ids.each do |export_id|
           import_app_ownership(app_id, export_id)
