@@ -47,7 +47,7 @@ export function buildCsvLink (csvQueryId, csvNumPages, permissions) {
       }
     }
 
-    return `https://query.ms-static.com/query_result/${csvQueryId}/pages/${pages}?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}`;
+    return `${window.MQUERY_SERVICE}/query_result/${csvQueryId}/pages/${pages}?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}`;
   }
   return null;
 }

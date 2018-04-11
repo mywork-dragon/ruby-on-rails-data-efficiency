@@ -6,7 +6,6 @@ import httpClient from './httpClient';
 
 
 const ExploreService = (client = httpClient) => {
-  const url = 'https://query.ms-static.com';
 
   const exploreClient = axios.create({
     headers: { Authorization: null },
@@ -28,22 +27,22 @@ const ExploreService = (client = httpClient) => {
 
   return {
     getQueryId: params => (
-      exploreClient.put(`${url}/query`, params)
+      exploreClient.put(`${window.MQUERY_SERVICE}/query`, params)
     ),
     getQueryParams: id => (
-      exploreClient.get(`${url}/query/${id}`)
+      exploreClient.get(`${window.MQUERY_SERVICE}/query/${id}`)
     ),
     getQueryResultInfo: id => (
-      exploreClient.put(`${url}/query_result/${id}`)
+      exploreClient.put(`${window.MQUERY_SERVICE}/query_result/${id}`)
     ),
     getResultsByResultId: (id, page) => (
-      exploreClient.get(`${url}/query_result/${id}/pages/${page}?formatter=json_list`)
+      exploreClient.get(`${window.MQUERY_SERVICE}/query_result/${id}/pages/${page}?formatter=json_list`)
     ),
     getSdkAutocompleteResults: (platform, query) => (
       client.get(`/api/sdks/autocomplete/v2?platform=${platform}&query=${query}`)
     ),
     getCsvByQueryResultId: id => (
-      exploreClient.get(`${url}/query_result/${id}/pages/*?formatter=csv`)
+      exploreClient.get(`${window.MQUERY_SERVICE}/query_result/${id}/pages/*?formatter=csv`)
     ),
   };
 };
