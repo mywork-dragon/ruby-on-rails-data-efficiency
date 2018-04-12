@@ -1,6 +1,6 @@
 import angular from 'angular';
 import Bugsnag from 'bugsnag-js';
-import jwt from 'jsonwebtoken';
+import { getUserIdFromToken } from 'utils/auth.utils';
 
 angular
   .module('appApp')
@@ -9,7 +9,7 @@ angular
 function $exceptionHandler() {
   return function bugsnagExceptionHandler(exception) {
     Bugsnag.notifyException(exception, {
-      user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+      user_id: getUserIdFromToken(),
     });
   };
 }
@@ -21,7 +21,7 @@ angular
 function bugsnagHelper() {
   return function (name, message, metaData) {
     Bugsnag.notify(name, message, {
-      user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id,
+      user_id: getUserIdFromToken(),
       ...metaData,
     });
   };

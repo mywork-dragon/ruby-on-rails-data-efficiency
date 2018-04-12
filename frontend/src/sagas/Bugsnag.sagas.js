@@ -1,7 +1,6 @@
 import Bugsnag from 'bugsnag-js';
 import { all, takeEvery } from 'redux-saga/effects';
-import jwt from 'jsonwebtoken';
-
+import { getUserIdFromToken } from 'utils/auth.utils';
 import {
   AD_NETWORKS,
   DELETE_SAVED_SEARCH,
@@ -25,7 +24,10 @@ import {
 } from 'containers/ExplorePage/redux/Explore.actions';
 
 function sendToBugsnag ({ type, payload: { error } }) {
-  Bugsnag.notifyException(error, { user_id: jwt.decode(localStorage.getItem('ms_jwt_auth_token')).user_id, action_type: type });
+  Bugsnag.notifyException(error, {
+    user_id: getUserIdFromToken(),
+    action_type: type,
+  });
 }
 
 function* watchError() {

@@ -10,3 +10,9 @@ export const isValidToken = (token) => {
 
   return false;
 };
+
+export const getUserIdFromToken = () => {
+  const token = localStorage.getItem('ms_jwt_auth_token');
+
+  return token ? jwt.decode(token).user_id : null;
+};

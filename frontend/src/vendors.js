@@ -9,6 +9,8 @@
  *
 */
 import 'react-table/react-table.css';
+import { getUserIdFromToken } from 'utils/auth.utils';
+
 require('./styles/google-fonts.css'); // This should not be here but migrating and afraid of precedence
 require('bootstrap/dist/css/bootstrap.min.css');
 require('bootstrap/dist/css/bootstrap-theme.min.css');
@@ -21,7 +23,6 @@ require('angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.min.css');
  *
 */
 var Bugsnag = require('bugsnag-js');
-var jwt = require('jsonwebtoken');
 
 /* Previous Bower Components */
 window.$ = require('jquery');
@@ -57,9 +58,8 @@ require('./js/slacktivity.js')
 /* Custom configuration */
 Bugsnag.apiKey = "3cd7afb86ca3972cfde605c1e0a64a73";
 Bugsnag.notifyReleaseStages = ["production"];
-const token = localStorage.getItem('ms_jwt_auth_token');
 Bugsnag.metaData = {
-  user_id: token ? jwt.decode(token).user_id : 'Not logged in',
+  user_id: getUserIdFromToken(),
 };
 if (window && window.location.hostname === 'localhost') {
   Bugsnag.releaseStage = "development";
