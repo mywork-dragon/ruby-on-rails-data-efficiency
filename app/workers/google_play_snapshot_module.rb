@@ -83,7 +83,8 @@ module GooglePlaySnapshotModule
 
   def create_join_columns_for_snapshot
     create_category_joins
-    store_screenshot_urls
+    # Disabled for now
+    # store_screenshot_urls
   end
 
   def create_category_joins

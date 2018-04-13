@@ -35,8 +35,9 @@ module AppStoreSnapshotServiceWorkerModule
       
       raise 'AppStoreService.attributes is empty' if a.empty?
 
-      store_service.save_html
-      store_service.save_json
+      # Disabled for now
+      # store_service.save_html
+      # store_service.save_json
 
       single_column_attributes = %w(
         name
@@ -141,11 +142,12 @@ module AppStoreSnapshotServiceWorkerModule
         end
       end
 
-      if screenshot_urls = a[:screenshot_urls]
-        screenshot_urls.each_with_index do |screenshot_url, index|
-          IosAppSnapshotsScrSht.create(url: screenshot_url, position: index, ios_app_snapshot_id: s.id)
-        end
-      end
+      # Disabled for now
+      # if screenshot_urls = a[:screenshot_urls]
+        # screenshot_urls.each_with_index do |screenshot_url, index|
+        #   IosAppSnapshotsScrSht.create(url: screenshot_url, position: index, ios_app_snapshot_id: s.id)
+        # end
+      # end
     
       s.save!
       

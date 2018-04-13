@@ -26,10 +26,12 @@ class AndroidAppSnapshot < ActiveRecord::Base
     }
   end
 
+  # Disabled for now
   def screenshot_urls
-    JSON.parse(MightyAws::S3.new.retrieve(
-      bucket: Rails.application.config.app_snapshots_bucket,
-      key_path: "googleplay/snapshots/#{id}/screenshots.json.gz",
-    ))
+    return []
+    # JSON.parse(MightyAws::S3.new.retrieve(
+    #   bucket: Rails.application.config.app_snapshots_bucket,
+    #   key_path: "googleplay/snapshots/#{id}/screenshots.json.gz",
+    # ))
   end
 end
