@@ -95,7 +95,10 @@
 
     .filter-tag-label {
       cursor: default;
+      height: 100%;
       margin: 2px;
+      max-width: 100%;
+      white-space: pre-line;
 
       .fa-times {
         cursor: pointer;
