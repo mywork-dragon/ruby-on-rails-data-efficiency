@@ -205,10 +205,12 @@ end
     # Account
     mock1.expect(:MightySignal_Android_Publisher_ID__c, @android_developer.id)
     mock1.expect(:MightySignal_iOS_Publisher_ID__c, @ios_developer2.id)
+    mock1.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
     # Lead 
     mock1.expect(:MightySignal_Android_Publisher_ID__c, @android_developer2.id)
     mock1.expect(:MightySignal_iOS_Publisher_ID__c, @ios_developer.id)
+    mock1.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
     mock2 = Minitest::Mock.new
     
@@ -218,10 +220,12 @@ end
     # Account
     mock2.expect(:MightySignal_Android_Publisher_ID__c, @android_developer2.id)
     mock2.expect(:MightySignal_iOS_Publisher_ID__c, nil)
+    mock2.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
     # Lead
     mock2.expect(:MightySignal_Android_Publisher_ID__c, @android_developer.id)
     mock2.expect(:MightySignal_iOS_Publisher_ID__c, nil)
+    mock2.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
 
     @sf.client.stub(:query, [mock1, mock2]) do

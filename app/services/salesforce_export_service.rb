@@ -117,13 +117,30 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
+  def should_sync_publisher?(platform:, publisher_id:, last_synced:)
+    return true unless last_synced && @account.id == 12
+    if platform == 'ios'
+      publisher = IosDeveloper.find(publisher_id)
+      publisher.apps.limit(500).any?{|app| 
+        first_valid_date = app.get_last_ipa_snapshot(scan_success: true).try(:first_valid_date)
+        first_valid_date && first_valid_date >= last_synced 
+      }
+    else
+      publisher = AndroidDeveloper.find(publisher_id)
+      publisher.apps.limit(500).any?{|app| 
+        first_valid_date = app.newest_successful_apk_snapshot ? app.newest_successful_apk_snapshot.first_valid_date : nil
+        first_valid_date && first_valid_date >= last_synced 
+      }
+    end
+  end
+
   def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
       model_query = @account.syncing_query(model)
       
-      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where"
+      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c, MightySignal_Last_Synced__c from #{model} where"
 
       if platforms.include?('ios') && platforms.include?('android')
         query += " (MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null)"
@@ -143,12 +160,13 @@ class SalesforceExportService
         salesforce_id = object.Id
         ios_publisher_id = object.MightySignal_iOS_Publisher_ID__c
         android_publisher_id = object.MightySignal_Android_Publisher_ID__c
+        last_synced = object.MightySignal_Last_Synced__c.try(:to_date)
 
-        if platforms.include?('ios') && ios_publisher_id
+        if platforms.include?('ios') && ios_publisher_id && should_sync_publisher?(platform: 'ios', publisher_id: ios_publisher_id, last_synced: last_synced)
           SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher_id, salesforce_id, @user.id, @model_name)
           imports << {publisher_id: ios_publisher_id, platform: 'ios', export_id: salesforce_id}
         end
-        if platforms.include?('android') && android_publisher_id
+        if platforms.include?('android') && android_publisher_id && should_sync_publisher?(platform: 'android', publisher_id: android_publisher_id, last_synced: last_synced)
           SalesforceWorker.perform_async(:export_android_publisher, android_publisher_id, salesforce_id, @user.id, @model_name)
           imports << {publisher_id: android_publisher_id, platform: 'android', export_id: salesforce_id}
         end
