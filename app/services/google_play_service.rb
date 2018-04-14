@@ -251,11 +251,17 @@ class GooglePlayService
 
   # Returns float of app review rating (out of 5)
   def ratings_all_stars
+    if match = /aria-label="Rated ([\d.]+?) stars out of five stars">([\d.]+?)</.match(@html.to_html)
+      return match[1].to_f if match[1] == match[2]
+    end
     unique_itemprop('meta', 'ratingValue')['content'].to_f
   end
   
   # Returns integer of total number of app reviews
   def ratings_all_count
+    if match = /aria-label="([\d,]+?) ratings">([\d,]+?)</.match(@html.to_html)
+      return match[1].to_i if match[1] == match[2]
+    end
     unique_itemprop('meta', 'ratingCount')['content'].to_i
   end
 

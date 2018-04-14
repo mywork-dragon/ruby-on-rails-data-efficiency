@@ -62,6 +62,13 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     validate_attributes(res)
   end
 
+  test 'granny app w/o ratings itemprops' do
+    page = open('test/data/google_play_granny.html').read()
+    res = GooglePlayService.new(page).attributes('com.dvloper.granny')
+    basic_presence_check(res, ignored: [:size, :in_app_purchases_range, :in_app_purchases])
+    validate_attributes(res)
+  end
+
   def basic_presence_check(res, ignored: [])
     attrs = %i(
       name
