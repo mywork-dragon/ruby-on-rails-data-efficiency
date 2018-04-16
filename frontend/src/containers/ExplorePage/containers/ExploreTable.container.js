@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import TableContainer from 'Table/Table.container';
 import { buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
+import { accessibleNetworks } from 'selectors/account.selectors';
 import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -13,33 +14,36 @@ const mapDispatchToProps = dispatch => ({
   updatePageNum: (queryResultId, page) => dispatch(requestQueryPage(queryResultId, page)),
 });
 
-const mapStateToProps = ({
-  explorePage: {
-    resultsTable,
-    searchForm,
-    explore: {
-      csvQueryId,
-      queryResultId,
-      currentLoadedQuery,
-      csvNumPages,
+const mapStateToProps = (state) => {
+  const {
+    explorePage: {
+      resultsTable,
+      searchForm,
+      explore: {
+        csvQueryId,
+        queryResultId,
+        currentLoadedQuery,
+        csvNumPages,
+      },
     },
-  },
-  account: {
-    adNetworks,
-    permissions,
-  },
-}) => ({
-  isManual: true,
-  showControls: true,
-  showColumnDropdown: true,
-  title: 'Results',
-  canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
-  adNetworks: adNetworks.adNetworks,
-  csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
-  queryResultId,
-  currentLoadedQuery,
-  ...resultsTable,
-});
+    account: {
+      permissions,
+    },
+  } = state;
+
+  return {
+    isManual: true,
+    showControls: true,
+    showColumnDropdown: true,
+    title: 'Results',
+    canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
+    adNetworks: accessibleNetworks(state),
+    csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
+    queryResultId,
+    currentLoadedQuery,
+    ...resultsTable,
+  };
+}
 
 const mergeProps = (stateProps, dispatchProps) => {
   const {
