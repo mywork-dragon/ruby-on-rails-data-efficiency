@@ -42,8 +42,7 @@ function createAppModel (isAdIntel) {
     Header: headerNames.APP,
     id: headerNames.APP,
     accessor: 'name',
-    className: 'name-cell',
-    headerClassName: 'name-cell',
+    width: 250,
     Cell: cell => <AppNameCell app={cell.original} isAdIntel={isAdIntel} />,
   };
 }
@@ -54,6 +53,7 @@ function createCheckboxModel (selectedItems, allSelected, toggleItem, toggleAll)
     className: 'checkbox-cell',
     headerClassName: 'checkbox-cell',
     sortable: false,
+    width: 40,
     Cell: cell => (
       <CheckboxCell
         isSelected={selectedItems.some(x => x.id === cell.original.id && x.type === cell.original.type)}

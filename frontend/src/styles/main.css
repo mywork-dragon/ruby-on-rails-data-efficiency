@@ -55,7 +55,9 @@ body {
   background-color: #f3f3f3;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important; }
+  -moz-osx-font-smoothing: grayscale !important;
+  position: fixed;
+}
 
 ::selection {
   background: #0393dd;

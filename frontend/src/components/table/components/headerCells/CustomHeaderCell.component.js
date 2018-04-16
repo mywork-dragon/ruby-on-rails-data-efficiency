@@ -11,7 +11,7 @@ const ColumnHeader = ({
   sortable,
   column,
 }) => (
-  <div className={classNames('rt-th', className)}>
+  <div className={classNames('rt-th', className)} style={{ ...column.headerStyle, width: column.width, flex: 'none' }}>
     {children}
     {sortable && (
       <div className="pull-right table-sort">

@@ -3,6 +3,8 @@
 .ReactTable {
   border-color: $table-border;
   color: $main-font;
+
+
   .rt-thead {
     &.-header {
       border-bottom: 2px solid $table-border;
@@ -31,7 +33,6 @@
         align-items: center;
         display: flex;
         justify-content: center;
-        max-width: 40px;
       }
 
       &.-cursor-pointer {
@@ -73,7 +74,11 @@
         align-items: center;
         display: flex;
         justify-content: center;
-        max-width: 40px;
+      }
+
+      &.platform-cell {
+        font-size: 16px;
+        justify-content: center;
       }
     }
   }
