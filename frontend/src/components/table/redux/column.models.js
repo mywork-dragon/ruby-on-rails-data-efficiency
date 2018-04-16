@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas, longDate, numberShorthand } from 'utils/format.utils';
+import { numberWithCommas, numberShorthand } from 'utils/format.utils';
 import Rating from 'components/rating/Rating.component';
 
 // header cells
@@ -16,11 +16,10 @@ import AppNameCell from '../components/cells/AppNameCell.component';
 import CreativeFormatCell from '../components/cells/CreativeFormatCell.component';
 import FirstSeenAdsCell from '../components/cells/FirstSeenAdsCell.component';
 import LastSeenAdsCell from '../components/cells/LastSeenAdsCell.component';
-import LastUpdatedCell from '../components/cells/LastUpdatedCell.component';
+import DateCell from '../components/cells/DateCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
 import PlatformCell from '../components/cells/PlatformCell.component';
 import PublisherCell from '../components/cells/PublisherCell.component';
-import ReleaseDateCell from '../components/cells/ReleaseDateCell.component';
 import UserBaseCell from '../components/cells/UserBaseCell.component';
 
 export const headerNames = {
@@ -139,7 +138,7 @@ export const columnModels = [
     accessor: d => d.lastUpdated || d.current_version_release_date,
     headerClassName: 'med-cell',
     className: 'med-cell',
-    Cell: cell => <LastUpdatedCell date={cell.value} />,
+    Cell: cell => <DateCell updateDate={cell.value} />,
   },
   {
     Header: <MobilePriorityHeaderCell />,
@@ -188,7 +187,7 @@ export const columnModels = [
     accessor: 'original_release_date',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => <ReleaseDateCell date={cell.value} />,
+    Cell: cell => <DateCell releaseDate={cell.value} />,
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,
