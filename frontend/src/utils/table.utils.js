@@ -1,9 +1,8 @@
 import React from 'react';
 import { $localStorage } from 'utils/localStorage.utils';
-import AppNameCell from 'Table/components/cells/AppNameCell.component';
 import ToggleAllCheckbox from 'Table/components/headerCells/ToggleAllCheckbox.component';
 import CheckboxCell from 'Table/components/cells/CheckboxCell.component';
-import { columnModels, headerNames } from 'Table/redux/column.models';
+import { columnModels } from 'Table/redux/column.models';
 
 export function initializeColumns (columns, activeColumns, lockedColumns) {
   const res = {};
@@ -21,30 +20,15 @@ export function totalNumPages (resultsCount, pageSize) {
   return Math.ceil(resultsCount / pageSize);
 }
 
-export function generateColumns (headers, selectedItems, allSelected, toggleItem, toggleAll, isAdIntel) {
+export function generateColumns (headers, selectedItems, allSelected, toggleItem, toggleAll) {
   const headerCells = Object.keys(headers).filter(key => headers[key]);
-  const columns = headerCells.map((x) => {
-    if (x === headerNames.APP) {
-      return createAppModel(isAdIntel);
-    }
-    return columnModels.find(y => y.id === x);
-  });
+  const columns = headerCells.map(x => columnModels.find(y => y.id === x));
   if (selectedItems && toggleItem && toggleAll) {
     const checkbox = createCheckboxModel(selectedItems, allSelected, toggleItem, toggleAll);
     columns.unshift(checkbox);
   }
 
   return columns;
-}
-
-function createAppModel (isAdIntel) {
-  return {
-    Header: headerNames.APP,
-    id: headerNames.APP,
-    accessor: 'name',
-    width: 250,
-    Cell: cell => <AppNameCell app={cell.original} isAdIntel={isAdIntel} />,
-  };
 }
 
 function createCheckboxModel (selectedItems, allSelected, toggleItem, toggleAll) {

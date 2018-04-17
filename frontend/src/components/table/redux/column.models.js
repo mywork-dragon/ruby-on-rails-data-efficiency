@@ -4,6 +4,7 @@ import Rating from 'components/rating/Rating.component';
 
 // header cells
 import AdSpendHeaderCell from '../components/headerCells/AdSpendHeaderCell.component';
+import DownloadsHeaderCell from '../components/headerCells/DownloadsHeaderCell.component';
 import MobilePriorityHeaderCell from '../components/headerCells/MobilePriorityHeaderCell.component';
 import RatingHeaderCell from '../components/headerCells/RatingHeaderCell.component';
 import UserBaseHeaderCell from '../components/headerCells/UserBaseHeaderCell.component';
@@ -74,21 +75,21 @@ export const columnModels = [
     id: headerNames.AD_SPEND,
     accessor: 'adSpend',
     width: widths.small,
-    sortable: false, // TODO: remove
+    sortable: false,
     Cell: cell => <AdSpendCell adSpend={cell.value} />,
   },
   {
     Header: headerNames.APP,
     id: headerNames.APP,
     accessor: 'name',
-    width: widths.extraLarge,
-    Cell: cell => <AppNameCell app={cell.original} />,
+    minWidth: widths.extraLarge,
+    Cell: cell => <AppNameCell app={cell.original} {...cell.tdProps} />,
   },
   {
     Header: headerNames.CATEGORY,
     id: headerNames.CATEGORY,
     accessor: 'categories',
-    width: widths.medium,
+    minWidth: widths.medium,
     sortable: false,
     Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : <span className="invalid">No data</span>}</div>,
   },
@@ -101,7 +102,7 @@ export const columnModels = [
     Cell: cell => <CreativeFormatCell formats={cell.value} />,
   },
   {
-    Header: 'Downloads (Android only)',
+    Header: <DownloadsHeaderCell />,
     id: headerNames.DOWNLOADS,
     accessor: 'downloads',
     width: widths.small,
@@ -140,7 +141,7 @@ export const columnModels = [
     Header: <MobilePriorityHeaderCell />,
     id: headerNames.MOBILE_PRIORITY,
     accessor: d => ['low', 'medium', 'high'].indexOf(d.mobilePriority || d.mobile_priority),
-    width: widths.medium,
+    minWidth: widths.medium,
     Cell: cell => <MobilePriorityCell mobilePriority={cell.value} />,
   },
   {
@@ -155,9 +156,9 @@ export const columnModels = [
   {
     Header: headerNames.PUBLISHER,
     id: headerNames.PUBLISHER,
-    width: widths.extraLarge,
+    minWidth: widths.extraLarge,
     accessor: d => (d.publisher ? d.publisher.name : ''),
-    Cell: (cell) => <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} />,
+    Cell: cell => <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} {...cell.tdProps} />,
   },
   {
     Header: <RatingHeaderCell />,

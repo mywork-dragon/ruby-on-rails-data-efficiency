@@ -32,6 +32,7 @@ const Table = ({
   pageSize,
   results,
   resultsCount,
+  resultType,
   selectedItems,
   showColumnDropdown,
   showControls,
@@ -43,7 +44,7 @@ const Table = ({
   updateDefaultPageSize,
 }) => {
   const allSelected = selectedItems.length === results.length;
-  const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll, isAdIntel);
+  const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll);
   const pages = totalNumPages(resultsCount, pageSize);
   const minRows = loading ? 10 : 0;
 
@@ -56,7 +57,10 @@ const Table = ({
     column,
     sorted: sorted.find(col => col.id === column.id),
     sortable: column.sortable,
+    resultType,
   });
+
+  const getTdProps = () => ({ isAdIntel });
 
   return (
     <section className="panel panel-default table-dynamic">
@@ -97,6 +101,7 @@ const Table = ({
               showColumnDropdown,
               updateColumns,
             })}
+            getTdProps={getTdProps}
             getTheadThProps={getTheadThProps}
             getTrProps={(state, rowInfo) => ({
               className: rowInfo && !rowInfo.original.appAvailable && rowInfo.original.taken_down && 'faded',
@@ -158,6 +163,7 @@ Table.propTypes = {
   pageNum: PropTypes.number,
   pageSize: PropTypes.number,
   results: PropTypes.arrayOf(PropTypes.object).isRequired,
+  resultType: PropTypes.string,
   selectedItems: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     type: PropTypes.string,
@@ -189,6 +195,7 @@ Table.defaultProps = {
   onSortedChange: null,
   pageNum: 0,
   pageSize: 20,
+  resultType: 'app',
   sort: [
     {
       id: headerNames.LAST_UPDATED,

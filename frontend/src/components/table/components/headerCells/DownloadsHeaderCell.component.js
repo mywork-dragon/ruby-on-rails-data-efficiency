@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-const RatingHeaderCell = ({ resultType }) => {
+const DownloadsHeaderCell = ({ resultType }) => {
   const helpTooltip = (
     <Tooltip className="help-tooltip" id="tooltip-right">
-      {resultType === 'publisher' && <p>Average across all apps</p>}
-      {resultType === 'app' && <p>Based on all versions</p>}
+      {resultType === 'publisher' && <p>Total across all apps</p>}
+      <p>Only available for Android</p>
     </Tooltip>
   );
 
   return (
     <span>
-      Rating
+      Downloads
       {' '}
       <OverlayTrigger overlay={helpTooltip} placement="right">
         <span className="fa fa-question-circle" />
@@ -21,12 +21,12 @@ const RatingHeaderCell = ({ resultType }) => {
   );
 };
 
-RatingHeaderCell.propTypes = {
+DownloadsHeaderCell.propTypes = {
   resultType: PropTypes.string,
 };
 
-RatingHeaderCell.defaultProps = {
+DownloadsHeaderCell.defaultProps = {
   resultType: 'app',
 };
 
-export default RatingHeaderCell;
+export default DownloadsHeaderCell;

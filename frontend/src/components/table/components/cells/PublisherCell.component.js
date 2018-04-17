@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const PublisherCell = ({ platform, publisher }) => (
-  <div className="resultsTableAppPublisher">
+  <div>
     {publisher ? (
       <a className="dotted-link" href={`#/publisher/${platform}/${publisher.id}`} target="_blank">{publisher.name}</a>
     ) : <span className="invalid">Not available</span>}

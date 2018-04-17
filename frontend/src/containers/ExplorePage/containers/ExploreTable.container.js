@@ -39,11 +39,12 @@ const mapStateToProps = (state) => {
     canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
     adNetworks: accessibleNetworks(state),
     csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
+    resultType: searchForm.resultType,
     queryResultId,
     currentLoadedQuery,
     ...resultsTable,
   };
-}
+};
 
 const mergeProps = (stateProps, dispatchProps) => {
   const {
