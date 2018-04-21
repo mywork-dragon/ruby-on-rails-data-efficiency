@@ -6,7 +6,7 @@ require_relative '../../app/lib/clients/wtf_is_my_ip'
 
 module MightyDeployer
 
-  MIGHTY_SIGNAL_PUBLIC_IP = '136.24.135.26'
+  MIGHTY_SIGNAL_PUBLIC_IP = '136.24.190.78'
   LOCAL_STAGES = [:darth_vader, :kylo_ren, :darth_maul]
 
   @targets = []
