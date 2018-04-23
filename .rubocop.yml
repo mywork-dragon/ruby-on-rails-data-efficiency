@@ -1,7 +1,5 @@
 AllCops:
   TargetRubyVersion: 2.1
   DisabledByDefault: true
-  Exclude:
-    - 'frontend/**/*'
 Lint/Debugger:
   Enabled: true
