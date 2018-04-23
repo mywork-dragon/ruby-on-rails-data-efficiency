@@ -86,7 +86,7 @@ class GooglePlayDeviceApiService
       sim_resp = @market_api.other(link['link'])
       if sim_resp.preFetch[0]
         similar_links = MightyApk::ProtocolBuffers::ResponseWrapper.new.parse(sim_resp.preFetch[0].response)
-        if similar_links.payload.listResponse.doc[0]
+        if similar_links.payload.listResponse.doc[0] and similar_links.payload.listResponse.doc[0].child[0]
           ret[:similar_apps].concat(similar_links.payload.listResponse.doc[0].child[0].child.map {|x| x.docid})
         end
       end
