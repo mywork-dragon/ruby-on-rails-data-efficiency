@@ -1,9 +1,10 @@
-import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
+import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import service from 'services/explore.service';
 import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
-import { isFacebookOnly, accessibleNetworks } from 'selectors/account.selectors';
+import { downloadCsv } from 'utils/table.utils';
+import { isFacebookOnly, accessibleNetworks, getPermissions } from 'selectors/account.selectors';
 import { currentFormVersion, getCurrentState } from 'selectors/explore.selectors';
-import { buildCsvRequest, buildExploreRequest } from 'utils/explore/queryBuilder.utils';
+import { buildCsvRequest, buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
 import validateFormState from 'utils/explore/formStateValidation.utils';
 import toastr from 'toastr';
 import {
@@ -16,11 +17,12 @@ import {
   POPULATE_FROM_QUERY_ID,
   TABLE_TYPES,
   REQUEST_QUERY_PAGE,
+  GET_CSV,
   populateFromQueryId,
   tableActions,
   updateQueryId,
   updateQueryResultId,
-  getCsvQueryId,
+  getCsv,
 } from './Explore.actions';
 
 function* requestResults ({ payload }) {
@@ -30,7 +32,6 @@ function* requestResults ({ payload }) {
     const { data: { query_id } } = yield call(service.getQueryId, params);
     yield put(tableActions.clearResults());
     history.pushState(null, null, `#/search/v2/${query_id}`);
-    yield fork(requestCsvQueryId, params);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
@@ -60,26 +61,11 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
       yield put(loadSavedSearch.success(searchId));
     }
     yield call(requestResultsByQueryId, id, params, 0);
-    yield fork(requestCsvQueryId, params);
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
     yield put(populateFromQueryId.failure(error));
     yield put(tableActions.allItems.failure(error));
-  }
-}
-
-function* requestCsvQueryId (params) {
-  try {
-    yield put(getCsvQueryId.request());
-    const facebookOnly = yield select(isFacebookOnly);
-    const csvParams = buildCsvRequest(params, facebookOnly);
-    const { data: { query_id } } = yield call(service.getQueryId, csvParams);
-    const { data: { query_result_id, number_pages } } = yield call(service.getQueryResultInfo, query_id);
-    yield put(getCsvQueryId.success(query_result_id, number_pages));
-  } catch (error) {
-    console.log(error);
-    yield put(getCsvQueryId.failure(error));
   }
 }
 
@@ -132,6 +118,22 @@ function* getQueryIdFromState ({ form }) {
   }
 }
 
+function* requestCsv ({ payload: { params } }) {
+  try {
+    const facebookOnly = yield select(isFacebookOnly);
+    const csvParams = buildCsvRequest(params, facebookOnly);
+    const { data: { query_id } } = yield call(service.getQueryId, csvParams);
+    const { data: { query_result_id, number_pages } } = yield call(service.getQueryResultInfo, query_id);
+    const permissions = yield select(getPermissions);
+    const url = buildCsvLink(query_result_id, number_pages, permissions);
+    downloadCsv(url);
+    yield put(getCsv.success());
+  } catch (error) {
+    console.log(error);
+    yield put(getCsv.failure());
+  }
+}
+
 function updateExploreTableColumns ({ payload: { columns } }) {
   setExploreColumns(columns);
 }
@@ -156,6 +158,10 @@ function* watchPageChange() {
   yield takeLatest(REQUEST_QUERY_PAGE, requestResultsByQueryResultId);
 }
 
+function* watchCsvRequest() {
+  yield takeLatest(GET_CSV.REQUEST, requestCsv);
+}
+
 export default function* exploreSaga() {
   yield all([
     watchResultsRequest(),
@@ -163,5 +169,6 @@ export default function* exploreSaga() {
     watchSavedSearchLoad(),
     watchColumnUpdate(),
     watchPageChange(),
+    watchCsvRequest(),
   ]);
 }

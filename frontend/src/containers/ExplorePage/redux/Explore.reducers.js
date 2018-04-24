@@ -9,9 +9,9 @@ import {
   TOGGLE_PANEL,
   UPDATE_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
-  GET_CSV_QUERY_ID,
   UPDATE_QUERY_RESULT_ID,
   UPDATE_SAVED_SEARCH_PAGE,
+  GET_CSV,
 } from './Explore.actions';
 
 const initialState = {
@@ -22,8 +22,8 @@ const initialState = {
   queryId: null,
   savedSearchId: null,
   queryResultId: null,
-  csvQueryId: null,
   currentLoadedQuery: {},
+  csvLoading: false,
   csvNumPages: null,
 };
 
@@ -104,18 +104,6 @@ function explore (state = initialState, action) {
         ...state,
         savedSearchId: payload.id,
       };
-    case GET_CSV_QUERY_ID.REQUEST:
-      return {
-        ...state,
-        csvQueryId: null,
-        csvNumPages: null,
-      };
-    case GET_CSV_QUERY_ID.SUCCESS:
-      return {
-        ...state,
-        csvQueryId: payload.id,
-        csvNumPages: payload.numPages,
-      };
     case UPDATE_QUERY_RESULT_ID:
       return {
         ...state,
@@ -125,6 +113,17 @@ function explore (state = initialState, action) {
       return {
         ...state,
         searchPage: payload.page,
+      };
+    case GET_CSV.REQUEST:
+      return {
+        ...state,
+        csvLoading: true,
+      };
+    case GET_CSV.SUCCESS:
+    case GET_CSV.FAILURE:
+      return {
+        ...state,
+        csvLoading: false,
       };
     default:
       return state;

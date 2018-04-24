@@ -54,3 +54,10 @@ export function setPreferredPageSize (pageSize) {
 export function getPreferredPageSize () {
   return $localStorage.get('tablePageSize');
 }
+
+export function downloadCsv(url) {
+  const hiddenElement = document.createElement('a');
+  hiddenElement.href = url;
+  hiddenElement.target = '_blank';
+  hiddenElement.click();
+}

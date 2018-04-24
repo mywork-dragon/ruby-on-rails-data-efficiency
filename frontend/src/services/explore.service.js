@@ -44,6 +44,8 @@ const ExploreService = (client = httpClient) => {
     getCsvByQueryResultId: id => (
       exploreClient.get(`${window.MQUERY_SERVICE}/query_result/${id}/pages/*?formatter=csv`)
     ),
+    getCsv: params => (
+    exploreClient.put(`${window.MQUERY_SERVICE}/query/query_result/pages/0?formatter=csv&stream=true`, params)),
   };
 };
 

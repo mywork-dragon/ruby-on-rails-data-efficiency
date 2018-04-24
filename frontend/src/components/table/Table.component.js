@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ReactTable, { ReactTableDefaults } from 'react-table';
 import { numberWithCommas } from 'utils/format.utils';
 import { generateColumns, totalNumPages } from 'utils/table.utils';
+import { Button } from 'antd';
 import { headerNames } from './redux/column.models';
 import ListDropdownContainer from './containers/ListDropdown.container';
 import Pagination from './components/Pagination.component';
@@ -18,8 +19,8 @@ Object.assign(ReactTableDefaults, {
 const Table = ({
   canFetch,
   columns,
+  csvLoading,
   error,
-  csvLink,
   isAdIntel,
   isManual,
   loading,
@@ -70,23 +71,15 @@ const Table = ({
         <span id="dashboardResultsTableHeadingNumDisplayed">
           | {numberWithCommas(resultsCount)} Apps
         </span>
-        {canFetch && csvLink && resultsCount ? (
-          <a href={csvLink}>
-            <button
-              className="btn btn-primary pull-right"
-              onClick={() => onCsvExport()}
-            >
-              Export to CSV
-            </button>
-          </a>
-        ) : (
-          <button
-            className="btn btn-primary pull-right"
-            disabled
-          >
-            Export to CSV
-          </button>
-        )}
+        <Button
+          className="btn btn-primary pull-right"
+          disabled={!canFetch}
+          loading={csvLoading}
+          onClick={() => onCsvExport()}
+          type="primary"
+        >
+          Export to CSV
+        </Button>
         <ListDropdownContainer
           selectedItems={selectedItems}
         />
@@ -150,8 +143,8 @@ Table.propTypes = {
     App: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     Publisher: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   }).isRequired,
+  csvLoading: PropTypes.bool,
   error: PropTypes.bool.isRequired,
-  csvLink: PropTypes.string,
   isAdIntel: PropTypes.bool,
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
@@ -184,7 +177,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   canFetch: false,
-  csvLink: null,
+  csvLoading: false,
   isAdIntel: false,
   isManual: false,
   loading: false,
