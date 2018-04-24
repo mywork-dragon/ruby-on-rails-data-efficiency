@@ -15,13 +15,13 @@ export function buildExploreRequest (form, columns, pageSettings, sort, accountN
   return result;
 }
 
-export function buildCsvRequest ({ form, sort }, facebookOnly) {
-  return {
-    query: buildFilter(form),
-    sort: buildSortSettings(sort),
-    page_settings: { page_size: 20000 },
-    select: csvSelect(facebookOnly),
+export function buildCsvRequest (query, facebookOnly) {
+  const result = {
+    ...query,
   };
+  result.page_settings = { page_size: 20000 };
+  result.select = csvSelect(facebookOnly);
+  return result;
 }
 
 

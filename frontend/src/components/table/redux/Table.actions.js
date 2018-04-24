@@ -9,6 +9,7 @@ const tableActionTypes = [
   'TOGGLE_ALL_ITEMS',
   'UPDATE_COLUMNS',
   'UPDATE_FILTER',
+  'CSV_EXPORTED',
 ];
 
 const tableRequestTypes = [

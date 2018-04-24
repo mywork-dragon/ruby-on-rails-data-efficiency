@@ -18,7 +18,7 @@ import {
 } from 'actions/AppStore.actions';
 
 import {
-  GET_CSV,
+  GET_CSV_QUERY_ID,
   POPULATE_FROM_QUERY_ID,
   TABLE_TYPES,
 } from 'containers/ExplorePage/redux/Explore.actions';
@@ -36,7 +36,7 @@ function* watchError() {
     AVAILABLE_COUNTRIES.FAILURE,
     CATEGORIES.FAILURE,
     DELETE_SAVED_SEARCH.FAILURE,
-    GET_CSV.FAILURE,
+    GET_CSV_QUERY_ID.FAILURE,
     GET_SAVED_SEARCHES.FAILURE,
     LOAD_SAVED_SEARCH.FAILURE,
     POPULATE_FROM_QUERY_ID.FAILURE,

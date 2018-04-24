@@ -8,7 +8,6 @@ import {
   TABLE_TYPES,
   REQUEST_QUERY_PAGE,
   TRACK_TABLE_SORT,
-  GET_CSV,
 } from './Explore.actions';
 
 const service = ExploreMixpanelService();
@@ -65,7 +64,8 @@ function* trackQueryFailure () {
 }
 
 function* trackCsvExport () {
-  yield call(service.trackCsvExport);
+  const id = yield select(exploreSelectors.csvQueryId);
+  yield call(service.trackCsvExport, id);
 }
 
 function* trackSavedSearchCreate ({ payload: { search: { id, name, queryId } } }) {
@@ -115,7 +115,7 @@ function* watchQueryFailure() {
 }
 
 function* watchCsvExport() {
-  yield takeLatest(GET_CSV.REQUEST, trackCsvExport);
+  yield takeLatest(TABLE_TYPES.CSV_EXPORTED, trackCsvExport);
 }
 
 function* watchSavedSearchCreate() {

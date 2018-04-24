@@ -1,17 +1,17 @@
 import { connect } from 'react-redux';
 import TableContainer from 'Table/Table.container';
-import { accessibleNetworks } from 'selectors/account.selectors';
 import { buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
-import { tableActions, requestQueryPage, trackTableSort, getCsv } from '../redux/Explore.actions';
+import { accessibleNetworks } from 'selectors/account.selectors';
+import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
   requestResults: params => dispatch(tableActions.allItems.request(params)),
   toggleItem: (id, type) => () => dispatch(tableActions.toggleItem({ id, type })),
   toggleAll: () => dispatch(tableActions.toggleAllItems()),
+  onCsvExport: () => dispatch(tableActions.csvExported()),
   trackSort: sort => dispatch(trackTableSort(sort)),
   updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
   updatePageNum: (queryResultId, page) => dispatch(requestQueryPage(queryResultId, page)),
-  requestCsv: params => dispatch(getCsv.request(params)),
 });
 
 const mapStateToProps = (state) => {
@@ -20,10 +20,14 @@ const mapStateToProps = (state) => {
       resultsTable,
       searchForm,
       explore: {
+        csvQueryId,
         queryResultId,
         currentLoadedQuery,
-        csvLoading,
+        csvNumPages,
       },
+    },
+    account: {
+      permissions,
     },
   } = state;
 
@@ -34,8 +38,8 @@ const mapStateToProps = (state) => {
     title: 'Results',
     canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
     adNetworks: accessibleNetworks(state),
+    csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
     resultType: searchForm.resultType,
-    csvLoading,
     queryResultId,
     currentLoadedQuery,
     ...resultsTable,
@@ -57,7 +61,6 @@ const mergeProps = (stateProps, dispatchProps) => {
   const {
     trackSort,
     updatePageNum,
-    requestCsv,
     ...rest
   } = dispatchProps;
 
@@ -97,7 +100,6 @@ const mergeProps = (stateProps, dispatchProps) => {
         });
       }
     },
-    onCsvExport: () => requestCsv({ form: currentLoadedQuery, sort }),
   };
 };
 

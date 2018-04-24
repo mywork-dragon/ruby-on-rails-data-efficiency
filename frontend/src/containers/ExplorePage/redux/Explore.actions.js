@@ -41,11 +41,11 @@ export const addBlankSdkFilter = () => action(ADD_BLANK_SDK_FILTER);
 export const DUPLICATE_SDK_FILTER = 'DUPLICATE_SDK_FILTER';
 export const duplicateSdkFilter = index => action(DUPLICATE_SDK_FILTER, { index });
 
-export const GET_CSV = createRequestTypes('GET_CSV');
-export const getCsv = {
-  request: params => action(GET_CSV.REQUEST, { params }),
-  success: id => action(GET_CSV.SUCCESS, { id }),
-  failure: () => action(GET_CSV.FAILURE),
+export const GET_CSV_QUERY_ID = createRequestTypes('GET_CSV_QUERY_ID');
+export const getCsvQueryId = {
+  request: params => action(GET_CSV_QUERY_ID.REQUEST, { params }),
+  success: (id, numPages) => action(GET_CSV_QUERY_ID.SUCCESS, { id, numPages }),
+  failure: error => action(GET_CSV_QUERY_ID.FAILURE, { error }),
 };
 
 export const REQUEST_QUERY_PAGE = 'REQUEST_QUERY_PAGE';
