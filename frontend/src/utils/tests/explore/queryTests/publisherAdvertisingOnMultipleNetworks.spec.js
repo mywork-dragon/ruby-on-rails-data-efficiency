@@ -4,7 +4,7 @@ import { buildAdNetworkFilters } from '../../../explore/filterBuilder.utils';
 
 test('', () => {
   const form = {
-    resultType: 'app',
+    resultType: 'publisher',
     filters: {
       adNetworks: {
         value: {
@@ -14,7 +14,7 @@ test('', () => {
           ],
           operator: 'all',
           firstSeenDateRange: 'anytime',
-          lastSeenDateRange: 'anytime',
+          lastSeenDateRange: 'after-date',
           firstSeenDate: '2018-01-01',
           lastSeenDate: '2018-01-01',
         },
@@ -39,49 +39,16 @@ test('', () => {
           ['ad_network', 'unity-ads'],
         ],
       },
-    ],
-  };
-
-  const result = buildAdNetworkFilters(form);
-
-  expect(result).toMatchObject(expected);
-});
-
-test('', () => {
-  const form = {
-    resultType: 'app',
-    filters: {
-      adNetworks: {
-        value: {
-          adNetworks: [
-            { key: 'applovin', label: 'Applovin' },
-            { key: 'unity-ads', label: 'Unity' },
+      {
+        operator: 'filter',
+        object: 'publisher',
+        predicates: [
+          [
+            'last_seen_ads_date',
+            '2018-01-01',
+            null,
+            ['applovin', 'unity-ads'],
           ],
-          operator: 'any',
-          firstSeenDateRange: 'anytime',
-          lastSeenDateRange: 'anytime',
-          firstSeenDate: '2018-01-01',
-          lastSeenDate: '2018-01-01',
-        },
-      },
-    },
-  };
-
-  const expected = {
-    operator: 'union',
-    inputs: [
-      {
-        operator: 'filter',
-        object: 'mobile_ad_data_summary',
-        predicates: [
-          ['ad_network', 'applovin'],
-        ],
-      },
-      {
-        operator: 'filter',
-        object: 'mobile_ad_data_summary',
-        predicates: [
-          ['ad_network', 'unity-ads'],
         ],
       },
     ],

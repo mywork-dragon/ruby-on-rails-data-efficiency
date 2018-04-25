@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable, { ReactTableDefaults } from 'react-table';
-import { numberWithCommas } from 'utils/format.utils';
+import { numberWithCommas, capitalize } from 'utils/format.utils';
 import { generateColumns, totalNumPages } from 'utils/table.utils';
 import { headerNames } from './redux/column.models';
 import ListDropdownContainer from './containers/ListDropdown.container';
@@ -68,7 +68,7 @@ const Table = ({
         <strong><i className="fa fa-list panel-icon" />{title}</strong>
         {' '}
         <span id="dashboardResultsTableHeadingNumDisplayed">
-          | {numberWithCommas(resultsCount)} Apps
+          | {`${numberWithCommas(resultsCount)} ${capitalize(resultType)}${resultsCount > 1 ? 's' : ''}`}
         </span>
         {canFetch && csvLink && resultsCount ? (
           <a href={csvLink}>

@@ -17,21 +17,21 @@ describe('buildExploreRequest', () => {
 
   describe('buildSortSettings', () => {
     describe('convertToQuerySort', () => {
-      it('should take in the table sort and convert it in a query sort', () => {
+      it('should take in the table sort and convert it to a query sort', () => {
         const expected = [{
           field: 'name',
           object: 'app',
           order: 'asc',
         }];
 
-        const result = utils.convertToQuerySort(testData.sort);
+        const result = utils.convertToQuerySort(testData.sort, 'app');
 
         expect(result).toEqual(expected);
       });
     });
 
     it('should take a list of sorts and return sort settings for the query', () => {
-      const sort_settings = utils.buildSortSettings(testData.sort);
+      const sort_settings = utils.buildSortSettings(testData.sort, 'app');
 
       expect(Array.isArray(sort_settings.fields)).toBe(true);
       expect(sort_settings.fields[0]).toMatchObject(sampleQuery.sort.fields[0]);

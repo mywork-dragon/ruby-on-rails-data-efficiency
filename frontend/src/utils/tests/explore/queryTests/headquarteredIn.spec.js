@@ -27,7 +27,7 @@ test('', () => {
     ],
   };
 
-  const appFilter = buildPublisherFilters(form.filters);
+  const appFilter = buildPublisherFilters(form);
 
   expect(appFilter).toMatchObject(expected);
 });

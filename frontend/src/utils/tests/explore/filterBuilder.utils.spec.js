@@ -15,7 +15,7 @@ describe('buildFilter', () => {
 
   describe('buildPublisherFilters', () => {
     it('should take in the search form and return the publisher filters for the query', () => {
-      const publisherFilters = buildPublisherFilters(testData.form.filters);
+      const publisherFilters = buildPublisherFilters(testData.form);
 
       expect(publisherFilters).toMatchObject(sampleQuery.query.filter.inputs[1]);
     });

@@ -24,6 +24,10 @@ export const activeFilters = (state) => {
   return filters;
 };
 
+export const getCurrentColumns = (state, resultType) => state.explorePage.explore[`${resultType || state.explorePage.searchForm.resultType}Columns`];
+
+export const getCurrentResultType = state => state.explorePage.searchForm.resultType;
+
 export const currentExplorePage = state => state.explorePage.resultsTable.pageNum;
 
 export const currentFormVersion = state => state.explorePage.searchForm.version;

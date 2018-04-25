@@ -5,8 +5,10 @@ import Rating from 'components/rating/Rating.component';
 // header cells
 import AdSpendHeaderCell from '../components/headerCells/AdSpendHeaderCell.component';
 import DownloadsHeaderCell from '../components/headerCells/DownloadsHeaderCell.component';
+import LastUpdatedHeaderCell from '../components/headerCells/LastUpdatedHeaderCell.component';
 import MobilePriorityHeaderCell from '../components/headerCells/MobilePriorityHeaderCell.component';
 import RatingHeaderCell from '../components/headerCells/RatingHeaderCell.component';
+import RatingsCountHeaderCell from '../components/headerCells/RatingsCountHeaderCell.component';
 import UserBaseHeaderCell from '../components/headerCells/UserBaseHeaderCell.component';
 
 // row cells
@@ -15,9 +17,11 @@ import AdNetworkCellContainer from '../containers/AdNetworkCell.container';
 import AdSpendCell from '../components/cells/AdSpendCell.component';
 import AppNameCell from '../components/cells/AppNameCell.component';
 import CreativeFormatCell from '../components/cells/CreativeFormatCell.component';
+import DateCell from '../components/cells/DateCell.component';
+import DomainCell from '../components/cells/DomainCell.component';
 import FirstSeenAdsCell from '../components/cells/FirstSeenAdsCell.component';
 import LastSeenAdsCell from '../components/cells/LastSeenAdsCell.component';
-import DateCell from '../components/cells/DateCell.component';
+import LocationCell from '../components/cells/LocationCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
 import PlatformCell from '../components/cells/PlatformCell.component';
 import PublisherCell from '../components/cells/PublisherCell.component';
@@ -27,7 +31,7 @@ const widths = {
   small: 125,
   medium: 150,
   large: 200,
-  extraLarge: 250,
+  extraLarge: 300,
 };
 
 export const headerNames = {
@@ -38,12 +42,15 @@ export const headerNames = {
   CATEGORY: 'Category',
   COUNTRIES_AVAILABLE_IN: 'Available In',
   CREATIVE_FORMATS: 'Formats',
+  DOMAINS: 'Domains',
   DOWNLOADS: 'Downloads',
   FIRST_SEEN_ADS: 'First Seen Ads',
   FORTUNE_RANK: 'Fortune Rank',
   LAST_SEEN_ADS: 'Last Seen Ads',
   LAST_UPDATED: 'Last Updated',
+  LOCATIONS: 'Locations',
   MOBILE_PRIORITY: 'Mobile Priority',
+  NUM_APPS: 'Total Apps',
   PLATFORM: 'Platform',
   PUBLISHER: 'Publisher',
   RATING: 'Rating',
@@ -102,6 +109,14 @@ export const columnModels = [
     Cell: cell => <CreativeFormatCell formats={cell.value} />,
   },
   {
+    Header: headerNames.DOMAINS,
+    id: headerNames.DOMAINS,
+    accessor: 'domains',
+    width: widths.small,
+    sortable: false,
+    Cell: cell => <DomainCell domains={cell.value} />,
+  },
+  {
     Header: <DownloadsHeaderCell />,
     id: headerNames.DOWNLOADS,
     accessor: 'downloads',
@@ -131,11 +146,19 @@ export const columnModels = [
     Cell: cell => <LastSeenAdsCell app={cell.original} />,
   },
   {
-    Header: headerNames.LAST_UPDATED,
+    Header: <LastUpdatedHeaderCell />,
     id: headerNames.LAST_UPDATED,
     accessor: d => d.lastUpdated || d.current_version_release_date,
     width: widths.medium,
-    Cell: cell => <DateCell updateDate={cell.value} />,
+    Cell: cell => <DateCell type={cell.original.resultType} updateDate={cell.value} />,
+  },
+  {
+    Header: headerNames.LOCATIONS,
+    id: headerNames.LOCATIONS,
+    accessor: 'locations',
+    width: widths.medium,
+    sortable: false,
+    Cell: cell => <LocationCell locations={cell.value} />,
   },
   {
     Header: <MobilePriorityHeaderCell />,
@@ -145,7 +168,15 @@ export const columnModels = [
     Cell: cell => <MobilePriorityCell mobilePriority={cell.value} />,
   },
   {
-    Header: 'App Type',
+    Header: headerNames.NUM_APPS,
+    id: headerNames.NUM_APPS,
+    accessor: 'number_of_apps',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => cell.value,
+  },
+  {
+    Header: 'Type',
     id: headerNames.PLATFORM,
     accessor: 'platform',
     width: 50,
@@ -157,21 +188,21 @@ export const columnModels = [
     Header: headerNames.PUBLISHER,
     id: headerNames.PUBLISHER,
     minWidth: widths.extraLarge,
-    accessor: d => (d.publisher ? d.publisher.name : ''),
-    Cell: cell => <PublisherCell platform={cell.original.platform} publisher={cell.original.publisher} {...cell.tdProps} />,
+    accessor: d => d.publisher || d,
+    Cell: (cell) => <PublisherCell platform={cell.original.platform} publisher={cell.value} {...cell.tdProps} />,
   },
   {
     Header: <RatingHeaderCell />,
     id: headerNames.RATING,
-    accessor: 'all_version_rating',
+    accessor: 'rating',
     width: widths.small,
     Cell: cell => <Rating rating={cell.value} />,
   },
   {
-    Header: headerNames.RATINGS_COUNT,
+    Header: <RatingsCountHeaderCell />,
     id: headerNames.RATINGS_COUNT,
-    accessor: 'all_version_ratings_count',
-    width: widths.small,
+    accessor: 'ratingsCount',
+    width: widths.medium,
     Cell: cell => (cell.value ? numberWithCommas(cell.value) : <span className="invalid">No ratings</span>),
   },
   {

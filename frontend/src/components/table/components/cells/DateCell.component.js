@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { daysAgo, getUpdateDateClass, longDate } from 'utils/format.utils';
 
-const DateCell = ({ updateDate, releaseDate }) => {
+const DateCell = ({ updateDate, releaseDate, type }) => {
   const date = updateDate || releaseDate;
 
   if (!date) {
@@ -15,9 +15,15 @@ const DateCell = ({ updateDate, releaseDate }) => {
   const numDays = daysAgo(date);
 
   if (Math.sign(numDays) === -1) {
+    let text = 'update';
+    if (type === 'publisher') {
+      text = 'update or release';
+    } else if (releaseDate) {
+      text = 'release';
+    }
     const tooltip = (
       <Tooltip className="help-tooltip" id="tooltip-right">
-        <p>Upcoming {updateDate ? 'update' : 'release'}</p>
+        <p>Upcoming {text}</p>
       </Tooltip>
     );
 
@@ -52,11 +58,13 @@ const DateCell = ({ updateDate, releaseDate }) => {
 DateCell.propTypes = {
   updateDate: PropTypes.string,
   releaseDate: PropTypes.string,
+  type: PropTypes.string,
 };
 
 DateCell.defaultProps = {
   updateDate: null,
   releaseDate: null,
+  type: 'app',
 };
 
 export default DateCell;

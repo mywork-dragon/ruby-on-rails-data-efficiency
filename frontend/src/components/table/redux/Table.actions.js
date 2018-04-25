@@ -28,7 +28,7 @@ export function createTableActions (types) {
     toggleItem: item => action(types.TOGGLE_ITEM, { item }),
     toggleAllItems: () => action(types.TOGGLE_ALL_ITEMS),
     csvExported: () => action(types.CSV_EXPORTED),
-    updateColumns: columns => action(types.UPDATE_COLUMNS, { columns }),
+    updateColumns: (columns, type) => action(types.UPDATE_COLUMNS, { columns, type }),
     updateFilter: (parameter, value, options) => action(types.UPDATE_FILTER, { parameter, value, options }),
   };
 }
@@ -38,7 +38,7 @@ export function createTableRequestActions (types) {
     allItems: {
       request: params => action(types.ALL_ITEMS.REQUEST, { params }),
       success: data => action(types.ALL_ITEMS.SUCCESS, { data }),
-      failure: error => action(types.ALL_ITEMS.FAILURE, { error }),
+      failure: (error, data) => action(types.ALL_ITEMS.FAILURE, { error, data }),
     },
   };
 }

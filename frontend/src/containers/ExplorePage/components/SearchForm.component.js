@@ -9,6 +9,7 @@ import AppFilterPanel from './appFilters/AppFilterPanel.component';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
 import PublisherFilterPanel from './publisherFilters/PublisherFilterPanel.component';
+import ResultTypeFilter from './ResultTypeFilter.component';
 import SaveSearchButton from './SaveSearchButton.component';
 import SdkFilterPanel from './sdkFilters/SdkFilterPanel.component';
 
@@ -47,6 +48,7 @@ const SearchForm = ({
         <Panel.Body>
           <div className="explore-search-form">
             <div className="basic-filter-group form-group">
+              <ResultTypeFilter resultType={resultType} {...rest} />
               <PlatformFilter platform={platform} {...rest} />
               <AdditionalFilters includeTakenDown={includeTakenDown} {...rest} />
             </div>
@@ -63,7 +65,7 @@ const SearchForm = ({
             </div>
             <div className="form-review form-group">
               <h4>Review Filters</h4>
-              <FilterTagsDisplay includeTakenDown={includeTakenDown} platform={platform} {...rest} />
+              <FilterTagsDisplay includeTakenDown={includeTakenDown} platform={platform} resultType={resultType} {...rest} />
             </div>
             <div className="search-form-footer form-group">
               <div>

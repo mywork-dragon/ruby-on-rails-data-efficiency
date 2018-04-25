@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import { table, headerNames, initializeColumns } from 'Table/redux/Table.reducers';
+import { table, headerNames } from 'Table/redux/Table.reducers';
 import { LOAD_SAVED_SEARCH } from 'actions/Account.actions';
-import { setExploreColumns, getExploreColumns } from 'utils/explore/general.utils';
 import searchForm from './searchForm.reducers';
+import { appColumns, publisherColumns } from './tableColumns.models';
 import {
   TABLE_TYPES,
   TOGGLE_FORM,
@@ -14,6 +14,13 @@ import {
   UPDATE_SAVED_SEARCH_PAGE,
 } from './Explore.actions';
 
+const tableOptions = {
+  columns: appColumns(),
+  sort: [
+    { id: headerNames.LAST_UPDATED, desc: true },
+  ],
+};
+
 const initialState = {
   savedSearchExpanded: true,
   searchFormExpanded: true,
@@ -24,55 +31,8 @@ const initialState = {
   queryResultId: null,
   csvQueryId: null,
   currentLoadedQuery: {},
-  csvNumPages: null,
-};
-
-const columnOptions = [
-  headerNames.APP,
-  headerNames.PUBLISHER,
-  headerNames.PLATFORM,
-  headerNames.MOBILE_PRIORITY,
-  // headerNames.FORTUNE_RANK,
-  headerNames.AD_NETWORKS,
-  headerNames.FIRST_SEEN_ADS,
-  headerNames.LAST_SEEN_ADS,
-  headerNames.USER_BASE,
-  headerNames.AD_SPEND,
-  headerNames.CATEGORY,
-  headerNames.DOWNLOADS,
-  headerNames.RATING,
-  headerNames.RATINGS_COUNT,
-  headerNames.RELEASE_DATE,
-  headerNames.LAST_UPDATED,
-];
-
-const initialColumns = [
-  headerNames.APP,
-  headerNames.PUBLISHER,
-  headerNames.PLATFORM,
-  headerNames.MOBILE_PRIORITY,
-  headerNames.USER_BASE,
-  headerNames.CATEGORY,
-  headerNames.RELEASE_DATE,
-  headerNames.LAST_UPDATED,
-];
-
-const initializedColumns = initializeColumns(columnOptions, initialColumns, [headerNames.APP]);
-
-let savedColumns = getExploreColumns();
-
-if (!savedColumns) {
-  setExploreColumns(initializedColumns);
-  savedColumns = initializedColumns;
-} else if (Object.keys(savedColumns).length !== Object.keys(initializedColumns).length) {
-  savedColumns = { ...initializedColumns, ...savedColumns };
-}
-
-const tableOptions = {
-  columns: savedColumns,
-  sort: [
-    { id: headerNames.LAST_UPDATED, desc: true },
-  ],
+  appColumns: appColumns(),
+  publisherColumns: publisherColumns(),
 };
 
 function explore (state = initialState, action) {
@@ -108,13 +68,11 @@ function explore (state = initialState, action) {
       return {
         ...state,
         csvQueryId: null,
-        csvNumPages: null,
       };
     case GET_CSV_QUERY_ID.SUCCESS:
       return {
         ...state,
         csvQueryId: payload.id,
-        csvNumPages: payload.numPages,
       };
     case UPDATE_QUERY_RESULT_ID:
       return {
@@ -125,6 +83,11 @@ function explore (state = initialState, action) {
       return {
         ...state,
         searchPage: payload.page,
+      };
+    case TABLE_TYPES.UPDATE_COLUMNS:
+      return {
+        ...state,
+        [`${payload.type}Columns`]: payload.columns,
       };
     default:
       return state;

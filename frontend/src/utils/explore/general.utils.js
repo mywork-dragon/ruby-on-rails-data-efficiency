@@ -1,23 +1,22 @@
 import _ from 'lodash';
-import { getMaxDate, getMinDate } from 'utils/format.utils';
+import { getMaxDate, getMinDate, capitalize } from 'utils/format.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
 import { sortMap } from './models.utils';
 
-export function formatResults (data, params, count) {
+export function formatResults (data, resultType, params, count) {
   const result = {};
 
-  result.results = Object.values(data.pages)[0].map(x => formatApp(x));
+  result.results = Object.values(data.pages)[0].map(x => (resultType === 'app' ? formatApp(x) : formatPublisher(x)));
   result.pageNum = parseInt(Object.keys(data.pages)[0], 10);
   if (params) {
     const {
       page_settings: { page_size: pageSize },
       sort: { fields },
-      select: { object: resultType },
     } = params;
 
     result.pageSize = pageSize;
-    result.sort = convertToTableSort(fields);
+    result.sort = convertToTableSort(fields, resultType);
     result.resultType = resultType;
   }
   if (count) result.resultsCount = count;
@@ -32,6 +31,26 @@ function formatApp (app) {
     categories: formatCategories(app.categories),
     ...formatAdintelInfo(app),
     userBases: app.international_user_bases,
+    rating: app.all_version_rating,
+    ratingsCount: app.all_version_ratings_count,
+    resultType: 'app',
+  };
+}
+
+function formatPublisher (publisher) {
+  return {
+    ...publisher,
+    appStoreId: publisher.publisher_identifier,
+    lastUpdated: publisher.last_app_update_date,
+    first_seen_ads_date: publisher.first_seen_ads,
+    last_seen_ads_date: publisher.last_seen_ads,
+    rating: publisher.average_ratings,
+    ratingsCount: publisher.total_ratings,
+    downloads: publisher.total_downloads,
+    ad_networks: publisher.ad_networks.map(x => ({ id: x })),
+    fortuneRank: getFortuneRank(publisher.companies),
+    locations: getLocations(publisher.companies),
+    resultType: 'publisher',
   };
 }
 
@@ -76,11 +95,45 @@ function formatAdintelInfo ({ ad_summaries }) {
   return result;
 }
 
-export const convertToTableSort = (sorts) => {
+function getFortuneRank (companies) {
+  const ranks = _.compact(companies.map(x => x.fortune_1000_rank));
+  return ranks.length ? Math.min(...ranks) : 'No rank';
+}
+
+function getLocations (companies) {
+  const result = [];
+
+  companies.forEach((x) => {
+    const data = {
+      city: x.city,
+      country: x.country,
+      country_code: x.country_code,
+      // postal_code: x.postal_code,
+      state: x.state,
+      state_code: x.state_code,
+      // street_name: x.street_name,
+      // street_number: x.street_number,
+    };
+
+    Object.keys(data).forEach((y) => {
+      if (!data[y]) delete data[y];
+    });
+
+    if (Object.entries(data).length && (result.length === 0 || companies.every(y => noMatch(data, y)))) result.push(data);
+  });
+
+  return result;
+}
+
+const noMatch = (location1, location2) => location1.city !== location2.city || location1.state_code !== location2.state_code || location1.country_code !== location2.country_code;
+
+export const convertToTableSort = (sorts, resultType) => {
   const tableSorts = [];
-  const strippedSorts = sorts.slice(0, sorts.length - 2);
-  strippedSorts.forEach((sort) => {
-    const sortName = getSortName(sort);
+  if (resultType === 'app') {
+    sorts = sorts.slice(0, sorts.length - 2);
+  }
+  sorts.forEach((sort) => {
+    const sortName = getSortName(sort, resultType);
     if (sortName && sortName !== 'Platform') {
       tableSorts.push({
         id: sortName,
@@ -92,11 +145,12 @@ export const convertToTableSort = (sorts) => {
   return tableSorts;
 };
 
-export const getSortName = (sort) => {
+export const getSortName = (sort, resultType) => {
+  const map = sortMap(resultType);
   const { field, object } = sort;
-  for (const key in sortMap) {
-    if (sortMap[key]) {
-      const mappedSort = sortMap[key];
+  for (const key in map) {
+    if (map[key]) {
+      const mappedSort = map[key];
       if (mappedSort && mappedSort.field === field && mappedSort.object === object) {
         return key;
       }
@@ -304,10 +358,10 @@ export function isCurrentQuery(query) {
   return currentQuery !== 'v2' && query === currentQuery;
 }
 
-export function setExploreColumns (columns) {
-  $localStorage.set('exploreTableColumns', columns);
+export function setExploreColumns (type, columns) {
+  $localStorage.set(`explore${capitalize(type)}Columns`, columns);
 }
 
-export function getExploreColumns () {
-  return $localStorage.get('exploreTableColumns');
+export function getExploreColumns (type) {
+  return $localStorage.get(`explore${capitalize(type)}Columns`);
 }

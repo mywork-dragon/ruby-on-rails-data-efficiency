@@ -23,7 +23,7 @@ test('', () => {
     ],
   };
 
-  const publisherFilter = buildPublisherFilters(form.filters);
+  const publisherFilter = buildPublisherFilters(form);
 
   expect(publisherFilter).toMatchObject(expected);
 });

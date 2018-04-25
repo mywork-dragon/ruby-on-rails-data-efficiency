@@ -2,7 +2,7 @@ import { getPreferredPageSize } from 'utils/table.utils';
 import { headerNames } from './column.models';
 
 export { headerNames };
-export { initializeColumns } from 'utils/table.utils';
+export { initializeColumns, syncColumns } from 'utils/table.utils';
 
 export function table(actionTypes, tableOptions) {
   const initialState = {
@@ -40,6 +40,7 @@ export function table(actionTypes, tableOptions) {
           ...initialState,
           error: true,
           message: 'Whoops! There was an error fetching the data for this table.',
+          ...action.payload.data,
         };
       case actionTypes.CLEAR_RESULTS:
         return {
@@ -76,7 +77,6 @@ export function table(actionTypes, tableOptions) {
     return {
       ...state,
       ...data,
-      columns: data.columns ? reconcileColumns(state.columns, data.columns) : state.columns,
       loading: false,
       error: false,
     };
@@ -110,22 +110,6 @@ export function table(actionTypes, tableOptions) {
       ...state,
       selectedItems: state.results.map(x => ({ id: x.id, type: x.type })),
     };
-  }
-
-  function reconcileColumns (oldColumns, newColumns) {
-    if (newColumns === undefined) {
-      return oldColumns;
-    }
-
-    const columns = {};
-
-    for (const key in oldColumns) {
-      if (oldColumns[key]) {
-        columns[key] = newColumns[key] ? newColumns[key] : false;
-      }
-    }
-
-    return columns;
   }
 
   return reducer;

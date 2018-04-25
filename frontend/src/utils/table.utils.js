@@ -54,3 +54,20 @@ export function setPreferredPageSize (pageSize) {
 export function getPreferredPageSize () {
   return $localStorage.get('tablePageSize');
 }
+
+export function syncColumns (saved, columnOptions, initialColumns, lockedColumns) {
+  const initializedColumns = initializeColumns(columnOptions, initialColumns, lockedColumns);
+  const finalColumns = { ...initializedColumns, ...saved };
+
+  Object.keys(finalColumns).forEach((x) => {
+    if (!columnOptions.includes(x)) { // remove column from saved if no longer available
+      delete finalColumns[x];
+    } else if (finalColumns[x] === 'LOCKED' && !lockedColumns.includes(x)) { // unlock column if no longer locked
+      finalColumns[x] = initialColumns[x];
+    }
+  });
+
+  lockedColumns.forEach(x => finalColumns[x] === 'LOCKED');
+
+  return finalColumns;
+}

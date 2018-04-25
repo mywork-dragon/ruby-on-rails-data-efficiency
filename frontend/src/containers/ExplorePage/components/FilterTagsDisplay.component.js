@@ -7,10 +7,12 @@ const FilterTagsDisplay = ({
   filters,
   platform,
   includeTakenDown,
+  resultType,
   updateFilter,
   ...rest
 }) => (
   <div className="filter-tags-container">
+    <FilterTag displayText={`Result Type: ${capitalize(resultType)}`} />
     <FilterTag displayText={`Platform: ${capitalize(platform)}`} />
     {includeTakenDown && <FilterTag deleteFilter={updateFilter('includeTakenDown')} displayText="Include Taken Down Apps" filterKey="includeTakenDown" />}
     {
@@ -45,6 +47,7 @@ FilterTagsDisplay.propTypes = {
   filters: PropTypes.object.isRequired,
   platform: PropTypes.string.isRequired,
   includeTakenDown: PropTypes.bool.isRequired,
+  resultType: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
 };
 

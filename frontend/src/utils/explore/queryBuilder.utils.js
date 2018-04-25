@@ -8,7 +8,7 @@ import { cleanState } from './general.utils';
 export function buildExploreRequest (form, columns, pageSettings, sort, accountNetworks) {
   const result = {};
   result.page_settings = buildPageSettings(pageSettings);
-  result.sort = buildSortSettings(sort);
+  result.sort = buildSortSettings(sort, form.resultType);
   result.query = buildFilter(form);
   result.select = buildSelect(form.resultType, columns, accountNetworks);
   result.formState = JSON.stringify(cleanState(form));
@@ -20,12 +20,12 @@ export function buildCsvRequest (query, facebookOnly) {
     ...query,
   };
   result.page_settings = { page_size: 20000 };
-  result.select = csvSelect(facebookOnly);
+  result.select = csvSelect(facebookOnly, query.select.object);
   return result;
 }
 
 
-export function buildCsvLink (csvQueryId, csvNumPages, permissions) {
+export function buildCsvLink (csvQueryId, permissions) {
   var pages = '0';
   const mquery_prefix = 'mightyquery:page_depth_level_';
   const page_size = 20000;
@@ -41,13 +41,13 @@ export function buildCsvLink (csvQueryId, csvNumPages, permissions) {
         page_depths = page_depths.filter((x) => (!isNaN(x))).map(parseInt);
         if (page_depths.length > 0) {
           const page_depth = Math.max(...page_depths);
-          const max_page = Math.min(Math.floor(page_depth / page_size), csvNumPages);
+          const max_page = Math.floor(page_depth / page_size);
           pages = "0-" + max_page.toString();
         }
       }
     }
 
-    return `${window.MQUERY_SERVICE}/query_result/${csvQueryId}/pages/${pages}?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}`;
+    return `${window.MQUERY_SERVICE}/query/${csvQueryId}/query_result/pages/${pages}?stream=true&formatter=csv&JWT=${$localStorage.get('queryToken')}`;
   }
   return null;
 }
@@ -59,7 +59,8 @@ export function buildPageSettings ({ pageSize, pageNum }) {
   };
 }
 
-export function buildSortSettings (sorts) {
+export function buildSortSettings (sorts, resultType) {
+  const result = { fields: [] };
   const defaultSorts = [
     {
       field: 'id',
@@ -72,24 +73,52 @@ export function buildSortSettings (sorts) {
       order: 'asc',
     },
   ];
-  const formattedSorts = convertToQuerySort(sorts);
-  return {
-    fields: formattedSorts.concat(defaultSorts),
-  };
+
+  const formattedSorts = convertToQuerySort(sorts, resultType);
+
+  if (!formattedSorts.length) {
+    if (resultType === 'app') {
+      result.fields = [{ field: 'current_version_release_date', object: 'app', order: 'desc' }].concat(defaultSorts);
+    } else if (resultType === 'publisher') {
+      result.fields = [
+        {
+          field: 'current_version_release_date',
+          object: 'app',
+          order: 'desc',
+          function: 'max',
+        },
+      ];
+    }
+  } else if (resultType === 'app') {
+    result.fields = formattedSorts.concat(defaultSorts);
+  } else if (resultType === 'publisher') {
+    result.fields = formattedSorts;
+  }
+
+  return result;
 }
 
-export const convertToQuerySort = sorts => sorts.map(sort => ({
-  ...sortMap[sort.id],
-  order: sort.desc ? 'desc' : 'asc',
+export const convertToQuerySort = (sorts, resultType) => _.compact(sorts.map((sort) => {
+  const map = sortMap(resultType);
+
+  if (map[sort.id]) {
+    return {
+      ...sortMap(resultType)[sort.id],
+      order: sort.desc ? 'desc' : 'asc',
+    };
+  }
+  return null;
 }));
 
 export function buildSelect (resultType, columns, accountNetworks) {
   const fields = [];
   const columnNames = Object.keys(columns);
 
+  const selects = selectMap(resultType);
+
   columnNames.forEach((column) => {
-    if (selectMap[column]) {
-      selectMap[column].forEach(field => fields.push(field));
+    if (selects[column]) {
+      selects[column].forEach(field => fields.push(field));
     }
   });
 
@@ -98,18 +127,20 @@ export function buildSelect (resultType, columns, accountNetworks) {
   const mappedFields = {};
 
   _.uniq(fields).forEach((field) => {
-    if (field === 'ad_summaries' && facebookOnly) {
+    if (['ad_summaries', 'ad_networks', 'first_seen_ads', 'last_seen_ads'].includes(field) && facebookOnly) {
       mappedFields[field] = ['facebook'];
     } else {
       mappedFields[field] = true;
     }
   });
 
-  const result = { fields: {} };
-  // result.fields[resultType] = fields;
-  // result.object = resultType;
-  result.fields.app = mappedFields; // TODO: remove hardcoded app value
-  result.object = 'app';
+  const result = {
+    fields: {
+      [resultType]: mappedFields,
+    },
+    object: resultType,
+  };
+
   return result;
 }
 

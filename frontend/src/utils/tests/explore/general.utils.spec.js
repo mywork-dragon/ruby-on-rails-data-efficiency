@@ -25,9 +25,10 @@ describe('exploreUtils', () => {
             creative_formats: ['video'],
             first_seen_ads_date: '2017-10-10',
             last_seen_ads_date: '2018-10-02',
-            categories: ['Games (Puzzle)'],
+            categories: ['Games', 'Puzzle'],
             adSpend: true,
             ad_summaries: testData.mockResultsResponse.pages[2][0].ad_summaries,
+            resultType: 'app',
           },
         ],
         resultsCount: 1,
@@ -37,7 +38,7 @@ describe('exploreUtils', () => {
         sort: [{ id: headerNames.APP, desc: false }],
       };
 
-      const results = utils.formatResults(testData.mockResultsResponse, sampleQuery, 1);
+      const results = utils.formatResults(testData.mockResultsResponse, 'app', sampleQuery, 1);
 
       expect(results).toEqual(expected);
     });
@@ -45,8 +46,8 @@ describe('exploreUtils', () => {
 
   describe('getSortName', () => {
     it('should take in a sort item and return the corresponding sort/display field', () => {
-      expect(utils.getSortName({ field: 'name', object: 'app' })).toBe(headerNames.APP);
-      expect(utils.getSortName({ field: 'current_version_release_date', object: 'app' })).toBe(headerNames.LAST_UPDATED);
+      expect(utils.getSortName({ field: 'name', object: 'app' }, 'app')).toBe(headerNames.APP);
+      expect(utils.getSortName({ field: 'current_version_release_date', object: 'app' }, 'app')).toBe(headerNames.LAST_UPDATED);
     });
   });
 
@@ -63,7 +64,7 @@ describe('exploreUtils', () => {
     it('should take in a query sort and format it for the table component', () => {
       const sorts = sampleQuery.sort.fields;
       const expected = [{ id: headerNames.APP, desc: false }];
-      const result = utils.convertToTableSort(sorts);
+      const result = utils.convertToTableSort(sorts, 'app');
 
       expect(result).toEqual(expected);
     });

@@ -5,6 +5,7 @@ import { buildAppFilters } from '../../../explore/filterBuilder.utils';
 test('', () => {
   const form = {
     platform: 'ios',
+    resultType: 'app',
     includeTakenDown: false,
     filters: {
       adNetworkCount: {

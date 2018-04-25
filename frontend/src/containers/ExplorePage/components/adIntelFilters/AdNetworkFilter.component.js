@@ -42,6 +42,51 @@ const AdNetworkFilter = ({
 
   return (
     <li className="li-filter ad-networks">
+      <div className="ad-date-options-group">
+        Advertising on
+        {facebookOnly && ' '}
+        {!facebookOnly && (
+          <span>
+            <Select
+              getPopupContainer={() => document.getElementById('ad-network-filter')}
+              onChange={updateAdNetworkFilter('operator')}
+              size="small"
+              value={operator}
+            >
+              <Option value="any">any</Option>
+              <Option value="all">all</Option>
+            </Select>
+            of
+            {' '}
+          </span>
+        )}
+        the following:
+      </div>
+      <div className="li-select">
+        <Select
+          allowClear
+          getPopupContainer={() => document.getElementById('ad-network-filter')}
+          labelInValue
+          mode="multiple"
+          onChange={updateAdNetworkFilter('adNetworks')}
+          placeholder="Add ad networks"
+          style={{ width: '100%' }}
+          value={adNetworks}
+        >
+          {
+            accountNetworks.map(x => (
+              <Option
+                key={x.id}
+                value={x.id}
+              >
+                <img src={x.icon} />
+                {' '}
+                {x.name}
+              </Option>
+            ))
+          }
+        </Select>
+      </div>
       <div className="ad-date-options-group" id="ad-network-filter">
         First Seen Ads:
         <Select
@@ -95,46 +140,6 @@ const AdNetworkFilter = ({
             />
           )
         }
-      </div>
-      {!facebookOnly && (
-        <div className="ad-date-options-group">
-          on
-          <Select
-            getPopupContainer={() => document.getElementById('ad-network-filter')}
-            onChange={updateAdNetworkFilter('operator')}
-            size="small"
-            value={operator}
-          >
-            <Option value="any">Any</Option>
-            <Option value="all">All</Option>
-          </Select>
-          of the following
-        </div>
-      )}
-      <div className="li-select">
-        <Select
-          allowClear
-          getPopupContainer={() => document.getElementById('ad-network-filter')}
-          labelInValue
-          mode="multiple"
-          onChange={updateAdNetworkFilter('adNetworks')}
-          placeholder="Add ad networks"
-          style={{ width: '100%' }}
-          value={adNetworks}
-        >
-          {
-            accountNetworks.map(x => (
-              <Option
-                key={x.id}
-                value={x.id}
-              >
-                <img src={x.icon} />
-                {' '}
-                {x.name}
-              </Option>
-            ))
-          }
-        </Select>
       </div>
     </li>
   );

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import toastr from 'toastr';
 import TableContainer from 'Table/Table.container';
 import { buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
 import { accessibleNetworks } from 'selectors/account.selectors';
@@ -10,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
   toggleAll: () => dispatch(tableActions.toggleAllItems()),
   onCsvExport: () => dispatch(tableActions.csvExported()),
   trackSort: sort => dispatch(trackTableSort(sort)),
-  updateColumns: columns => dispatch(tableActions.updateColumns(columns)),
+  updateColumns: (columns, type) => dispatch(tableActions.updateColumns(columns, type)),
   updatePageNum: (queryResultId, page) => dispatch(requestQueryPage(queryResultId, page)),
 });
 
@@ -23,7 +24,6 @@ const mapStateToProps = (state) => {
         csvQueryId,
         queryResultId,
         currentLoadedQuery,
-        csvNumPages,
       },
     },
     account: {
@@ -34,14 +34,14 @@ const mapStateToProps = (state) => {
   return {
     isManual: true,
     showControls: true,
-    showColumnDropdown: true,
+    showColumnDropdown: Object.entries(resultsTable.columns).some(x => x[1] !== 'LOCKED'),
     title: 'Results',
     canFetch: Object.keys(searchForm.filters).length !== 0 && !resultsTable.loading,
     adNetworks: accessibleNetworks(state),
-    csvLink: buildCsvLink(csvQueryId, csvNumPages, permissions.permissions),
-    resultType: searchForm.resultType,
+    csvLink: buildCsvLink(csvQueryId, permissions.permissions),
     queryResultId,
     currentLoadedQuery,
+    resultType: searchForm.resultType,
     ...resultsTable,
   };
 };
@@ -55,12 +55,15 @@ const mergeProps = (stateProps, dispatchProps) => {
     pageNum,
     queryResultId,
     currentLoadedQuery,
+    resultType,
+    currentColumns,
     ...other
   } = stateProps;
 
   const {
     trackSort,
     updatePageNum,
+    updateColumns,
     ...rest
   } = dispatchProps;
 
@@ -78,6 +81,7 @@ const mergeProps = (stateProps, dispatchProps) => {
     pageSize,
     sort,
     pageNum,
+    resultType,
     ...other,
     ...rest,
     onPageChange: page => updatePageNum(queryResultId, page),
@@ -100,6 +104,8 @@ const mergeProps = (stateProps, dispatchProps) => {
         });
       }
     },
+    updateColumns: columns => updateColumns(columns, resultType),
+    onCsvExport: () => toastr.info('Building your CSV...'),
   };
 };
 

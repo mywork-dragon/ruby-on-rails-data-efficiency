@@ -4,6 +4,7 @@ import { buildAdNetworkFilters } from '../../../explore/filterBuilder.utils';
 
 test('', () => {
   const form = {
+    resultType: 'app',
     filters: {
       adNetworks: {
         value: {
@@ -29,7 +30,7 @@ test('', () => {
     }],
   };
 
-  const result = buildAdNetworkFilters(form.filters);
+  const result = buildAdNetworkFilters(form);
 
   expect(result).toMatchObject(expected);
 });

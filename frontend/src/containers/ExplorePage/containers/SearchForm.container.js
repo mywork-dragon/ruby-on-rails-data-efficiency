@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import { hasFilters } from 'utils/explore/general.utils';
 import * as appStore from 'selectors/appStore.selectors';
+import { getCurrentColumns } from 'selectors/explore.selectors';
 import { adNetworks, saveNewSearch } from 'actions/Account.actions';
 import * as account from 'selectors/account.selectors';
 import SearchForm from '../components/SearchForm.component';
@@ -34,6 +35,7 @@ const mapStateToProps = (state) => {
     ...explore,
     searchForm,
     resultsTable,
+    columns: getCurrentColumns(state),
     iosCategories: appStore.getIosCategories(state),
     androidCategories: appStore.getAndroidCategories(state),
     availableCountries: appStore.getAvailableCountries(state),
@@ -50,12 +52,12 @@ const mergeProps = (storeProps, dispatchProps) => {
     searchForm,
     resultsTable:
       {
-        columns,
         pageSize,
         sort,
         loading,
       },
     adNetworks: accountNetworks,
+    columns,
     ...rest
   } = storeProps;
 

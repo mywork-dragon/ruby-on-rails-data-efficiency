@@ -5,8 +5,8 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 const DownloadsHeaderCell = ({ resultType }) => {
   const helpTooltip = (
     <Tooltip className="help-tooltip" id="tooltip-right">
-      {resultType === 'publisher' && <p>Total across all apps</p>}
-      <p>Only available for Android</p>
+      {resultType === 'publisher' && <p>Total across all apps.</p>}
+      <p>Only available for Android.</p>
     </Tooltip>
   );
 

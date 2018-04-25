@@ -1,17 +1,17 @@
 /* eslint-env jest */
 
-import { buildAppFilters } from '../../../explore/filterBuilder.utils';
+import { buildPublisherFilters } from '../../../explore/filterBuilder.utils';
 
 test('', () => {
   const form = {
     platform: 'ios',
-    resultType: 'app',
+    resultType: 'publisher',
     includeTakenDown: false,
     filters: {
       adNetworkCount: {
         value: {
-          value: [1, 5],
-          operator: 'between',
+          value: [0, 4],
+          operator: 'less-than',
         },
       },
     },
@@ -19,15 +19,13 @@ test('', () => {
 
   const expected = {
     operator: 'filter',
-    object: 'app',
+    object: 'publisher',
     predicates: [
-      ['platform', 'ios'],
-      ['not', ['taken_down']],
-      ['count_advertising_networks', 1, 5],
+      ['count_advertising_networks', null, 4],
     ],
   };
 
-  const result = buildAppFilters(form);
+  const result = buildPublisherFilters(form);
 
   expect(result).toMatchObject(expected);
 });

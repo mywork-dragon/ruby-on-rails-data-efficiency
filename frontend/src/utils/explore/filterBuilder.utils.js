@@ -14,9 +14,9 @@ export function buildFilter (form) {
 
   const appFilters = buildAppFilters(form);
   const sdkFilters = buildSdkFilters(form.filters);
-  const publisherFilters = buildPublisherFilters(form.filters);
+  const publisherFilters = buildPublisherFilters(form);
   const adIntelFilters = buildAdIntelFilters(form.filters);
-  const adNetworkFilters = buildAdNetworkFilters(form.filters);
+  const adNetworkFilters = buildAdNetworkFilters(form);
 
   if (appFilters) {
     result.filter.inputs.push(appFilters);
@@ -45,7 +45,7 @@ export function buildFilter (form) {
   return result;
 }
 
-export function buildAppFilters ({ platform, includeTakenDown, filters }) {
+export function buildAppFilters ({ resultType, platform, includeTakenDown, filters }) {
   const result = {
     operator: 'filter',
     predicates: [],
@@ -69,7 +69,7 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   }
 
   for (const key in filters) {
-    if (models.isAppFilter(key)) {
+    if (models.isAppFilter(key) || (key === 'adNetworkCount' && resultType === 'app')) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -83,7 +83,7 @@ export function buildAppFilters ({ platform, includeTakenDown, filters }) {
   return result;
 }
 
-export function buildPublisherFilters (filters) {
+export function buildPublisherFilters ({ resultType, filters }) {
   const result = {
     operator: 'filter',
     predicates: [],
@@ -91,7 +91,7 @@ export function buildPublisherFilters (filters) {
   };
 
   for (const key in filters) {
-    if (models.isPubFilter(key)) {
+    if (models.isPubFilter(key) || (key === 'adNetworkCount' && resultType === 'publisher')) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -157,7 +157,7 @@ export function buildAdIntelFilters (filters) {
   return result;
 }
 
-export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
+export function buildAdNetworkFilters ({ resultType, filters: { adNetworks: adNetworksFilter } }) {
   if (!adNetworksFilter || adNetworksFilter.value.adNetworks.length === 0) {
     return null;
   }
@@ -183,7 +183,7 @@ export function buildAdNetworkFilters ({ adNetworks: adNetworksFilter }) {
 
     return {
       operator: 'filter',
-      object: 'app',
+      object: resultType,
       predicates,
     };
   };

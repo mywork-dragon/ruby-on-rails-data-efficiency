@@ -2,7 +2,7 @@ import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
 import service from 'services/explore.service';
 import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
 import { isFacebookOnly, accessibleNetworks } from 'selectors/account.selectors';
-import { currentFormVersion, getCurrentState } from 'selectors/explore.selectors';
+import { currentFormVersion, getCurrentState, getCurrentColumns, getCurrentResultType } from 'selectors/explore.selectors';
 import { buildCsvRequest, buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import validateFormState from 'utils/explore/formStateValidation.utils';
 import toastr from 'toastr';
@@ -34,7 +34,8 @@ function* requestResults ({ payload }) {
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
-    yield put(tableActions.allItems.failure(error));
+    const currentColumns = yield select(getCurrentColumns);
+    yield put(tableActions.allItems.failure(error, { columns: currentColumns }));
   }
 }
 
@@ -64,8 +65,9 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
+    const columns = yield select(getCurrentColumns);
     yield put(populateFromQueryId.failure(error));
-    yield put(tableActions.allItems.failure(error));
+    yield put(tableActions.allItems.failure(error, { columns }));
   }
 }
 
@@ -75,8 +77,7 @@ function* requestCsvQueryId (params) {
     const facebookOnly = yield select(isFacebookOnly);
     const csvParams = buildCsvRequest(params, facebookOnly);
     const { data: { query_id } } = yield call(service.getQueryId, csvParams);
-    const { data: { query_result_id, number_pages } } = yield call(service.getQueryResultInfo, query_id);
-    yield put(getCsvQueryId.success(query_result_id, number_pages));
+    yield put(getCsvQueryId.success(query_id));
   } catch (error) {
     console.log(error);
     yield put(getCsvQueryId.failure(error));
@@ -97,12 +98,15 @@ function* requestResultsByQueryId (id, params, pageNum) {
       yield put(tableActions.allItems.success({ resultsCount: 0 }));
     } else {
       const { data } = yield call(service.getResultsByResultId, query_result_id, pageNum);
-      const items = formatResults(data, params, number_results);
+      const resultType = yield select(getCurrentResultType);
+      const items = formatResults(data, resultType, params, number_results);
+      items.columns = yield select(getCurrentColumns);
       yield put(tableActions.allItems.success(items));
     }
   } catch (error) {
     console.log(error);
-    yield put(tableActions.allItems.failure());
+    const columns = yield select(getCurrentColumns);
+    yield put(tableActions.allItems.failure(error, { columns }));
   }
 }
 
@@ -110,30 +114,35 @@ function* requestResultsByQueryResultId ({ payload: { id, page } }) {
   try {
     yield put(tableActions.setLoading(true));
     const { data } = yield call(service.getResultsByResultId, id, page);
-    const items = formatResults(data);
+    const resultType = yield select(getCurrentResultType);
+    const items = formatResults(data, resultType);
+    items.columns = yield select(getCurrentColumns);
     yield put(tableActions.allItems.success(items));
   } catch (error) {
     console.log(error);
-    yield put(tableActions.allItems.failure(error));
+    const columns = yield select(getCurrentColumns);
+    yield put(tableActions.allItems.failure(error, { columns }));
   }
 }
 
 function* getQueryIdFromState ({ form }) {
   try {
     const { resultsTable } = yield select(getCurrentState);
+    const columns = yield select(getCurrentColumns, form.resultType);
     const accountNetworks = yield select(accessibleNetworks);
     const pageSettings = { pageSize: resultsTable.pageSize, pageNum: 0 };
-    const params = buildExploreRequest(form, resultsTable.columns, pageSettings, resultsTable.sort, accountNetworks);
+    const params = buildExploreRequest(form, columns, pageSettings, resultsTable.sort, accountNetworks);
     const { data: { query_id } } = yield call(service.getQueryId, params);
     return { query_id, params };
   } catch (error) {
     console.log(error);
-    yield put(tableActions.allItems.failure(error));
+    const columns = yield select(getCurrentColumns);
+    yield put(tableActions.allItems.failure(error, { columns }));
   }
 }
 
-function updateExploreTableColumns ({ payload: { columns } }) {
-  setExploreColumns(columns);
+function updateExploreTableColumns ({ payload: { columns, type } }) {
+  setExploreColumns(type, columns);
 }
 
 function* watchResultsRequest() {
