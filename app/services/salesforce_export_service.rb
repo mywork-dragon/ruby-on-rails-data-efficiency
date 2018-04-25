@@ -117,8 +117,12 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
+  def experimental_account?
+    [1, 12].include? @account.id
+  end
+
   def should_sync_publisher?(platform:, publisher_id:, last_synced:)
-    return true unless last_synced && @account.id == 12
+    return true unless last_synced && experimental_account?
     if platform == 'ios'
       publisher = IosDeveloper.find(publisher_id)
       publisher.apps.limit(500).any?{|app| 
@@ -531,7 +535,7 @@ class SalesforceExportService
       
       # leads use app ownership, accounts have id directly on app object
       # adjust will use app ownership on accounts as well (maybe all accounts in the future)
-      if lead_import? || (@account.id == 12)
+      if lead_import? || experimental_account?
         export_ids = @app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
         export_ids.each do |export_id|
           import_app_ownership(app_id, export_id)
