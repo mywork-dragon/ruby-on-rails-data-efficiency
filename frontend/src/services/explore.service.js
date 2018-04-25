@@ -1,28 +1,32 @@
 import axios from 'axios';
-import { isValidToken } from 'utils/auth.utils';
+import moment from 'moment';
 import { $localStorage } from 'utils/localStorage.utils';
+import { tokenExpired } from 'utils/auth.utils';
 import { getQueryToken } from './auth';
 import httpClient from './httpClient';
 
-
 const ExploreService = (client = httpClient) => {
-
   const exploreClient = axios.create({
     headers: { Authorization: null },
   });
 
   exploreClient.interceptors.request.use((config) => {
     const { headers: { Authorization: token } } = config;
-    if (token && isValidToken(token)) {
-      return config;
+    if (tokenExpired()) {
+      return getQueryToken().then((newToken) => {
+        exploreClient.defaults.headers.Authorization = `${newToken}`;
+        config.headers.Authorization = `${newToken}`;
+        $localStorage.set('queryToken', newToken);
+        $localStorage.set('queryTokenFetchTime', moment());
+        return Promise.resolve(config);
+      });
+    } else if (!token) {
+      const savedToken = $localStorage.get('queryToken');
+      exploreClient.defaults.headers.Authorization = `${savedToken}`;
+      config.headers.Authorization = `${savedToken}`;
     }
 
-    return getQueryToken().then((newToken) => {
-      exploreClient.defaults.headers.Authorization = `${newToken}`;
-      config.headers.Authorization = `${newToken}`;
-      $localStorage.set('queryToken', newToken);
-      return Promise.resolve(config);
-    });
+    return config;
   });
 
   return {
