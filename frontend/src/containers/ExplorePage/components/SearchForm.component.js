@@ -9,6 +9,7 @@ import AppFilterPanel from './appFilters/AppFilterPanel.component';
 import FilterTagsDisplay from './FilterTagsDisplay.component';
 import PlatformFilter from './PlatformFilter.component';
 import PublisherFilterPanel from './publisherFilters/PublisherFilterPanel.component';
+import RankingsFilterPanel from './rankingsFilters/RankingsFilterPanel.component';
 import ResultTypeFilter from './ResultTypeFilter.component';
 import SaveSearchButton from './SaveSearchButton.component';
 import SdkFilterPanel from './sdkFilters/SdkFilterPanel.component';
@@ -61,6 +62,7 @@ const SearchForm = ({
               <div className="col-md-6">
                 <PublisherFilterPanel panelKey="3" {...rest} />
                 <AdIntelFilterPanel panelKey="4" {...rest} />
+                {/* <RankingsFilterPanel panelKey="5" platform={platform} {...rest} /> */}
               </div>
             </div>
             <div className="form-review form-group">

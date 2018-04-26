@@ -3,6 +3,7 @@ import {
   CATEGORIES,
   AVAILABLE_COUNTRIES,
   SDK_CATEGORIES,
+  RANKINGS_COUNTRIES,
 } from 'actions/AppStore.actions';
 
 const initialCategoryState = {
@@ -98,10 +99,42 @@ function sdkCategories (state = initialSdkCategoriesState, action) {
   }
 }
 
+const initialRankingsCountriesState = {
+  loaded: false,
+  fetching: false,
+  rankingsCountries: [],
+};
+
+function rankingsCountries (state = initialRankingsCountriesState, action) {
+  switch (action.type) {
+    case RANKINGS_COUNTRIES.REQUEST:
+      return {
+        ...state,
+        fetching: true,
+      };
+    case RANKINGS_COUNTRIES.SUCCESS:
+      return {
+        ...state,
+        rankingsCountries: action.payload.countries,
+        loaded: true,
+        fetching: false,
+      };
+    case RANKINGS_COUNTRIES.FAILURE:
+      return {
+        ...state,
+        loaded: true,
+        fetching: false,
+      };
+    default:
+      return state;
+  }
+}
+
 const appStoreInfo = combineReducers({
   categories,
   availableCountries,
   sdkCategories,
+  rankingsCountries,
 });
 
 export default appStoreInfo;

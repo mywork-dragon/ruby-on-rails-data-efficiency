@@ -20,3 +20,10 @@ export const sdkCategories = {
   success: data => action(SDK_CATEGORIES.SUCCESS, { sdkCategories: data }),
   failure: error => action(SDK_CATEGORIES.FAILURE, { error }),
 };
+
+export const RANKINGS_COUNTRIES = createRequestTypes('RANKINGS_COUNTRIES');
+export const rankingsCountries = {
+  request: () => action(RANKINGS_COUNTRIES.REQUEST),
+  success: countries => action(RANKINGS_COUNTRIES.SUCCESS, { countries }),
+  failure: error => action(RANKINGS_COUNTRIES.FAILURE, { error }),
+};

@@ -16,6 +16,9 @@ const AppStoreService = (client = httpClient) => ({
   getAndroidSdkCategories: () => (
     client.get('/api/get_android_sdk_categories')
   ),
+  getRankingsCountries: () => (
+    client.get('/api/ranking_countries')
+  ),
 });
 
 export default AppStoreService;

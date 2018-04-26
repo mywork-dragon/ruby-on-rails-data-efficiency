@@ -31,6 +31,7 @@ const ReleaseDateFilter = ({
     </label>
     <div className="input-group release-date" id="release-date-filter">
       <Select
+        className="small-custom-react-select"
         clearable
         onChange={(val) => {
           if (!val) {

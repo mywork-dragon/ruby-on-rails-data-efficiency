@@ -49,6 +49,7 @@ const DownloadsFilter = ({
     </label>
     <div className="input-group ratings-count">
       <Select
+        className="small-custom-react-select"
         clearable={false}
         disabled={platform === 'ios'}
         onChange={(val) => {
@@ -81,6 +82,7 @@ const DownloadsFilter = ({
       <div className="between-container">
         {['more-than', 'between'].includes(operator) && (
           <Select
+            className="small-custom-react-select"
             clearable
             disabled={platform === 'ios'}
             onChange={(val) => {
@@ -102,6 +104,7 @@ const DownloadsFilter = ({
         {operator === 'between' && <span className="and-text">and</span>}
         {['less-than', 'between'].includes(operator) && (
           <Select
+            className="small-custom-react-select"
             clearable
             disabled={platform === 'ios'}
             onChange={(val) => {

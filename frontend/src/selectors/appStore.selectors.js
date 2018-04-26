@@ -13,3 +13,7 @@ export const needSdkCategories = state => !state.appStoreInfo.sdkCategories.load
 export const getIosSdkCategories = state => state.appStoreInfo.sdkCategories.iosCategoriesById;
 
 export const getAndroidSdkCategories = state => state.appStoreInfo.sdkCategories.androidCategoriesById;
+
+export const needRankingsCountries = state => !state.appStoreInfo.rankingsCountries.loaded && !state.appStoreInfo.rankingsCountries.fetching;
+
+export const getRankingsCountries = state => state.appStoreInfo.rankingsCountries.rankingsCountries;

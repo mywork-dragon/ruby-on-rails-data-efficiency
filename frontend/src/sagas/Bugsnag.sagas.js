@@ -15,6 +15,7 @@ import {
   AVAILABLE_COUNTRIES,
   CATEGORIES,
   SDK_CATEGORIES,
+  RANKINGS_COUNTRIES,
 } from 'actions/AppStore.actions';
 
 import {
@@ -45,6 +46,7 @@ function* watchError() {
     TABLE_TYPES.ALL_ITEMS.FAILURE,
     LOAD_PERMISSIONS.FAILURE,
     UPDATE_SAVED_SEARCH.FAILURE,
+    RANKINGS_COUNTRIES.FAILURE,
   ], sendToBugsnag);
 }
 

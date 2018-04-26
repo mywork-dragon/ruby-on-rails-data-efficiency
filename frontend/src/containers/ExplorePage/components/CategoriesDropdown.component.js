@@ -6,13 +6,10 @@ import { capitalize } from 'utils/format.utils';
 
 const CategoriesDropdown = ({
   categories,
-  filter: {
-    value,
-  },
-  panelKey,
+  filterCategories,
   platform,
   selectedPlatform,
-  updateFilter,
+  onCategoryUpdate,
 }) => {
   const treeData = _.compact(categories.map((x) => {
     if (x.platform === 'android' && x.parent) {
@@ -48,13 +45,13 @@ const CategoriesDropdown = ({
         getPopupContainer={() => document.getElementById('categories-input')}
         labelInValue
         multiple
-        onChange={values => updateFilter(`${platform}Categories`, values, { panelKey })()}
+        onChange={onCategoryUpdate}
         placeholder={`${capitalize(platform)} Categories`}
         showCheckedStrategy={TreeSelect.SHOW_PARENT}
         style={{ width: '100%' }}
         treeCheckable
         treeData={treeData}
-        value={value}
+        value={filterCategories}
       />
     </div>
   );
@@ -62,19 +59,14 @@ const CategoriesDropdown = ({
 
 CategoriesDropdown.propTypes = {
   categories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  filter: PropTypes.shape({
-    value: PropTypes.array,
-  }),
-  panelKey: PropTypes.string.isRequired,
+  filterCategories: PropTypes.array,
   platform: PropTypes.string.isRequired,
   selectedPlatform: PropTypes.string.isRequired,
-  updateFilter: PropTypes.func.isRequired,
+  onCategoryUpdate: PropTypes.func.isRequired,
 };
 
 CategoriesDropdown.defaultProps = {
-  filter: {
-    value: [],
-  },
+  filterCategories: [],
 };
 
 export default CategoriesDropdown;

@@ -155,4 +155,63 @@
       margin: 10px 0;
     }
   }
+
+  .rankings-filter-group {
+    .rankings-eventType {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .event-type-select {
+      width: 300px;
+    }
+
+    .Select {
+      margin: 0 10px;
+    }
+  }
+
+  .sub-filter-group {
+    align-items: baseline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin-top: -10px;
+    width: 100%;
+
+    .Select {
+      margin: 10px 10px 0 0;
+    }
+
+    .between-container {
+      .Select {
+        width: 100px;
+      }
+    }
+
+    .and-text {
+      margin: 10px 10px 0 0;
+    }
+
+    .trend-operator {
+      width: 100px;
+    }
+
+    .trend-date {
+      width: 100px;
+    }
+  }
+
+  .charts-filter-group {
+    margin-top: 10px;
+
+    .Select {
+      margin-top: 10px;
+      width: 100%;
+
+      .Select-control {
+        border: 1px solid #d9d9d9;
+        border-radius: 0;
+      }
+    }
+  }
 }

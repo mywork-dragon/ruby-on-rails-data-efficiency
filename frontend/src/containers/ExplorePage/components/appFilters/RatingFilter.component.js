@@ -38,6 +38,7 @@ const RatingFilter = ({
     </label>
     <div className="input-group ratings-count">
       <Select
+        className="small-custom-react-select"
         clearable={false}
         onChange={(val) => {
           const newFilter = {
@@ -69,6 +70,7 @@ const RatingFilter = ({
       <div className="between-container">
         {['more-than', 'between'].includes(operator) && (
           <Select
+            className="small-custom-react-select"
             clearable
             onChange={(val) => {
               const newFilter = {
@@ -89,6 +91,7 @@ const RatingFilter = ({
         {operator === 'between' && <span className="and-text">and</span>}
         {['less-than', 'between'].includes(operator) && (
           <Select
+            className="small-custom-react-select"
             clearable
             onChange={(val) => {
               const newFilter = {
@@ -132,4 +135,3 @@ RatingFilter.defaultProps = {
 };
 
 export default RatingFilter;
-

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { needAppCategories, needAvailableCountries, needSdkCategories } from 'selectors/appStore.selectors';
+import * as appStoreSelectors from 'selectors/appStore.selectors';
 import { needPermissions } from 'selectors/account.selectors';
 import { loadPermissions } from 'actions/Account.actions';
 import * as appStore from 'actions/AppStore.actions';
@@ -12,6 +12,7 @@ const mapDispatchToProps = dispatch => ({
   requestAvailableCountries: () => dispatch(appStore.availableCountries.request()),
   requestCategories: () => dispatch(appStore.categories.request()),
   requestSdkCategories: () => dispatch(appStore.sdkCategories.request()),
+  requestRankingsCountries: () => dispatch(appStore.rankingsCountries.request()),
   requestPermissions: () => dispatch(loadPermissions.request()),
 });
 
@@ -28,9 +29,10 @@ const mapStateToProps = (state) => {
   return {
     loaded,
     existingId: queryId,
-    shouldFetchCategories: needAppCategories(state),
-    shouldFetchCountries: needAvailableCountries(state),
-    shouldFetchSdkCategories: needSdkCategories(state),
+    shouldFetchCategories: appStoreSelectors.needAppCategories(state),
+    shouldFetchCountries: appStoreSelectors.needAvailableCountries(state),
+    shouldFetchSdkCategories: appStoreSelectors.needSdkCategories(state),
+    shouldFetchRankingsCountries: appStoreSelectors.needRankingsCountries(state),
     shouldFetchPermissions: needPermissions(state),
   };
 };

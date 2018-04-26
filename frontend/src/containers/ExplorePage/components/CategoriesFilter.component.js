@@ -8,6 +8,7 @@ const CategoriesFilter = ({
   iosCategories,
   iosFilter,
   platform,
+  onCategoryUpdate,
   ...rest
 }) => (
   <li className="li-filter">
@@ -17,14 +18,16 @@ const CategoriesFilter = ({
     <div className="input-group" id="categories-input">
       <CategoriesDropdown
         categories={iosCategories}
-        filter={iosFilter}
+        filterCategories={iosFilter}
+        onCategoryUpdate={onCategoryUpdate('ios')}
         platform="ios"
         selectedPlatform={platform}
         {...rest}
       />
       <CategoriesDropdown
         categories={androidCategories}
-        filter={androidFilter}
+        filterCategories={androidFilter}
+        onCategoryUpdate={onCategoryUpdate('android')}
         platform="android"
         selectedPlatform={platform}
         {...rest}
@@ -35,23 +38,16 @@ const CategoriesFilter = ({
 
 CategoriesFilter.propTypes = {
   androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  androidFilter: PropTypes.shape({
-    value: PropTypes.array,
-  }),
+  androidFilter: PropTypes.array,
   iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  iosFilter: PropTypes.shape({
-    value: PropTypes.array,
-  }),
+  iosFilter: PropTypes.array,
   platform: PropTypes.string.isRequired,
+  onCategoryUpdate: PropTypes.func.isRequired,
 };
 
 CategoriesFilter.defaultProps = {
-  androidFilter: {
-    value: [],
-  },
-  iosFilter: {
-    value: [],
-  },
+  androidFilter: [],
+  iosFilter: [],
 };
 
 export default CategoriesFilter;

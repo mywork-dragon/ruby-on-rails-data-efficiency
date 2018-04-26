@@ -2,10 +2,6 @@ export function formatCategories (categories) {
   const result = {};
 
   categories.forEach((category) => {
-    if (category.name === 'Overall') {
-      return;
-    }
-
     if (!result[category.id]) {
       result[category.id] = category;
     } else {
@@ -19,11 +15,6 @@ export function formatCategories (categories) {
       result[category.parent.id].subCategories.push(category);
     }
   });
-
-  if (result.FAMILY) {
-    result.FAMILY.subCategories.forEach(x => delete result[x.id]);
-    delete result.FAMILY;
-  }
 
   return result;
 }

@@ -15,6 +15,8 @@ const Explore = ({
   requestCategories,
   shouldFetchSdkCategories,
   requestSdkCategories,
+  shouldFetchRankingsCountries,
+  requestRankingsCountries,
   shouldFetchPermissions,
   requestPermissions,
 }) => {
@@ -22,21 +24,11 @@ const Explore = ({
     populateFromQueryId(queryId);
   }
 
-  if (shouldFetchCountries) {
-    requestAvailableCountries();
-  }
-
-  if (shouldFetchCategories) {
-    requestCategories();
-  }
-
-  if (shouldFetchSdkCategories) {
-    requestSdkCategories();
-  }
-
-  if (shouldFetchPermissions) {
-    requestPermissions();
-  }
+  if (shouldFetchCountries) requestAvailableCountries();
+  if (shouldFetchRankingsCountries) requestRankingsCountries();
+  if (shouldFetchCategories) requestCategories();
+  if (shouldFetchSdkCategories) requestSdkCategories();
+  if (shouldFetchPermissions) requestPermissions();
 
   return (
     <div className="page explore-page">
@@ -63,6 +55,8 @@ Explore.propTypes = {
   existingId: PropTypes.string,
   shouldFetchCountries: PropTypes.bool.isRequired,
   requestAvailableCountries: PropTypes.func.isRequired,
+  shouldFetchRankingsCountries: PropTypes.bool.isRequired,
+  requestRankingsCountries: PropTypes.func.isRequired,
   shouldFetchCategories: PropTypes.bool.isRequired,
   requestCategories: PropTypes.func.isRequired,
   shouldFetchSdkCategories: PropTypes.bool.isRequired,
