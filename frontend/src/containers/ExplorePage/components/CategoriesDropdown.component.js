@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { TreeSelect } from 'antd';
+import Select from 'components/select/CustomSelect.component';
 import { capitalize } from 'utils/format.utils';
 
 const CategoriesDropdown = ({
@@ -11,27 +11,7 @@ const CategoriesDropdown = ({
   selectedPlatform,
   onCategoryUpdate,
 }) => {
-  const treeData = _.compact(categories.map((x) => {
-    if (x.platform === 'android' && x.parent) {
-      return null;
-    }
-
-    const node = {
-      value: x.id.toString(),
-      label: x.name.split(' (')[0],
-      key: `${x.id}-${x.name}`,
-    };
-
-    if (x.subCategories) {
-      node.children = x.subCategories.map(y => ({
-        value: y.id.toString(),
-        label: y.name.split(' (')[0],
-        key: `${y.id}-${y.name}`,
-      }));
-    }
-
-    return node;
-  }));
+  const options = categories.map(x => ({ value: x.id, label: x.name }));
 
   return (
     <div className="li-select categories">
@@ -39,18 +19,14 @@ const CategoriesDropdown = ({
         <i className={`fa fa-${platform === 'ios' ? 'apple' : 'android'}`} />
         Categories
       </div>
-      <TreeSelect
+      <Select
+        closeOnSelect={false}
         disabled={!['all', platform].includes(selectedPlatform)}
-        dropdownStyle={{ maxHeight: 200 }}
-        getPopupContainer={() => document.getElementById('categories-input')}
-        labelInValue
-        multiple
+        multi
         onChange={onCategoryUpdate}
+        options={options}
         placeholder={`${capitalize(platform)} Categories`}
-        showCheckedStrategy={TreeSelect.SHOW_PARENT}
-        style={{ width: '100%' }}
-        treeCheckable
-        treeData={treeData}
+        style={{ marginTop: 5, borderRadius: 0 }}
         value={filterCategories}
       />
     </div>
