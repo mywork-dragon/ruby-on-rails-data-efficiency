@@ -1,4 +1,5 @@
 class AppHotStore < HotStore
+  class Unexpected < RuntimeError; end
 
   @@APP_FIELDS_TO_DELETE = {
     "ios" => [ "first_seen_ads_date", "last_seen_ads_date", "has_ad_spend" ],
@@ -72,8 +73,10 @@ class AppHotStore < HotStore
     end
   end
 
-  def write_ad_summary(app_id, app_identifier, platform, ad_summary, async: false)
-    attributes = { "ad_summaries" => ad_summary }
+  def write_attribute(app_id, app_identifier, platform, attr_name, attr_value, async: false)
+    raise Unexpected unless attr_name.is_a?(String)
+
+    attributes = { attr_name => attr_value }
 
     # Add in required params to the app entry.
     attributes["id"] = app_id
@@ -83,9 +86,12 @@ class AppHotStore < HotStore
     write_entry("app", platform, app_id, attributes, async: async)
   end
 
+  def write_ad_summary(app_id, app_identifier, platform, ad_summary, async: false)
+    write_attribute(app_id, app_identifier, platform, 'ad_summaries', ad_summary, async)
+  end
 
   def write_major_app(app_id,app_identifier, platform, major_app: true)
-    write_entry("app", platform, app_id, {'major_app' => major_app, 'id' => app_id, 'platform' =>  platform, 'app_identifier' => app_identifier})
+    write_attribute(app_id, app_identifier, platform, 'major_app', major_app)
   end
 
   def read(platform, app_id)

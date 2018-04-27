@@ -17,7 +17,10 @@ class HotStoreSchemaTestBase < ActiveSupport::TestCase
   # listed in the schema are present in the entry argument.
   #
   def validate(schema, entry, prev_key: nil)
-    if not schema.is_a? Hash
+    if schema.is_a? Array
+      validate_raw(Array, entry)
+      return entry.each { |el| validate_raw(schema[0], el) }
+    elsif not schema.is_a? Hash
       validate_raw(schema, entry, key: prev_key)
       return
     end
