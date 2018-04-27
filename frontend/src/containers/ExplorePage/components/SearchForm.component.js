@@ -24,6 +24,7 @@ const SearchForm = ({
   requestResults,
   toggleForm,
   loading,
+  canAccessRankings,
   ...rest
 }) => {
   const toggleFormPanel = () => (e) => {
@@ -58,11 +59,12 @@ const SearchForm = ({
               <div className="col-md-6">
                 <SdkFilterPanel panelKey="1" platform={platform} {...rest} />
                 <AppFilterPanel panelKey="2" platform={platform} {...rest} />
+                {canAccessRankings && <PublisherFilterPanel panelKey="3" {...rest} />}
               </div>
               <div className="col-md-6">
-                <PublisherFilterPanel panelKey="3" {...rest} />
+                {!canAccessRankings && <PublisherFilterPanel panelKey="3" {...rest} />}
                 <AdIntelFilterPanel panelKey="4" {...rest} />
-                {/* <RankingsFilterPanel panelKey="5" platform={platform} {...rest} /> */}
+                {canAccessRankings && <RankingsFilterPanel panelKey="5" platform={platform} {...rest} />}
               </div>
             </div>
             <div className="form-review form-group">
@@ -104,11 +106,13 @@ SearchForm.propTypes = {
   toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
+  canAccessRankings: PropTypes.bool,
 };
 
 SearchForm.defaultProps = {
   canFetch: false,
   searchFormExpanded: true,
+  canAccessRankings: false,
 };
 
 export default SearchForm;
