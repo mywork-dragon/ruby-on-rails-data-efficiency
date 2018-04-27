@@ -1,4 +1,5 @@
 import moment from 'moment';
+import _ from 'lodash';
 import { capitalize, numberShorthand } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
@@ -37,6 +38,8 @@ function getDisplayText (parameter, value) {
       return `Released ${generateDateText(value.dateRange, value.dates)}`;
     case 'downloads':
       return rangeText('Downloads', value);
+    case 'rankings':
+      return rankingsText(value);
     default:
       return '';
   }
@@ -229,6 +232,38 @@ function rangeText (base, { operator, value }) {
   }
 
   return `${base} ${operatorText} ${countText}${itemText}`;
+}
+
+function rankingsText ({ eventType, dateRange, operator, trendOperator, values, charts, iosCategories, androidCategories, countries }) {
+  if (['rank', 'trend'].includes(eventType.value) && values.length === 0) {
+    return null;
+  }
+
+  let predicate;
+
+  let operatorLabel = operator;
+
+  if (eventType.value === 'rank') {
+    if (operator === 'more-than') operatorLabel = 'above';
+    if (operator === 'less-than') operatorLabel = 'below';
+  } else if (eventType.value === 'trend') {
+    if (operator === 'more-than') operatorLabel = 'more than';
+    if (operator === 'less-than') operatorLabel = 'less than';
+  }
+
+  switch (eventType.value) {
+    case 'rank':
+      predicate = `${operatorLabel} ${_.compact(values).join(' and ')}`;
+      break;
+    case 'trend':
+      predicate = `${trendOperator} ${operatorLabel} ${_.compact(values).join(' and ')} places in the last ${dateRange.label.toLowerCase()}`;
+      break;
+    case 'newcomer':
+      predicate = `in the last ${dateRange.label.toLowerCase()}`;
+      break;
+  }
+
+  return `Apps that ${eventType.label} ${predicate}`;
 }
 
 export default getDisplayText;

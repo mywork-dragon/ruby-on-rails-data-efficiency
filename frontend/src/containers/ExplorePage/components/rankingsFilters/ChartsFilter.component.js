@@ -19,13 +19,12 @@ const ChartsFilter = ({
 
   return (
     <div className="charts-filter-group" id="charts-filter-group">
-      {/* on the following charts: */}
       <ul className="panel-filters list-unstyled">
         <li className="li-filter">
           <label className="filter-label">
-            Charts
+            On the following charts:
           </label>
-          <div className="input-group ratings-count">
+          <div className="input-group">
             <Select
               multi
               onChange={(vals) => {
@@ -48,6 +47,7 @@ const ChartsFilter = ({
           </div>
         </li>
         <CategoriesFilter
+          title="In the following categories:"
           androidFilter={value.androidCategories}
           iosFilter={value.iosCategories}
           onCategoryUpdate={platform => (vals) => {
@@ -63,7 +63,7 @@ const ChartsFilter = ({
         />
         <li className="li-filter">
           <label className="filter-label">
-            Countries
+            In the following countries:
           </label>
           <div className="input-group chart-countries">
             <div className="li-select">

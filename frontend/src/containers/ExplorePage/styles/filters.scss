@@ -157,17 +157,14 @@
   }
 
   .rankings-filter-group {
-    .rankings-eventType {
-      display: flex;
-      margin-bottom: 10px;
-    }
+    width: 100%;
 
     .event-type-select {
-      width: 300px;
-    }
-
-    .Select {
-      margin: 0 10px;
+      .Select-control {
+        border-radius: 0;
+        margin-bottom: 10px;
+        width: 100%;
+      }
     }
   }
 

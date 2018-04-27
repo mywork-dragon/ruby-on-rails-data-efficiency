@@ -23,8 +23,10 @@ const RankingsFilterPanel = ({
       </Panel.Title>
     </Panel.Heading>
     <Panel.Body collapsible>
-      <RankingsFilter filter={filters.rankings} panelKey={panelKey} {...rest} />
-      <ChartsFilter filter={filters.rankings} panelKey={panelKey} {...rest} />
+      <ul className="panel-filters list-unstyled">
+        <RankingsFilter filter={filters.rankings} panelKey={panelKey} {...rest} />
+        <ChartsFilter filter={filters.rankings} panelKey={panelKey} {...rest} />
+      </ul>
     </Panel.Body>
   </Panel>
 );

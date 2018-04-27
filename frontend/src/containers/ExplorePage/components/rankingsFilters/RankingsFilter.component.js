@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import Select from 'components/select/CustomSelect.component';
 
 const RankingsFilter = ({
@@ -16,6 +17,8 @@ const RankingsFilter = ({
   updateFilter,
   panelKey,
 }) => {
+  const event = eventType ? eventType.value : null;
+
   const eventTypeOptions = [
     { value: 'rank', label: 'are ranked' },
     { value: 'trend', label: 'have moved' },
@@ -23,8 +26,8 @@ const RankingsFilter = ({
   ];
 
   const operatorOptions = [
-    { value: 'more-than', label: 'Greater Than' },
-    { value: 'less-than', label: 'Less Than' },
+    { value: 'more-than', label: event === 'rank' ? 'Above' : 'More than' },
+    { value: 'less-than', label: event === 'rank' ? 'Below' : 'Less than' },
     { value: 'between', label: 'Between' },
   ];
 
@@ -45,7 +48,7 @@ const RankingsFilter = ({
           operator: val,
         };
 
-        let currentVal = Math.max(...values);
+        let currentVal = Math.max(..._.compact(values));
         if (currentVal === -Infinity) currentVal = null;
 
         switch (val) {
@@ -59,6 +62,8 @@ const RankingsFilter = ({
             newFilter.values = [];
             break;
         }
+
+        if (!currentVal) newFilter.values = [];
 
         updateFilter('rankings', newFilter, { panelKey })();
       }}
@@ -117,7 +122,7 @@ const RankingsFilter = ({
 
   let subFilter;
 
-  switch (value.eventType) {
+  switch (event) {
     case 'rank':
       subFilter = (
         <div className="sub-filter-group">
@@ -165,8 +170,7 @@ const RankingsFilter = ({
               { value: 'one-month', label: 'Month' },
             ]}
             searchable={false}
-            simpleValue
-            value={dateRange || 'one-week'}
+            value={dateRange}
           />
         </div>
       );
@@ -195,7 +199,6 @@ const RankingsFilter = ({
               { value: 'one-month', label: ' Month' },
             ]}
             searchable={false}
-            simpleValue
             value={dateRange}
           />
         </div>
@@ -203,29 +206,36 @@ const RankingsFilter = ({
   }
 
   return (
-    <div className="rankings-filter-group">
-      <div className="rankings-eventType">
+    <li className="li-filter">
+      <label className="filter-label">
         Apps that
-        <Select
-          className="event-type-select small-custom-react-select"
-          onChange={(val) => {
-            let newVal = {
-              ...value,
-              eventType: val,
-            };
+      </label>
+      <div className="input-group">
+        <div className="rankings-filter-group">
+          <Select
+            className="event-type-select"
+            onChange={(val) => {
+              let newVal = {
+                ...value,
+                eventType: val,
+              };
 
-            if (!val) newVal = null;
+              if (val && val.value === 'trend' && !['one-week', 'one-month'].includes(dateRange.value)) {
+                newVal.dateRange = { value: 'one-week', label: 'Week' };
+              }
 
-            updateFilter('rankings', newVal, { panelKey })();
-          }}
-          options={eventTypeOptions}
-          searchable={false}
-          simpleValue
-          value={eventType}
-        />
+              if (!val) newVal = null;
+
+              updateFilter('rankings', newVal, { panelKey })();
+            }}
+            options={eventTypeOptions}
+            searchable={false}
+            value={eventType}
+          />
+          {subFilter}
+        </div>
       </div>
-      {subFilter}
-    </div>
+    </li>
   );
 };
 
@@ -243,7 +253,7 @@ RankingsFilter.defaultProps = {
       operator: 'more-than',
       values: [],
       trendOperator: 'up',
-      dateRange: 'one-week',
+      dateRange: { value: 'one-week', label: 'Week' },
     },
   },
 };

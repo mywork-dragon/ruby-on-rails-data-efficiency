@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import CategoriesDropdown from './CategoriesDropdown.component';
 
 const CategoriesFilter = ({
+  title,
   androidCategories,
   androidFilter,
   iosCategories,
@@ -13,7 +14,7 @@ const CategoriesFilter = ({
 }) => (
   <li className="li-filter">
     <label className="filter-label">
-      Categories:
+      {title}
     </label>
     <div className="input-group" id="categories-input">
       <CategoriesDropdown
@@ -37,6 +38,7 @@ const CategoriesFilter = ({
 );
 
 CategoriesFilter.propTypes = {
+  title: PropTypes.string,
   androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
   androidFilter: PropTypes.array,
   iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -46,6 +48,7 @@ CategoriesFilter.propTypes = {
 };
 
 CategoriesFilter.defaultProps = {
+  title: 'Categories:',
   androidFilter: [],
   iosFilter: [],
 };
