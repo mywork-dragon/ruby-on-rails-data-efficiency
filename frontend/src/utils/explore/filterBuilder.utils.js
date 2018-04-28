@@ -218,6 +218,10 @@ export function buildAdNetworkFilters ({ resultType, filters: { adNetworks: adNe
   return result;
 }
 
+export function buildRankingsFilters (form) {
+  return {};
+}
+
 // TODO: clean this up someday
 function generatePredicate(type, { value, value: { operator, condition } }) {
   const result = [];
