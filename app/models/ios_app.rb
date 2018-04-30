@@ -846,7 +846,7 @@ class IosApp < ActiveRecord::Base
 
       app_to_storefront_snapshot_attributes = {}
       if storefront_clauses.any?
-        storefront_snapshot_results = IosAppCurrentSnapshot.where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
+        storefront_snapshot_results = IosAppCurrentSnapshot.from('ios_app_current_snapshots FORCE INDEX(index_ios_app_current_snapshot_backups_on_ios_app_id_and_latest)').where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
         storefront_snapshot_results.each do |result|
           app_id = result[all_storefront_snapshot_attributes.index("ios_app_id")]
           if app_to_storefront_snapshot_attributes[app_id]
