@@ -7,15 +7,17 @@ test('apps that have moved up more than 100 places in the last week', () => {
     platform: 'all',
     filters: {
       rankings: {
-        eventType: 'trend',
-        dateRange: 'week',
-        operator: 'more-than',
-        trendOperator: 'up',
-        values: [100, null],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'trend' },
+          dateRange: { value: 'week', label: 'Week' },
+          operator: 'more-than',
+          trendOperator: 'up',
+          values: [100, null],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -31,17 +33,14 @@ test('apps that have moved up more than 100 places in the last week', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['weekly_change', 100, null],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['weekly_change', 100, null],
     ],
   };
 
@@ -52,17 +51,20 @@ test('apps that have moved up more than 100 places in the last week', () => {
 
 test('apps that have moved up less than 500 places in the last month', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'trend',
-        dateRange: 'month',
-        operator: 'less-than',
-        trendOperator: 'up',
-        values: [0, 500],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'trend' },
+          dateRange: { value: 'month', label: 'Month' },
+          operator: 'less-than',
+          trendOperator: 'up',
+          values: [0, 500],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -78,17 +80,14 @@ test('apps that have moved up less than 500 places in the last month', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['monthly_change', 0, 500],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['monthly_change', 0, 500],
     ],
   };
 
@@ -99,17 +98,20 @@ test('apps that have moved up less than 500 places in the last month', () => {
 
 test('apps that have moved up between 100 and 500 places in the last week', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'trend',
-        dateRange: 'week',
-        operator: 'between',
-        trendOperator: 'up',
-        values: [100, 500],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'trend' },
+          dateRange: { value: 'week', label: 'Week' },
+          operator: 'between',
+          trendOperator: 'up',
+          values: [100, 500],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -125,17 +127,14 @@ test('apps that have moved up between 100 and 500 places in the last week', () =
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['weekly_change', 100, 500],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['weekly_change', 100, 500],
     ],
   };
 
@@ -146,17 +145,20 @@ test('apps that have moved up between 100 and 500 places in the last week', () =
 
 test('apps that have moved down more than 300 places in the last week', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'trend',
-        dateRange: 'week',
-        operator: 'between',
-        trendOperator: 'down',
-        values: [300, null],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'trend' },
+          dateRange: { value: 'week', label: 'Week' },
+          operator: 'between',
+          trendOperator: 'down',
+          values: [300, null],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -172,17 +174,14 @@ test('apps that have moved down more than 300 places in the last week', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['weekly_change', null, -300],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['weekly_change', null, -300],
     ],
   };
 
@@ -193,17 +192,20 @@ test('apps that have moved down more than 300 places in the last week', () => {
 
 test('apps that have moved down less than 100 places in the last week', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'trend',
-        dateRange: 'week',
-        operator: 'between',
-        trendOperator: 'down',
-        values: [0, 100],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'trend' },
+          dateRange: { value: 'week', label: 'Week' },
+          operator: 'between',
+          trendOperator: 'down',
+          values: [0, 100],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -219,17 +221,14 @@ test('apps that have moved down less than 100 places in the last week', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['weekly_change', -100, 0],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['weekly_change', -100, 0],
     ],
   };
 

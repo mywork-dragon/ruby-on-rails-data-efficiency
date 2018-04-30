@@ -7,22 +7,24 @@ test('apps that first appeared on a chart in the past week', () => {
     platform: 'all',
     filters: {
       rankings: {
-        eventType: 'newcomer',
-        dateRange: 'one-week',
-        operator: 'more-than',
-        trendOperator: 'up',
-        values: [100, null],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'newcomer' },
+          dateRange: { value: 'week', label: 'Week' },
+          operator: 'more-than',
+          trendOperator: 'up',
+          values: [100, null],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
 
   const expected = {
     operator: 'filter',
-    object: 'ranking',
+    object: 'newcomer',
     predicates: [
       [
         'or',
@@ -31,14 +33,22 @@ test('apps that first appeared on a chart in the past week', () => {
       ],
       [
         'or',
+        ['ranking_type', 'free'],
+      ],
+      [
+        'or',
         ['category', 'OVERALL'],
         ['category', 36],
       ],
       [
-        'or',
-        ['ranking_type', 'free'],
+        'created_at',
+        [
+          '-',
+          ['utcnow'],
+          ['timedelta', { days: 7 }],
+        ],
+        ['utcnow'],
       ],
-      ['created_at', ['-', ['utcnow'], ['timedelta', { days: 7 }]]],
     ],
   };
 
@@ -49,24 +59,27 @@ test('apps that first appeared on a chart in the past week', () => {
 
 test('apps that first appeared on a chart in the past two days', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'newcomer',
-        dateRange: 'two-day',
-        operator: 'less-than',
-        trendOperator: 'up',
-        values: [0, 500],
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'newcomer' },
+          dateRange: { value: 'two-day', label: 'Two Days' },
+          operator: 'less-than',
+          trendOperator: 'up',
+          values: [0, 500],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
 
   const expected = {
     operator: 'filter',
-    object: 'ranking',
+    object: 'newcomer',
     predicates: [
       [
         'or',
@@ -75,14 +88,22 @@ test('apps that first appeared on a chart in the past two days', () => {
       ],
       [
         'or',
+        ['ranking_type', 'free'],
+      ],
+      [
+        'or',
         ['category', 'OVERALL'],
         ['category', 36],
       ],
       [
-        'or',
-        ['ranking_type', 'free'],
+        'created_at',
+        [
+          '-',
+          ['utcnow'],
+          ['timedelta', { days: 2 }],
+        ],
+        ['utcnow'],
       ],
-      ['created_at', ['-', ['utcnow'], ['timedelta', { days: 2 }]]],
     ],
   };
 

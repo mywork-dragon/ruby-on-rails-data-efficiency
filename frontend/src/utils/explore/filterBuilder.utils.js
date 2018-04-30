@@ -12,35 +12,17 @@ export function buildFilter (form) {
     },
   };
 
-  const appFilters = buildAppFilters(form);
-  const sdkFilters = buildSdkFilters(form.filters);
-  const publisherFilters = buildPublisherFilters(form);
-  const adIntelFilters = buildAdIntelFilters(form.filters);
-  const adNetworkFilters = buildAdNetworkFilters(form);
-
-  if (appFilters) {
-    result.filter.inputs.push(appFilters);
-  }
-
-  if (publisherFilters) {
-    result.filter.inputs.push(publisherFilters);
-  }
-
-  if (adIntelFilters) {
-    result.filter.inputs.push(adIntelFilters);
-  }
-
-  if (sdkFilters) {
-    result.filter.inputs.push(sdkFilters);
-  }
-
-  if (adNetworkFilters) {
-    result.filter.inputs.push(adNetworkFilters);
-  }
-
+  result.filter.inputs.push(buildAppFilters(form));
+  result.filter.inputs.push(buildPublisherFilters(form));
+  result.filter.inputs.push(buildAdIntelFilters(form.filters));
+  result.filter.inputs.push(buildSdkFilters(form.filters));
+  result.filter.inputs.push(buildAdNetworkFilters(form));
+  result.filter.inputs.push(buildRankingsFilters(form));
   if (form.filters.iosCategories || form.filters.androidCategories) {
     result.filter.inputs.push(buildCategoryFilters(form.filters));
   }
+
+  result.filter.inputs = _.compact(result.filter.inputs);
 
   return result;
 }
@@ -218,8 +200,62 @@ export function buildAdNetworkFilters ({ resultType, filters: { adNetworks: adNe
   return result;
 }
 
-export function buildRankingsFilters (form) {
-  return {};
+export function buildRankingsFilters ({ platform, filters: { rankings } }) {
+  if (!rankings) return null;
+
+  const {
+    eventType: {
+      value: eventType,
+    },
+    dateRange,
+    values,
+    iosCategories,
+    androidCategories,
+  } = rankings.value;
+
+  rankings.value.value = values;
+
+  const result = {
+    operator: 'filter',
+    object: eventType === 'newcomer' ? 'newcomer' : 'ranking',
+    predicates: [],
+  };
+
+  if (platform !== 'all') {
+    result.predicates.push(['platform', platform]);
+  }
+
+  ['countries', 'charts'].forEach((x) => {
+    const value = rankings.value[x];
+    if (value && value.length) {
+      const predicate = ['or'];
+      const key = models.getQueryFilter(x);
+      value.split(',').forEach(y => (predicate.push([key, y])));
+      result.predicates.push(predicate);
+    }
+  });
+
+  const categoryPredicate = ['or'];
+  [androidCategories, iosCategories].forEach((list) => {
+    if (list) {
+      list.forEach(category => (categoryPredicate.push(['category', category.value])));
+    }
+  });
+
+  if (categoryPredicate.length > 1) result.predicates.push(categoryPredicate);
+
+  switch (eventType) {
+    case 'rank':
+      result.predicates.push(generatePredicate('rank', rankings));
+      break;
+    case 'newcomer':
+      result.predicates.push(generatePredicate('newcomer', rankings));
+      break;
+    case 'trend':
+      result.predicates.push(generatePredicate(`trend_${dateRange.value}`, rankings));
+  }
+
+  return result;
 }
 
 // TODO: clean this up someday
@@ -286,14 +322,28 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       return ['not', [filterType]];
     }
     return [filterType];
-  } else if (type === 'ratingsCount' || type === 'rating' || type === 'downloads' || type === 'adNetworkCount') {
+  } else if (['ratingsCount', 'rating', 'downloads', 'adNetworkCount', 'rank', 'trend_week', 'trend_month'].includes(type)) {
     if (value.value.every(x => !x)) {
       return null;
     }
 
-    const values = value.value.slice();
+    let values = value.value.slice();
 
-    if (value.operator === 'less-than') values[0] = null;
+    if (value.operator === 'less-than' && !['trend_week', 'trend_month'].includes(type)) values[0] = null;
+
+    if (type === 'rank' && value.operator !== 'between') values = values.reverse();
+
+    if (['trend_week', 'trend_month'].includes(type) && value.trendOperator === 'down') {
+      values = values.reverse();
+      values = values.map((x) => {
+        if (typeof x === 'number' && x > 0) {
+          return -x;
+        } else if (value.operator === 'less-than') {
+          return 0;
+        }
+        return x;
+      });
+    }
 
     const filter = [filterType].concat(values);
 
@@ -306,8 +356,11 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
     }
 
     return filter;
-  } else if (type === 'releaseDate') {
-    return generateQueryDateRange('released', value.dateRange, value.dates);
+  } else if (['releaseDate', 'newcomer'].includes(type)) {
+    if (type === 'newcomer') {
+      return generateQueryDateRange(filterType, value.dateRange.value);
+    }
+    return generateQueryDateRange(filterType, value.dateRange, value.dates);
   }
 
   return result;

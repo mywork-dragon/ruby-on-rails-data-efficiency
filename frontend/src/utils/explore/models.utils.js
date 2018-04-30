@@ -172,7 +172,7 @@ export const csvSelect = (facebookOnly, resultType) => {
 export const isAppFilter = filter => Object.keys(appFilterKeys).includes(filter);
 export const isPubFilter = filter => Object.keys(publisherFilterKeys).includes(filter);
 export const isAdIntelFilter = filter => Object.keys(adIntelFilterKeys).includes(filter);
-export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys, adIntelFilterKeys, sharedFilterKeys)[filter];
+export const getQueryFilter = filter => Object.assign({}, appFilterKeys, publisherFilterKeys, adIntelFilterKeys, rankingsFilterKeys, sharedFilterKeys)[filter];
 
 export const appFilterKeys = {
   availableCountries: 'available_in',
@@ -193,6 +193,15 @@ export const publisherFilterKeys = {
 
 export const adIntelFilterKeys = {
   creativeFormats: '',
+};
+
+export const rankingsFilterKeys = {
+  countries: 'country',
+  charts: 'ranking_type',
+  rank: 'rank',
+  newcomer: 'created_at',
+  trend_week: 'weekly_change',
+  trend_month: 'monthly_change',
 };
 
 export const sharedFilterKeys = {

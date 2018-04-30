@@ -7,15 +7,17 @@ test('apps that are ranked above 100', () => {
     platform: 'all',
     filters: {
       rankings: {
-        eventType: 'rank', // app is ranked
-        dateRange: 'one-week', // ignored for rank
-        operator: 'more-than', // ranked above
-        trendOperator: 'up', // ignored for rank
-        values: [100, null], // rank range
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'rank' },
+          dateRange: 'one-week',
+          operator: 'more-than',
+          trendOperator: 'up',
+          values: [100, null],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -31,17 +33,14 @@ test('apps that are ranked above 100', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['rank', 100, null],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['rank', null, 100],
     ],
   };
 
@@ -52,17 +51,20 @@ test('apps that are ranked above 100', () => {
 
 test('apps that are ranked below 500', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'rank', // app is ranked
-        dateRange: 'one-week', // ignored for rank
-        operator: 'less-than', // ranked below
-        trendOperator: 'up', // ignored for rank
-        values: [0, 500], // rank range
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'rank' },
+          dateRange: 'week',
+          operator: 'less-than',
+          trendOperator: 'up',
+          values: [0, 500],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -78,17 +80,14 @@ test('apps that are ranked below 500', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['rank', null, 500],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+        ['rank', 500, null],
     ],
   };
 
@@ -99,17 +98,20 @@ test('apps that are ranked below 500', () => {
 
 test('apps that are ranked between 100 and 500', () => {
   const form = {
+    platform: 'all',
     filters: {
       rankings: {
-        eventType: 'rank', // app is ranked
-        dateRange: 'one-week', // ignored for rank
-        operator: 'between', // ranked between
-        trendOperator: 'up', // ignored for rank
-        values: [100, 500], // rank range
-        charts: 'free',
-        iosCategories: [{ value: 36, label: 'Overall' }],
-        androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
-        countries: 'US,FR',
+        value: {
+          eventType: { value: 'rank' },
+          dateRange: 'one-week',
+          operator: 'between',
+          trendOperator: 'up',
+          values: [100, 500],
+          charts: 'free',
+          iosCategories: [{ value: 36, label: 'Overall' }],
+          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          countries: 'US,FR',
+        },
       },
     },
   };
@@ -125,17 +127,14 @@ test('apps that are ranked between 100 and 500', () => {
       ],
       [
         'or',
-        ['category', 'OVERALL'],
-        ['category', 36],
-      ],
-      [
-        'or',
         ['ranking_type', 'free'],
       ],
       [
         'or',
-        ['rank', 100, 500],
+        ['category', 'OVERALL'],
+        ['category', 36],
       ],
+      ['rank', 100, 500],
     ],
   };
 

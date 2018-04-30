@@ -166,8 +166,8 @@ const RankingsFilter = ({
               updateFilter('rankings', newVal, { panelKey })();
             }}
             options={[
-              { value: 'one-week', label: 'Week' },
-              { value: 'one-month', label: 'Month' },
+              { value: 'week', label: 'Week' },
+              { value: 'month', label: 'Month' },
             ]}
             searchable={false}
             value={dateRange}
@@ -192,11 +192,11 @@ const RankingsFilter = ({
               updateFilter('rankings', newVal, { panelKey })();
             }}
             options={[
-              { value: 'one-day', label: 'Day' },
+              { value: 'day', label: 'Day' },
               { value: 'two-day', label: ' Two Days' },
               { value: 'three-day', label: ' Three Days' },
-              { value: 'one-week', label: ' Week' },
-              { value: 'one-month', label: ' Month' },
+              { value: 'week', label: ' Week' },
+              { value: 'month', label: ' Month' },
             ]}
             searchable={false}
             value={dateRange}
@@ -220,8 +220,8 @@ const RankingsFilter = ({
                 eventType: val,
               };
 
-              if (val && val.value === 'trend' && !['one-week', 'one-month'].includes(dateRange.value)) {
-                newVal.dateRange = { value: 'one-week', label: 'Week' };
+              if (val && val.value === 'trend' && !['week', 'month'].includes(dateRange.value)) {
+                newVal.dateRange = { value: 'week', label: 'Week' };
               }
 
               if (!val) newVal = null;
@@ -253,7 +253,7 @@ RankingsFilter.defaultProps = {
       operator: 'more-than',
       values: [],
       trendOperator: 'up',
-      dateRange: { value: 'one-week', label: 'Week' },
+      dateRange: { value: 'week', label: 'Week' },
     },
   },
 };

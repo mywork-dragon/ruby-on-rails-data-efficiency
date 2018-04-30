@@ -302,6 +302,24 @@ export function generateQueryDateRange (label, dateRange, dates) {
 
   let result = [label];
   switch (dateRange) {
+    case 'day':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { days: 1 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'two-day':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { days: 2 }]],
+        ['utcnow'],
+      ]);
+      break;
+    case 'three-day':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { days: 3 }]],
+        ['utcnow'],
+      ]);
+      break;
     case 'week':
       result = result.concat([
         ['-', ['utcnow'], ['timedelta', { days: 7 }]],
