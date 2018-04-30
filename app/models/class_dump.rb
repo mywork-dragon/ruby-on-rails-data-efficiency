@@ -54,6 +54,20 @@ class ClassDump < ActiveRecord::Base
     end.flatten
   end
 
+  def all_classes
+    classes1 = []
+    classes2 = []
+    begin
+      classes1  = classes
+    rescue MightyAws::S3::NoSuchKey => e
+    end
+    begin
+      classes2 = jtool_classes
+    rescue MightyAws::S3::NoSuchKey => e
+    end
+    (classes1 + classes2).uniq
+  end
+
   def classes
     retrieve_list(:classes)
   end

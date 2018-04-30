@@ -173,7 +173,11 @@ class ApplicationController < ActionController::Base
   end
 
   def bill_api_request
-    ApiBillingLogger.new(request, @http_client_api_auth_token).send!
+    begin
+      ApiBillingLogger.new(request, @http_client_api_auth_token).send!
+    rescue => e
+      Bugsnag.notify(e)
+    end
   end
 
   def append_info_to_payload(payload)

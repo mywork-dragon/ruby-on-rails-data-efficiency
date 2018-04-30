@@ -255,6 +255,10 @@ Rails.application.routes.draw do
     get 'ios/app' => 'ios_app#filter'
     get 'android/app' => 'android_app#filter'
     get 'ios/app/:app_identifier' => 'ios_app#show'
+
+    get 'android/app_classes/:id' => 'android_app#show_classes'
+    get 'ios/app_classes/:id' => 'ios_app#show_classes'
+
     get(
       'android/app/:app_identifier',
       to: 'android_app#show',

@@ -65,6 +65,7 @@ services:
       - HOT_STORE_REDIS_URL=redis
       - HOT_STORE_REDIS_PORT=6379
       - HOT_STORE_REDIS_MAX_CONNECTIONS=6
+      - RAILS_LOG_TO_STDOUT=true
     depends_on:
       - db
       - redis

@@ -1,7 +1,16 @@
 class ClientApi::IosAppController < ApplicationController
 
-  before_action :limit_client_api_call, only: [:show, :filter]
+  before_action :limit_client_api_call, only: [:show, :filter, :show_classes]
   after_action :bill_api_request
+
+  def show_classes
+    ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('ios_app_show_classes')
+    snap = IosApp.find(params.fetch(:id)).newest_ipa_snapshot
+    if !snap.nil? and ! snap.class_dumps.last.nil?
+      return render json: snap.class_dumps.last.all_classes
+    end
+    render :json => {"message" => "Classes not available"},  :status => 404
+  end
 
   def show
     app_identifier = params.fetch(:app_identifier)
