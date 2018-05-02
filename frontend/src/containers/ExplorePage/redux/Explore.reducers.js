@@ -57,7 +57,7 @@ function explore (state = initialState, action) {
       return {
         ...state,
         queryId: payload.id,
-        currentLoadedQuery: payload.formState,
+        currentLoadedQuery: payload.formState || {},
       };
     case LOAD_SAVED_SEARCH.SUCCESS:
       return {

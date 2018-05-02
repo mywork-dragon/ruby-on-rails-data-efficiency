@@ -33,6 +33,7 @@ function formatApp (app) {
     userBases: app.international_user_bases,
     rating: app.all_version_rating,
     ratingsCount: app.all_version_ratings_count,
+    rankings: app.rankings || {},
     resultType: 'app',
   };
 }
@@ -382,4 +383,17 @@ export function setExploreColumns (type, columns) {
 
 export function getExploreColumns (type) {
   return $localStorage.get(`explore${capitalize(type)}Columns`);
+}
+
+export function filterRankings (charts, currentCountries, field) {
+  let sorted = charts;
+  if (!currentCountries) {
+    const defaultCountries = ['AU', 'CA', 'GB', 'FR', 'CN', 'US'];
+    sorted = _.sortBy(sorted, x => defaultCountries.indexOf(x.country)).reverse().slice(0, 16);
+  }
+
+  if (field === 'rank') return _.sortBy(sorted, x => x[field]);
+  if (field === 'date') return _.sortBy(sorted, x => x[field]).reverse();
+
+  return _.sortBy(sorted, x => Math.abs(x[field])).reverse();
 }

@@ -2,15 +2,14 @@ import _ from 'lodash';
 import { $localStorage } from 'utils/localStorage.utils';
 import { selectMap, sortMap, csvSelect } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
-import { cleanState } from './general.utils';
-
+import { cleanState, generateQueryDateRange } from './general.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort, accountNetworks) {
   const result = {};
   result.page_settings = buildPageSettings(pageSettings);
   result.sort = buildSortSettings(sort, form.resultType);
   result.query = buildFilter(form);
-  result.select = buildSelect(form.resultType, columns, accountNetworks);
+  result.select = buildSelect(form, columns, accountNetworks);
   result.formState = JSON.stringify(cleanState(form));
   return result;
 }
@@ -110,7 +109,7 @@ export const convertToQuerySort = (sorts, resultType) => _.compact(sorts.map((so
   return null;
 }));
 
-export function buildSelect (resultType, columns, accountNetworks) {
+export function buildSelect ({ resultType, filters: { rankings }, platform }, columns, accountNetworks) {
   const fields = [];
   const columnNames = Object.keys(columns);
 
@@ -129,6 +128,56 @@ export function buildSelect (resultType, columns, accountNetworks) {
   _.uniq(fields).forEach((field) => {
     if (['ad_summaries', 'ad_networks', 'first_seen_ads', 'last_seen_ads'].includes(field) && facebookOnly) {
       mappedFields[field] = ['facebook'];
+    } else if (field === 'rankings') {
+      const rankingsFilterValues = {};
+      const newcomersFilterValues = {};
+      if (rankings) {
+        const {
+          countries,
+          categories,
+          charts,
+          eventType,
+          values,
+          operator,
+          dateRange,
+          trendOperator,
+        } = rankings.value;
+        if (countries) rankingsFilterValues.countries = countries.split(',');
+        if (categories) rankingsFilterValues.categories = categories.map(x => x.value);
+        if (charts) rankingsFilterValues.ranking_types = charts.split(',');
+        if (platform !== 'all') rankingsFilterValues.platform = [platform];
+        if (eventType.value === 'rank') {
+          if (operator === 'less-than') values[0] = null;
+          if (operator === 'between') {
+            rankingsFilterValues.rank = values;
+          } else {
+            rankingsFilterValues.rank = values.slice().reverse();
+          }
+        } else if (eventType.value === 'trend') {
+          let vals = values.slice();
+          if (trendOperator === 'down') {
+            vals = vals.reverse();
+            vals = vals.map((x) => {
+              if (typeof x === 'number' && x > 0) {
+                return -x;
+              } else if (operator === 'less-than') {
+                return 0;
+              }
+              return x;
+            });
+          }
+          if (dateRange.value === 'week') {
+            rankingsFilterValues.weekly_change = vals;
+          } else if (dateRange.value === 'month') {
+            rankingsFilterValues.monthly_change = vals;
+          }
+        } else if (eventType.value === 'newcomer') {
+          const date = generateQueryDateRange('created_at', dateRange.value);
+          newcomersFilterValues.created_at = date[1];
+        }
+      }
+      mappedFields.rankings = rankingsFilterValues;
+      mappedFields.newcomers = { ...rankingsFilterValues, ...newcomersFilterValues };
     } else {
       mappedFields[field] = true;
     }

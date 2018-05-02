@@ -85,3 +85,5 @@ export const numberShorthand = (x) => {
 };
 
 export const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+export const getNestedValue = (path, object) => path.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), object);

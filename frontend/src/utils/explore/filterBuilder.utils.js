@@ -213,7 +213,7 @@ export function buildRankingsFilters ({ platform, filters: { rankings } }) {
     androidCategories,
   } = rankings.value;
 
-  rankings.value.value = values;
+  rankings.value.value = values.slice();
 
   const result = {
     operator: 'filter',

@@ -42,6 +42,7 @@ const Table = ({
   toggleItem,
   updateColumns,
   updateDefaultPageSize,
+  ...rest
 }) => {
   const allSelected = selectedItems.length === results.length;
   const columnHeaders = generateColumns(columns, selectedItems, allSelected, toggleItem, toggleAll);
@@ -60,7 +61,10 @@ const Table = ({
     resultType,
   });
 
-  const getTdProps = () => ({ isAdIntel });
+  const getTdProps = () => ({
+    isAdIntel,
+    ...rest,
+  });
 
   return (
     <section className="panel panel-default table-dynamic">

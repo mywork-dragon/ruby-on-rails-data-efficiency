@@ -1,3 +1,5 @@
+import { getNestedValue } from 'utils/format.utils';
+
 export const takenDownFilter = state => state.explorePage.searchForm.includeTakenDown;
 
 export const currentQueryId = state => state.explorePage.explore.queryId;
@@ -33,3 +35,5 @@ export const currentExplorePage = state => state.explorePage.resultsTable.pageNu
 export const currentFormVersion = state => state.explorePage.searchForm.version;
 
 export const getCurrentState = state => state.explorePage;
+
+export const currentRankingsCountries = state => getNestedValue(['explorePage', 'explore', 'currentLoadedQuery', 'filters', 'rankings', 'value', 'countries'], state) || '';

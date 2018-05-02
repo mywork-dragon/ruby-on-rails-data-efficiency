@@ -30,6 +30,7 @@ export const selectMap = (type) => {
       [headerNames.AD_NETWORKS]: ['ad_summaries'],
       [headerNames.CATEGORY]: ['categories'],
       [headerNames.DOWNLOADS]: ['downloads'],
+      [headerNames.RANK]: ['rankings'],
     };
   } else if (type === 'publisher') {
     return {

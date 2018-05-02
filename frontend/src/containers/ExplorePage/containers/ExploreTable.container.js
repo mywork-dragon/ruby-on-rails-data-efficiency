@@ -3,6 +3,8 @@ import toastr from 'toastr';
 import TableContainer from 'Table/Table.container';
 import { buildExploreRequest, buildCsvLink } from 'utils/explore/queryBuilder.utils';
 import { accessibleNetworks } from 'selectors/account.selectors';
+import { getCategoryNameById } from 'selectors/appStore.selectors';
+import { currentRankingsCountries } from 'selectors/explore.selectors';
 import { tableActions, requestQueryPage, trackTableSort } from '../redux/Explore.actions';
 
 const mapDispatchToProps = dispatch => ({
@@ -43,6 +45,8 @@ const mapStateToProps = (state) => {
     currentLoadedQuery,
     resultType: searchForm.resultType,
     ...resultsTable,
+    getCategoryById: (id, platform) => getCategoryNameById(state, id, platform),
+    currentRankingsCountries: currentRankingsCountries(state),
   };
 };
 

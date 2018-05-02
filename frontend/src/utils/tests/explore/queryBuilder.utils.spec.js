@@ -40,7 +40,7 @@ describe('buildExploreRequest', () => {
 
   describe('buildSelect', () => {
     it('should take in a result type and map of columns and return an object containing the select parameters for the query', () => {
-      const select = utils.buildSelect(testData.form.resultType, testData.columns, testData.accountNetworks);
+      const select = utils.buildSelect(testData.form, testData.columns, testData.accountNetworks);
 
       expect(select).toMatchObject(sampleQuery.select);
     });

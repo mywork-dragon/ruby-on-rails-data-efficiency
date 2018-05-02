@@ -22,7 +22,7 @@ const RankingsFilter = ({
   const eventTypeOptions = [
     { value: 'rank', label: 'are ranked' },
     { value: 'trend', label: 'have moved' },
-    { value: 'newcomer', label: 'have first appeared on a chart' },
+    { value: 'newcomer', label: 'have first entered a chart' },
   ];
 
   const operatorOptions = [

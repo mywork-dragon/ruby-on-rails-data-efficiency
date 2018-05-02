@@ -263,7 +263,12 @@ function rankingsText ({ eventType, dateRange, operator, trendOperator, values, 
       break;
   }
 
-  return `Apps that ${eventType.label} ${predicate}`;
+  const chartText = charts && charts.length ? `, on ${charts.split(',').join(', ')} charts` : '';
+  const iosCategoryText = iosCategories && iosCategories.length ? `, in ${iosCategories.map(x => x.label).join(', ')} iOS categories` : '';
+  const androidCategoryText = androidCategories && androidCategories.length ? `, in ${androidCategories.map(x => x.label).join(', ')} Android categories` : '';
+  const countryText = countries && countries.length ? `. in the following countries: ${countries.split(',').join(', ')}` : '';
+
+  return `Apps that ${eventType.label} ${predicate}${chartText}${iosCategoryText}${androidCategoryText}${countryText}`;
 }
 
 export default getDisplayText;
