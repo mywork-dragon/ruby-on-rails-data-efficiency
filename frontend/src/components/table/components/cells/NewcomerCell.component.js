@@ -16,29 +16,32 @@ const NewcomerCell = ({
   },
 }) => {
   if (!newcomers || newcomers.length === 0) return <span className="invalid">No data</span>;
-  newcomers = filterRankings(newcomers, currentRankingsCountries, 'date');
+  const filtered = filterRankings(newcomers, currentRankingsCountries, 'date');
 
-  const baseChart = newcomers[0];
+  const baseChart = filtered[0];
   const base = (
     <span>
       <img src={`/lib/images/flags/${baseChart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
-      <span className={newcomers.length > 1 ? 'tooltip-item' : ''}>
+      <span className={filtered.length > 1 ? 'tooltip-item' : ''}>
         {`Top ${capitalize(baseChart.ranking_type)} ${getCategoryById(baseChart.category, platform).name}: ${timeAgo(baseChart.date)}`}
       </span>
     </span>
   );
 
-  if (newcomers.length === 1) return base;
+  if (filtered.length === 1) return base;
+
+  const remainingCharts = newcomers.length - filtered.length;
 
   const popover = (
     <Popover id="popover-trigger-hover-focus" bsClass="rankings-popover popover">
       <ul className="international-data">
-        {newcomers.map(chart => (
+        {filtered.map(chart => (
           <li key={`${chart.country}_${chart.category}_${chart.rank}_${id}`} className="rank-change-li">
             <img src={`/lib/images/flags/${chart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
             {`Top ${capitalize(chart.ranking_type)} ${getCategoryById(chart.category, platform).name}: ${timeAgo(chart.date)}`}
           </li>
         ))}
+        {remainingCharts > 0 && <li>... and {remainingCharts} more charts</li>}
       </ul>
     </Popover>
   );

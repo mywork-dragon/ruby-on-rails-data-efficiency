@@ -19,10 +19,10 @@ const RankChangeCell = ({
   if (!charts) return <span className="invalid">No rankings data</span>;
 
   changeType = `${changeType}ly_change`;
-  charts = filterRankings(charts, currentRankingsCountries, changeType);
   const chartsWithChange = charts.filter(x => x[changeType]);
+  const filtered = filterRankings(chartsWithChange, currentRankingsCountries, changeType);
 
-  if (chartsWithChange.length === 0) {
+  if (filtered.length === 0) {
     return <span className="invalid">No recorded change</span>;
   }
 
@@ -39,29 +39,32 @@ const RankChangeCell = ({
     );
   };
 
-  const baseChart = chartsWithChange[0];
+  const baseChart = filtered[0];
   const base = (
     <span>
       <img src={`/lib/images/flags/${baseChart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
-      <span className={chartsWithChange.length > 1 ? 'tooltip-item' : ''}>
+      <span className={filtered.length > 1 ? 'tooltip-item' : ''}>
         {`Top ${capitalize(baseChart.ranking_type)} ${getCategoryById(baseChart.category, platform).name}: `}
         {changeIcon(baseChart[changeType])}
       </span>
     </span>
   );
 
-  if (chartsWithChange.length === 1) return base;
+  if (filtered.length === 1) return base;
+
+  const remainingCharts = charts.length - filtered.length;
 
   const popover = (
     <Popover id="popover-trigger-hover-focus" bsClass="rankings-popover popover">
       <ul className="international-data">
-        {chartsWithChange.map(chart => (
+        {filtered.map(chart => (
           <li key={`${chart.country}_${chart.category}_${chart.rank}_${id}`} className="rank-change-li">
             <img src={`/lib/images/flags/${chart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
             {`Top ${capitalize(chart.ranking_type)} ${getCategoryById(chart.category, platform).name}: `}
             {changeIcon(chart[changeType])}
           </li>
         ))}
+        {remainingCharts > 0 && <li>... and {remainingCharts} more charts</li>}
       </ul>
     </Popover>
   );
