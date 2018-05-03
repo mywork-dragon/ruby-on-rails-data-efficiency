@@ -134,7 +134,8 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
       if (rankings) {
         const {
           countries,
-          categories,
+          iosCategories = [],
+          androidCategories = [],
           charts,
           eventType,
           values,
@@ -143,7 +144,7 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
           trendOperator,
         } = rankings.value;
         if (countries) rankingsFilterValues.countries = countries.split(',');
-        if (categories) rankingsFilterValues.categories = categories.map(x => x.value);
+        if (iosCategories.length || androidCategories.length) rankingsFilterValues.categories = iosCategories.concat(androidCategories).map(x => x.value);
         if (charts) rankingsFilterValues.ranking_types = charts.split(',');
         if (platform !== 'all') rankingsFilterValues.platform = [platform];
         if (eventType.value === 'rank') {
