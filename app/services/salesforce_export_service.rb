@@ -138,7 +138,7 @@ class SalesforceExportService
     end
   end
 
-  def sync_all_objects(batch_size: 100, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
+  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
@@ -160,11 +160,21 @@ class SalesforceExportService
       query += " LIMIT #{batch_limit * batch_size}" if batch_limit
 
       imports = []
+      sf_cache = []
       @client.query(query).each do |object|
-        salesforce_id = object.Id
-        ios_publisher_id = object.MightySignal_iOS_Publisher_ID__c
-        android_publisher_id = object.MightySignal_Android_Publisher_ID__c
-        last_synced = object.MightySignal_Last_Synced__c.try(:to_date)
+        sf_cache << {
+          salesforce_id: object.Id,
+          ios_publisher_id: object.MightySignal_iOS_Publisher_ID__c,
+          android_publisher_id: object.MightySignal_Android_Publisher_ID__c,
+          last_synced: object.MightySignal_Last_Synced__c.try(:to_date)
+        }
+      end
+
+      sf_cache.each do |sf_record|
+        salesforce_id = sf_record[:salesforce_id]
+        ios_publisher_id = sf_record[:ios_publisher_id]
+        android_publisher_id = sf_record[:android_publisher_id]
+        last_synced = sf_record[:last_synced]
 
         if platforms.include?('ios') && ios_publisher_id && should_sync_publisher?(platform: 'ios', publisher_id: ios_publisher_id, last_synced: last_synced)
           SalesforceWorker.perform_async(:export_ios_publisher, ios_publisher_id, salesforce_id, @user.id, @model_name)
