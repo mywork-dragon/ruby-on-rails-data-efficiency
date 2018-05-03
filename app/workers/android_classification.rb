@@ -77,18 +77,36 @@ module AndroidClassification
 
   def classify
     sdks, paths = classify_classes
-    rows = sdks.map do |sdk|
+
+    existing_ids = AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id).pluck(:android_sdk_id)
+    new_ids = sdks.map {|x| x.id}
+
+    to_add = new_ids - existing_ids
+    to_remove = existing_ids - new_ids
+
+    changed_something = false
+
+    new_rows = to_add.map do |sdk_id|
       AndroidSdksApkSnapshot.new(
           apk_snapshot_id: @apk_snapshot.id,
-          android_sdk_id: sdk.id,
+          android_sdk_id: sdk_id,
           method: :classes
         )
     end
-    # Atomically delete existing sdk classification relations
-    # and insert the new ones.
-    AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id).delete_all
-    AndroidSdksApkSnapshot.import rows
-    @apk_snapshot.store_classification_summary(paths)
+
+    if new_rows.count > 0
+      changed_something = true
+      AndroidSdksApkSnapshot.import new_rows
+    end
+
+    if to_remove.count > 0
+      changed_something = true
+      AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id, android_sdk_id: to_remove).destroy_all
+    end
+
+    if changed_something
+      @apk_snapshot.store_classification_summary(paths)
+    end
   end
 
   def should_log_activities
