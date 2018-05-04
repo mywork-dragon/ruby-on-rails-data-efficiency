@@ -327,6 +327,12 @@ export function generateQueryDateRange (label, dateRange, dates) {
         ['utcnow'],
       ]);
       break;
+    case 'two-week':
+      result = result.concat([
+        ['-', ['utcnow'], ['timedelta', { days: 14 }]],
+        ['utcnow'],
+      ]);
+      break;
     case 'month':
       result = result.concat([
         ['-', ['utcnow'], ['timedelta', { months: 1 }]],

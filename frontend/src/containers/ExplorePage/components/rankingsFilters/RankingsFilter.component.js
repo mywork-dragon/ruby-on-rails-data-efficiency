@@ -196,7 +196,7 @@ const RankingsFilter = ({
               { value: 'two-day', label: ' Two Days' },
               { value: 'three-day', label: ' Three Days' },
               { value: 'week', label: ' Week' },
-              { value: 'month', label: ' Month' },
+              { value: 'two-week', label: ' Two Weeks' },
             ]}
             searchable={false}
             value={dateRange}
