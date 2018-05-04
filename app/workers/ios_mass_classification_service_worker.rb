@@ -11,7 +11,7 @@ class IosMassClassificationServiceWorker
     update_permissions(ipa_snapshot_id)
   end
 
-  def update_permissions
+  def update_permissions(ipa_snapshot_id)
     app_id = IpaSnapshot.find(ipa_snapshot_id).ios_app_id
     AppPermissionsHotstoreImporter.new.import_ios(app_id)
   end
