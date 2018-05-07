@@ -3,7 +3,7 @@ import { $localStorage } from 'utils/localStorage.utils';
 import { headerNames } from 'Table/redux/column.models';
 import { selectMap, sortMap, csvSelect } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
-import { cleanState, generateQueryDateRange } from './general.utils';
+import { cleanState, generateQueryDateRange, validRankingsFilter } from './general.utils';
 
 export function buildExploreRequest (form, columns, pageSettings, sort, accountNetworks) {
   const result = {};
@@ -141,7 +141,7 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
     } else if (field === 'rankings') {
       const rankingsFilterValues = {};
       const newcomersFilterValues = {};
-      if (rankings) {
+      if (rankings && validRankingsFilter(rankings)) {
         const {
           countries,
           iosCategories = [],

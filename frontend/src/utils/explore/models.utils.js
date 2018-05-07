@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { headerNames } from 'Table/redux/column.models';
 import { getNestedValue } from 'utils/format.utils';
 import { buildRankingsFilters } from './filterBuilder.utils';

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getMaxDate, getMinDate, capitalize } from 'utils/format.utils';
+import { getMaxDate, getMinDate, capitalize, getNestedValue } from 'utils/format.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
 import { headerNames } from 'Table/redux/column.models';
@@ -177,9 +177,17 @@ export function panelFilterCount(filters, panelKey) {
 }
 
 export function hasFilters(filters) {
-  const keys = Object.keys(cleanState({ filters }).filters);
+  let filterCount = Object.keys(cleanState({ filters }).filters).length;
   const sdks = filters.sdks;
-  return keys.length > 1 || sdks.filters.some(x => x.sdks.length > 0);
+  if (filters.rankings && !validRankingsFilter(filters.rankings)) filterCount -= 1;
+  return filterCount > 1 || sdks.filters.some(x => x.sdks.length > 0);
+}
+
+export function validRankingsFilter (filter) {
+  return filter
+    &&
+    ((['rank', 'trend'].includes(getNestedValue(['value', 'eventType', 'value'], filter)) && !getNestedValue(['value', 'values'], filter).every(x => !x))
+    || (getNestedValue(['value', 'eventType', 'value'], filter) === 'newcomer' && getNestedValue(['value', 'dateRange'], filter)));
 }
 
 export function cleanState (form) {

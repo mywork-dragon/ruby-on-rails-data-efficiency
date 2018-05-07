@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import { getNestedValue } from 'utils/format.utils';
 import * as models from './models.utils';
 import { buildSdkFilters } from './sdkFilterBuilder.utils';
 import { requirePlatformFilter } from './queryBuilder.utils';
-import { generateQueryDateRange } from './general.utils';
+import { generateQueryDateRange, validRankingsFilter } from './general.utils';
 
 export function buildFilter (form) {
   const result = {
@@ -201,7 +202,7 @@ export function buildAdNetworkFilters ({ resultType, filters: { adNetworks: adNe
 }
 
 export function buildRankingsFilters ({ platform, filters }) {
-  if (!filters || !filters.rankings) return null;
+  if (!filters || !filters.rankings || !validRankingsFilter(filters.rankings)) return null;
 
   const { rankings } = filters;
 
