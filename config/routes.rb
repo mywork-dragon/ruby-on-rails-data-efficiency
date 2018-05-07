@@ -237,6 +237,10 @@ Rails.application.routes.draw do
   post 'ios_fb_ad_job/new' => 'ios_fb_ads#create_scrape_job'
   post 'ios_fb_ads/process' => 'ios_fb_ads#start_processing'
 
+  # Internal api to retrieve ranking category data
+  get 'android_ranking_categories' => 'rankings#get_android_category_objects'
+  get 'ios_ranking_categories' => 'rankings#get_ios_category_objects'
+
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
   post 'jobs/ios/reclassify' => 'jobs#trigger_ios_reclassification'
