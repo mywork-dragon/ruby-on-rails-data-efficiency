@@ -111,3 +111,39 @@ test('apps that first appeared on a chart in the past two days', () => {
 
   expect(result).toMatchObject(expected);
 });
+
+test('generate a default sort', () => {
+  const form = {
+    platform: 'all',
+    filters: {
+      rankings: {
+        value: {
+          eventType: { value: 'newcomer' },
+          values: [],
+          charts: 'free',
+          countries: 'US,FR',
+        },
+      },
+    },
+  };
+
+  const expected = {
+    operator: 'filter',
+    object: 'newcomer',
+    predicates: [
+      [
+        'or',
+        ['country', 'US'],
+        ['country', 'FR'],
+      ],
+      [
+        'or',
+        ['ranking_type', 'free'],
+      ],
+    ],
+  };
+
+  const result = buildRankingsFilters(form);
+
+  expect(result).toMatchObject(expected);
+});

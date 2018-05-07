@@ -142,3 +142,39 @@ test('apps that are ranked between 100 and 500', () => {
 
   expect(result).toMatchObject(expected);
 });
+
+test('generate a default sort', () => {
+  const form = {
+    platform: 'all',
+    filters: {
+      rankings: {
+        value: {
+          eventType: { value: '' },
+          values: [],
+          charts: 'free',
+          countries: 'US,FR',
+        },
+      },
+    },
+  };
+
+  const expected = {
+    operator: 'filter',
+    object: 'ranking',
+    predicates: [
+      [
+        'or',
+        ['country', 'US'],
+        ['country', 'FR'],
+      ],
+      [
+        'or',
+        ['ranking_type', 'free'],
+      ],
+    ],
+  };
+
+  const result = buildRankingsFilters(form);
+
+  expect(result).toMatchObject(expected);
+});

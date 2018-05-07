@@ -37,3 +37,5 @@ export const currentFormVersion = state => state.explorePage.searchForm.version;
 export const getCurrentState = state => state.explorePage;
 
 export const currentRankingsCountries = state => getNestedValue(['explorePage', 'explore', 'currentLoadedQuery', 'filters', 'rankings', 'value', 'countries'], state) || '';
+
+export const getCurrentSortOrder = state => getNestedValue(['explorePage', 'resultsTable', 'sort', 0], state);

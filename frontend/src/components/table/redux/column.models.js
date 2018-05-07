@@ -188,7 +188,7 @@ export const columnModels = [
     Header: <HintTextHeaderCell title={headerNames.MONTHLY_CHANGE} hintText="Only charts fulfilling the filter requirements are displayed; app may be ranked on additional charts" />,
     id: headerNames.MONTHLY_CHANGE,
     accessor: 'rankings',
-    minWidth: widths.mediumLarge,
+    minWidth: widths.large,
     Cell: cell => <RankChangeCell app={cell.original} changeType="month" {...cell.tdProps} />,
   },
   {
@@ -218,7 +218,7 @@ export const columnModels = [
   {
     Header: <HintTextHeaderCell title={headerNames.RANK} hintText="Only charts fulfilling the filter requirements are displayed; app may be ranked on additional charts" />,
     id: headerNames.RANK,
-    minWidth: widths.mediumLarge,
+    minWidth: widths.large,
     accessor: 'rank',
     Cell: (cell) => <RankCell app={cell.original} {...cell.tdProps} />,
   },
@@ -261,7 +261,7 @@ export const columnModels = [
     Header: <HintTextHeaderCell title={headerNames.WEEKLY_CHANGE} hintText="Only charts fulfilling the filter requirements are displayed; app may be ranked on additional charts" />,
     id: headerNames.WEEKLY_CHANGE,
     accessor: 'rankings',
-    minWidth: widths.mediumLarge,
+    minWidth: widths.large,
     Cell: cell => <RankChangeCell app={cell.original} changeType="week" {...cell.tdProps} />,
   },
 ];

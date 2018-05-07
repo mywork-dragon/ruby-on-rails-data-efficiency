@@ -200,8 +200,10 @@ export function buildAdNetworkFilters ({ resultType, filters: { adNetworks: adNe
   return result;
 }
 
-export function buildRankingsFilters ({ platform, filters: { rankings } }) {
-  if (!rankings) return null;
+export function buildRankingsFilters ({ platform, filters }) {
+  if (!filters || !filters.rankings) return null;
+
+  const { rankings } = filters;
 
   const {
     eventType: {
@@ -249,7 +251,9 @@ export function buildRankingsFilters ({ platform, filters: { rankings } }) {
       result.predicates.push(generatePredicate('rank', rankings));
       break;
     case 'newcomer':
-      result.predicates.push(generatePredicate('newcomer', rankings));
+      if (dateRange) {
+        result.predicates.push(generatePredicate('newcomer', rankings));
+      }
       break;
     case 'trend':
       result.predicates.push(generatePredicate(`trend_${dateRange.value}`, rankings));

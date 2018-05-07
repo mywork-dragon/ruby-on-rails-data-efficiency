@@ -32,10 +32,6 @@
   .fa {
     &.fa-arrow-up, &.fa-arrow-down {
       font-size: 10px;
-
-      &.dotted {
-        border-bottom: 1px dotted #5d5d5d;
-      }
     }
   }
 
@@ -81,5 +77,12 @@
 }
 
 .rankings-popover {
-  max-width: 450px;
+  max-width: 700px;
+  padding: 0;
+
+  .rankings-scroll {
+    max-height: 600px;
+    overflow: scroll;
+    padding: 9px 14px;
+  }
 }

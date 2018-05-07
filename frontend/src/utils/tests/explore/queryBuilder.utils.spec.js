@@ -24,14 +24,14 @@ describe('buildExploreRequest', () => {
           order: 'asc',
         }];
 
-        const result = utils.convertToQuerySort(testData.sort, 'app');
+        const result = utils.convertToQuerySort(testData.sort, { resultType: 'app' });
 
         expect(result).toEqual(expected);
       });
     });
 
     it('should take a list of sorts and return sort settings for the query', () => {
-      const sort_settings = utils.buildSortSettings(testData.sort, 'app');
+      const sort_settings = utils.buildSortSettings(testData.sort, { resultType: 'app' });
 
       expect(Array.isArray(sort_settings.fields)).toBe(true);
       expect(sort_settings.fields[0]).toMatchObject(sampleQuery.sort.fields[0]);

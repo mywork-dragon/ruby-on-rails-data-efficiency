@@ -13,18 +13,15 @@ const RankChangeCell = ({
   rest: {
     getCategoryById,
     currentRankingsCountries,
+    currentSort,
   },
   changeType,
 }) => {
-  if (!charts) return <span className="invalid">No rankings data</span>;
+  if (!charts || !charts.length) return <span className="invalid">No rankings data</span>;
 
   changeType = `${changeType}ly_change`;
-  const chartsWithChange = charts.filter(x => x[changeType]);
-  const filtered = filterRankings(chartsWithChange, currentRankingsCountries, changeType);
-
-  if (filtered.length === 0) {
-    return <span className="invalid">No recorded change</span>;
-  }
+  const filtered = filterRankings(charts, currentRankingsCountries, changeType, currentSort);
+  if (!filtered.length) return 'No recorded changes';
 
   const changeIcon = (change) => {
     let color = '';
@@ -32,7 +29,7 @@ const RankChangeCell = ({
     if (change < 0) color = '#ff4500';
     return (
       <span style={{ color }}>
-        {change !== 0 && <i className={`fa fa-${change > 0 ? 'arrow-up' : 'arrow-down'}${chartsWithChange.length > 1 ? ' dotted' : ''}`} />}
+        {change ? <i className={`fa fa-${change > 0 ? 'arrow-up' : 'arrow-down'}${filtered.length > 1 ? ' dotted' : ''}`} /> : null}
         {' '}
         {Math.abs(change)}
       </span>
@@ -43,8 +40,8 @@ const RankChangeCell = ({
   const base = (
     <span>
       <img src={`/lib/images/flags/${baseChart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
-      <span className={filtered.length > 1 ? 'tooltip-item' : ''}>
-        {`Top ${capitalize(baseChart.ranking_type)} ${getCategoryById(baseChart.category, platform).name}: `}
+      <span className={filtered.length > 1 ? 'dotted-link' : ''}>
+        {`${baseChart.country} Top ${capitalize(baseChart.ranking_type)} ${getCategoryById(baseChart.category, platform).name}: `}
         {changeIcon(baseChart[changeType])}
       </span>
     </span>
@@ -52,26 +49,25 @@ const RankChangeCell = ({
 
   if (filtered.length === 1) return base;
 
-  const remainingCharts = charts.length - filtered.length;
-
   const popover = (
     <Popover id="popover-trigger-hover-focus" bsClass="rankings-popover popover">
-      <ul className="international-data">
-        {filtered.map(chart => (
-          <li key={`${chart.country}_${chart.category}_${chart.rank}_${id}`} className="rank-change-li">
-            <img src={`/lib/images/flags/${chart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
-            {`Top ${capitalize(chart.ranking_type)} ${getCategoryById(chart.category, platform).name}: `}
-            {changeIcon(chart[changeType])}
-          </li>
-        ))}
-        {remainingCharts > 0 && <li>... and {remainingCharts} more charts</li>}
-      </ul>
+      <div className="rankings-scroll">
+        <ul className="international-data">
+          {filtered.map(chart => (
+            <li key={`${chart.country}_${chart.category}_${chart.rank}_${id}`} className="rank-change-li">
+              <img src={`/lib/images/flags/${chart.country.toLowerCase()}.png`} style={{ marginRight: 5 }} />
+              {`${chart.country} Top ${capitalize(chart.ranking_type)} ${getCategoryById(chart.category, platform).name}: `}
+              {changeIcon(chart[changeType])}
+            </li>
+          ))}
+        </ul>
+      </div>
     </Popover>
   );
 
   return (
     <div>
-      <OverlayTrigger overlay={popover} placement="left" trigger={['hover', 'focus']}>
+      <OverlayTrigger container={document.querySelector('.explore-page')} overlay={popover} placement="left" rootClose trigger={['click']}>
         {base}
       </OverlayTrigger>
     </div>

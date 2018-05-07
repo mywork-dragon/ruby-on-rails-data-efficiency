@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { $localStorage } from 'utils/localStorage.utils';
+import { headerNames } from 'Table/redux/column.models';
 import { selectMap, sortMap, csvSelect } from './models.utils';
 import { buildFilter } from './filterBuilder.utils';
 import { cleanState, generateQueryDateRange } from './general.utils';
@@ -7,7 +8,7 @@ import { cleanState, generateQueryDateRange } from './general.utils';
 export function buildExploreRequest (form, columns, pageSettings, sort, accountNetworks) {
   const result = {};
   result.page_settings = buildPageSettings(pageSettings);
-  result.sort = buildSortSettings(sort, form.resultType);
+  result.sort = buildSortSettings(sort, form);
   result.query = buildFilter(form);
   result.select = buildSelect(form, columns, accountNetworks);
   result.formState = JSON.stringify(cleanState(form));
@@ -58,8 +59,9 @@ export function buildPageSettings ({ pageSize, pageNum }) {
   };
 }
 
-export function buildSortSettings (sorts, resultType) {
+export function buildSortSettings (sorts, form) {
   const result = { fields: [] };
+  const { resultType } = form;
   const defaultSorts = [
     {
       field: 'id',
@@ -73,7 +75,7 @@ export function buildSortSettings (sorts, resultType) {
     },
   ];
 
-  const formattedSorts = convertToQuerySort(sorts, resultType);
+  const formattedSorts = convertToQuerySort(sorts, form);
 
   if (!formattedSorts.length) {
     if (resultType === 'app') {
@@ -97,14 +99,22 @@ export function buildSortSettings (sorts, resultType) {
   return result;
 }
 
-export const convertToQuerySort = (sorts, resultType) => _.compact(sorts.map((sort) => {
-  const map = sortMap(resultType);
+export const convertToQuerySort = (sorts, form) => _.compact(sorts.map((sort) => {
+  const map = sortMap(form);
 
   if (map[sort.id]) {
-    return {
-      ...sortMap(resultType)[sort.id],
+    const result = {
+      ...sortMap(form)[sort.id],
       order: sort.desc ? 'desc' : 'asc',
     };
+
+    if (sort.id === headerNames.RANK) {
+      result.order = sort.desc ? 'asc' : 'desc';
+    } else if ([headerNames.MONTHLY_CHANGE, headerNames.WEEKLY_CHANGE, headerNames.ENTERED_CHART].includes(sort.id)) {
+      result.function = sort.desc ? 'max' : 'min';
+    }
+
+    return result;
   }
   return null;
 }));
@@ -176,6 +186,10 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
           const date = generateQueryDateRange('created_at', dateRange.value);
           newcomersFilterValues.created_at = date[1];
         }
+      } else {
+        rankingsFilterValues.countries = ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'];
+        rankingsFilterValues.ranking_types = ['free'];
+        newcomersFilterValues.created_at = generateQueryDateRange('created_at', 'two-week')[1];
       }
       mappedFields.rankings = rankingsFilterValues;
       mappedFields.newcomers = { ...rankingsFilterValues, ...newcomersFilterValues };

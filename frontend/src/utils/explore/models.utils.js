@@ -1,4 +1,7 @@
+import _ from 'lodash';
 import { headerNames } from 'Table/redux/column.models';
+import { getNestedValue } from 'utils/format.utils';
+import { buildRankingsFilters } from './filterBuilder.utils';
 
 // map between frontend display fields and backend field
 // place sort field at beginning of the list
@@ -51,7 +54,8 @@ export const selectMap = (type) => {
   return null;
 };
 
-export const sortMap = (resultType) => {
+export const sortMap = (form) => {
+  const { resultType } = form;
   const sorts = {
     [headerNames.PUBLISHER]: { field: 'name', object: 'publisher' },
   };
@@ -61,13 +65,46 @@ export const sortMap = (resultType) => {
       ...sorts,
       [headerNames.APP]: { field: 'name', object: 'app' },
       [headerNames.DOWNLOADS]: { field: 'downloads_min', object: 'app' },
+      [headerNames.ENTERED_CHART]: {
+        field: 'created_at',
+        object: 'newcomer',
+        filter: {
+          operator: 'union',
+          inputs: [buildRankingsSort('newcomer', form)],
+        },
+      },
       [headerNames.FIRST_SEEN_ADS]: { field: 'first_seen_ads_date', object: 'mobile_ad_data_summary', function: 'min' },
       [headerNames.LAST_SEEN_ADS]: { field: 'last_seen_ads_date', object: 'mobile_ad_data_summary', function: 'max' },
       [headerNames.LAST_UPDATED]: { field: 'current_version_release_date', object: 'app' },
       [headerNames.MOBILE_PRIORITY]: { field: 'current_version_release_date', object: 'app' },
+      [headerNames.MONTHLY_CHANGE]: {
+        field: 'monthly_change',
+        object: 'ranking',
+        filter: {
+          operator: 'intersect',
+          inputs: [buildRankingsSort('', form)],
+        },
+      },
+      [headerNames.RANK]: {
+        field: 'rank',
+        object: 'ranking',
+        function: 'min',
+        filter: {
+          operator: 'intersect',
+          inputs: [buildRankingsSort('', form)],
+        },
+      },
       [headerNames.RATING]: { field: 'all_version_rating', object: 'app' },
       [headerNames.RATINGS_COUNT]: { field: 'all_version_ratings_count', object: 'app' },
       [headerNames.RELEASE_DATE]: { field: 'original_release_date', object: 'app' },
+      [headerNames.WEEKLY_CHANGE]: {
+        field: 'weekly_change',
+        object: 'ranking',
+        filter: {
+          operator: 'intersect',
+          inputs: [buildRankingsSort('', form)],
+        },
+      },
     };
   } else if (resultType === 'publisher') {
     return {
@@ -84,6 +121,26 @@ export const sortMap = (resultType) => {
 
   return null;
 };
+
+function buildRankingsSort (type, form) {
+  const rankingsFilter = getNestedValue(['filters', 'rankings', 'value'], form);
+
+  return buildRankingsFilters({
+    platform: form.platform,
+    filters: {
+      rankings: {
+        value: {
+          countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'].join(','),
+          charts: 'free',
+          ...rankingsFilter,
+          eventType: { value: type },
+          values: [],
+          dateRange: rankingsFilter ? rankingsFilter.dateRange : { value: 'two-week', label: 'Two Weeks' },
+        },
+      },
+    },
+  });
+}
 
 export const csvSelect = (facebookOnly, resultType) => {
   let fields = {

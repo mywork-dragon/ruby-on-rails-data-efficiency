@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { getMaxDate, getMinDate, capitalize } from 'utils/format.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
+import { headerNames } from 'Table/redux/column.models';
 import { sortMap } from './models.utils';
 
 export function formatResults (data, resultType, params, count) {
@@ -136,10 +137,16 @@ export const convertToTableSort = (sorts, resultType) => {
   sorts.forEach((sort) => {
     const sortName = getSortName(sort, resultType);
     if (sortName && sortName !== 'Platform') {
-      tableSorts.push({
+      const result = {
         id: sortName,
         desc: sort.order === 'desc',
-      });
+      };
+
+      if (sortName === headerNames.RANK) {
+        result.desc = sort.order !== 'desc';
+      }
+
+      tableSorts.push(result);
     }
   });
 
@@ -147,7 +154,7 @@ export const convertToTableSort = (sorts, resultType) => {
 };
 
 export const getSortName = (sort, resultType) => {
-  const map = sortMap(resultType);
+  const map = sortMap({ resultType });
   const { field, object } = sort;
   for (const key in map) {
     if (map[key]) {
@@ -391,15 +398,17 @@ export function getExploreColumns (type) {
   return $localStorage.get(`explore${capitalize(type)}Columns`);
 }
 
-export function filterRankings (charts, currentCountries, field) {
-  let sorted = charts;
-  if (!currentCountries) {
-    const defaultCountries = ['AU', 'CA', 'GB', 'FR', 'CN', 'US'];
-    sorted = _.sortBy(sorted, x => defaultCountries.indexOf(x.country)).reverse().slice(0, 16);
+export function filterRankings (charts, currentCountries, field, sort) {
+  if (field === 'rank') return _.sortBy(charts, x => x[field]);
+  if (field === 'date') {
+    if (sort && sort.id === headerNames.ENTERED_CHART && !sort.desc) {
+      return _.sortBy(charts, x => x[field]);
+    }
+
+    return _.sortBy(charts, x => x[field]).reverse();
   }
-
-  if (field === 'rank') return _.sortBy(sorted, x => x[field]);
-  if (field === 'date') return _.sortBy(sorted, x => x[field]).reverse();
-
-  return _.sortBy(sorted, x => Math.abs(x[field])).reverse();
+  if (sort && ![headerNames.WEEKLY_CHANGE, headerNames.MONTHLY_CHANGE].includes(sort.id)) return _.sortBy(charts, x => Math.abs(x[field])).reverse();
+  if (sort.desc) return _.sortBy(charts.filter(x => typeof x[field] === 'number'), x => x[field] || 0).reverse();
+  if (!sort.desc) return _.sortBy(charts.filter(x => typeof x[field] === 'number'), x => x[field]);
+  return charts;
 }
