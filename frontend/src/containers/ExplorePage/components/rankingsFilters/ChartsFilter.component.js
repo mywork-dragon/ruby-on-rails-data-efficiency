@@ -40,6 +40,7 @@ const ChartsFilter = ({
                 { value: 'paid', label: 'Paid' },
                 { value: 'grossing', label: 'Grossing' },
               ]}
+              placeholder="Any chart"
               searchable={false}
               simpleValue
               value={value.charts}
@@ -59,6 +60,7 @@ const ChartsFilter = ({
             updateFilter('rankings', newVal, { panelKey })();
           }}
           panelKey={panelKey}
+          placeholder="Any category"
           {...rest}
         />
         <li className="li-filter">
@@ -79,6 +81,7 @@ const ChartsFilter = ({
                   updateFilter('rankings', newVal, { panelKey })();
                 }}
                 options={rankingsCountries.map(x => ({ value: x.id, label: x.name }))}
+                placeholder="Any country"
                 simpleValue
                 value={value.countries}
               />
@@ -100,10 +103,10 @@ ChartsFilter.propTypes = {
 ChartsFilter.defaultProps = {
   filter: {
     value: {
-      countries: [],
-      iosCategories: [],
-      androidCategories: [],
-      charts: [],
+      countries: 'US',
+      iosCategories: [{ value: '36', label: 'Overall' }],
+      androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+      charts: 'free',
     },
   },
 };

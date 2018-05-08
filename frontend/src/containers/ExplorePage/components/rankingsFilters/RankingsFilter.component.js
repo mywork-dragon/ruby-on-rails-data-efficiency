@@ -254,6 +254,10 @@ RankingsFilter.defaultProps = {
       values: [],
       trendOperator: 'up',
       dateRange: { value: 'week', label: 'Week' },
+      countries: 'US',
+      iosCategories: [{ value: '36', label: 'Overall' }],
+      androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+      charts: 'free',
     },
   },
 };

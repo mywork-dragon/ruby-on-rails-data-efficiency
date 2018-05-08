@@ -10,6 +10,7 @@ const CategoriesDropdown = ({
   platform,
   selectedPlatform,
   onCategoryUpdate,
+  placeholder,
 }) => {
   const options = categories.map(x => ({ value: x.id, label: x.name }));
 
@@ -25,7 +26,7 @@ const CategoriesDropdown = ({
         multi
         onChange={onCategoryUpdate}
         options={options}
-        placeholder={`${capitalize(platform)} Categories`}
+        placeholder={placeholder || `${capitalize(platform)} Categories`}
         style={{ marginTop: 5, borderRadius: 0 }}
         value={filterCategories}
       />
@@ -39,10 +40,12 @@ CategoriesDropdown.propTypes = {
   platform: PropTypes.string.isRequired,
   selectedPlatform: PropTypes.string.isRequired,
   onCategoryUpdate: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
 };
 
 CategoriesDropdown.defaultProps = {
   filterCategories: [],
+  placeholder: null,
 };
 
 export default CategoriesDropdown;
