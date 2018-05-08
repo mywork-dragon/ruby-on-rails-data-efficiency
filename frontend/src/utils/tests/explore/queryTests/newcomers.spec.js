@@ -122,6 +122,7 @@ test('generate a default sort', () => {
           values: [],
           charts: 'free',
           countries: 'US,FR',
+          dateRange: { value: 'two-week' },
         },
       },
     },
@@ -139,6 +140,11 @@ test('generate a default sort', () => {
       [
         'or',
         ['ranking_type', 'free'],
+      ],
+      [
+        'created_at',
+        ['-', ['utcnow'], ['timedelta', { days: 14 }]],
+        ['utcnow'],
       ],
     ],
   };

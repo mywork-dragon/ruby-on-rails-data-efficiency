@@ -2,6 +2,7 @@
 /* eslint quote-props: 0 */
 
 import { headerNames } from 'Table/redux/column.models';
+import { getSortName } from '../../explore/sortBuilder.utils';
 import * as utils from '../../explore/general.utils';
 import * as testData from './testData';
 import { sampleQuery } from './sampleQuery';
@@ -54,8 +55,8 @@ describe('exploreUtils', () => {
 
   describe('getSortName', () => {
     it('should take in a sort item and return the corresponding sort/display field', () => {
-      expect(utils.getSortName({ field: 'name', object: 'app' }, 'app')).toBe(headerNames.APP);
-      expect(utils.getSortName({ field: 'current_version_release_date', object: 'app' }, 'app')).toBe(headerNames.LAST_UPDATED);
+      expect(getSortName({ field: 'name', object: 'app' }, 'app')).toBe(headerNames.APP);
+      expect(getSortName({ field: 'current_version_release_date', object: 'app' }, 'app')).toBe(headerNames.LAST_UPDATED);
     });
   });
 

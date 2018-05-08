@@ -2,6 +2,8 @@
 /* eslint camelcase: 0, quote-props: 0 */
 
 import * as utils from '../../explore/queryBuilder.utils';
+import { buildSelect } from '../../explore/selectBuilder.utils';
+import { buildSortSettings, convertToQuerySort } from '../../explore/sortBuilder.utils';
 import { sampleQuery } from './sampleQuery';
 import * as testData from './testData';
 
@@ -24,14 +26,14 @@ describe('buildExploreRequest', () => {
           order: 'asc',
         }];
 
-        const result = utils.convertToQuerySort(testData.sort, { resultType: 'app' });
+        const result = convertToQuerySort(testData.sort, { resultType: 'app' });
 
         expect(result).toEqual(expected);
       });
     });
 
     it('should take a list of sorts and return sort settings for the query', () => {
-      const sort_settings = utils.buildSortSettings(testData.sort, { resultType: 'app' });
+      const sort_settings = buildSortSettings(testData.sort, { resultType: 'app' });
 
       expect(Array.isArray(sort_settings.fields)).toBe(true);
       expect(sort_settings.fields[0]).toMatchObject(sampleQuery.sort.fields[0]);
@@ -40,7 +42,7 @@ describe('buildExploreRequest', () => {
 
   describe('buildSelect', () => {
     it('should take in a result type and map of columns and return an object containing the select parameters for the query', () => {
-      const select = utils.buildSelect(testData.form, testData.columns, testData.accountNetworks);
+      const select = buildSelect(testData.form, testData.columns, testData.accountNetworks);
 
       expect(select).toMatchObject(sampleQuery.select);
     });

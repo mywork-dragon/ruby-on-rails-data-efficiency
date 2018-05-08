@@ -3,7 +3,7 @@ import { getMaxDate, getMinDate, capitalize, getNestedValue } from 'utils/format
 import { $localStorage } from 'utils/localStorage.utils';
 import { sdkFilterModel } from 'containers/ExplorePage/redux/searchForm.reducers';
 import { headerNames } from 'Table/redux/column.models';
-import { sortMap } from './models.utils';
+import { getSortName } from './sortBuilder.utils';
 
 export function formatResults (data, resultType, params, count) {
   const result = {};
@@ -153,21 +153,6 @@ export const convertToTableSort = (sorts, resultType) => {
   return tableSorts;
 };
 
-export const getSortName = (sort, resultType) => {
-  const map = sortMap({ resultType });
-  const { field, object } = sort;
-  for (const key in map) {
-    if (map[key]) {
-      const mappedSort = map[key];
-      if (mappedSort && mappedSort.field === field && mappedSort.object === object) {
-        return key;
-      }
-    }
-  }
-
-  return null;
-};
-
 export function panelFilterCount(filters, panelKey) {
   if (panelKey === '1') {
     return filters.sdks.filters.filter(x => x.sdks.length > 0).length;
@@ -184,10 +169,14 @@ export function hasFilters(filters) {
 }
 
 export function validRankingsFilter (filter) {
+  const eventType = getNestedValue(['value', 'eventType', 'value'], filter);
   return filter
     &&
-    ((['rank', 'trend'].includes(getNestedValue(['value', 'eventType', 'value'], filter)) && !getNestedValue(['value', 'values'], filter).every(x => !x))
-    || (getNestedValue(['value', 'eventType', 'value'], filter) === 'newcomer' && getNestedValue(['value', 'dateRange'], filter)));
+    (
+      (['rank', 'trend'].includes(eventType) && !getNestedValue(['value', 'values'], filter).every(x => !x))
+      || (eventType === 'newcomer' && getNestedValue(['value', 'dateRange'], filter))
+      || eventType === 'default'
+    );
 }
 
 export function cleanState (form) {

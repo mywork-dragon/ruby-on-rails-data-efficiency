@@ -149,10 +149,11 @@ test('generate a default sort', () => {
     filters: {
       rankings: {
         value: {
-          eventType: { value: '' },
+          eventType: { value: 'default' },
           values: [],
           charts: 'free',
           countries: 'US,FR',
+          dateRange: { value: 'two-week' },
         },
       },
     },

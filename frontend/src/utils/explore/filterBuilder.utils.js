@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import { getNestedValue } from 'utils/format.utils';
-import * as models from './models.utils';
+import * as filterKeys from './filterKeys.utils';
 import { buildSdkFilters } from './sdkFilterBuilder.utils';
 import { requirePlatformFilter } from './queryBuilder.utils';
 import { generateQueryDateRange, validRankingsFilter } from './general.utils';
@@ -52,7 +51,7 @@ export function buildAppFilters ({ resultType, platform, includeTakenDown, filte
   }
 
   for (const key in filters) {
-    if (models.isAppFilter(key) || (key === 'adNetworkCount' && resultType === 'app')) {
+    if (filterKeys.isAppFilter(key) || (key === 'adNetworkCount' && resultType === 'app')) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -74,7 +73,7 @@ export function buildPublisherFilters ({ resultType, filters }) {
   };
 
   for (const key in filters) {
-    if (models.isPubFilter(key) || (key === 'adNetworkCount' && resultType === 'publisher')) {
+    if (filterKeys.isPubFilter(key) || (key === 'adNetworkCount' && resultType === 'publisher')) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -128,7 +127,7 @@ export function buildAdIntelFilters (filters) {
   };
 
   for (const key in filters) {
-    if (models.isAdIntelFilter(key)) {
+    if (filterKeys.isAdIntelFilter(key)) {
       result.predicates.push(generatePredicate(key, filters[key]));
     }
   }
@@ -232,7 +231,7 @@ export function buildRankingsFilters ({ platform, filters }) {
     const value = rankings.value[x];
     if (value && value.length) {
       const predicate = ['or'];
-      const key = models.getQueryFilter(x);
+      const key = filterKeys.getQueryFilter(x);
       value.split(',').forEach(y => (predicate.push([key, y])));
       result.predicates.push(predicate);
     }
@@ -267,7 +266,7 @@ export function buildRankingsFilters ({ platform, filters }) {
 function generatePredicate(type, { value, value: { operator, condition } }) {
   const result = [];
   result.push(operator && operator === 'all' ? 'and' : 'or');
-  const filterType = models.getQueryFilter(type);
+  const filterType = filterKeys.getQueryFilter(type);
   if (Array.isArray(value)) {
     if (value.length === 0) {
       return null;
