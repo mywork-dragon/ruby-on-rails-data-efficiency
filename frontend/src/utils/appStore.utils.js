@@ -3,6 +3,7 @@ export function formatCategories (categories) {
 
   categories.forEach((category) => {
     if (!result[category.id]) {
+      category.id = category.id.toString();
       result[category.id] = category;
     } else {
       result[category.id] = Object.assign({}, result[category.id], category);
