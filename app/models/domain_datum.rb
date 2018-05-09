@@ -8,6 +8,42 @@ class DomainDatum < ActiveRecord::Base
 
   def populate(company_data)
     company_data = company_data.with_indifferent_access
+
+    geo_input_fields = [
+        :streetNumber,
+        :streetName,
+        :subPremise,
+        :city,
+        :postalCode,
+        :state,
+        :stateCode,
+        :country,
+        :countryCode,
+        :lat,
+        :lng
+    ]
+
+    # If any geo fields are going to be set by the incoming company_data, then delete all
+    # existing geo fields, this prevents split geo upserts which have caused problems like
+    # San Francisco, New York State.
+    if geo_input_fields.map {|x| company_data['geo'].try(:[], x)}.any?
+        geo_input_fields.each do |field|
+            self.send((field.to_s.underscore + '=').to_sym, nil)
+        end
+    end
+
+    self.street_number = company_data["geo"].try(:[], :streetNumber) if company_data["geo"].try(:[], :streetNumber)
+    self.street_name = company_data["geo"].try(:[], :streetName) if company_data["geo"].try(:[], :streetName)
+    self.sub_premise = company_data["geo"].try(:[], :subPremise) if company_data["geo"].try(:[], :subPremise)
+    self.city = company_data["geo"].try(:[], :city) if company_data["geo"].try(:[], :city)
+    self.postal_code = company_data["geo"].try(:[], :postalCode) if company_data["geo"].try(:[], :postalCode)
+    self.state = company_data["geo"].try(:[], :state) if company_data["geo"].try(:[], :state)
+    self.state_code = company_data["geo"].try(:[], :stateCode) if company_data["geo"].try(:[], :stateCode)
+    self.country = company_data["geo"].try(:[], :country) if company_data["geo"].try(:[], :country)
+    self.country_code = company_data["geo"].try(:[], :countryCode) if company_data["geo"].try(:[], :countryCode)
+    self.lat = company_data["geo"].try(:[], :lat) if company_data["geo"].try(:[], :lat)
+    self.lng = company_data["geo"].try(:[], :lng) if company_data["geo"].try(:[], :lng)
+
     self.clearbit_id = company_data["id"] if company_data["id"]
     self.name = company_data["name"] if company_data["name"]
     self.legal_name = company_data["legalName"] if company_data["legalName"]
@@ -20,17 +56,6 @@ class DomainDatum < ActiveRecord::Base
     self.sub_industry = company_data["category"].try(:[], :subIndustry) if company_data["category"].try(:[], :subIndustry)
     self.time_zone = company_data["timeZone"] if company_data["timeZone"]
     self.utc_offset = company_data["utcOffset"] if company_data["utcOffset"]
-    self.street_number = company_data["geo"].try(:[], :streetNumber) if company_data["geo"].try(:[], :streetNumber)
-    self.street_name = company_data["geo"].try(:[], :streetName) if company_data["geo"].try(:[], :streetName)
-    self.sub_premise = company_data["geo"].try(:[], :subPremise) if company_data["geo"].try(:[], :subPremise)
-    self.city = company_data["geo"].try(:[], :city) if company_data["geo"].try(:[], :city)
-    self.postal_code = company_data["geo"].try(:[], :postalCode) if company_data["geo"].try(:[], :postalCode)
-    self.state = company_data["geo"].try(:[], :state) if company_data["geo"].try(:[], :state)
-    self.state_code = company_data["geo"].try(:[], :stateCode) if company_data["geo"].try(:[], :stateCode)
-    self.country = company_data["geo"].try(:[], :country) if company_data["geo"].try(:[], :country)
-    self.country_code = company_data["geo"].try(:[], :countryCode) if company_data["geo"].try(:[], :countryCode)
-    self.lat = company_data["geo"].try(:[], :lat) if company_data["geo"].try(:[], :lat)
-    self.lng = company_data["geo"].try(:[], :lng) if company_data["geo"].try(:[], :lng)
     self.logo_url = company_data["logo"] if company_data["logo"]
     self.facebook_handle = company_data["facebook"].try(:[], :handle) if company_data["facebook"].try(:[], :handle)
     self.linkedin_handle = company_data["linkedin"].try(:[], :handle) if company_data["linkedin"].try(:[], :handle)
@@ -50,6 +75,7 @@ class DomainDatum < ActiveRecord::Base
     self.annual_revenue = company_data["metrics"].try(:[], :annualRevenue) if company_data["metrics"].try(:[], :annualRevenue)
     self.tech_used = company_data["tech"] if company_data["tech"]
     self.save
+
   end
 
   def as_json(_options = {})
