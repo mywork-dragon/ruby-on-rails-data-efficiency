@@ -30,7 +30,8 @@ function* requestResults ({ payload }) {
     const { data: { query_id } } = yield call(service.getQueryId, params);
     yield put(tableActions.clearResults());
     history.pushState(null, null, `#/search/v2/${query_id}`);
-    yield fork(requestCsvQueryId, params);
+    const { searchForm } = yield select(getCurrentState);
+    yield fork(requestCsvQueryId, params, searchForm);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
   } catch (error) {
     console.log(error);
@@ -61,7 +62,7 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
       yield put(loadSavedSearch.success(searchId));
     }
     yield call(requestResultsByQueryId, id, params, 0);
-    yield fork(requestCsvQueryId, params);
+    yield fork(requestCsvQueryId, params, validatedForm.form);
   } catch (error) {
     console.log(error);
     toastr.error("We're sorry, there was a problem loading the query.");
@@ -71,11 +72,11 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
   }
 }
 
-function* requestCsvQueryId (params) {
+function* requestCsvQueryId (params, form) {
   try {
     yield put(getCsvQueryId.request());
     const facebookOnly = yield select(isFacebookOnly);
-    const csvParams = buildCsvRequest(params, facebookOnly);
+    const csvParams = buildCsvRequest(params, facebookOnly, form);
     const { data: { query_id } } = yield call(service.getQueryId, csvParams);
     yield put(getCsvQueryId.success(query_id));
   } catch (error) {

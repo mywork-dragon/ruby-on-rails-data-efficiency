@@ -253,7 +253,7 @@ RankingsFilter.defaultProps = {
       operator: 'more-than',
       values: [],
       trendOperator: 'up',
-      dateRange: { value: 'week', label: 'Week' },
+      dateRange: { value: 'two-week', label: 'Two Weeks' },
       countries: 'US',
       iosCategories: [{ value: '36', label: 'Overall' }],
       androidCategories: [{ value: 'OVERALL', label: 'Overall' }],

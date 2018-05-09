@@ -14,12 +14,12 @@ export function buildExploreRequest (form, columns, pageSettings, sort, accountN
   return result;
 }
 
-export function buildCsvRequest (query, facebookOnly) {
+export function buildCsvRequest (query, facebookOnly, form) {
   const result = {
     ...query,
   };
   result.page_settings = { page_size: 20000 };
-  result.select = csvSelect(facebookOnly, query.select.object);
+  result.select = csvSelect(facebookOnly, query.select.object, form);
   return result;
 }
 

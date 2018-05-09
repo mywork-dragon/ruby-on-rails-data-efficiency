@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import { headerNames } from 'Table/redux/column.models';
+import { getNestedValue } from 'utils/format.utils';
 import { generateQueryDateRange, validRankingsFilter } from './general.utils';
 
-export function buildSelect ({ resultType, filters: { rankings }, platform }, columns, accountNetworks) {
+export function buildSelect (form, columns, accountNetworks) {
   const fields = [];
   const columnNames = Object.keys(columns);
 
-  const selects = selectMap(resultType);
+  const selects = selectMap(form.resultType);
 
   columnNames.forEach((column) => {
     if (selects[column]) {
@@ -22,7 +23,7 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
     if (['ad_summaries', 'ad_networks', 'first_seen_ads', 'last_seen_ads'].includes(field) && facebookOnly) {
       mappedFields[field] = ['facebook'];
     } else if (field === 'rankings') {
-      const rankingsSelect = buildRankingsSelect(rankings, platform);
+      const rankingsSelect = buildRankingsSelect(form);
       mappedFields.rankings = rankingsSelect.rankings;
       mappedFields.newcomers = rankingsSelect.newcomers;
     } else {
@@ -32,9 +33,9 @@ export function buildSelect ({ resultType, filters: { rankings }, platform }, co
 
   const result = {
     fields: {
-      [resultType]: mappedFields,
+      [form.resultType]: mappedFields,
     },
-    object: resultType,
+    object: form.resultType,
   };
 
   return result;
@@ -89,12 +90,14 @@ export const selectMap = (type) => {
   return null;
 };
 
-export const csvSelect = (facebookOnly, resultType) => {
+export const csvSelect = (facebookOnly, resultType, form) => {
   let fields = {
     name: true,
     id: true,
     platform: true,
   };
+
+  const rankingsParams = buildRankingsSelect(form);
 
   if (resultType === 'app') {
     fields = {
@@ -125,6 +128,22 @@ export const csvSelect = (facebookOnly, resultType) => {
       user_base_gb: true,
       user_base_cn: true,
       user_base_de: true,
+      min_rank_value: rankingsParams.rankings,
+      min_rank_chart: rankingsParams.rankings,
+      max_rank_value: rankingsParams.rankings,
+      max_rank_chart: rankingsParams.rankings,
+      min_weekly_change_value: rankingsParams.rankings,
+      min_weekly_change_chart: rankingsParams.rankings,
+      max_weekly_change_value: rankingsParams.rankings,
+      max_weekly_change_chart: rankingsParams.rankings,
+      min_monthly_change_value: rankingsParams.rankings,
+      min_monthly_change_chart: rankingsParams.rankings,
+      max_monthly_change_value: rankingsParams.rankings,
+      max_monthly_change_chart: rankingsParams.rankings,
+      earliest_newcomer_value: rankingsParams.newcomers,
+      earliest_newcomer_chart: rankingsParams.newcomers,
+      latest_newcomer_value: rankingsParams.newcomers,
+      latest_newcomer_chart: rankingsParams.newcomers,
     };
 
     if (facebookOnly) {
@@ -174,61 +193,75 @@ export const csvSelect = (facebookOnly, resultType) => {
   };
 };
 
-function buildRankingsSelect (filter, platform) {
+function buildRankingsSelect (form) {
   const result = {
     rankings: {},
     newcomers: {},
   };
+  const defaultFilter = {
+    countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'].join(','),
+    charts: 'free',
+    iosCategories: [],
+    androidCategories: [],
+    dateRange: { value: 'two-week' },
+    eventType: { value: null },
+    values: [],
+    operator: null,
+    trendOperator: null,
+  };
 
-  if (filter && validRankingsFilter(filter)) {
-    const {
-      countries,
-      iosCategories = [],
-      androidCategories = [],
-      charts,
-      eventType,
-      values,
-      operator,
-      dateRange,
-      trendOperator,
-    } = filter.value;
+  const rankingsFilter = getNestedValue(['filters', 'rankings'], form);
 
-    if (countries) result.rankings.countries = countries.split(',');
-    if (iosCategories.length || androidCategories.length) result.rankings.categories = iosCategories.concat(androidCategories).map(x => x.value);
-    if (charts) result.rankings.ranking_types = charts.split(',');
-    if (platform !== 'all') result.rankings.platform = [platform];
-    if (eventType.value === 'rank') {
-      if (operator === 'less-than') values[0] = null;
-      if (operator === 'between') {
-        result.rankings.rank = values;
-      } else {
-        result.rankings.rank = values.slice().reverse();
-      }
-    } else if (eventType.value === 'trend') {
-      let vals = values.slice();
-      if (trendOperator === 'down') {
-        vals = vals.reverse();
-        vals = vals.map((x) => {
-          if (typeof x === 'number' && x > 0) {
-            return -x;
-          } else if (operator === 'less-than') {
-            return 0;
-          }
-          return x;
-        });
-      }
-      if (dateRange.value === 'week') {
-        result.rankings.weekly_change = vals;
-      } else if (dateRange.value === 'month') {
-        result.rankings.monthly_change = vals;
-      }
-    } else if (eventType.value === 'newcomer') {
-      const date = generateQueryDateRange('created_at', dateRange.value);
-      result.newcomers.created_at = date[1];
+  const filter = validRankingsFilter(rankingsFilter) ? rankingsFilter.value : defaultFilter;
+
+  const {
+    countries,
+    charts,
+    iosCategories,
+    androidCategories,
+    eventType,
+    dateRange,
+    values,
+    operator,
+    trendOperator,
+  } = filter;
+
+  result.rankings.countries = countries.split(',');
+  result.rankings.ranking_types = charts.split(',');
+  if (iosCategories.length || androidCategories.length) {
+    result.rankings.categories = iosCategories.concat(androidCategories).map(x => x.value);
+  }
+  if (form.platform !== 'all') result.rankings.platform = [form.platform];
+  if (eventType.value === 'rank') {
+    result.newcomers.created_at = generateQueryDateRange('created_at', 'two-week')[1];
+    if (operator === 'less-than') values[0] = null;
+    if (operator === 'between') {
+      result.rankings.rank = values;
+    } else {
+      result.rankings.rank = values.slice().reverse();
     }
-  } else {
-    result.rankings.countries = ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'];
-    result.rankings.ranking_types = ['free'];
+  } else if (eventType.value === 'trend') {
+    result.newcomers.created_at = generateQueryDateRange('created_at', 'two-week')[1];
+    let vals = values.slice();
+    if (trendOperator === 'down') {
+      vals = vals.reverse();
+      vals = vals.map((x) => {
+        if (typeof x === 'number' && x > 0) {
+          return -x;
+        } else if (operator === 'less-than') {
+          return 0;
+        }
+        return x;
+      });
+    }
+    if (dateRange.value === 'week') {
+      result.rankings.weekly_change = vals;
+    } else if (dateRange.value === 'month') {
+      result.rankings.monthly_change = vals;
+    }
+  } else if (eventType.value === 'newcomer') {
+    result.newcomers.created_at = generateQueryDateRange('created_at', dateRange.value)[1];
+  } else if (!eventType.value) {
     result.newcomers.created_at = generateQueryDateRange('created_at', 'two-week')[1];
   }
 
