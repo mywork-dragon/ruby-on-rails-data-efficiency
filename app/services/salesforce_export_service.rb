@@ -41,7 +41,7 @@ class SalesforceExportService
                           host: host
                         )
 
-    @client.query('select Id from Account limit 1')
+    @client.query('select Id from Account limit 1') if Rails.env.production?
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
 
