@@ -301,20 +301,14 @@ end
     
     mock.expect(:Id, '12345')
     mock.expect(:Company, '3 Comma Studio')
-    mock.expect(:FirstName, 'Matthew')
-    mock.expect(:LastName, 'Hui')
     mock.expect(:Title, 'Founder')
-    mock.expect(:Email, 'matt@3comma.studio')
 
     @sf.client.stubs(:query).returns([mock])
 
     assert_equal @sf.search('google'), [{
-                                         name: "Matthew Hui - Founder\n3 Comma Studio",
+                                         name: "Founder\n3 Comma Studio",
                                          title: "Founder",
                                          id: '12345', 
-                                         first_name: 'Matthew', 
-                                         last_name: 'Hui', 
-                                         email: 'matt@3comma.studio'
      }]
 
   end

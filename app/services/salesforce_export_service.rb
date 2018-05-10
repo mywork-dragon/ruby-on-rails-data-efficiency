@@ -1,5 +1,5 @@
 class SalesforceExportService
-  attr_reader :client, :metadata_client, :bulk_client
+  attr_reader :client, :metadata_client, :bulk_client, :update_records, :create_records, :upsert_records
 
   def initialize(user:, model_name: 'Account', logging: false)
     @user = user
@@ -41,6 +41,7 @@ class SalesforceExportService
                           host: host
                         )
 
+    @client.query('select Id from Account limit 1')
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
 
@@ -280,7 +281,7 @@ class SalesforceExportService
   def search(query)
     search_queries = {
       Account: "select Id, Name from Account where Name LIKE '%#{query}%'",
-      Lead: "select Id, Company, FirstName, LastName, Title, Email from Lead where Company LIKE '%#{query}%'",
+      Lead: "select Id, Company, Title from Lead where Company LIKE '%#{query}%'",
     }.with_indifferent_access
 
     results = @client.query(search_queries[@model_name])
@@ -291,13 +292,8 @@ class SalesforceExportService
         object[:name] = result.Name
       when 'Lead'
         title = result.Title
-        first_name = result.FirstName
-        last_name = result.LastName
-        object[:name] = "#{first_name} #{last_name} - #{title}\n#{result.Company}"
+        object[:name] = "#{title}\n#{result.Company}"
         object[:title] = title
-        object[:first_name] = first_name
-        object[:last_name] = last_name
-        object[:email] = result.Email
       end
 
       object[:id] = result.Id
