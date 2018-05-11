@@ -18,9 +18,7 @@ export function buildFilter (form) {
   result.filter.inputs.push(buildSdkFilters(form.filters));
   result.filter.inputs.push(buildAdNetworkFilters(form));
   result.filter.inputs.push(buildRankingsFilters(form));
-  if (form.filters.iosCategories || form.filters.androidCategories) {
-    result.filter.inputs.push(buildCategoryFilters(form.filters));
-  }
+  result.filter.inputs.push(buildCategoryFilters(form));
 
   result.filter.inputs = _.compact(result.filter.inputs);
 
@@ -85,24 +83,27 @@ export function buildPublisherFilters ({ resultType, filters }) {
   return result;
 }
 
-export function buildCategoryFilters (filters) {
+export function buildCategoryFilters ({ platform, filters }) {
+  if (!filters.categories) return null;
   const result = {
     operator: 'union',
     inputs: [],
   };
 
-  if (filters.iosCategories) {
-    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(filters.iosCategories, 'ios'), 'ios'));
+  const iosCategories = filters.categories.value.filter(x => x.ios);
+  if (iosCategories.length && platform !== 'android') {
+    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(iosCategories, 'ios'), 'ios'));
   }
 
-  if (filters.androidCategories) {
-    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(filters.androidCategories, 'android'), 'android'));
+  const androidCategories = filters.categories.value.filter(x => x.android);
+  if (androidCategories.length && platform !== 'ios') {
+    result.inputs.push(requirePlatformFilter(buildPlatformCategoryFilter(androidCategories, 'android'), 'android'));
   }
 
   return result;
 }
 
-export function buildPlatformCategoryFilter (filter, platform) {
+export function buildPlatformCategoryFilter (categories, platform) {
   const result = {
     operator: 'filter',
     object: 'app_category',
@@ -113,7 +114,7 @@ export function buildPlatformCategoryFilter (filter, platform) {
 
   const ids = ['or'];
 
-  filter.value.forEach(x => ids.push(['id', x.value]));
+  categories.forEach(x => ids.push(['id', x[platform]]));
   result.predicates.push(ids);
 
   return result;
@@ -211,8 +212,7 @@ export function buildRankingsFilters ({ platform, filters }) {
     },
     dateRange,
     values,
-    iosCategories,
-    androidCategories,
+    categories = [],
   } = rankings.value;
 
   rankings.value.value = values.slice();
@@ -237,14 +237,15 @@ export function buildRankingsFilters ({ platform, filters }) {
     }
   });
 
-  const categoryPredicate = ['or'];
-  [androidCategories, iosCategories].forEach((list) => {
-    if (list) {
-      list.forEach(category => (categoryPredicate.push(['category', category.value])));
-    }
-  });
+  if (categories.length) {
+    const categoryPredicate = ['or'];
+    categories.forEach((category) => {
+      if (category.ios && platform !== 'android') categoryPredicate.push(['category', category.ios]);
+      if (category.android && platform !== 'ios') categoryPredicate.push(['category', category.android]);
+    });
 
-  if (categoryPredicate.length > 1) result.predicates.push(categoryPredicate);
+    if (categoryPredicate.length > 1) result.predicates.push(categoryPredicate);
+  }
 
   switch (eventType) {
     case 'rank':

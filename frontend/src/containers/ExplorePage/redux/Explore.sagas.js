@@ -2,6 +2,7 @@ import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
 import service from 'services/explore.service';
 import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
 import { isFacebookOnly, accessibleNetworks } from 'selectors/account.selectors';
+import { getIosCategories, getAndroidCategories } from 'selectors/appStore.selectors';
 import { currentFormVersion, getCurrentState, getCurrentColumns, getCurrentResultType } from 'selectors/explore.selectors';
 import { buildCsvRequest, buildExploreRequest } from 'utils/explore/queryBuilder.utils';
 import validateFormState from 'utils/explore/formStateValidation.utils';
@@ -44,7 +45,9 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
   try {
     let { data: params, data: { formState } } = yield call(service.getQueryParams, id);
     const formVersion = yield select(currentFormVersion);
-    const validatedForm = validateFormState(JSON.parse(formState), formVersion);
+    const iosCategories = yield select(getIosCategories);
+    const androidCategories = yield select(getAndroidCategories);
+    const validatedForm = validateFormState(JSON.parse(formState), formVersion, iosCategories, androidCategories);
     if (validatedForm.shouldUpdate) {
       const { query_id: newId, params: newParams } = yield call(getQueryIdFromState, validatedForm);
       if (newId !== id) {

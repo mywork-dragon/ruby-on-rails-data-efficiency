@@ -3,9 +3,15 @@
 import { buildCategoryFilters } from '../../../explore/filterBuilder.utils';
 
 test('', () => {
-  const filters = {
-    androidCategories: {
-      value: [{ value: 'GAME_EDUCATIONAL', label: 'Game Education' }, { value: 'GAME_CARD' }],
+  const form = {
+    platform: 'all',
+    filters: {
+      categories: {
+        value: [
+          { value: 'GAME_EDUCATIONAL', label: 'Game Education', android: 'GAME_EDUCATIONAL' },
+          { value: 'GAME_CARD', android: 'GAME_CARD' },
+        ],
+      },
     },
   };
 
@@ -39,7 +45,7 @@ test('', () => {
     ],
   };
 
-  const appFilter = buildCategoryFilters(filters);
+  const appFilter = buildCategoryFilters(form);
 
   expect(appFilter).toMatchObject(expected);
 });

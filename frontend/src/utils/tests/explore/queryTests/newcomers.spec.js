@@ -14,8 +14,7 @@ test('apps that first appeared on a chart in the past week', () => {
           trendOperator: 'up',
           values: [100, null],
           charts: 'free',
-          iosCategories: [{ value: 36, label: 'Overall' }],
-          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          categories: [{ value: 'Overall', label: 'Overall', ios: '36', android: 'OVERALL' }],
           countries: 'US,FR',
         },
       },
@@ -37,8 +36,8 @@ test('apps that first appeared on a chart in the past week', () => {
       ],
       [
         'or',
+        ['category', '36'],
         ['category', 'OVERALL'],
-        ['category', 36],
       ],
       [
         'created_at',
@@ -69,8 +68,7 @@ test('apps that first appeared on a chart in the past two days', () => {
           trendOperator: 'up',
           values: [0, 500],
           charts: 'free',
-          iosCategories: [{ value: 36, label: 'Overall' }],
-          androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+          categories: [{ value: 'Overall', label: 'Overall', ios: '36', android: 'OVERALL' }],
           countries: 'US,FR',
         },
       },
@@ -92,8 +90,8 @@ test('apps that first appeared on a chart in the past two days', () => {
       ],
       [
         'or',
+        ['category', '36'],
         ['category', 'OVERALL'],
-        ['category', 36],
       ],
       [
         'created_at',

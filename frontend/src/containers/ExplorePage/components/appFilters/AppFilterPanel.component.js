@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
-import { panelFilterCount } from 'utils/explore/general.utils';
+import { panelFilterCount, formatCategoriesForSelect } from 'utils/explore/general.utils';
 
 import AvailableCountriesFilter from './AvailableCountriesFilter.component';
 import CategoriesFilter from '../CategoriesFilter.component';
@@ -23,8 +23,7 @@ const AppFilterPanel = ({
     price,
     mobilePriority,
     userBase,
-    iosCategories: iosCategoriesFilter,
-    androidCategories: androidCategoriesFilter,
+    categories,
     ratingsCount,
     rating,
     releaseDate,
@@ -39,6 +38,7 @@ const AppFilterPanel = ({
 }) => {
   iosCategories = iosCategories.filter(x => x.name !== 'Overall');
   androidCategories = androidCategories.filter(x => !/^FAMILY/.test(x.id));
+  const categoryOptions = formatCategoriesForSelect(iosCategories, androidCategories);
 
   return (
     <Panel expanded={panels[panelKey]}>
@@ -57,12 +57,10 @@ const AppFilterPanel = ({
           <InAppPurchaseFilter filter={inAppPurchases} panelKey={panelKey} {...rest} />
           <AvailableCountriesFilter filter={availableCountries} panelKey={panelKey} {...rest} />
           <CategoriesFilter
-            androidCategories={androidCategories}
-            androidFilter={androidCategoriesFilter ? androidCategoriesFilter.value : []}
-            iosCategories={iosCategories}
-            iosFilter={iosCategoriesFilter ? iosCategoriesFilter.value : []}
-            onCategoryUpdate={platform => vals => rest.updateFilter(`${platform}Categories`, vals, { panelKey })()}
+            onCategoryUpdate={vals => rest.updateFilter('categories', vals, { panelKey })()}
+            options={categoryOptions}
             panelKey={panelKey}
+            value={categories ? categories.value : []}
             {...rest}
           />
           <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
@@ -73,15 +71,15 @@ const AppFilterPanel = ({
       </Panel.Body>
     </Panel>
   );
-}
+};
 
 AppFilterPanel.propTypes = {
   filters: PropTypes.object.isRequired,
   panels: PropTypes.object.isRequired,
   panelKey: PropTypes.string.isRequired,
   togglePanel: PropTypes.func.isRequired,
-  androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
   iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
+  androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default AppFilterPanel;

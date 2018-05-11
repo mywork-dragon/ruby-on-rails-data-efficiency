@@ -15,6 +15,7 @@ require('containers/PopularAppsPage/styles/styles.scss');
 require('components/ad-intel-tab/styles/styles.scss');
 require('components/table/styles/styles.js');
 require('components/rating/rating.scss');
+require('components/select/styles');
 
 // Explore Page
 require('containers/ExplorePage/styles/styles.js');

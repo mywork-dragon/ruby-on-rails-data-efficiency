@@ -16,8 +16,6 @@ function updateSearchForm(state, action) {
     case 'userBase':
     case 'price':
     case 'inAppPurchases':
-    case 'iosCategories':
-    case 'androidCategories':
     case 'creativeFormats':
     case 'adNetworks':
     case 'adNetworkCount':
@@ -26,6 +24,7 @@ function updateSearchForm(state, action) {
     case 'releaseDate':
     case 'downloads':
     case 'rankings':
+    case 'categories':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -63,8 +62,6 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'availableCountries':
     case 'price':
     case 'inAppPurchases':
-    case 'iosCategories':
-    case 'androidCategories':
     case 'adNetworks':
     case 'adNetworkCount':
     case 'ratingsCount':
@@ -72,6 +69,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'releaseDate':
     case 'downloads':
     case 'rankings':
+    case 'categories':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

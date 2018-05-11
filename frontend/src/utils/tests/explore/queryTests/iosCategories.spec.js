@@ -3,9 +3,15 @@
 import { buildCategoryFilters } from '../../../explore/filterBuilder.utils';
 
 test('', () => {
-  const filters = {
-    iosCategories: {
-      value: [{ value: '36', label: 'Overall' }, { value: '6016', label: 'Games' }],
+  const form = {
+    platform: 'all',
+    filters: {
+      categories: {
+        value: [
+          { value: '36', label: 'Overall', ios: '36' },
+          { value: '6016', label: 'Games', ios: '6016' },
+        ],
+      },
     },
   };
 
@@ -39,7 +45,7 @@ test('', () => {
     ],
   };
 
-  const appFilter = buildCategoryFilters(filters);
+  const appFilter = buildCategoryFilters(form);
 
   expect(appFilter).toMatchObject(expected);
 });

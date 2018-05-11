@@ -1,0 +1,26 @@
+@import './node_modules/react-select/scss/select.scss';
+
+.Select-menu-outer {
+  .Select-menu {
+    .Select-option {
+      &.is-focused {
+        background-color: #e6f7ff;
+      }
+
+      &.is-selected {
+        background-color: #e6f7ff;
+        color: #666666;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .select-option-platforms {
+    display: inline-flex;
+    margin-left: 5px;
+
+    i {
+      margin-right: 0;
+    }
+  }
+}

@@ -201,8 +201,7 @@ function buildRankingsSelect (form) {
   const defaultFilter = {
     countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'].join(','),
     charts: 'free',
-    iosCategories: [],
-    androidCategories: [],
+    categories: [],
     dateRange: { value: 'two-week' },
     eventType: { value: null },
     values: [],
@@ -215,10 +214,9 @@ function buildRankingsSelect (form) {
   const filter = validRankingsFilter(rankingsFilter) ? rankingsFilter.value : defaultFilter;
 
   const {
-    countries,
+    countries = '',
     charts,
-    iosCategories,
-    androidCategories,
+    categories,
     eventType,
     dateRange,
     values,
@@ -226,10 +224,10 @@ function buildRankingsSelect (form) {
     trendOperator,
   } = filter;
 
-  result.rankings.countries = countries.split(',');
-  result.rankings.ranking_types = charts.split(',');
-  if (iosCategories.length || androidCategories.length) {
-    result.rankings.categories = iosCategories.concat(androidCategories).map(x => x.value);
+  if (countries) result.rankings.countries = countries.split(',');
+  if (charts) result.rankings.countries = countries.split(',');
+  if (categories.length) {
+    result.rankings.categories = _.compact(_.flatten(categories.map(x => [x.ios, x.android])));
   }
   if (form.platform !== 'all') result.rankings.platform = [form.platform];
   if (eventType.value === 'rank') {

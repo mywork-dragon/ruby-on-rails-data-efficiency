@@ -4,10 +4,8 @@ import { capitalize, numberShorthand } from 'utils/format.utils';
 
 function getDisplayText (parameter, value) {
   switch (parameter) {
-    case 'iosCategories':
-      return categoryText(value, 'ios');
-    case 'androidCategories':
-      return categoryText(value, 'android');
+    case 'categories':
+      return categoryText(value);
     case 'fortuneRank':
       return `Fortune Rank: ${value}`;
     case 'mobilePriority':
@@ -49,8 +47,8 @@ function listText(base, value) {
   return base + value.map(x => capitalize(x)).join(', ');
 }
 
-function categoryText (value, platform) {
-  return `${capitalize(platform)} Categories: ${value.map(x => x.label).join(', ')}`;
+function categoryText (value) {
+  return `Categories: ${value.map(x => x.label).join(', ')}`;
 }
 
 function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
@@ -234,7 +232,7 @@ function rangeText (base, { operator, value }) {
   return `${base} ${operatorText} ${countText}${itemText}`;
 }
 
-function rankingsText ({ eventType, dateRange, operator, trendOperator, values, charts, iosCategories, androidCategories, countries }) {
+function rankingsText ({ eventType, dateRange, operator, trendOperator, values, charts, categories, countries }) {
   if (['rank', 'trend'].includes(eventType.value) && values.length === 0) {
     return null;
   }
@@ -264,11 +262,10 @@ function rankingsText ({ eventType, dateRange, operator, trendOperator, values, 
   }
 
   const chartText = charts && charts.length ? `, on ${charts.split(',').join(', ')} charts` : '';
-  const iosCategoryText = iosCategories && iosCategories.length ? `, in ${iosCategories.map(x => x.label).join(', ')} iOS categories` : '';
-  const androidCategoryText = androidCategories && androidCategories.length ? `, in ${androidCategories.map(x => x.label).join(', ')} Android categories` : '';
-  const countryText = countries && countries.length ? `. in the following countries: ${countries.split(',').join(', ')}` : '';
+  const categoriesText = categories && categories.length ? `, in ${categories.map(x => x.label).join(', ')} categories` : '';
+  const countryText = countries && countries.length ? `, in the following countries: ${countries.split(',').join(', ')}` : '';
 
-  return `Apps that ${eventType.label} ${predicate}${chartText}${iosCategoryText}${androidCategoryText}${countryText}`;
+  return `Apps that ${eventType.label} ${predicate}${chartText}${categoriesText}${countryText}`;
 }
 
 export default getDisplayText;

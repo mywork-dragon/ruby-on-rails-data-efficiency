@@ -21,11 +21,64 @@ SelectArrow.propTypes = {
   isOpen: PropTypes.bool.isRequired,
 };
 
-const Select = props => (
-  <ReactSelect
-    {...props}
-    arrowRenderer={SelectArrow}
-  />
-);
+const Select = (props) => {
+  if (props.allowSelectAll) {
+    if (props.value.length === props.options.length) {
+      return (
+        <ReactSelect
+          arrowRenderer={SelectArrow}
+          {...props}
+          onChange={selected => props.onChange(selected.slice(1))}
+          removeSelected={false}
+        />
+      );
+    }
+
+    return (
+      <ReactSelect
+        arrowRenderer={SelectArrow}
+        {...props}
+        onChange={(selected) => {
+          if (
+            selected.length > 0 &&
+            selected[selected.length - 1].value === props.allOption.value
+          ) {
+            return props.onChange(props.options);
+          }
+          return props.onChange(selected);
+        }}
+        options={[props.allOption, ...props.options]}
+        removeSelected={false}
+      />
+    );
+  }
+
+  return (
+    <ReactSelect
+      arrowRenderer={SelectArrow}
+      {...props}
+    />
+  );
+};
+
+Select.propTypes = {
+  options: PropTypes.array.isRequired,
+  value: PropTypes.oneOfType([PropTypes.array, PropTypes.string, PropTypes.object, PropTypes.number]),
+  onChange: PropTypes.func.isRequired,
+  allowSelectAll: PropTypes.bool,
+  allOption: PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.string,
+  }),
+};
+
+Select.defaultProps = {
+  allowSelectAll: false,
+  allOption: {
+    label: 'Select all',
+    value: '*',
+  },
+  value: null,
+};
 
 export default Select;

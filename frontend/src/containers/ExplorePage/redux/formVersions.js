@@ -4,4 +4,6 @@
 
 0.2.0: update - buildSelect updated to include rankings and newcomer data, no changes to formState
 
+1.2.0: update - categories reformatted to be combined, major changes to formState
+
 */

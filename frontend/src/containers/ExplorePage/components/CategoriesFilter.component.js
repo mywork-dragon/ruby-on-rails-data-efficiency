@@ -1,37 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CategoriesDropdown from './CategoriesDropdown.component';
+import Select from 'components/select/CustomSelect.component';
+import PlatformOption from 'components/select/platformOption.component';
 
 const CategoriesFilter = ({
   title,
-  androidCategories,
-  androidFilter,
-  iosCategories,
-  iosFilter,
-  platform,
+  options,
+  value,
+  placeholder,
   onCategoryUpdate,
-  ...rest
 }) => (
   <li className="li-filter">
     <label className="filter-label">
       {title}
     </label>
-    <div className="input-group" id="categories-input">
-      <CategoriesDropdown
-        categories={iosCategories}
-        filterCategories={iosFilter}
-        onCategoryUpdate={onCategoryUpdate('ios')}
-        platform="ios"
-        selectedPlatform={platform}
-        {...rest}
-      />
-      <CategoriesDropdown
-        categories={androidCategories}
-        filterCategories={androidFilter}
-        onCategoryUpdate={onCategoryUpdate('android')}
-        platform="android"
-        selectedPlatform={platform}
-        {...rest}
+    <div className="input-group">
+      <Select
+        allowSelectAll
+        closeOnSelect={false}
+        multi
+        onChange={onCategoryUpdate}
+        optionComponent={PlatformOption}
+        options={options}
+        placeholder={placeholder}
+        style={{ marginTop: 10, borderRadius: 0 }}
+        value={value}
       />
     </div>
   </li>
@@ -39,18 +32,16 @@ const CategoriesFilter = ({
 
 CategoriesFilter.propTypes = {
   title: PropTypes.string,
-  androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  androidFilter: PropTypes.array,
-  iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  iosFilter: PropTypes.array,
-  platform: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  value: PropTypes.arrayOf(PropTypes.object),
+  placeholder: PropTypes.string,
   onCategoryUpdate: PropTypes.func.isRequired,
 };
 
 CategoriesFilter.defaultProps = {
   title: 'Categories:',
-  androidFilter: [],
-  iosFilter: [],
+  placeholder: 'Select...',
+  value: [],
 };
 
 export default CategoriesFilter;

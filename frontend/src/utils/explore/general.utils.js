@@ -409,3 +409,31 @@ export function filterRankings (charts, currentCountries, field, sort) {
   if (!sort.desc) return _.sortBy(charts.filter(x => typeof x[field] === 'number'), x => x[field]);
   return charts;
 }
+
+export function formatCategoriesForSelect (iosCategories, androidCategories) {
+  const categoryOptions = {};
+
+  iosCategories.forEach((category) => {
+    if (!categoryOptions[category.name]) {
+      categoryOptions[category.name] = {
+        ios: category.id,
+        name: category.name,
+      };
+    } else {
+      categoryOptions[category.name].ios = category.id;
+    }
+  });
+
+  androidCategories.forEach((category) => {
+    if (!categoryOptions[category.name]) {
+      categoryOptions[category.name] = {
+        android: category.id,
+        name: category.name,
+      };
+    } else {
+      categoryOptions[category.name].android = category.id;
+    }
+  });
+
+  return _.sortBy(Object.entries(categoryOptions).map(x => ({ value: x[0], label: x[0], ios: x[1].ios, android: x[1].android })), ['label']);
+}

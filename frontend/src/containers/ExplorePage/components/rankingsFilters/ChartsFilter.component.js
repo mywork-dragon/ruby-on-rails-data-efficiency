@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'components/select/CustomSelect.component';
+import { formatCategoriesForSelect } from 'utils/explore/general.utils';
 
 import CategoriesFilter from '../CategoriesFilter.component';
 
@@ -11,6 +12,8 @@ const ChartsFilter = ({
   rankingsCountries,
   updateFilter,
   panelKey,
+  iosCategories,
+  androidCategories,
   ...rest
 }) => {
   if (!value.eventType) {
@@ -48,19 +51,19 @@ const ChartsFilter = ({
           </div>
         </li>
         <CategoriesFilter
-          title="In the following categories:"
-          androidFilter={value.androidCategories}
-          iosFilter={value.iosCategories}
-          onCategoryUpdate={platform => (vals) => {
+          onCategoryUpdate={(vals) => {
             const newVal = {
               ...value,
-              [`${platform}Categories`]: vals,
+              categories: vals,
             };
 
             updateFilter('rankings', newVal, { panelKey })();
           }}
+          options={formatCategoriesForSelect(iosCategories, androidCategories)}
           panelKey={panelKey}
           placeholder="Any category"
+          title="In the following categories:"
+          value={value.categories}
           {...rest}
         />
         <li className="li-filter">
@@ -98,17 +101,20 @@ ChartsFilter.propTypes = {
   rankingsCountries: PropTypes.array.isRequired,
   updateFilter: PropTypes.func.isRequired,
   panelKey: PropTypes.string.isRequired,
+  iosCategories: PropTypes.arrayOf(PropTypes.object),
+  androidCategories: PropTypes.arrayOf(PropTypes.object),
 };
 
 ChartsFilter.defaultProps = {
   filter: {
     value: {
       countries: 'US',
-      iosCategories: [{ value: '36', label: 'Overall' }],
-      androidCategories: [{ value: 'OVERALL', label: 'Overall' }],
+      categories: [{ value: 'Overall', label: 'Overall', ios: '36', android: 'OVERALL' }],
       charts: 'free',
     },
   },
+  iosCategories: [],
+  androidCategories: [],
 };
 
 export default ChartsFilter;

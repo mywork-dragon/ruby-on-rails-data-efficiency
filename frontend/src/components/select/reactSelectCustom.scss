@@ -1,11 +1,18 @@
 @import './node_modules/react-select/scss/select.scss';
 
-.Select.small-custom-react-select {
-  width: 150px;
+.Select {
+  width: 100%;
 
   .Select-control {
     border: 1px solid #d9d9d9;
     border-radius: 0;
+  }
+}
+
+.Select.small-custom-react-select {
+  width: 150px;
+
+  .Select-control {
     height: 22px;
 
     .Select-value {
