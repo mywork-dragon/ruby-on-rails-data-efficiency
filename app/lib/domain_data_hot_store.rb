@@ -10,7 +10,7 @@ class DomainDataHotStore < HotStore
     domain = domain_datum["domain"]
     return if domain.nil?
 
-    write_entry(nil, nil, nil, domain_datum, override_key: domain_data_key(domain), async: async)
+    write_entry(nil, nil, nil, domain_datum, override_key: domain_data_key(domain))
   end
 
   def read(domain)

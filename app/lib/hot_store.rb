@@ -1,4 +1,7 @@
 class HotStore
+  # All operations in this class should use the with_connection method to obtain a connection to the
+  # redis server. That method properly either returns the injected mock connection for test, or a connection
+  # that is checked out from the HotStore threadpool.
 
   class MissingHotStoreField < RuntimeError; end
   class MalformedHotStoreField < RuntimeError; end
@@ -10,11 +13,7 @@ class HotStore
   @@MAX_CONNECTIONS = (ENV['HOT_STORE_REDIS_MAX_CONNECTIONS'] || 1).to_i
 
   def initialize(redis_store: nil)
-    if redis_store
-      @redis_store = redis_store
-    else
-      @redis_store = RedisCluster.new(@@STARTUP_NODES, @@MAX_CONNECTIONS)
-    end
+    @redis_store = redis_store if redis_store
   end
 
 private
@@ -27,7 +26,7 @@ private
     "#{type}:#{platform}:#{application_id}"
   end
 
-  def write_entry(type, platform, id, attributes, override_key: nil, async: false)
+  def write_entry(type, platform, id, attributes, override_key: nil)
     entry_key = override_key || key(type, platform, id)
 
     if @fields_to_normalize
@@ -63,18 +62,10 @@ private
 
     return if attributes_array.empty? and compressed_attributes_array.empty?
 
-    if async
-      HotStoreThreadPool.instance.post do
-        HotStoreThreadPool.connection_pool.with do |connection|
-          connection.hmset(entry_key, attributes_array) if attributes_array.any?
-          connection.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
-          connection.sadd(@key_set, entry_key)
-        end
-      end
-    else
-      @redis_store.hmset(entry_key, attributes_array) if attributes_array.any?
-      @redis_store.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
-      @redis_store.sadd(@key_set, entry_key)
+    with_connection do |connection|
+      connection.hmset(entry_key, attributes_array) if attributes_array.any?
+      connection.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
+      connection.sadd(@key_set, entry_key)
     end
   end
 
@@ -83,9 +74,11 @@ private
 
     attributes = {}
 
-    cursor = read_scanned_attributes(type, entry_key, "0", attributes)
-    while cursor != "0"
-      cursor = read_scanned_attributes(type, entry_key, cursor, attributes)
+    with_connection do |connection|
+      cursor = read_scanned_attributes(type, entry_key, "0", attributes, connection)
+      while cursor != "0"
+        cursor = read_scanned_attributes(type, entry_key, cursor, attributes, connection)
+      end
     end
 
     attributes
@@ -93,12 +86,16 @@ private
 
   def delete_entry(type, platform, id, override_key: nil)
     entry_key = override_key || key(type, platform, id)
-    @redis_store.srem(@key_set, entry_key)
-    @redis_store.del(entry_key)
+
+    with_connection do |connection|
+      connection.srem(@key_set, entry_key)
+      connection.del(entry_key)
+    end
+    
   end
 
-  def read_scanned_attributes(type, entry_key, entry_cursor, entry_attributes)
-    cursor, attributes = @redis_store.hscan(entry_key, entry_cursor)
+  def read_scanned_attributes(type, entry_key, entry_cursor, entry_attributes, connection)
+    cursor, attributes = connection.hscan(entry_key, entry_cursor)
     attributes.each do |attribute_tuple|
       begin
         is_gzipped = false
@@ -131,6 +128,16 @@ private
       end
     end
     true
+  end
+
+  def with_connection
+    if @redis_store
+      yield @redis_store
+    else
+      HotStoreThreadPool.connection_pool.with do |connection|
+        yield connection
+      end
+    end
   end
 
 end

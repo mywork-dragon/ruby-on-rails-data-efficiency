@@ -73,7 +73,7 @@ class AppHotStore < HotStore
     end
   end
 
-  def write_attribute(app_id, app_identifier, platform, attr_name, attr_value, async: false)
+  def write_attribute(app_id, app_identifier, platform, attr_name, attr_value)
     raise Unexpected unless attr_name.is_a?(String)
 
     attributes = { attr_name => attr_value }
@@ -83,11 +83,11 @@ class AppHotStore < HotStore
     attributes["platform"] = platform
     attributes["app_identifier"] = app_identifier
 
-    write_entry("app", platform, app_id, attributes, async: async)
+    write_entry("app", platform, app_id, attributes)
   end
 
-  def write_ad_summary(app_id, app_identifier, platform, ad_summary, async: false)
-    write_attribute(app_id, app_identifier, platform, 'ad_summaries', ad_summary, async)
+  def write_ad_summary(app_id, app_identifier, platform, ad_summary)
+    write_attribute(app_id, app_identifier, platform, 'ad_summaries', ad_summary)
   end
 
   def write_major_app(app_id,app_identifier, platform, major_app: true)
