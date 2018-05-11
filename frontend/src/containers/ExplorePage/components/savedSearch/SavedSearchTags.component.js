@@ -31,7 +31,15 @@ const SavedSearchTags = ({
 
   return (
     <div className="saved-search-tags-container">
-      {tags.map((tag, idx) => <Tag key={`${tag}_${idx}`} color="blue">{tag}</Tag>)}
+      {tags.map((tag, idx) => (
+        <Tag
+          key={`${tag}_${idx}`}
+          className="saved-search-tag"
+          color="blue"
+        >
+          {tag}
+        </Tag>
+      ))}
     </div>
   );
 };
