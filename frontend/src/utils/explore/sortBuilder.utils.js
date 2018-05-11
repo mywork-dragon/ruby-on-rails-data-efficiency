@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { headerNames } from 'Table/redux/column.models';
 import { getNestedValue } from 'utils/format.utils';
+import { validRankingsFilter } from 'utils/explore/general.utils';
 import { buildRankingsFilters } from './filterBuilder.utils';
 
 export function buildSortSettings (sorts, form) {
@@ -132,7 +133,28 @@ export const sortMap = (form) => {
 };
 
 function buildRankingsSort (type, form) {
-  const rankingsFilter = getNestedValue(['filters', 'rankings', 'value'], form);
+  const rankingsFilter = getNestedValue(['filters', 'rankings'], form) || {};
+
+  const isValidFilter = validRankingsFilter(rankingsFilter);
+
+  const eventType = { value: type };
+  let dateRange = { value: 'two-week', label: 'Two Weeks' };
+
+  if (isValidFilter) {
+    const event = rankingsFilter.value.eventType.value;
+    dateRange = rankingsFilter.value.dateRange;
+    if (['rank', 'trend'].includes(event) && type === 'default') {
+      eventType.value = event;
+    }
+
+    if (event === 'newcomer' && type === 'default') {
+      dateRange = null;
+    } else if (['rank', 'trend'].includes(event) && type === 'newcomer') {
+      dateRange = { value: 'two-week', label: 'Two Weeks' };
+    }
+  }
+
+  const vals = isValidFilter ? rankingsFilter.value : {};
 
   return buildRankingsFilters({
     platform: form.platform,
@@ -141,10 +163,10 @@ function buildRankingsSort (type, form) {
         value: {
           countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'].join(','),
           charts: 'free',
-          ...rankingsFilter,
-          eventType: { value: type },
           values: [],
-          dateRange: rankingsFilter ? rankingsFilter.dateRange : { value: 'two-week', label: 'Two Weeks' },
+          ...vals,
+          eventType,
+          dateRange,
         },
       },
     },
