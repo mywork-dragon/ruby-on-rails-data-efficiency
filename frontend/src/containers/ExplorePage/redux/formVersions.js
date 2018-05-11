@@ -6,4 +6,6 @@
 
 1.2.0: update - categories reformatted to be combined, major changes to formState
 
+1.2.1: minor update - include panel key in category update
+
 */

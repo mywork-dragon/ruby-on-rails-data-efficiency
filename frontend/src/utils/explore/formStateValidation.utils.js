@@ -60,13 +60,14 @@ export function updateCategories (form, iosCategories, androidCategories) {
   const androidFilterCategories = getNestedValue(['filters', 'androidCategories', 'value'], form) || [];
 
   if (iosFilterCategories.length || androidFilterCategories.length) {
-    delete result.filters.iosFilterCategories;
-    delete result.filters.androidFilterCategories;
     const values = combineCategories(iosFilterCategories, androidFilterCategories, iosCategories, androidCategories);
     result.filters.categories = {
       value: values,
+      panelKey: getNestedValue(['filters', 'iosCategories', 'panelKey'], result) || getNestedValue(['filters', 'androidCategories', 'panelKey'], result),
       displayText: getDisplayText('categories', values),
     };
+    delete result.filters.iosCategories;
+    delete result.filters.androidCategories;
   }
 
   const rankingsIosCategories = getNestedValue(['filters', 'rankings', 'value', 'iosCategories'], form) || [];

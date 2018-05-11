@@ -11,12 +11,14 @@ test('form validation converts old category filters into new ones', () => {
           { value: '36', label: 'Overall' },
           { value: '6000', label: 'Business' },
         ],
+        panelKey: '2',
       },
       androidCategories: {
         value: [
           { value: 'GAME', label: 'Games' },
-          { value: 'PARENTING', label: 'Parenting'}
+          { value: 'PARENTING', label: 'Parenting' },
         ],
+        panelKey: '2',
       },
     },
   };
@@ -50,6 +52,7 @@ test('form validation converts old category filters into new ones', () => {
             android: 'PARENTING',
           },
         ],
+        panelKey: '2',
         displayText: 'Categories: Overall, Business, Games, Parenting',
       },
     },
