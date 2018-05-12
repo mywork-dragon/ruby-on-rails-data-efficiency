@@ -199,7 +199,7 @@ function buildRankingsSelect (form) {
     newcomers: {},
   };
   const defaultFilter = {
-    countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL'].join(','),
+    countries: ['US', 'FR', 'CA', 'CN', 'BR', 'AU', 'UK', 'SP', 'IT', 'DE', 'SE', 'RU', 'KR', 'JP', 'CH', 'SG', 'NL', 'AR'].join(','),
     charts: 'free',
     categories: [],
     dateRange: { value: 'two-week' },
