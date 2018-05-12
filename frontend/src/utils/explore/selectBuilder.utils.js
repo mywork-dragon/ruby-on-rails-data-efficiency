@@ -225,7 +225,7 @@ function buildRankingsSelect (form) {
   } = filter;
 
   if (countries) result.rankings.countries = countries.split(',');
-  if (charts) result.rankings.countries = countries.split(',');
+  if (charts) result.rankings.ranking_types = charts.split(',');
   if (categories.length) {
     result.rankings.categories = _.compact(_.flatten(categories.map(x => [x.ios, x.android])));
   }
