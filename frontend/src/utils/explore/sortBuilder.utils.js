@@ -121,6 +121,7 @@ export const sortMap = (form) => {
       ...sorts,
       [headerNames.DOWNLOADS]: { field: 'downloads_min', object: 'app', function: 'sum' },
       [headerNames.FIRST_SEEN_ADS]: { field: 'first_seen_ads_date', object: 'mobile_ad_data_summary' },
+      [headerNames.FORTUNE_RANK]: { field: 'fortune_1000_rank', object: 'domain_data', function: 'min' },
       [headerNames.LAST_SEEN_ADS]: { field: 'last_seen_ads_date', object: 'mobile_ad_data_summary' },
       [headerNames.LAST_UPDATED]: { field: 'current_version_release_date', object: 'app', function: 'max' },
       [headerNames.NUM_APPS]: { field: 'id', object: 'app', function: 'count' },
