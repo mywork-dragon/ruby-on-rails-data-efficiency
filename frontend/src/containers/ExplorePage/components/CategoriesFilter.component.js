@@ -23,7 +23,6 @@ const CategoriesFilter = ({
         optionComponent={PlatformOption}
         options={options}
         placeholder={placeholder}
-        style={{ marginTop: 10, borderRadius: 0 }}
         value={value}
       />
     </div>

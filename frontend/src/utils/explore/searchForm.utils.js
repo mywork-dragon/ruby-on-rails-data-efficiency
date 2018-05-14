@@ -25,6 +25,7 @@ function updateSearchForm(state, action) {
     case 'downloads':
     case 'rankings':
     case 'categories':
+    case 'appPermissions':
       return {
         ...state,
         filters: updateFilters(state.filters, action.payload),
@@ -70,6 +71,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'downloads':
     case 'rankings':
     case 'categories':
+    case 'appPermissions':
       filter = updateSingleValueFilter(filters[parameter], parameter, value, options);
       break;
     case 'userBase':

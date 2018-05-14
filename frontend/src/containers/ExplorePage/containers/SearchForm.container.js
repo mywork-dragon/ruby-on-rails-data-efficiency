@@ -46,6 +46,7 @@ const mapStateToProps = (state) => {
     facebookOnly: account.isFacebookOnly(state),
     rankingsCountries: appStore.getRankingsCountries(state),
     appPermissionsOptions: appStore.getAppPermissionsOptions(state),
+    canAccessAppPermissions: account.canAccessFeature(state, 'app-permissions-filter'),
   };
 };
 

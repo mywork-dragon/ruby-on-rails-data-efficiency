@@ -9,6 +9,7 @@ import DownloadsFilter from './DownloadsFilter.component';
 import FilterCountLabel from '../FilterCountLabel.component';
 import InAppPurchaseFilter from './InAppPurchaseFilter.component';
 import MobilePriorityFilter from './MobilePriorityFilter.component';
+import PermissionsFilter from './PermissionsFilter.component';
 import PriceFilter from './PriceFilter.component';
 import RatingFilter from './RatingFilter.component';
 import RatingsCountFilter from './RatingsCountFilter.component';
@@ -28,12 +29,14 @@ const AppFilterPanel = ({
     rating,
     releaseDate,
     downloads,
+    appPermissions,
   },
   iosCategories,
   androidCategories,
   panels,
   panelKey,
   togglePanel,
+  canAccessAppPermissions,
   ...rest
 }) => {
   iosCategories = iosCategories.filter(x => x.name !== 'Overall');
@@ -63,6 +66,7 @@ const AppFilterPanel = ({
             value={categories ? categories.value : []}
             {...rest}
           />
+          {canAccessAppPermissions && <PermissionsFilter filter={appPermissions} panelKey={panelKey} {...rest} />}
           <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
           <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
           <DownloadsFilter filter={downloads} panelKey={panelKey} {...rest} />
@@ -80,6 +84,7 @@ AppFilterPanel.propTypes = {
   togglePanel: PropTypes.func.isRequired,
   iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
   androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
+  canAccessAppPermissions: PropTypes.bool.isRequired,
 };
 
 export default AppFilterPanel;
