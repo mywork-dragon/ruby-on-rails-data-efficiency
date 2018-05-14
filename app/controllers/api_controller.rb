@@ -1018,6 +1018,7 @@ class ApiController < ApplicationController
             ] + extra_actions,
             "effect" => "allow",
             "resource" => [
+                "mri:mws:mightyquery/app/permissions/options",
                 "mri:mws:mightyquery/geo/options",
                 "mri:mws:mightyquery/query",
                 "mri:mws:mightyquery/query/*",
