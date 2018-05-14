@@ -40,7 +40,7 @@ const AppFilterPanel = ({
   ...rest
 }) => {
   iosCategories = iosCategories.filter(x => x.name !== 'Overall');
-  androidCategories = androidCategories.filter(x => !/^FAMILY/.test(x.id));
+  androidCategories = androidCategories.filter(x => !/^FAMILY/.test(x.id) && x.id !== 'OVERALL');
   const categoryOptions = formatCategoriesForSelect(iosCategories, androidCategories);
 
   return (
