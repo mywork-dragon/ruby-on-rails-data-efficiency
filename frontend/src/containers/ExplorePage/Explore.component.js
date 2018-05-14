@@ -19,6 +19,8 @@ const Explore = ({
   requestRankingsCountries,
   shouldFetchPermissions,
   requestPermissions,
+  shouldFetchAppPermissionsOptions,
+  requestAppPermissionsOptions,
 }) => {
   if (queryId && !existingId) {
     populateFromQueryId(queryId);
@@ -28,6 +30,7 @@ const Explore = ({
   if (shouldFetchRankingsCountries) requestRankingsCountries();
   if (shouldFetchCategories) requestCategories();
   if (shouldFetchSdkCategories) requestSdkCategories();
+  if (shouldFetchAppPermissionsOptions) requestAppPermissionsOptions();
   if (shouldFetchPermissions) requestPermissions();
 
   return (
@@ -63,6 +66,8 @@ Explore.propTypes = {
   requestSdkCategories: PropTypes.func.isRequired,
   requestPermissions: PropTypes.func.isRequired,
   shouldFetchPermissions: PropTypes.bool.isRequired,
+  shouldFetchAppPermissionsOptions: PropTypes.bool.isRequired,
+  requestAppPermissionsOptions: PropTypes.func.isRequired,
 };
 
 Explore.defaultProps = {

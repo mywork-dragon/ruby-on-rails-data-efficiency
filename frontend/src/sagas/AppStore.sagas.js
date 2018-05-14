@@ -1,5 +1,6 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import AppStoreService from 'services/appStore.service';
+import ExploreService from 'services/explore.service';
 import * as actions from 'actions/AppStore.actions';
 import { formatCategories } from 'utils/appStore.utils';
 // import { androidCategories, iosCategories } from 'utils/mocks/mock-categories.utils';
@@ -54,6 +55,16 @@ function* requestRankingsCountries () {
   }
 }
 
+function* requestAppPermissionsOptions () {
+  try {
+    const { data } = yield call(ExploreService.getAppPermissionsOptions);
+    yield put(actions.appPermissionsOptions.success(data));
+  } catch (error) {
+    console.log(error);
+    yield put(actions.appPermissionsOptions.failure(error));
+  }
+}
+
 function* watchCategoriesRequest() {
   yield takeLatest(actions.CATEGORIES.REQUEST, requestCategories);
 }
@@ -70,11 +81,16 @@ function* watchRankingsCategoriesRequest() {
   yield takeLatest(actions.RANKINGS_COUNTRIES.REQUEST, requestRankingsCountries);
 }
 
+function* watchAppPermissionsOptionsRequest() {
+  yield takeLatest(actions.APP_PERMISSIONS_OPTIONS.REQUEST, requestAppPermissionsOptions);
+}
+
 export default function* listSaga() {
   yield all([
     watchCategoriesRequest(),
     watchCountryRequest(),
     watchSdkCategoriesRequest(),
     watchRankingsCategoriesRequest(),
+    watchAppPermissionsOptionsRequest(),
   ]);
 }

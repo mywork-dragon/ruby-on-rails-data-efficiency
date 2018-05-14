@@ -48,6 +48,9 @@ const ExploreService = (client = httpClient) => {
     getCsvByQueryResultId: id => (
       exploreClient.get(`${window.MQUERY_SERVICE}/query_result/${id}/pages/*?formatter=csv`)
     ),
+    getAppPermissionsOptions: () => (
+      exploreClient.get(`${window.MQUERY_SERVICE}/app/permissions/options`)
+    ),
   };
 };
 

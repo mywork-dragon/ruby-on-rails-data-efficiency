@@ -4,6 +4,7 @@ import {
   AVAILABLE_COUNTRIES,
   SDK_CATEGORIES,
   RANKINGS_COUNTRIES,
+  APP_PERMISSIONS_OPTIONS,
 } from 'actions/AppStore.actions';
 
 const initialCategoryState = {
@@ -130,11 +131,43 @@ function rankingsCountries (state = initialRankingsCountriesState, action) {
   }
 }
 
+const initialAppPermissionsOptionsState = {
+  loaded: false,
+  fetching: false,
+  options: {},
+};
+
+function appPermissionsOptions (state = initialAppPermissionsOptionsState, action) {
+  switch (action.type) {
+    case APP_PERMISSIONS_OPTIONS.REQUEST:
+      return {
+        ...state,
+        fetching: true,
+      };
+    case APP_PERMISSIONS_OPTIONS.SUCCESS:
+      return {
+        ...state,
+        options: action.payload.countries,
+        loaded: true,
+        fetching: false,
+      };
+    case APP_PERMISSIONS_OPTIONS.FAILURE:
+      return {
+        ...state,
+        loaded: true,
+        fetching: false,
+      };
+    default:
+      return state;
+  }
+}
+
 const appStoreInfo = combineReducers({
   categories,
   availableCountries,
   sdkCategories,
   rankingsCountries,
+  appPermissionsOptions,
 });
 
 export default appStoreInfo;

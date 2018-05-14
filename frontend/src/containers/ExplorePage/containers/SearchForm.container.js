@@ -45,6 +45,7 @@ const mapStateToProps = (state) => {
     shouldFetchAdNetworks: account.shouldFetchAdNetworks(state),
     facebookOnly: account.isFacebookOnly(state),
     rankingsCountries: appStore.getRankingsCountries(state),
+    appPermissionsOptions: appStore.getAppPermissionsOptions(state),
   };
 };
 

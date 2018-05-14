@@ -27,3 +27,10 @@ export const rankingsCountries = {
   success: countries => action(RANKINGS_COUNTRIES.SUCCESS, { countries }),
   failure: error => action(RANKINGS_COUNTRIES.FAILURE, { error }),
 };
+
+export const APP_PERMISSIONS_OPTIONS = createRequestTypes('APP_PERMISSIONS_OPTIONS');
+export const appPermissionsOptions = {
+  request: () => action(APP_PERMISSIONS_OPTIONS.REQUEST),
+  success: countries => action(APP_PERMISSIONS_OPTIONS.SUCCESS, { countries }),
+  failure: error => action(APP_PERMISSIONS_OPTIONS.FAILURE, { error }),
+};
