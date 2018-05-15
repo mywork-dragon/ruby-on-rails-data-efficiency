@@ -270,7 +270,14 @@ export function updateCategorySdks (sdks, values, iosSdkCategories, androidSdkCa
   const newSdks = sdks.slice(0).filter(x => !x.sdks); // remove all sdk categories
 
   values.forEach((value) => {
-    const [id, platform, name, parentId] = value.split('_');
+    const info = value.split('_');
+    const [id, platform] = info;
+    let name = info[2];
+    let parentId = info[3];
+    if (info.length > 4) {
+      name = info.slice(2, info.length - 1).join('_');
+      parentId = info[info.length - 1];
+    }
     const platformCategories = platform === 'ios' ? iosSdkCategories : androidSdkCategories;
     if (!parentId) {
       const category = {
@@ -293,7 +300,6 @@ export function updateCategorySdks (sdks, values, iosSdkCategories, androidSdkCa
       } else {
         newSdks[idx].includedSdks.push({ id: parseInt(id, 10), name });
       }
-
     }
   });
 
