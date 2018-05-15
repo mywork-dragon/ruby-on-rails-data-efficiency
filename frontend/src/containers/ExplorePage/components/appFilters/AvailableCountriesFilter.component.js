@@ -16,6 +16,7 @@ const AvailableCountriesFilter = ({
   },
   panelKey,
   updateFilter,
+  platform,
 }) => {
   const allowMultiple = condition && condition !== 'only-available-in';
 
@@ -43,11 +44,12 @@ const AvailableCountriesFilter = ({
   return (
     <li className="li-filter">
       <label className="filter-label">
-        Available Countries:
+        Available Countries (iOS only):
       </label>
       <div className="input-group available-countries" id="available-countries-filter">
         <div className="options-group">
           <Select
+            disabled={platform === 'android'}
             getPopupContainer={() => document.getElementById(('available-countries-filter'))}
             onChange={updateCondition}
             size="small"
@@ -63,6 +65,7 @@ const AvailableCountriesFilter = ({
           {
             allowMultiple &&
               <Select
+                disabled={platform === 'android'}
                 getPopupContainer={() => document.getElementById(('available-countries-filter'))}
                 onChange={updateOperator}
                 size="small"
@@ -82,6 +85,7 @@ const AvailableCountriesFilter = ({
         <div className="li-select">
           <Select
             allowClear={allowMultiple}
+            disabled={platform === 'android'}
             filterOption={false}
             getPopupContainer={() => document.getElementById(('available-countries-filter'))}
             labelInValue
@@ -112,6 +116,7 @@ AvailableCountriesFilter.propTypes = {
   }),
   panelKey: PropTypes.string.isRequired,
   updateFilter: PropTypes.func.isRequired,
+  platform: PropTypes.string.isRequired,
 };
 
 AvailableCountriesFilter.defaultProps = {

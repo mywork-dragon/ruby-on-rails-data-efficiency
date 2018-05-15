@@ -19,7 +19,6 @@ const SearchForm = ({
   clearFilters,
   searchFormExpanded,
   includeTakenDown,
-  platform,
   resultType,
   requestResults,
   toggleForm,
@@ -50,24 +49,24 @@ const SearchForm = ({
           <div className="explore-search-form">
             <div className="basic-filter-group form-group">
               <ResultTypeFilter resultType={resultType} {...rest} />
-              <PlatformFilter platform={platform} {...rest} />
+              <PlatformFilter {...rest} />
               <AdditionalFilters includeTakenDown={includeTakenDown} {...rest} />
             </div>
             <div className="advanced-filter-group form-group">
               <h4>Add Filters</h4>
               <div className="col-md-6">
-                <SdkFilterPanel panelKey="1" platform={platform} {...rest} />
-                <AppFilterPanel panelKey="2" platform={platform} {...rest} />
+                <SdkFilterPanel panelKey="1" {...rest} />
+                <AppFilterPanel panelKey="2" {...rest} />
                 <PublisherFilterPanel panelKey="3" {...rest} />
               </div>
               <div className="col-md-6">
                 <AdIntelFilterPanel panelKey="4" {...rest} />
-                <RankingsFilterPanel panelKey="5" platform={platform} {...rest} />
+                <RankingsFilterPanel panelKey="5" {...rest} />
               </div>
             </div>
             <div className="form-review form-group">
               <h4>Review Filters</h4>
-              <FilterTagsDisplay includeTakenDown={includeTakenDown} platform={platform} resultType={resultType} {...rest} />
+              <FilterTagsDisplay includeTakenDown={includeTakenDown} resultType={resultType} {...rest} />
             </div>
             <div className="search-form-footer form-group">
               <div>
@@ -99,7 +98,6 @@ SearchForm.propTypes = {
   clearFilters: PropTypes.func.isRequired,
   searchFormExpanded: PropTypes.bool,
   includeTakenDown: PropTypes.bool.isRequired,
-  platform: PropTypes.string.isRequired,
   requestResults: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired,
   resultType: PropTypes.string.isRequired,
