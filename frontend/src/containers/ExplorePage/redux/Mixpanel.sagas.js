@@ -60,7 +60,9 @@ function* trackResultsLoad (action) {
 
 function* trackQueryFailure () {
   const filters = yield select(exploreSelectors.activeFilters);
-  yield call(service.trackQueryFailure, filters);
+  const elapsedTime = new Date().getTime() - startTime;
+  yield call(service.trackQueryFailure, { filters, elapsedTime });
+  yield call(resetStartTime);
 }
 
 function* trackCsvExport () {
@@ -77,7 +79,7 @@ function* trackSavedSearchLoad ({ payload: { searchId } }) {
   yield call(service.trackSavedSearchLoad, search.id, search.name, search.queryId);
 }
 
-function* trackSavedSearchDelete ({ payload: { id }}) {
+function* trackSavedSearchDelete ({ payload: { id } }) {
   const search = yield select(accountSelectors.getSavedSearchById, id);
   yield call(service.trackSavedSearchDelete, search.id, search.name, search.queryId);
 }
