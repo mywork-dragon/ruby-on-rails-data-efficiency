@@ -53,9 +53,9 @@ function* populateFromQuery ({ payload: { id, searchId } }) {
       if (newId !== id) {
         formState = newParams.formState;
         params = newParams;
+        id = newId;
         if (searchId) {
           yield put(updateSavedSearch.request(searchId, { queryId: newId, formState }));
-          id = newId;
         }
       }
     }
