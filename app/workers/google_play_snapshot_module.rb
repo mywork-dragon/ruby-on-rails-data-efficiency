@@ -15,7 +15,7 @@ module GooglePlaySnapshotModule
     save_attributes
 
     update_android_app_columns
-    update_android_developer_identifier
+    update_android_developer
 
     if create_developer
       GooglePlayDevelopersWorker.perform_async(:create_by_android_app_id, android_app_id)
@@ -141,21 +141,25 @@ module GooglePlaySnapshotModule
     @android_app.save!
   end
 
-  def update_android_developer_identifier
-    if @android_app.android_developer && @android_app.android_developer.identifier != @snapshot.developer_google_play_identifier
+  def update_android_developer
+    # Some of this logic is redundant with that in GooglePlayDevelopersWorker
+    # In fact the GooglePlayDevelopersWorker flow can be phased out once website attribution is not longer required.
+    if ! @snapshot.developer_google_play_identifier.nil?
       developer = AndroidDeveloper.find_by_identifier(@snapshot.developer_google_play_identifier)
-      # If a developer exists with this identifier it must've been created by a newer app.
-      # we probably want to keep the oldest developer so we will assign the new developer's
-      # apps to the older dev.
-      if developer
-        developer.identifier = nil
-        developer.save!
-        developer.android_apps.map do |app|
-          app.android_developer = @android_app.android_developer
-          app.save!
+      if developer.nil?
+        begin
+          developer = AndroidDeveloper.create!(
+            identifier: @snapshot.developer_google_play_identifier,
+            name: @snapshot.seller
+          )
+        rescue ActiveRecord::RecordNotUnique
+          developer = AndroidDeveloper.find_by_identifier!(@snapshot.developer_google_play_identifier)
         end
       end
-      @android_app.android_developer.update!(identifier: @snapshot.developer_google_play_identifier)
+      if developer != @android_app.android_developer
+        @android_app.android_developer = developer
+        @android_app.save!
+      end
     end
   end
 
