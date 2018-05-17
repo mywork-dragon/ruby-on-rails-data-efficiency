@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'challenge/payment_seed' => 'challenge#payment_seed'
   get 'mighty_report' => 'mighty_report#index'
   post 'get_mighty_report' => 'mighty_report#get_report', as: :get_report
+  get 'welcome/sdk/icon/:platform/:id' => 'welcome#get_sdk_icon'
 
   get 'fastest-growing-android-sdks' => 'fastest_growing_sdks#top_install_base', as: 'fastest-growing-android-sdks'
   get 'fastest-growing-android-sdks-blog-post' => 'fastest_growing_sdks#blog_post_redirect', as: 'fastest-growing-android-sdks-blog-post'

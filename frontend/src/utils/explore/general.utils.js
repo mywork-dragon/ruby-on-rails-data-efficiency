@@ -36,6 +36,7 @@ function formatApp (app) {
     ratingsCount: app.all_version_ratings_count,
     rankings: app.rankings || {},
     resultType: 'app',
+    ad_attribution_sdks: getAdAttributionSdks(app),
   };
 }
 
@@ -125,6 +126,10 @@ function getLocations (companies) {
   });
 
   return result;
+}
+
+function getAdAttributionSdks (app) {
+  return app.sdk_activity.filter(x => x.categories && x.categories.includes('Ad Attribution') && x.installed);
 }
 
 const noMatch = (location1, location2) => location1.city !== location2.city || location1.state_code !== location2.state_code || location1.country_code !== location2.country_code;

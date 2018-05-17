@@ -302,6 +302,13 @@ class WelcomeController < ApplicationController
   def well_be_in_touch
   end
 
+  def get_sdk_icon
+    id = params['id']
+    platform = params['platform']
+    favicon = platform === 'ios' ? IosSdk.find(id).favicon : AndroidSdk.find(id).favicon
+    redirect_to favicon
+  end
+
   protected
 
   def lead_data_from_params

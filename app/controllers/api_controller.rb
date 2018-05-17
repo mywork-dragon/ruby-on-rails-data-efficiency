@@ -484,8 +484,6 @@ class ApiController < ApplicationController
     render json: categories
   end
 
-
-
   def export_results_to_csv
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])

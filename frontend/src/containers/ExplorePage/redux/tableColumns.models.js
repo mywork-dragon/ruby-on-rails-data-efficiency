@@ -11,6 +11,7 @@ export function appColumns () {
     headerNames.AD_NETWORKS,
     headerNames.FIRST_SEEN_ADS,
     headerNames.LAST_SEEN_ADS,
+    headerNames.AD_SDKS,
     headerNames.USER_BASE,
     headerNames.AD_SPEND,
     headerNames.CATEGORY,

@@ -52,6 +52,7 @@ export const selectMap = (type) => {
         'taken_down',
         'app_identifier',
         'first_scanned_date',
+        'last_scanned_date',
         'price_category',
         'original_release_date',
         'in_app_purchases',
@@ -70,6 +71,7 @@ export const selectMap = (type) => {
       [headerNames.CATEGORY]: ['categories'],
       [headerNames.DOWNLOADS]: ['downloads'],
       [headerNames.RANK]: ['rankings'],
+      [headerNames.AD_SDKS]: ['sdk_activity'],
     };
   } else if (type === 'publisher') {
     return {

@@ -11,6 +11,8 @@ const SdkLogo = ({ sdk, platform }) => {
 
   const link = `#/sdk/${platform}/${sdk.id}`;
 
+  if (!sdk.favicon) sdk.favicon = `/welcome/sdk/icon/${platform}/${sdk.id}`;
+
   return (
     <OverlayTrigger overlay={tooltip} placement="top">
       <a href={link} target="_blank">
