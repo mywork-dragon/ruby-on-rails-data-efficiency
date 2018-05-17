@@ -10,4 +10,6 @@
 
 1.3.1: update - headquarter filter updated to include any/none operator and includeNoHqData option
 
+1.3.2: minor update - select updated to include sdk activity and last scanned date
+
 */

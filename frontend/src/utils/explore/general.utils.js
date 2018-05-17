@@ -129,7 +129,11 @@ function getLocations (companies) {
 }
 
 function getAdAttributionSdks (app) {
-  return app.sdk_activity.filter(x => x.categories && x.categories.includes('Ad Attribution') && x.installed);
+  if (app.sdk_activity) {
+    return app.sdk_activity.filter(x => x.categories && x.categories.includes('Ad Attribution') && x.installed);
+  }
+
+  return [];
 }
 
 const noMatch = (location1, location2) => location1.city !== location2.city || location1.state_code !== location2.state_code || location1.country_code !== location2.country_code;

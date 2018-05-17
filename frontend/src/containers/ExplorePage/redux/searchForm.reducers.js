@@ -27,7 +27,7 @@ const initialFormState = {
       operator: 'and',
     },
   },
-  version: '1.3.1',
+  version: '1.3.2',
 };
 
 function searchForm (state = initialFormState, action) {
