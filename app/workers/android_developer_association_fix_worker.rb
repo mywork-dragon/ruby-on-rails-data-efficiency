@@ -6,12 +6,8 @@ class AndroidDeveloperAssociationFixWorker
 
 
   def perform(android_app_id)
-
-  end
-
-  def update_android_developer
-    # Some of this logic is redundant with that in GooglePlayDevelopersWorker
-    # In fact the GooglePlayDevelopersWorker flow can be phased out once website attribution is not longer required.
+    @android_app = AndroidApp.find(android_app_id)
+    @snapshot = @android_app.newest_android_app_snapshot
     if ! @snapshot.developer_google_play_identifier.nil?
       developer = AndroidDeveloper.find_by_identifier(@snapshot.developer_google_play_identifier)
       if developer.nil?
