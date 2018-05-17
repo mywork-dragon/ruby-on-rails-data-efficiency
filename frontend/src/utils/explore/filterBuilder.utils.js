@@ -19,7 +19,7 @@ export function buildFilter (form) {
   result.filter.inputs.push(buildAdNetworkFilters(form));
   result.filter.inputs.push(buildRankingsFilters(form));
   result.filter.inputs.push(buildCategoryFilters(form));
-
+  result.filter.inputs.push(buildHeadquarterFilters(form.filters));
   result.filter.inputs = _.compact(result.filter.inputs);
 
   return result;
@@ -261,6 +261,71 @@ export function buildRankingsFilters ({ platform, filters }) {
   }
 
   return result;
+}
+
+export function buildHeadquarterFilters ({ headquarters }) {
+  if (headquarters && headquarters.value.values.length) {
+    const { values, operator, includeNoHqData } = headquarters.value;
+    const result = {
+      operator: operator === 'any' ? 'union' : 'intersect',
+      inputs: [],
+    };
+
+    values.forEach((location) => {
+      const filter = {
+        operator: 'filter',
+        object: 'publisher',
+        predicates: [],
+      };
+
+      const {
+        city,
+        state,
+        country,
+      } = location;
+
+      filter.predicates.push(_.compact([
+        'and',
+        city ? ['city', city] : null,
+        state ? ['state_code', state] : null,
+        country ? ['country_code', country] : null,
+      ]));
+
+      if (operator === 'any') {
+        result.inputs.push(filter);
+      } else if (operator === 'none') {
+        result.inputs.push({
+          operator: 'not',
+          inputs: [filter],
+        });
+      }
+    });
+
+    if (includeNoHqData) {
+      return {
+        operator: 'union',
+        inputs: [
+          result,
+          {
+            operator: 'not',
+            inputs: [
+              {
+                operator: 'filter',
+                predicates: [
+                  ['not', ['country_code_is_null']],
+                ],
+                object: 'domain_data',
+              },
+            ],
+          },
+        ],
+      };
+    }
+
+    return result;
+  }
+
+  return null;
 }
 
 // TODO: clean this up someday

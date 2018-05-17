@@ -21,6 +21,8 @@ const Explore = ({
   requestPermissions,
   shouldFetchAppPermissionsOptions,
   requestAppPermissionsOptions,
+  shouldFetchGeoOptions,
+  requestGeoOptions,
 }) => {
   if (queryId && !existingId) {
     populateFromQueryId(queryId);
@@ -31,6 +33,7 @@ const Explore = ({
   if (shouldFetchCategories) requestCategories();
   if (shouldFetchSdkCategories) requestSdkCategories();
   if (shouldFetchAppPermissionsOptions) requestAppPermissionsOptions();
+  if (shouldFetchGeoOptions) requestGeoOptions();
   if (shouldFetchPermissions) requestPermissions();
 
   return (
@@ -68,6 +71,8 @@ Explore.propTypes = {
   shouldFetchPermissions: PropTypes.bool.isRequired,
   shouldFetchAppPermissionsOptions: PropTypes.bool.isRequired,
   requestAppPermissionsOptions: PropTypes.func.isRequired,
+  shouldFetchGeoOptions: PropTypes.bool.isRequired,
+  requestGeoOptions: PropTypes.func.isRequired,
 };
 
 Explore.defaultProps = {

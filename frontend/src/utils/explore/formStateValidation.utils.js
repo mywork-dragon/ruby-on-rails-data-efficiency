@@ -8,6 +8,7 @@ export default function validateFormState (form, currentVersion, iosCategories, 
   result = convertDatesToMoments(result);
   result = updateDisplayTexts(result);
   result = updateCategories(result, iosCategories, androidCategories);
+  result = updateHeadquarters(result, currentVersion);
   result.version = currentVersion;
 
   return {
@@ -100,4 +101,26 @@ function combineCategories (iosFilterCategories, androidFilterCategories, iosCat
   });
 
   return Object.values(categories);
+}
+
+export function updateHeadquarters (form) {
+  if (!form.filters.headquarters || form.filters.headquarters.value.operator) return form;
+
+  const result = _.cloneDeep(form);
+  const filter = form.filters.headquarters;
+  delete result.filters.headquarters;
+
+  const newValue = {
+    values: filter.value.map(x => ({ value: x.key, label: x.label, country: x.key })),
+    operator: 'any',
+    includeNoHqData: false,
+  };
+
+  result.filters.headquarters = {
+    panelKey: '3',
+    value: newValue,
+    displayText: getDisplayText('headquarters', newValue),
+  };
+
+  return result;
 }

@@ -134,7 +134,7 @@ function* getQueryIdFromState ({ form }) {
     const { resultsTable } = yield select(getCurrentState);
     const columns = yield select(getCurrentColumns, form.resultType);
     const accountNetworks = yield select(accessibleNetworks);
-    const pageSettings = { pageSize: resultsTable.pageSize, pageNum: 0 };
+    const pageSettings = { pageSize: resultsTable.pageSize };
     const params = buildExploreRequest(form, columns, pageSettings, resultsTable.sort, accountNetworks);
     const { data: { query_id } } = yield call(service.getQueryId, params);
     return { query_id, params };

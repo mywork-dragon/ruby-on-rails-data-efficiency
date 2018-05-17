@@ -8,4 +8,6 @@
 
 1.2.1: minor update - include panel key in category update
 
+1.3.1: update - headquarter filter updated to include any/none operator and includeNoHqData option
+
 */

@@ -14,6 +14,7 @@ const mapDispatchToProps = dispatch => ({
   requestSdkCategories: () => dispatch(appStore.sdkCategories.request()),
   requestRankingsCountries: () => dispatch(appStore.rankingsCountries.request()),
   requestAppPermissionsOptions: () => dispatch(appStore.appPermissionsOptions.request()),
+  requestGeoOptions: () => dispatch(appStore.geoOptions.request()),
   requestPermissions: () => dispatch(loadPermissions.request()),
 });
 
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => {
     shouldFetchSdkCategories: appStoreSelectors.needSdkCategories(state),
     shouldFetchRankingsCountries: appStoreSelectors.needRankingsCountries(state),
     shouldFetchAppPermissionsOptions: appStoreSelectors.needAppPermissionsOptions(state),
+    shouldFetchGeoOptions: appStoreSelectors.needGeoOptions(state),
     shouldFetchPermissions: needPermissions(state),
   };
 };

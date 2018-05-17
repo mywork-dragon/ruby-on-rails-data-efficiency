@@ -2,7 +2,7 @@ import { all, put, call, takeLatest } from 'redux-saga/effects';
 import AppStoreService from 'services/appStore.service';
 import ExploreService from 'services/explore.service';
 import * as actions from 'actions/AppStore.actions';
-import { formatCategories } from 'utils/appStore.utils';
+import * as utils from 'utils/appStore.utils';
 // import { androidCategories, iosCategories } from 'utils/mocks/mock-categories.utils';
 
 function* requestCategories () {
@@ -12,8 +12,8 @@ function* requestCategories () {
     const data = {};
     // data.iosCategoriesById = formatCategories(iosCategories);
     // data.androidCategoriesById = formatCategories(androidCategories);
-    data.iosCategoriesById = formatCategories(iosRes.data);
-    data.androidCategoriesById = formatCategories(androidRes.data);
+    data.iosCategoriesById = utils.formatCategories(iosRes.data);
+    data.androidCategoriesById = utils.formatCategories(androidRes.data);
     yield put(actions.categories.success(data));
   } catch (err) {
     console.log(err);
@@ -65,6 +65,17 @@ function* requestAppPermissionsOptions () {
   }
 }
 
+function* requestGeoOptions () {
+  try {
+    const { data } = yield call(ExploreService.getGeoOptions);
+    const headquarters = utils.formatHeadquarterData(data);
+    yield put(actions.geoOptions.success(headquarters));
+  } catch (error) {
+    console.log(error);
+    yield put(actions.geoOptions.failure(error));
+  }
+}
+
 function* watchCategoriesRequest() {
   yield takeLatest(actions.CATEGORIES.REQUEST, requestCategories);
 }
@@ -85,6 +96,10 @@ function* watchAppPermissionsOptionsRequest() {
   yield takeLatest(actions.APP_PERMISSIONS_OPTIONS.REQUEST, requestAppPermissionsOptions);
 }
 
+function* watchGeoOptionsRequest() {
+  yield takeLatest(actions.GEO_OPTIONS.REQUEST, requestGeoOptions);
+}
+
 export default function* listSaga() {
   yield all([
     watchCategoriesRequest(),
@@ -92,5 +107,6 @@ export default function* listSaga() {
     watchSdkCategoriesRequest(),
     watchRankingsCategoriesRequest(),
     watchAppPermissionsOptionsRequest(),
+    watchGeoOptionsRequest(),
   ]);
 }

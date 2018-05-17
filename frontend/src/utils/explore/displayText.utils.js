@@ -87,8 +87,9 @@ function sdkText ({ eventType, sdks, dateRange, dates, installState }) {
   return `${sdks.map(x => `${x.name} (${capitalize(x.platform)})${x.sdks ? ` (${x.includedSdks.length} of ${x.sdks.length} SDKs)` : ''}`).join(', ')} ${eventTypeText} ${requiresDate ? dateText : ''}${eventType !== 'never-seen' ? installText : ''}`;
 }
 
-function headquarterText (countries) {
-  return `Headquartered in ${countries.map(x => x.label).join(', ')}`;
+function headquarterText (value) {
+  if (!value.values.length) return '';
+  return `Headquartered in ${value.operator} of: ${value.values.map(x => x.label).join(', ')}${value.includeNoHqData ? ' (including results with no location data)' : ''}`;
 }
 
 function availableCountriesText ({ countries, condition }) {

@@ -51,6 +51,9 @@ const ExploreService = (client = httpClient) => {
     getAppPermissionsOptions: () => (
       exploreClient.get(`${window.MQUERY_SERVICE}/app/permissions/options`)
     ),
+    getGeoOptions: () => (
+      exploreClient.get(`${window.MQUERY_SERVICE}/geo/options`)
+    ),
   };
 };
 

@@ -1,95 +1,114 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, Spin } from 'antd';
-import AppStoreService from 'services/appStore.service';
+import { Select, Checkbox } from 'antd';
+import CustomSelect from 'components/select/CustomSelect.component';
 
-const Option = Select.Option;
+const { Option } = Select;
 
-class HeadquarterFilter extends React.Component {
-  constructor (props) {
-    super(props);
-    this.fetchCountryOptions = this.fetchCountryOptions.bind(this);
-    this.lastFetchId = 0;
+const HeadquarterFilter = ({
+  filter: {
+    value: {
+      values,
+      includeNoHqData,
+      operator,
+    },
+  },
+  panelKey,
+  updateFilter,
+  headquarterOptions,
+}) => (
+  <li className="li-filter">
+    <label className="filter-label">
+      Headquartered in:
+    </label>
+    <div className="input-group headquarter" id="headquarter-filter">
+      <Select
+        getPopupContainer={() => document.getElementById(('headquarter-filter'))}
+        onChange={(val) => {
+          const newValue = {
+            values,
+            includeNoHqData,
+            operator: val,
+          };
 
-    this.state = {
-      countryOptions: [],
-      fetching: false,
-    };
-  }
+          updateFilter('headquarters', newValue, { panelKey })();
+        }}
+        size="small"
+        value={operator}
+      >
+        <Option value="any">Any</Option>
+        <Option value="none">None</Option>
+      </Select>
+      <div className="following">
+        of the following
+      </div>
+      <div className="li-select">
+        <CustomSelect
+          clearable
+          multi
+          name="headquarter-field"
+          onChange={(vals) => {
+            const newValue = {
+              values: vals,
+              operator,
+              includeNoHqData,
+            };
 
-  fetchCountryOptions (value) {
-    if (value === '') {
-      return;
-    }
+            updateFilter('headquarters', newValue, { panelKey })();
+          }}
+          options={headquarterOptions}
+          placeholder="Select countries"
+          searchable
+          value={values}
+        />
+      </div>
+      <div>
+        <Checkbox
+          checked={includeNoHqData}
+          className="explore-checkbox"
+          disabled={values.length === 0}
+          onChange={() => {
+            const newValue = {
+              values,
+              operator,
+              includeNoHqData: !includeNoHqData,
+            };
 
-    this.lastFetchId += 1;
-    const fetchId = this.lastFetchId;
-    this.setState({ countryOptions: [], fetching: true });
-    AppStoreService().getCountryAutocompleteResults(0, value)
-      .then((response) => {
-        if (fetchId !== this.lastFetchId) {
-          return;
-        }
-
-        this.setState({ countryOptions: response.data.results, fetching: false });
-      });
-  }
-
-  render () {
-    const {
-      filter: {
-        value,
-      },
-      panelKey,
-      updateFilter,
-    } = this.props;
-
-    const { countryOptions, fetching } = this.state;
-
-    return (
-      <li className="li-filter">
-        <label className="filter-label">
-          Headquartered in any:
-        </label>
-        <div className="input-group headquarter" id="headquarter-filter">
-          <div className="li-select">
-            <Select
-              allowClear
-              filterOption={false}
-              getPopupContainer={() => document.getElementById('headquarter-filter')}
-              labelInValue
-              mode="multiple"
-              notFoundContent={fetching ? <Spin size="small" /> : null}
-              onChange={values => updateFilter('headquarters', values, { panelKey })()}
-              onSearch={this.fetchCountryOptions}
-              placeholder="Search countries"
-              value={value}
-            >
-              {countryOptions.map(x => (
-                <Option key={`${x.name}${x.id}`} value={`${x.id}`}>
-                  {x.name}
-                </Option>
-              ))}
-            </Select>
-          </div>
-        </div>
-      </li>
-    );
-  }
-}
+            updateFilter('headquarters', newValue, { panelKey })();
+          }}
+        >
+          Include results with no location data
+        </Checkbox>
+      </div>
+    </div>
+  </li>
+);
 
 HeadquarterFilter.propTypes = {
   filter: PropTypes.shape({
-    value: PropTypes.array,
+    value: PropTypes.shape({
+      values: PropTypes.array,
+      includeNoHqData: PropTypes.bool,
+      operator: PropTypes.oneOf(['any', 'none']),
+    }),
   }),
   updateFilter: PropTypes.func.isRequired,
   panelKey: PropTypes.string.isRequired,
+  headquarterOptions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  })),
 };
 
 HeadquarterFilter.defaultProps = {
   filter: {
-    value: [],
+    value: {
+      values: [],
+      includeNoHqData: false,
+      operator: 'any',
+    },
   },
+  headquarterOptions: [],
 };
 
 export default HeadquarterFilter;

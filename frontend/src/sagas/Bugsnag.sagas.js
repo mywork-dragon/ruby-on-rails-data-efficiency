@@ -16,6 +16,8 @@ import {
   CATEGORIES,
   SDK_CATEGORIES,
   RANKINGS_COUNTRIES,
+  APP_PERMISSIONS_OPTIONS,
+  GEO_OPTIONS,
 } from 'actions/AppStore.actions';
 
 import {
@@ -47,6 +49,8 @@ function* watchError() {
     LOAD_PERMISSIONS.FAILURE,
     UPDATE_SAVED_SEARCH.FAILURE,
     RANKINGS_COUNTRIES.FAILURE,
+    APP_PERMISSIONS_OPTIONS.FAILURE,
+    GEO_OPTIONS.FAILURE,
   ], sendToBugsnag);
 }
 

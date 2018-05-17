@@ -17,7 +17,6 @@ export const appFilterKeys = {
 
 export const publisherFilterKeys = {
   fortuneRank: 'fortune_rank',
-  headquarters: 'country_code',
 };
 
 export const adIntelFilterKeys = {

@@ -34,3 +34,10 @@ export const appPermissionsOptions = {
   success: countries => action(APP_PERMISSIONS_OPTIONS.SUCCESS, { countries }),
   failure: error => action(APP_PERMISSIONS_OPTIONS.FAILURE, { error }),
 };
+
+export const GEO_OPTIONS = createRequestTypes('GEO_OPTIONS');
+export const geoOptions = {
+  request: () => action(GEO_OPTIONS.REQUEST),
+  success: headquarters => action(GEO_OPTIONS.SUCCESS, { headquarters }),
+  failure: error => action(GEO_OPTIONS.FAILURE, { error }),
+};

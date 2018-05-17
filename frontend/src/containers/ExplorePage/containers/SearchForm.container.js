@@ -47,6 +47,7 @@ const mapStateToProps = (state) => {
     rankingsCountries: appStore.getRankingsCountries(state),
     appPermissionsOptions: appStore.getAppPermissionsOptions(state),
     canAccessAppPermissions: account.canAccessFeature(state, 'app-permissions-filter'),
+    headquarterOptions: appStore.getGeoCountries(state),
   };
 };
 

@@ -5,6 +5,7 @@ import {
   SDK_CATEGORIES,
   RANKINGS_COUNTRIES,
   APP_PERMISSIONS_OPTIONS,
+  GEO_OPTIONS,
 } from 'actions/AppStore.actions';
 
 const initialCategoryState = {
@@ -162,12 +163,46 @@ function appPermissionsOptions (state = initialAppPermissionsOptionsState, actio
   }
 }
 
+const initialGeoOptionsState = {
+  loaded: false,
+  fetching: false,
+  cities: {},
+  states: {},
+  countries: {},
+};
+
+function geoOptions (state = initialGeoOptionsState, action) {
+  switch (action.type) {
+    case GEO_OPTIONS.REQUEST:
+      return {
+        ...state,
+        fetching: true,
+      };
+    case GEO_OPTIONS.SUCCESS:
+      return {
+        ...state,
+        ...action.payload.headquarters,
+        loaded: true,
+        fetching: false,
+      };
+    case GEO_OPTIONS.FAILURE:
+      return {
+        ...state,
+        loaded: true,
+        fetching: false,
+      };
+    default:
+      return state;
+  }
+}
+
 const appStoreInfo = combineReducers({
   categories,
   availableCountries,
   sdkCategories,
   rankingsCountries,
   appPermissionsOptions,
+  geoOptions,
 });
 
 export default appStoreInfo;
