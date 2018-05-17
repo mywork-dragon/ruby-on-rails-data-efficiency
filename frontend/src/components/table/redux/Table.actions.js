@@ -10,6 +10,7 @@ const tableActionTypes = [
   'UPDATE_COLUMNS',
   'UPDATE_FILTER',
   'CSV_EXPORTED',
+  'UPDATE_PAGE_SIZE',
 ];
 
 const tableRequestTypes = [
@@ -30,6 +31,7 @@ export function createTableActions (types) {
     csvExported: () => action(types.CSV_EXPORTED),
     updateColumns: (columns, type) => action(types.UPDATE_COLUMNS, { columns, type }),
     updateFilter: (parameter, value, options) => action(types.UPDATE_FILTER, { parameter, value, options }),
+    updatePageSize: newSize => action(types.UPDATE_PAGE_SIZE, { newSize }),
   };
 }
 

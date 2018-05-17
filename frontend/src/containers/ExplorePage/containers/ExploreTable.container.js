@@ -15,6 +15,7 @@ const mapDispatchToProps = dispatch => ({
   trackSort: sort => dispatch(trackTableSort(sort)),
   updateColumns: (columns, type) => dispatch(tableActions.updateColumns(columns, type)),
   updatePageNum: (queryResultId, page) => dispatch(requestQueryPage(queryResultId, page)),
+  updatePageSize: page => dispatch(tableActions.updatePageSize(page)),
 });
 
 const mapStateToProps = (state) => {
@@ -62,6 +63,7 @@ const mergeProps = (stateProps, dispatchProps) => {
     currentLoadedQuery,
     resultType,
     currentColumns,
+    resultsCount,
     ...other
   } = stateProps;
 
@@ -69,6 +71,7 @@ const mergeProps = (stateProps, dispatchProps) => {
     trackSort,
     updatePageNum,
     updateColumns,
+    updatePageSize,
     ...rest
   } = dispatchProps;
 
@@ -87,16 +90,19 @@ const mergeProps = (stateProps, dispatchProps) => {
     sort,
     pageNum,
     resultType,
+    resultsCount,
     ...other,
     ...rest,
     onPageChange: page => updatePageNum(queryResultId, page),
     onPageSizeChange: (newSize) => {
-      if (canFetch) {
+      if (canFetch && resultsCount) {
         requestResults({
           pageNum: 0,
           pageSize: newSize,
           sort,
         });
+      } else {
+        updatePageSize(newSize);
       }
     },
     onSortedChange: (newSort) => {

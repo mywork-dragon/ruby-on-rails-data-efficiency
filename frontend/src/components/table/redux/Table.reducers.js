@@ -56,6 +56,11 @@ export function table(actionTypes, tableOptions) {
           ...state,
           columns: action.payload.columns,
         };
+      case actionTypes.UPDATE_PAGE_SIZE:
+        return {
+          ...state,
+          pageSize: action.payload.newSize,
+        };
       default:
         return state;
     }
