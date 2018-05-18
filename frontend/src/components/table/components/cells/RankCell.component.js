@@ -10,10 +10,8 @@ const RankCell = ({
     platform,
     rankings: { charts },
   },
-  rest: {
-    getCategoryById,
-    currentRankingsCountries,
-  },
+  getCategoryById,
+  currentRankingsCountries,
 }) => {
   if (!charts || charts.length === 0) {
     return <span className="invalid">No rankings data</span>;
@@ -64,10 +62,8 @@ RankCell.propTypes = {
       charts: PropTypes.array,
     }),
   }).isRequired,
-  rest: PropTypes.shape({
-    getCategoryById: PropTypes.func,
-    currentRankingsCountries: PropTypes.string,
-  }).isRequired,
+  getCategoryById: PropTypes.func.isRequired,
+  currentRankingsCountries: PropTypes.string.isRequired,
 };
 
 export default RankCell;

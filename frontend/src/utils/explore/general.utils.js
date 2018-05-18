@@ -50,7 +50,7 @@ function formatPublisher (publisher) {
     rating: publisher.average_ratings,
     ratingsCount: publisher.total_ratings,
     downloads: publisher.total_downloads,
-    ad_networks: publisher.ad_networks.map(x => ({ id: x })),
+    ad_networks: publisher.ad_networks ? publisher.ad_networks.map(x => ({ id: x })) : [],
     fortuneRank: getFortuneRank(publisher.companies),
     locations: getLocations(publisher.companies),
     resultType: 'publisher',

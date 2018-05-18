@@ -100,7 +100,7 @@ export const columnModels = [
     id: headerNames.APP,
     accessor: 'name',
     minWidth: widths.xLarge,
-    Cell: cell => <AppNameCell app={cell.original} {...cell.tdProps} />,
+    Cell: cell => <AppNameCell app={cell.original} {...cell.tdProps.rest} />,
   },
   {
     Header: headerNames.CATEGORY,
@@ -140,7 +140,7 @@ export const columnModels = [
     id: headerNames.ENTERED_CHART,
     accessor: 'newcomers',
     width: widths.large,
-    Cell: cell => <NewcomerCell app={cell.original} {...cell.tdProps} />,
+    Cell: cell => <NewcomerCell app={cell.original} {...cell.tdProps.rest} />,
   },
   {
     Header: headerNames.FIRST_SEEN_ADS,
@@ -189,7 +189,7 @@ export const columnModels = [
     id: headerNames.MONTHLY_CHANGE,
     accessor: 'rankings',
     minWidth: widths.large,
-    Cell: cell => <RankChangeCell app={cell.original} changeType="month" {...cell.tdProps} />,
+    Cell: cell => <RankChangeCell app={cell.original} changeType="month" {...cell.tdProps.rest} />,
   },
   {
     Header: headerNames.NUM_APPS,
@@ -213,14 +213,14 @@ export const columnModels = [
     id: headerNames.PUBLISHER,
     minWidth: widths.xLarge,
     accessor: d => d.publisher || d,
-    Cell: (cell) => <PublisherCell platform={cell.original.platform} publisher={cell.value} {...cell.tdProps} />,
+    Cell: (cell) => <PublisherCell platform={cell.original.platform} publisher={cell.value} {...cell.tdProps.rest} />,
   },
   {
     Header: <HintTextHeaderCell title={headerNames.RANK} hintText="Only charts fulfilling the filter requirements are displayed; app may be ranked on additional charts" />,
     id: headerNames.RANK,
     minWidth: widths.large,
     accessor: 'rank',
-    Cell: (cell) => <RankCell app={cell.original} {...cell.tdProps} />,
+    Cell: (cell) => <RankCell app={cell.original} {...cell.tdProps.rest} />,
   },
   {
     Header: <RatingHeaderCell />,
@@ -262,6 +262,6 @@ export const columnModels = [
     id: headerNames.WEEKLY_CHANGE,
     accessor: 'rankings',
     minWidth: widths.large,
-    Cell: cell => <RankChangeCell app={cell.original} changeType="week" {...cell.tdProps} />,
+    Cell: cell => <RankChangeCell app={cell.original} changeType="week" {...cell.tdProps.rest} />,
   },
 ];

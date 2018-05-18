@@ -84,7 +84,11 @@ AppFilterPanel.propTypes = {
   togglePanel: PropTypes.func.isRequired,
   iosCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
   androidCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  canAccessAppPermissions: PropTypes.bool.isRequired,
+  canAccessAppPermissions: PropTypes.bool,
+};
+
+AppFilterPanel.defaultProps = {
+  canAccessAppPermissions: false,
 };
 
 export default AppFilterPanel;

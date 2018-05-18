@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable, { ReactTableDefaults } from 'react-table';
+import classnames from 'classnames';
 import { numberWithCommas, capitalize } from 'utils/format.utils';
 import { generateColumns, totalNumPages } from 'utils/table.utils';
 import { headerNames } from './redux/column.models';
@@ -20,7 +21,6 @@ const Table = ({
   columns,
   error,
   csvLink,
-  isAdIntel,
   isManual,
   loading,
   message,
@@ -61,10 +61,7 @@ const Table = ({
     resultType,
   });
 
-  const getTdProps = () => ({
-    isAdIntel,
-    ...rest,
-  });
+  const getTdProps = () => rest;
 
   return (
     <section className="panel panel-default table-dynamic">
@@ -128,6 +125,13 @@ const Table = ({
             style={{
               minHeight: results.length ? '0px' : '500px',
             }}
+            TdComponent={({
+              className, children, style,
+            }) => (
+              <div className={classnames('rt-td', className)} role="gridcell" style={style}>
+                {children}
+              </div>
+            )}
             ThComponent={CustomHeaderCell}
           />
         ) : (
@@ -135,11 +139,19 @@ const Table = ({
             columns={columnHeaders}
             data={results}
             defaultSorted={sort}
+            getTdProps={getTdProps}
             getTheadThProps={getTheadThProps}
             loading={loading}
             minRows={0}
             showPaginationBottom={false}
             showPaginationTop={false}
+            TdComponent={({
+              className, children, style,
+            }) => (
+              <div className={classnames('rt-td', className)} role="gridcell" style={style}>
+                {children}
+              </div>
+            )}
             ThComponent={CustomHeaderCell}
           />
         )
@@ -156,7 +168,6 @@ Table.propTypes = {
   }).isRequired,
   error: PropTypes.bool.isRequired,
   csvLink: PropTypes.string,
-  isAdIntel: PropTypes.bool,
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
   message: PropTypes.string,
@@ -189,7 +200,6 @@ Table.propTypes = {
 Table.defaultProps = {
   canFetch: false,
   csvLink: null,
-  isAdIntel: false,
   isManual: false,
   loading: false,
   message: 'No results',

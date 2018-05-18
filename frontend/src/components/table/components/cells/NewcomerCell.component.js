@@ -10,11 +10,9 @@ const NewcomerCell = ({
     platform,
     newcomers,
   },
-  rest: {
-    getCategoryById,
-    currentRankingsCountries,
-    currentSort,
-  },
+  getCategoryById,
+  currentRankingsCountries,
+  currentSort,
 }) => {
   if (!newcomers || newcomers.length === 0) return <span className="invalid">No data</span>;
   const filtered = filterRankings(newcomers, currentRankingsCountries, 'date', currentSort);
@@ -62,10 +60,12 @@ NewcomerCell.propTypes = {
       charts: PropTypes.array,
     }),
   }).isRequired,
-  rest: PropTypes.shape({
-    getCategoryById: PropTypes.func,
-    currentRankingsCountries: PropTypes.string,
+  getCategoryById: PropTypes.func.isRequired,
+  currentSort: PropTypes.shape({
+    id: PropTypes.string,
+    desc: PropTypes.bool,
   }).isRequired,
+  currentRankingsCountries: PropTypes.string.isRequired,
 };
 
 export default NewcomerCell;

@@ -10,11 +10,9 @@ const RankChangeCell = ({
     platform,
     rankings: { charts },
   },
-  rest: {
-    getCategoryById,
-    currentRankingsCountries,
-    currentSort,
-  },
+  getCategoryById,
+  currentRankingsCountries,
+  currentSort,
   changeType,
 }) => {
   if (!charts || !charts.length) return <span className="invalid">No rankings data</span>;
@@ -81,9 +79,11 @@ RankChangeCell.propTypes = {
       charts: PropTypes.array,
     }),
   }).isRequired,
-  rest: PropTypes.shape({
-    getCategoryById: PropTypes.func,
-    currentRankingsCountries: PropTypes.string,
+  getCategoryById: PropTypes.func.isRequired,
+  currentRankingsCountries: PropTypes.string.isRequired,
+  currentSort: PropTypes.shape({
+    id: PropTypes.string,
+    desc: PropTypes.bool,
   }).isRequired,
   changeType: PropTypes.string,
 };
