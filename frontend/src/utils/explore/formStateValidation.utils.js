@@ -6,9 +6,9 @@ import getDisplayText from './displayText.utils';
 export default function validateFormState (form, currentVersion, iosCategories, androidCategories) {
   let result = { ...form };
   result = convertDatesToMoments(result);
-  result = updateDisplayTexts(result);
   result = updateCategories(result, iosCategories, androidCategories);
   result = updateHeadquarters(result, currentVersion);
+  result = updateDisplayTexts(result);
   result.version = currentVersion;
 
   return {
