@@ -14,7 +14,12 @@
             <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
         <li ng-show="$root.canAccessFeature('explore-v2')">
-            <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
+            <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i>
+              <span>Explore</span>
+              <span class="label label-success">
+                NEW
+              </span>
+            </a>
             <ul>
               <li>
                 <a ui-sref="explore" ui-sref-active="active">
@@ -27,7 +32,7 @@
                   <i class="fa fa-angle-right" />
                   <span>Explore V2</span>
                   <span class="label label-success">
-                    BETA
+                    NEW
                   </span>
                 </a>
               </li>
@@ -39,9 +44,6 @@
         </li>
         <li class="popularApps">
             <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Popular Apps')"> <i class="fa fa-fire"></i><span>Popular Apps</span>
-              <span class="label label-danger">
-                NEW
-              </span>
             </a>
             <ul>
               <li><a ui-sref="newcomer-apps" ui-sref-active="active" ng-click="clickedNavLink('Newcomers')" href="#/popular-apps/newcomers"><i class="fa fa-angle-right"></i><span>Newcomers</span></a></li>

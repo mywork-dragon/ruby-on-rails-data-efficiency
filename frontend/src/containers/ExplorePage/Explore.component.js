@@ -41,7 +41,7 @@ const Explore = ({
       <h4 className="page-title explore-title">
         Explore V2
         {' '}
-        <span className="beta-flag">BETA</span>
+        <span className="beta-flag">NEW</span>
       </h4>
       <SavedSearchContainer />
       <SearchFormContainer />
