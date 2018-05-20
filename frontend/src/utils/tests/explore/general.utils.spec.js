@@ -22,6 +22,7 @@ describe('exploreUtils', () => {
             'publisher_id': 131716,
             'id': 2729366,
             type: 'IosApp',
+            ad_attribution_sdks: [],
             ad_networks: [{ id: 'applovin' }],
             creative_formats: ['video'],
             first_seen_ads_date: '2017-10-10',

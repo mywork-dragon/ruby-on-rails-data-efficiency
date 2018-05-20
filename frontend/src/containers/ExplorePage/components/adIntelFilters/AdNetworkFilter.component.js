@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, DatePicker } from 'antd';
 import moment from 'moment';
+import { capitalize } from 'utils/format.utils';
 
 const Option = Select.Option;
 
@@ -21,6 +22,7 @@ const AdNetworkFilter = ({
   panelKey,
   updateFilter,
   facebookOnly,
+  resultType,
 }) => {
   const updateAdNetworkFilter = field => (val) => {
     if (field === 'adNetworks') {
@@ -43,7 +45,7 @@ const AdNetworkFilter = ({
   return (
     <li className="li-filter ad-networks">
       <div className="ad-date-options-group">
-        Advertising on
+        {capitalize(resultType)}s advertising on
         {facebookOnly && ' '}
         {!facebookOnly && (
           <span>
@@ -153,6 +155,7 @@ AdNetworkFilter.propTypes = {
   panelKey: PropTypes.string.isRequired,
   accountNetworks: PropTypes.arrayOf(PropTypes.object),
   facebookOnly: PropTypes.bool.isRequired,
+  resultType: PropTypes.string.isRequired,
 };
 
 AdNetworkFilter.defaultProps = {

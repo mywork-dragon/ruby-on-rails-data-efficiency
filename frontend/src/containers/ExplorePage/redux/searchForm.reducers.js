@@ -24,7 +24,7 @@ const initialFormState = {
   filters: {
     sdks: {
       filters: [{ ...sdkFilterModel }],
-      operator: 'and',
+      operator: 'or',
     },
   },
   version: '1.3.2',

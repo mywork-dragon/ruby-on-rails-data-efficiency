@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 import { Button, Radio } from 'antd';
 import { panelFilterCount } from 'utils/explore/general.utils';
+import { capitalize } from 'utils/format.utils';
 
 import FilterCountLabel from '../FilterCountLabel.component';
 import SdkFilterGroup from './SdkFilterGroup.component';
@@ -17,6 +18,7 @@ const SdkFilterPanel = ({
   panelKey,
   togglePanel,
   updateFilter,
+  resultType,
   ...rest
 }) => {
   let sdkFilters = [];
@@ -48,14 +50,14 @@ const SdkFilterPanel = ({
             value={sdks.operator}
           >
             <Radio.Button
-              value="and"
-            >
-              AND
-            </Radio.Button>
-            <Radio.Button
               value="or"
             >
               OR
+            </Radio.Button>
+            <Radio.Button
+              value="and"
+            >
+              AND
             </Radio.Button>
           </Radio.Group>
         </div>
@@ -72,6 +74,11 @@ const SdkFilterPanel = ({
           ))
         }
         <Button icon="plus" onClick={() => addSdkFilter()} size="small" type="normal">Add Filter</Button>
+        {resultType === 'publisher' && (
+          <div style={{ float: 'right', marginTop: 5 }}>
+            *SDK filters applied to publishers
+          </div>
+        )}
       </Panel.Body>
     </Panel>
   );
@@ -86,6 +93,7 @@ SdkFilterPanel.propTypes = {
   panelKey: PropTypes.string.isRequired,
   togglePanel: PropTypes.func.isRequired,
   updateFilter: PropTypes.func.isRequired,
+  resultType: PropTypes.string.isRequired,
 };
 
 export default SdkFilterPanel;

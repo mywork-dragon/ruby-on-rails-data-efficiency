@@ -13,7 +13,7 @@ const AdditionalFilters = ({ includeTakenDown, updateFilter }) => (
         className="explore-checkbox"
         onChange={updateFilter('includeTakenDown')}
       >
-        Include unavailable apps
+        Include apps that have been taken down
       </Checkbox>
     </div>
   </div>

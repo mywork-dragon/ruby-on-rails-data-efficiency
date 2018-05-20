@@ -55,12 +55,12 @@ const SearchForm = ({
             <div className="advanced-filter-group form-group">
               <h4>Add Filters</h4>
               <div className="col-md-6">
-                <SdkFilterPanel panelKey="1" {...rest} />
+                <SdkFilterPanel panelKey="1" resultType={resultType} {...rest} />
                 <AppFilterPanel panelKey="2" {...rest} />
                 <PublisherFilterPanel panelKey="3" {...rest} />
               </div>
               <div className="col-md-6">
-                <AdIntelFilterPanel panelKey="4" {...rest} />
+                <AdIntelFilterPanel panelKey="4" resultType={resultType} {...rest} />
                 <RankingsFilterPanel panelKey="5" {...rest} />
               </div>
             </div>
