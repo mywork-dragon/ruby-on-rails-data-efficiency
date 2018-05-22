@@ -98,12 +98,12 @@ function formatAdintelInfo ({ ad_summaries }) {
   return result;
 }
 
-function getFortuneRank (companies) {
+function getFortuneRank (companies = []) {
   const ranks = _.compact(companies.map(x => x.fortune_1000_rank));
   return ranks.length ? Math.min(...ranks) : 'No rank';
 }
 
-function getLocations (companies) {
+function getLocations (companies = []) {
   const result = [];
 
   companies.forEach((x) => {
