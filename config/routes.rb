@@ -177,6 +177,7 @@ Rails.application.routes.draw do
       put 'major_apps/untag' => 'admin#untag_major_app'
       post 'major_publishers/tag' => 'admin#tag_major_publisher'
       put 'major_publishers/untag' => 'admin#untag_major_publisher'
+      get 'users' => 'admin#users_list'
     end
 
     scope '/salesforce' do

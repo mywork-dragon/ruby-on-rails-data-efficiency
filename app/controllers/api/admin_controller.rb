@@ -16,6 +16,19 @@ class Api::AdminController < ApplicationController
     render json: {accounts: accounts}
   end
 
+  # for zapier integration
+  def users_list
+    aw = [:id, :name, :seats_count]
+    uw = [:id, :last_active, :first_name, :last_name, :is_admin, :email, :created_at, :access_revoked]
+    users = User.joins(:account).where(access_revoked: false).where.not("accounts.name like '%MightySignal%'").map do |u|
+      res = u.slice(*uw)
+      res[:account] = u.account.slice(*aw)
+      res[:account][:activated_users] = u.account.users.where(access_revoked: false).count
+      res
+    end
+    render json: users
+  end
+
   def account_users
     account = Account.find(params[:account_id])
     if @current_user.account.is_admin_account? || account == @current_user.account
