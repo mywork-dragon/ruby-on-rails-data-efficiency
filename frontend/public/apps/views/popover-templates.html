@@ -33,3 +33,10 @@
     </li>
   </ul>
 </script>
+<script type="text/ng-template" id="permissionsPopover.html">
+  <div class="popover-scroll">
+    <ul class="international-data">
+      <li ng-repeat="permission in app.permissions">{{permission.display}}</li>
+    </ul>
+  </div>
+</script>

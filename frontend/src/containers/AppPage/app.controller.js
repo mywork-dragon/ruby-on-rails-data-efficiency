@@ -1,4 +1,5 @@
 import angular from 'angular';
+import _ from 'lodash';
 
 import 'components/export-permissions/export-permissions.directive';
 import 'components/ad-intel-tab/ad-intel-tab.directive';
@@ -8,6 +9,7 @@ import 'AngularMixpanel/app.mixpanel.service';
 import 'AngularService/app.service';
 import 'AngularService/ad-intelligence.service';
 import 'AngularService/newsfeed';
+import MightyQueryService from 'services/mightyQuery.service';
 
 import { addAdIds } from 'utils/app.utils';
 import { attachGetCompanyContactsLoader } from 'utils/contact.utils';
@@ -71,6 +73,7 @@ function AppController (
   app.contactFetchComplete = false;
   app.currentContactsPage = 1;
   app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class="fa fa-external-link"></span>');
+  app.permissionText = 'Not Available';
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
     {
@@ -108,6 +111,7 @@ function AppController (
         getCompanyContacts();
         getSalesforceData();
         setUpSalesforce();
+        getMightyQueryData();
         pageTitleService.setTitle(app.name);
         appMixpanelService.trackAppPageView(app);
       });
@@ -196,6 +200,22 @@ function AppController (
         appMixpanelService.trackEmailRequest(data.email, clearbitId);
         contact.email = data.email;
         contact.isLoading = false;
+      });
+  }
+
+  function getMightyQueryData () {
+    MightyQueryService.getAppInfo(app.platform, app.id)
+      .then(({ data }) => {
+        app.newcomers = data.newcomers;
+        app.rankings = data.rankings.charts;
+        app.permissions = data.permissions ? _.sortBy(data.permissions, x => x.display) : data.permissions;
+        if (app.permissions) {
+          if (!app.permissions.length) {
+            app.permissionText = 'None';
+          } else {
+            app.permissionText = `${app.permissions.slice(0, 2).map(x => x.display).join(', ')}`;
+          }
+        }
       });
   }
 

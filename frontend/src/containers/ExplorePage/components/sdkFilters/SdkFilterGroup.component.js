@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, DatePicker, Icon, Spin, Tooltip } from 'antd';
 import { capitalize } from 'utils/format.utils';
-import ExploreService from 'services/explore.service';
+import AppStoreService from 'services/appStore.service';
 
 import SdkCategoryFilter from './SdkCategoryFilter.component';
 
@@ -30,7 +30,7 @@ class SdkFilterGroup extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ sdkOptions: [], fetching: true });
-    ExploreService.getSdkAutocompleteResults(this.props.platform, value)
+    AppStoreService().getSdkAutocompleteResults(this.props.platform, value)
       .then((response) => {
         if (fetchId !== this.lastFetchId) {
           return;

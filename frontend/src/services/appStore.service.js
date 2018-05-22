@@ -19,6 +19,9 @@ const AppStoreService = (client = httpClient) => ({
   getRankingsCountries: () => (
     client.get('/api/ranking_countries')
   ),
+  getSdkAutocompleteResults: (platform, query) => (
+    client.get(`/api/sdks/autocomplete/v2?platform=${platform}&query=${query}`)
+  ),
 });
 
 export default AppStoreService;

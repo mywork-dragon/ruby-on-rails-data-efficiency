@@ -1,5 +1,5 @@
 import { all, put, call, fork, takeLatest, select } from 'redux-saga/effects';
-import service from 'services/explore.service';
+import service from 'services/mightyQuery.service';
 import { formatResults, setExploreColumns, isCurrentQuery } from 'utils/explore/general.utils';
 import { isFacebookOnly, accessibleNetworks } from 'selectors/account.selectors';
 import { getIosCategories, getAndroidCategories } from 'selectors/appStore.selectors';

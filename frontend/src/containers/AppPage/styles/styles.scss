@@ -1,0 +1,24 @@
+.popover-scroll {
+  max-height: 500px;
+  overflow: scroll;
+  width: 200px;
+}
+
+.permissions-wrapper {
+  display: flex;
+
+  .permissions-label {
+    display: flex;
+    flex: 1;
+    max-width: 201px;
+  }
+
+  .permissions-thing {
+    flex: 2;
+    margin-left: 5px;
+
+    span {
+      display: inline-block;
+    }
+  }
+}

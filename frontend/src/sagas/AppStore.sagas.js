@@ -1,6 +1,6 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
 import AppStoreService from 'services/appStore.service';
-import ExploreService from 'services/explore.service';
+import MightyQueryService from 'services/mightyQuery.service';
 import * as actions from 'actions/AppStore.actions';
 import * as utils from 'utils/appStore.utils';
 // import { androidCategories, iosCategories } from 'utils/mocks/mock-categories.utils';
@@ -57,7 +57,7 @@ function* requestRankingsCountries () {
 
 function* requestAppPermissionsOptions () {
   try {
-    const { data } = yield call(ExploreService.getAppPermissionsOptions);
+    const { data } = yield call(MightyQueryService.getAppPermissionsOptions);
     yield put(actions.appPermissionsOptions.success(data));
   } catch (error) {
     console.log(error);
@@ -67,7 +67,7 @@ function* requestAppPermissionsOptions () {
 
 function* requestGeoOptions () {
   try {
-    const { data } = yield call(ExploreService.getGeoOptions);
+    const { data } = yield call(MightyQueryService.getGeoOptions);
     const headquarters = utils.formatHeadquarterData(data);
     yield put(actions.geoOptions.success(headquarters));
   } catch (error) {

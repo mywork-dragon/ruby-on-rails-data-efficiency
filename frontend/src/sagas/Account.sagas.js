@@ -1,8 +1,8 @@
-import { all, put, call, takeLatest, takeEvery, select } from 'redux-saga/effects';
+import { all, put, call, takeLatest, takeEvery } from 'redux-saga/effects';
 import toastr from 'toastr';
 import AccountService from 'services/account.service';
 import SavedSearchService from 'services/savedSearch.service';
-import ExploreService from 'services/explore.service';
+import MightyQueryService from 'services/mightyQuery.service';
 import { isCurrentQuery } from 'utils/explore/general.utils';
 import { formatSavedSearches } from 'utils/account.utils';
 import { populateFromQueryId } from 'containers/ExplorePage/redux/Explore.actions';
@@ -35,7 +35,7 @@ function* requestSavedSearches () {
   try {
     const { data } = yield call(SavedSearchService().getSavedSearches);
     const v2Searches = data.filter(x => x.version === 'v2');
-    const queries = yield all(v2Searches.map(search => call(ExploreService.getQueryParams, search.search_params)));
+    const queries = yield all(v2Searches.map(search => call(MightyQueryService.getQueryParams, search.search_params)));
     const searches = formatSavedSearches(v2Searches, queries);
     yield put(getSavedSearches.success(searches));
   } catch (error) {
@@ -47,7 +47,7 @@ function* requestSavedSearches () {
 function* createSavedSearch (action) {
   const { name, params } = action.payload;
   try {
-    const { data: { query_id } } = yield call(ExploreService.getQueryId, params);
+    const { data: { query_id } } = yield call(MightyQueryService.getQueryId, params);
     const res = yield call(SavedSearchService().createSavedSearch, name, query_id);
     toastr.success('Search saved successfully!');
     const newSearch = { ...res.data, queryId: res.data.search_params, formState: params.formState };

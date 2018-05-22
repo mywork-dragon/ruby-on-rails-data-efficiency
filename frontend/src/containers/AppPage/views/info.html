@@ -44,6 +44,29 @@
                       {{app.userBase.user_base | capitalize}}
                     </button>
                   </li>
+                  <li>
+                    <div class="permissions-wrapper">
+                      <div class="permissions-label">
+                        <span class="icon fa fa-unlock-alt"></span>
+                        <label>Requested Permissions:</label>
+                      </div>
+                      <div class="permissions-thing">
+                        <span>
+                          {{app.permissionText}}
+                        </span>
+                        <span
+                          ng-if="app.permissions && app.permissions.length > 2"
+                          class="dotted-link"
+                          uib-popover-template="'permissionsPopover.html'"
+                          popover-placement="auto right"
+                          popover-trigger="outsideClick"
+                          popover-enable="app.permissions && app.permissions.length"
+                          >
+                          (see {{app.permissions.length - 2}} more)
+                        </span>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>

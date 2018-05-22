@@ -5,6 +5,9 @@ require('./flags.css');
 require('./ng-tags-input.css');
 require('./styles.scss');
 
+// App Page
+require('containers/AppPage/styles/styles.scss');
+
 // Admin Page
 require('containers/AdminPage/styles/ad-intel-permissions-modal.scss');
 
