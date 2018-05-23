@@ -20,7 +20,7 @@ class Api::AdminController < ApplicationController
   def users_list
     aw = [:id, :name, :seats_count]
     uw = [:id, :last_active, :first_name, :last_name, :is_admin, :email, :created_at, :access_revoked]
-    users = User.joins(:account).where(access_revoked: false).where.not("accounts.name like '%MightySignal%'").map do |u|
+    users = User.joins(:account).where.not("accounts.name like '%MightySignal%'").map do |u|
       res = u.slice(*uw)
       res[:account] = u.account.slice(*aw)
       res[:account][:activated_users] = u.account.users.where(access_revoked: false).count
