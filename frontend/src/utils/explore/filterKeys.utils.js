@@ -13,6 +13,7 @@ export const appFilterKeys = {
   rating: 'all_version_rating',
   releaseDate: 'released',
   downloads: 'downloaded',
+  appPermissions: 'has_permission',
 };
 
 export const publisherFilterKeys = {

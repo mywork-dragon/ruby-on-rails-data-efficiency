@@ -62,6 +62,7 @@ export const selectMap = (type) => {
       [headerNames.LAST_SEEN_ADS]: ['ad_summaries'],
       [headerNames.LAST_UPDATED]: ['current_version_release_date'],
       [headerNames.MOBILE_PRIORITY]: ['mobile_priority'],
+      [headerNames.PERMISSIONS]: ['permissions'],
       [headerNames.PLATFORM]: ['platform'],
       [headerNames.PUBLISHER]: ['publisher'],
       [headerNames.RATING]: ['all_version_rating'],

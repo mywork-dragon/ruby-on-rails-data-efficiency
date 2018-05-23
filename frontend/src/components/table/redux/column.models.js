@@ -25,6 +25,7 @@ import LastSeenAdsCell from '../components/cells/LastSeenAdsCell.component';
 import LocationCell from '../components/cells/LocationCell.component';
 import MobilePriorityCell from '../components/cells/MobilePriorityCell.component';
 import NewcomerCell from '../components/cells/NewcomerCell.component';
+import PermissionsCell from '../components/cells/PermissionsCell.component';
 import PlatformCell from '../components/cells/PlatformCell.component';
 import PublisherCell from '../components/cells/PublisherCell.component';
 import RankCell from '../components/cells/RankCell.component';
@@ -59,6 +60,7 @@ export const headerNames = {
   MOBILE_PRIORITY: 'Mobile Priority',
   MONTHLY_CHANGE: '1 Month Rank Change',
   NUM_APPS: 'Total Apps',
+  PERMISSIONS: 'Requested Permissions',
   PLATFORM: 'Platform',
   PUBLISHER: 'Publisher',
   RANK: 'Rank',
@@ -198,6 +200,13 @@ export const columnModels = [
     headerClassName: 'small-cell',
     className: 'small-cell',
     Cell: cell => cell.value,
+  },
+  {
+    Header: headerNames.PERMISSIONS,
+    id: headerNames.PERMISSIONS,
+    accessor: 'permissions',
+    minWidth: widths.medium,
+    Cell: cell => <PermissionsCell permissions={cell.value} {...cell.tdProps} />,
   },
   {
     Header: 'Type',

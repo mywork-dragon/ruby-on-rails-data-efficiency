@@ -15,6 +15,7 @@ export function appColumns () {
     headerNames.USER_BASE,
     headerNames.AD_SPEND,
     headerNames.CATEGORY,
+    headerNames.PERMISSIONS,
     headerNames.DOWNLOADS,
     headerNames.RANK,
     headerNames.WEEKLY_CHANGE,

@@ -342,6 +342,8 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       let val = x;
       if (type === 'headquarters') {
         val = x.key;
+      } else if (type === 'appPermissions') {
+        val = x.value;
       }
       if (filterType.length > 0) {
         n.push(filterType);

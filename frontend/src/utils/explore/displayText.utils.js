@@ -38,6 +38,8 @@ function getDisplayText (parameter, value) {
       return rangeText('Downloads', value);
     case 'rankings':
       return rankingsText(value);
+    case 'appPermissions':
+      return `Requested ${value.map(x => x.label).join(', ')} Permissions`;
     default:
       return '';
   }
