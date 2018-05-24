@@ -40,8 +40,14 @@ class SalesforceExportService
                           server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
                           host: host
                         )
-
-    @client.query('select Id from Account limit 1') if Rails.env.production?
+    if Rails.env.production?
+      begin
+        @client.query('select Id from Account limit 1') 
+      rescue => exception
+        Bugsnag.notify(exception)
+      end
+    end
+    
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
 
