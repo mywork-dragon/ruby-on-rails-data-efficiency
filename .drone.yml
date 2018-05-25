@@ -1,0 +1,5 @@
+---
+build:
+  image: hello-world
+  commands:
+    - echo "HI HI HI"
