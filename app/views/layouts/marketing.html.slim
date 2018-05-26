@@ -99,6 +99,8 @@ html lang="en"
 
             - if browser.device.mobile?
               li
+                = link_to 'Parade (Free Ad Intelligence)', 'https://parade.mightysignal.com'
+              li
                 = link_to 'Fastest Growing SDKs', fastest_growing_sdks_path
               li
                 = link_to 'Top SDKs', top_ios_sdks_path
@@ -107,6 +109,7 @@ html lang="en"
                 .dropdown.show
                   a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
                   .dropdown-menu aria-labelledby="dropdownMenuLink"
+                    a class="dropdown-item" href='https://parade.mightysignal.com' Parade (Free Ad Intelligence)
                     a class="dropdown-item" href=fastest_growing_sdks_path Fastest Growing Android SDKs
                     a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
                     a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
