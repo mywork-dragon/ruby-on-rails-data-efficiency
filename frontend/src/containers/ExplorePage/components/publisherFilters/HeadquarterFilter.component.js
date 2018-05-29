@@ -62,7 +62,7 @@ const HeadquarterFilter = ({
           value={values}
         />
       </div>
-      <div>
+      {/* <div>
         <Checkbox
           checked={includeNoHqData}
           className="explore-checkbox"
@@ -79,7 +79,7 @@ const HeadquarterFilter = ({
         >
           Include results with no location data
         </Checkbox>
-      </div>
+      </div> */}
     </div>
   </li>
 );
