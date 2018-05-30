@@ -24,12 +24,12 @@
                         Log In Using LinkedIn
                     </a>
                 </div>
-                <div class="email-login-prompt" ng-if="!showEmailLogin">
+                <!-- <div class="email-login-prompt" ng-if="!showEmailLogin">
                   <a ng-click="toggleEmailLogin()">
                     <i class="fa fa-envelope"></i>
                     Login for Legacy Users
                   </a>
-                </div>
+                </div> -->
                 <div ng-if="!token && showEmailLogin">
                     <form class="form-horizontal" ng-enter="onLoginButtonClick()">
                         <fieldset>
