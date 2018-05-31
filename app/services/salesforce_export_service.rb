@@ -47,7 +47,7 @@ class SalesforceExportService
         Bugsnag.notify(exception)
       end
     end
-    
+
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
 
@@ -124,12 +124,16 @@ class SalesforceExportService
     @account.update_attributes(salesforce_status: :ready)
   end
 
-  def experimental_account?
+  def account_app_ownership?
     [1, 12].include? @account.id
   end
 
+  def use_true_update?
+    [1, 12, 36].include? @account.id
+  end
+
   def should_sync_publisher?(platform:, publisher_id:, last_synced:)
-    return true unless last_synced && experimental_account?
+    return true unless last_synced && use_true_update?
     if platform == 'ios'
       publisher = IosDeveloper.find(publisher_id)
       publisher.apps.limit(500).any?{|app| 
@@ -547,7 +551,7 @@ class SalesforceExportService
       
       # leads use app ownership, accounts have id directly on app object
       # adjust will use app ownership on accounts as well (maybe all accounts in the future)
-      if lead_import? || experimental_account?
+      if lead_import? || account_app_ownership?
         export_ids = @app_export_id_map["#{record['Platform__c']}_#{record['MightySignal_App_ID__c']}"]
         export_ids.each do |export_id|
           import_app_ownership(app_id, export_id)
