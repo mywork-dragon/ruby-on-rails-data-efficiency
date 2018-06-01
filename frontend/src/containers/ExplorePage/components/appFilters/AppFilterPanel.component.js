@@ -66,7 +66,7 @@ const AppFilterPanel = ({
             value={categories ? categories.value : []}
             {...rest}
           />
-          {canAccessAppPermissions && <PermissionsFilter filter={appPermissions} panelKey={panelKey} {...rest} />}
+          <PermissionsFilter filter={appPermissions} panelKey={panelKey} {...rest} />
           <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
           <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
           <DownloadsFilter filter={downloads} panelKey={panelKey} {...rest} />
