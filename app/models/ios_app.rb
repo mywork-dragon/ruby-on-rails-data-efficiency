@@ -242,7 +242,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def required_ios_version
-    first_international_snapshot[':required_ios_version'] || newest_ios_app_snapshot.try(:required_ios_version)
+    first_international_snapshot['required_ios_version'] || newest_ios_app_snapshot.try(:required_ios_version)
   end
 
   def recommended_age
