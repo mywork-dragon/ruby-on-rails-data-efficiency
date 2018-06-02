@@ -216,6 +216,9 @@ export function cleanState (form) {
     delete cleanedState.filters.adNetworks;
   }
 
+  if (cleanedState.filters.rankings && !cleanedState.filters.rankings.displayText) {
+    delete cleanedState.filters.rankings;
+  }
 
   return cleanedState;
 }
