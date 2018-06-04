@@ -89,9 +89,9 @@
               <button type="submit" class="btn btn-primary pull-right admin-btn" ng-click="admin.openAdIntelModal(account.id)" ng-if="isAdminAccount">Ad Networks</button>
               <strong ng-if="$root.isAdminAccount">Account Settings</strong>
               <div class="checkbox" ng-if="$root.isAdminAccount">
-                <label>
+                <!-- <label>
                   <input type="checkbox" ng-checked="account.can_view_ad_spend" ng-click="admin.settingChanged('can_view_ad_spend', account)">Ad Spend
-                </label>
+                </label> -->
                 <label>
                   <input type="checkbox" ng-checked="account.can_view_ad_attribution" ng-click="admin.settingChanged('can_view_ad_attribution', account)">Ad Attribution
                 </label>

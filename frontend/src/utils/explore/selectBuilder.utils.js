@@ -15,7 +15,7 @@ export function buildSelect (form, columns, accountNetworks) {
     }
   });
 
-  const facebookOnly = accountNetworks.length === 1 && accountNetworks[0].id === 'facebook';
+  const facebookOnly = (accountNetworks.length === 1 && accountNetworks[0].id === 'facebook') || accountNetworks.length === 0;
 
   const mappedFields = {};
 
