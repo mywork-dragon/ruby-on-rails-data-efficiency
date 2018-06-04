@@ -1052,7 +1052,7 @@ class ApiController < ApplicationController
       "expire" => Time.now.to_i + 24.hours
     }
 
-    if @current_user.account.ad_data_permissions['enabled_ad_network_tiers'].include? 'tier-2'
+    if @current_user.account.ad_permissions['enabled_ad_network_tiers'].include? 'tier-2'
       body["statements"].append(
         {
           "action" => [

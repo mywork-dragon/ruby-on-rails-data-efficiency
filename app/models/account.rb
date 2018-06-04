@@ -66,6 +66,10 @@ class Account < ActiveRecord::Base
     ap token
   end
 
+  def can_view_ad_spend
+    true
+  end
+
   def as_json(options={})
     {
       id:  id,
