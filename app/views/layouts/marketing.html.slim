@@ -31,7 +31,6 @@ html lang="en"
     meta content="authenticity_token" name="csrf-param" /
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
     meta name="google-site-verification" content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo"
-    = render 'shared/amplitude'
     = render 'shared/ga'
     script async="true" src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"
     
@@ -137,11 +136,7 @@ html lang="en"
     /! =============BACK TO TOP STARTS============
     javascript:
       $(document).ready(function() {
-        amplitude.getInstance().logEvent('Viewed page', 
-                                         {
-                                          page: $('body').data('page'), 
-                                          url: window.location.href
-                                         });
+
         if (window.location.hash) {
            $('html, body').stop().animate({
             scrollTop: $(window.location.hash).offset().top - 80
@@ -156,10 +151,7 @@ html lang="en"
             var field = serializedForm[i];
             formData[field.name] = field.value;
           }
-          amplitude.getInstance().logEvent('Submitted lead form', {
-            form: form.data('form'), 
-            formdata: formData
-          });
+
         })
         $('.nav li a').bind('click',function(event) {
           var $anchor2 = $(this).parent();
@@ -195,4 +187,3 @@ html lang="en"
     = render 'shared/drift.html'
     / = yield :repuso_g2crowd_widget
     = yield :web_form_modal
-    = render 'shared/heap_analytics_tag'
