@@ -282,7 +282,7 @@ class WelcomeController < ApplicationController
       lead_data = lead_data_from_params
       lead_data[:lead_source] = 'Web Form'
       lead_data[:web_form_button_id] = params['button_id']
-
+      puts "lead_data: #{lead_data}"
       Lead.create_lead(lead_data)
       redirect_to well_be_in_touch_path(form: 'lead')
       return
@@ -312,6 +312,8 @@ class WelcomeController < ApplicationController
   protected
 
   def lead_data_from_params
+    puts "PARAMS: #{params}"
+
     first_name = params['first_name']
     last_name = params['last_name']
     email = params['email']
