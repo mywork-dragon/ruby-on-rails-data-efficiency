@@ -395,11 +395,11 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
     }
     return [filterType];
   } else if (['ratingsCount', 'rating', 'downloads', 'adNetworkCount', 'rank', 'trend_week', 'trend_month'].includes(type)) {
-    if (value.value.every(x => !x)) {
+    if (value.value.every(x => !x && typeof x !== 'number')) {
       return null;
     }
 
-    let values = value.value.slice();
+    let values = value.value.slice().map(x => (typeof x === 'number' ? x : null));
 
     if (value.operator === 'less-than' && !['trend_week', 'trend_month'].includes(type)) values[0] = null;
 
