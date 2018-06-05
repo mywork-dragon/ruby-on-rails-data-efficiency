@@ -4,6 +4,8 @@ default: &default
   host: "<%= ENV['ELASTICSEARCH_URL'] %>:<%= ENV['ELASTICSEARCH_PORT'] %>"
 development:
   <<: *default
+  user: <%= ENV['ELASTICSEARCH_USER'] %>
+  password: <%= ENV['ELASTICSEARCH_PASSWORD'] %>
 test:
   <<: *default
   prefix: 'test'

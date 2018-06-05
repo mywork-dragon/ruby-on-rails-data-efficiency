@@ -46,19 +46,7 @@
               = sdk.summary
         .column.large-6
           - sdk.top_200_apps.first(8).each do |app|
-            a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id=app.app_identifier data-platform="ios"
+            a href='#{app.mightysignal_public_page_link}' target="_blank" class="app-sdks"
               = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon'
     = paginate @sdks
-    div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
-      div class="modal-dialog modal-lg"
-        div class="modal-content"
-          div class="modal-header"
-            button type="button" class="close" data-dismiss="modal" aria-label="Close"
-              span aria-hidden="true"
-                |&times;
-            .pull-right
-              a href="#" target="_blank"
-                |App Store Link
-            h3 class="modal-title" id="myModalLabel"
-          div class="modal-body"
-              
+

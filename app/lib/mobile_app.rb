@@ -23,6 +23,15 @@ module MobileApp
       platform == 'android'
     end
 
+    def mightysignal_public_page_link
+      if platform == 'android'
+        store = 'google-play'
+      else
+        store = 'ios'
+      end
+      "https://mightysignal.com/a/#{store}/#{app_identifier}"
+    end
+
     def ad_attribution_sdks
       tag = Tag.where(id: 24).first
       return [] unless tag

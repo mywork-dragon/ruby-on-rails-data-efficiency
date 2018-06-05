@@ -38,25 +38,13 @@
             span class="app-rank-change"
               i class="fa fa-arrow-down" aria-hidden="true"
               = app.ranking_change * -1
-          a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id="#{app.app_identifier}" data-platform="ios"
+          a target="_blank" href='#{app.mightysignal_public_page_link}' class="app-sdks"
             = image_tag app.icon_url, size: '100'
           br
-          span class="app-name"
-            a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id="#{app.app_identifier}" data-platform="ios"
+          span 
+            a target="_blank" href='#{app.mightysignal_public_page_link}' class="app-name"
               = app.name
           br
           span class="app-category" 
             = app.ios_developer.try(:name)
-    div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
-      div class="modal-dialog modal-lg"
-        div class="modal-content"
-          div class="modal-header"
-            button type="button" class="close" data-dismiss="modal" aria-label="Close"
-              span aria-hidden="true"
-                |&times;
-            .pull-right
-              a href="#" target="_blank"
-                |App Store Link
-            h3 class="modal-title" id="myModalLabel"
-          div class="modal-body"
-              
+

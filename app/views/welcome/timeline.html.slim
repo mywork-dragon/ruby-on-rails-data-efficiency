@@ -6,7 +6,7 @@
     = render 'shared/top_list_nav'
 .row.top-200.timeline.marketing-row
   .column.large-2
-    div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS Apps? @MightyTimeline"
+    div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS and Android Apps? @MightyTimeline"
     br
     span Follow our Twitter bot
             <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-size="large" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -35,7 +35,7 @@
           .panel.panel-default class="batch-#{batch.id}"
             .panel-heading
               = image_tag app.icon_url, size: '30x30'
-              = "#{link_to(app.name, app.app_store_link, target: '_blank')} installed ".html_safe
+              = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} installed ".html_safe
               span.subtext= "#{pluralize(batch.sorted_activities.count, 'new SDK', 'new SDks')}"
             //div id="collapse-#{batch.id}" class="panel-collapse collapse"
             .panel-body
@@ -48,7 +48,7 @@
           .panel.panel-default class="batch-#{batch.id}"
             .panel-heading
               = image_tag app.icon_url, size: '30x30'
-              = "#{link_to(app.name, app.app_store_link, target: '_blank')} entered the Top 200 at ".html_safe
+              = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} entered the Top 200 at ".html_safe
               span.subtext= "Rank #{batch.other_owner.try(:rank)}"
     
     div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"

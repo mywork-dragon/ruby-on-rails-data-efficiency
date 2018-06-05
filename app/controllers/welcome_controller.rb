@@ -78,10 +78,14 @@ class WelcomeController < ApplicationController
 
   def timeline
     top_200_ids = IosAppRankingSnapshot.top_200_app_ids
-    batches = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+    batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
                                  owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+    top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
+    batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+                                 owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
+
     batches_by_week = {}
-    batches.each do |batch|
+    (batches_i + batches_a).each do |batch|
       if batches_by_week[batch.week]
         batches_by_week[batch.week] << batch
       else
