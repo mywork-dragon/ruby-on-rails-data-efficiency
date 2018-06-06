@@ -2,18 +2,26 @@ FROM 250424072945.dkr.ecr.us-east-1.amazonaws.com/base:upgraded_npm_node
 
 RUN mkdir /varys
 WORKDIR /varys
-ADD container_assets/bowerrc /root/.bowerrc
-ADD Gemfile /varys/Gemfile
-ADD Gemfile.lock /varys/Gemfile.lock
+
+# install gems
+COPY Gemfile /varys/Gemfile
+COPY Gemfile.lock /varys/Gemfile.lock
 ARG exclude_gems=none
 ARG bundle_mode=
 RUN gem update bundler && bundle config build.nokogiri --use-system-libraries &&\
   bundle install --without $exclude_gems $bundle_mode --jobs 8
-ADD . /varys
 
-# build web assets
-RUN cd frontend && yarn install && yarn build
-RUN mv frontend/build public/app/app
+# install frontend dependencies
+RUN mkdir -p /tmp/frontend
+COPY frontend/package.json /tmp/frontend/package.json
+RUN cd /tmp/frontend && yarn install
+COPY frontend /tmp/frontend
+RUN cd /tmp/frontend && yarn build
+
+# copy in rest of code
+COPY . /varys
+
+RUN mv /tmp/frontend/build /varys/public/app/app
 
 # configure nginx
 RUN cp /varys/container_assets/sites-available /etc/nginx/sites-available/default
@@ -21,6 +29,5 @@ RUN cp /varys/container_assets/sites-available /etc/nginx/sites-available/defaul
 # Configure log files to go to stdout
 RUN ln -sf /dev/stdout /var/log/nginx/access.log &&\
   ln -sf /dev/stderr /var/log/nginx/error.log
-
 
 CMD ["bundle", "exec", "unicorn_rails", "-c", "config/unicorn.rb"]

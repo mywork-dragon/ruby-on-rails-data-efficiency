@@ -26,6 +26,7 @@
       "react/void-dom-elements-no-children": "warn",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "react/jsx-sort-props": "warn",
+      "react/jsx-no-target-blank": "warn",
       "react/no-array-index-key": "warn",
       "func-names": "off",
       "global-require": "off",
