@@ -332,7 +332,10 @@ class WelcomeController < ApplicationController
     utm_medium = params['utm_medium']
     utm_campaign = params['utm_campaign']
 
-    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative, :utm_source, :utm_medium, :utm_campaign)
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative)
+    lead_data[:utm_source] = request.cookies['utm_source']
+    lead_data[:utm_medium] = request.cookies['utm_medium']
+    lead_data[:utm_campaign] = request.cookies['utm_campaign']
 
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
