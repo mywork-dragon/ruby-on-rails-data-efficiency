@@ -60,11 +60,7 @@ function PublisherController (
   publisher.sdkFetchComplete = false;
   publisher.tabs = [
     { title: 'General Information', index: 0, route: 'publisher.info' },
-    {
-      title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'),
-      index: 1,
-      route: 'publisher.ad-intelligence',
-    },
+    { title: 'Ad Intelligence', index: 1, route: 'publisher.ad-intelligence' },
   ];
 
 

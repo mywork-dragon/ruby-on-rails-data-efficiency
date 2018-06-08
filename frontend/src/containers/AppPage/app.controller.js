@@ -76,11 +76,7 @@ function AppController (
   app.permissionText = 'Not Available';
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
-    {
-      title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'),
-      index: 1,
-      route: 'app.ad-intelligence',
-    },
+    { title: 'Ad Intelligence', index: 1, route: 'app.ad-intelligence' },
   ];
   app.userInfo = {};
 
