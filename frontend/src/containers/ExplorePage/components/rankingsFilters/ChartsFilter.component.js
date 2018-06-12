@@ -59,7 +59,7 @@ const ChartsFilter = ({
 
             updateFilter('rankings', newVal, { panelKey })();
           }}
-          options={formatCategoriesForSelect(iosCategories, androidCategories)}
+          options={formatCategoriesForSelect(iosCategories, androidCategories, rest.platform)}
           panelKey={panelKey}
           placeholder="Any category"
           title="In the following categories:"
