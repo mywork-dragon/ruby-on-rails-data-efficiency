@@ -9,7 +9,9 @@ $(document).ready(function() {
     let utm_medium = params.get("utm_medium");
     let utm_campaign = params.get("utm_campaign");
 
-    document.cookie = `utm_source=${utm_source}`;
-    document.cookie = `utm_medium=${utm_medium}`;
-    document.cookie = `utm_campaign=${utm_campaign}`;
+    if (utm_source) {
+      document.cookie = `utm_source=${utm_source}`;
+      document.cookie = `utm_medium=${utm_medium}`;
+      document.cookie = `utm_campaign=${utm_campaign}`;
+    }
 });
