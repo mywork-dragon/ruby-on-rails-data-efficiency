@@ -46,10 +46,12 @@ function* trackResultsLoad (action) {
   const queryResultId = yield select(exploreSelectors.queryResultId);
   const currentPage = yield select(exploreSelectors.currentExplorePage);
   const filters = yield select(exploreSelectors.activeFilters);
+  const resultType = yield select(exploreSelectors.getCurrentResultType);
   const count = action.payload.data.resultsCount;
   yield call(service.trackResultsLoad, {
     queryId,
     filters,
+    resultType,
     count,
     elapsedTime,
     queryResultId,
@@ -60,8 +62,9 @@ function* trackResultsLoad (action) {
 
 function* trackQueryFailure () {
   const filters = yield select(exploreSelectors.activeFilters);
+  const resultType = yield select(exploreSelectors.getCurrentResultType);
   const elapsedTime = new Date().getTime() - startTime;
-  yield call(service.trackQueryFailure, { filters, elapsedTime });
+  yield call(service.trackQueryFailure, { filters, elapsedTime, resultType });
   yield call(resetStartTime);
 }
 
