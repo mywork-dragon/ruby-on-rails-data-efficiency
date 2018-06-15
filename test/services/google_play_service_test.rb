@@ -45,7 +45,41 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
     assert res[:in_app_purchases_range]
     assert res[:similar_apps].count > 0
     assert res[:downloads].present?
+    assert res[:seller_email].present?
+    puts res[:seller_email]
     assert_equal 500_000_000..1_000_000_000, res[:downloads]
+  end
+
+  test 'coinbuddy attributes (authenticated) are correctly parsed' do
+    page = open('test/data/google_play_coinbuddy_authenticated.html').read()
+    res = GooglePlayService.new(page).attributes('com.threecommastudio.coinbuddy')
+    basic_presence_check(res, ignored: [
+      :size,
+      :in_app_purchases_range
+    ])
+    validate_attributes(res)
+    assert_equal false, res[:in_app_purchases]
+    assert res[:similar_apps].count > 0
+    assert res[:downloads].present?
+    assert res[:seller_email].present?
+    puts res[:seller_email]
+    assert_equal 100..500, res[:downloads]
+  end
+
+  test 'coinbuddy attributes (unauthenticated) are correctly parsed' do
+    page = open('test/data/google_play_coinbuddy_unauthenticated.html').read()
+    res = GooglePlayService.new(page).attributes('com.threecommastudio.coinbuddy')
+    basic_presence_check(res, ignored: [
+      :size,
+      :in_app_purchases_range
+    ])
+    validate_attributes(res)
+    assert_equal false, res[:in_app_purchases]
+    assert res[:similar_apps].count > 0
+    assert res[:downloads].present?
+    assert res[:seller_email].present?
+    puts res[:seller_email]
+    assert_equal 100..500, res[:downloads]
   end
 
   test 'web radio attributes (uncompressed) are correctly parsed' do
@@ -76,6 +110,7 @@ class GooglePlayServiceTest < ActiveSupport::TestCase
       price
       seller
       seller_url
+      seller_email
       category_name
       category_id
       released

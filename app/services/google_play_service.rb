@@ -58,6 +58,7 @@ class GooglePlayService
       price
       seller
       seller_url
+      seller_email
       category_name
       category_id
       released
@@ -291,6 +292,13 @@ class GooglePlayService
       parts.reject { |p| m[1].include?(p) }.empty?
     end
     match[0]
+  end
+
+  def seller_email
+    node = meta_info_with_title('Developer')
+    email = node.xpath("//a[starts-with(@href, \"mailto:\")]").first.try(:text)
+  rescue
+    nil
   end
 
   def unique_itemprop(tag, itemprop, base: @html)

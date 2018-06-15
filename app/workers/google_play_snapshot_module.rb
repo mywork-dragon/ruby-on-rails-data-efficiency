@@ -79,6 +79,14 @@ module GooglePlaySnapshotModule
       # handle when google play specifies lower bound like "100+"
       @snapshot.downloads_max = downloads.max if downloads.max != downloads.min else nil
     end
+
+    if seller_email = @attributes[:seller_email]
+      begin
+        FarmToTableLogger.new(@android_app, seller_email).send!
+      rescue => exception
+        Bugsnag.notify(exception)
+      end
+    end
   end
 
   def create_join_columns_for_snapshot
