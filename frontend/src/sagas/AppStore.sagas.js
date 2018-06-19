@@ -10,8 +10,8 @@ function* requestCategories () {
     const iosRes = yield call(AppStoreService().getIosCategories);
     const androidRes = yield call(AppStoreService().getAndroidCategories);
     const data = {};
-    // data.iosCategoriesById = formatCategories(iosCategories);
-    // data.androidCategoriesById = formatCategories(androidCategories);
+    // data.iosCategoriesById = utils.formatCategories(iosCategories);
+    // data.androidCategoriesById = utils.formatCategories(androidCategories);
     data.iosCategoriesById = utils.formatCategories(iosRes.data);
     data.androidCategoriesById = utils.formatCategories(androidRes.data);
     yield put(actions.categories.success(data));

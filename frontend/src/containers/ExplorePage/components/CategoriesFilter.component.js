@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'components/select/CustomSelect.component';
 import PlatformOption from 'components/select/platformOption.component';
+import PlatformValue from 'components/select/platformValue.component';
 
 const CategoriesFilter = ({
   title,
@@ -24,6 +25,7 @@ const CategoriesFilter = ({
         options={options}
         placeholder={placeholder}
         value={value}
+        valueComponent={PlatformValue}
       />
     </div>
   </li>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Select from 'components/select/CustomSelect.component';
 import PlatformOption from 'components/select/platformOption.component';
+import PlatformValue from 'components/select/platformValue.component';
 
 const PermissionsFilter = ({
   filter,
@@ -36,6 +37,7 @@ const PermissionsFilter = ({
           optionComponent={PlatformOption}
           options={options}
           value={filter.value}
+          valueComponent={PlatformValue}
         />
       </div>
     </li>
