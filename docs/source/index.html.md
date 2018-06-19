@@ -52,70 +52,75 @@ curl "https://api.mightysignal.com/ios/app/401626263"
 
 ```json
 {
-  "id" : 258389,
-  "name" : "Airbnb",
-  "mobile_priority" : "high",
-  "user_base" : "elite",
-  "support_url" : "http://airbnb.com/help",
-  "current_version_rating" : "3.50",
-  "current_version_ratings_count" : 48,
-  "all_version_rating" : "3.5",
-  "all_version_ratings_count" : 10289,
-  "has_ad_spend" : true,
-  "last_updated" : "2016-08-31",
-  "first_seen_ads_date" : "2016-01-15",
-  "last_seen_ads_date" : "2016-02-30",
-  "first_scanned_date" : "2016-05-15",
-  "last_scanned_date" : "2016-07-08",
-  "has_in_app_purchases" : false,
-  "seller" : "Airbnb, Inc.",
-  "categories" : [
-    {
-      "name" : "Travel",
-      "type" : "primary"
-    },
-    {
-      "name" : "Lifestyle",
-      "type" : "secondary"
-    }
+   "price" : 0,
+   "support_url" : "https://airbnb.com/help",
+   "id" : 258389,
+   "app_store_id" : 401626263,
+   "first_seen_ads_date" : "2016-06-04T07:07:27.000Z",
+   "platform" : "ios",
+   "current_version_ratings_count" : 4765,
+   "categories" : [
+      {
+         "platform" : "ios",
+         "type" : "primary",
+         "id" : 6003,
+         "name" : "Travel"
+      },
+      {
+         "platform" : "ios",
+         "id" : 6012,
+         "type" : "secondary",
+         "name" : "Lifestyle"
+      }
    ],
-  "original_release_date" : "2010-11-10",
-  "current_version" : "16.34",
-  "price" : 0,
-  "description": "...",
-  "installed_sdks" : [
-  {
-    "id" : 3,
-    "name" : "1PasswordExtension",
-    "first_seen_date" : "2016-04-24T22:46:33.000Z",
-    "last_seen_date" : "2016-08-23T16:01:41.000Z",
-    "categories" : ["Authentication"]
-  },
-  "..."
+   "installed_sdks" : [
+      {
+         "id" : 3,
+         "name" : "1PasswordExtension",
+         "categories" : [
+            "Authentication"
+         ],
+         "first_seen_date" : "2015-12-10T18:29:06.000-08:00",
+         "last_seen_date" : "2018-05-30T17:44:31.000-07:00"
+      },
+    ...
    ],
-  "uninstalled_sdks" : [
-  {
-    "id" : 3761,
-    "name" : "Coinbase",
-    "first_seen_date" : "2015-12-11T02:29:06.000Z",
-    "last_seen_date" : "2016-03-10T19:54:23.000Z",
-    "categories" : []
-  },
-  "..."
-  ],
-  "publisher" : {
-  "id" : 110570,
-  "websites" : [
-      "http://airbnb.com/mobile",
-      "https://airbnbopen.com/",
-      "http://airbnb.com/help"
-  ],
-  "name" : "Airbnb, Inc.",
-  "platform" : "ios",
-  "app_store_id" : 401626266
-  },
-  "platform" : "ios",
-  "app_store_id" : 401626263
+   "bundle_identifier" : "com.airbnb.app",
+   "current_version" : "18.24",
+   "seller" : "Airbnb, Inc.",
+   "description" : "Unforgettable travel experiences start with Airbnb. Find travel adventures and new places to go faraway or near to you, and access vacation home rentals, new experiences, and places to visit all around the world. Book everything for your trip, or start earning money as a host. \n\nBOOK TRAVEL EXPERIENCES\nGo on local experiences led by native experts, whether it’s for multiple days or just an afternoon. Explore Seoul's underground music scene, hunt for truffles in a Tuscan forest, or give back to the community with a social impact experience.\n\nBOOK VACATION HOMES\nChoose from over 4 million vacation home rentals across 191+ countries. Search by price, neighborhood, amenities, and more.\n\nPOPULAR DESTINATIONS\nExperience the beautiful sights & find local guides for the perfect vacation:\n• Rio – Explore the birth place of Samba or Hand Glide over the sights\n• Paris – Find your fill in some of the best culinary tours and museums\n• Barcelona – Discover the cities beauty with guided walking tours\n\nFor travelers: \n• Book vacation home rentals and travel experiences for your next solo journey, family vacation, or business trip\n• Search for last minute travel accommodations or long term rentals\n• Save your favorite rental homes, experiences, and places—and invite friends and family to plan the trip with you\n• Add experiences and events to your itinerary\n• Message your host and get directions to your home\n\nFor hosts:\n• Share your extra space or lead experiences that showcase what makes your city great\n• Update your listing and calendar availability\n• Share what’s special about your neighborhood with a host guidebook\n• Message guests and manage their reservations",
+   "taken_down" : false,
+   "name" : "Airbnb",
+   "first_scanned_date" : "2015-12-11T02:29:06.000Z",
+   "has_ad_spend" : true,
+   "current_version_rating" : "5.0",
+   "original_release_date" : "2010-11-10",
+   "last_seen_ads_date" : "2018-02-08T16:52:49.000Z",
+   "publisher" : {
+      "platform" : "ios",
+      "id" : 110570,
+      "app_store_id" : 401626266,
+      "name" : "Airbnb, Inc."
+   },
+   "last_updated" : "2018-06-13",
+   "user_base" : "elite",
+   "all_version_rating" : "4.5",
+   "has_in_app_purchases" : false,
+   "mobile_priority" : "high",
+   "uninstalled_sdks" : [
+      {
+         "id" : 5,
+         "categories" : [
+            "Ad Attribution"
+         ],
+         "name" : "Adjust",
+         "first_seen_date" : "2015-12-10T18:29:06.000-08:00",
+         "last_seen_date" : "2016-03-22T22:25:04.000-07:00"
+      },
+    ...
+   ],
+   "all_version_ratings_count" : 181528,
+   "last_scanned_date" : "2018-05-31T00:44:31.000Z"
 }
 ```
 
@@ -163,7 +168,6 @@ uninstalled_sdks.first_seen_date | The first date the SDK was seen in the app.
 uninstalled_sdks.last_seen_date | The last date the SDK was seen in the app
 uninstalled_sdks.categories | The categories of this SDK.
 publisher.id | The MightySignal ID of the publisher
-publisher.websites | Websites listed under the publisher
 publisher.name | Name of the publisher
 publisher.platform | `ios`
 publisher.app_store_id | The App Store ID of the publisher

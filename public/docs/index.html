@@ -152,70 +152,75 @@ You must replace <code>&ltyour-api-token&gt</code> with your personal API token.
 <pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app/401626263"</span>
     -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
 </code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">258389</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"http://airbnb.com/help"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.5"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10289</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-31"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-15"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-30"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Travel"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"primary"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Lifestyle"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"secondary"</span><span class="w">
-    </span><span class="p">}</span><span class="w">
+   </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"https://airbnb.com/help"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">258389</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626263</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-06-04T07:07:27.000Z"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">4765</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"primary"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6003</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Travel"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6012</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"secondary"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Lifestyle"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
    </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-11-10"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16.34"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"installed_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1PasswordExtension"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-04-24T22:46:33.000Z"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-23T16:01:41.000Z"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Authentication"</span><span class="p">]</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"..."</span><span class="w">
+   </span><span class="s2">"installed_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1PasswordExtension"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Authentication"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-10T18:29:06.000-08:00"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-05-30T17:44:31.000-07:00"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+    </span><span class="err">...</span><span class="w">
    </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3761</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Coinbase"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-11T02:29:06.000Z"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-03-10T19:54:23.000Z"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"..."</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">110570</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="s2">"http://airbnb.com/mobile"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"https://airbnbopen.com/"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"http://airbnb.com/help"</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626266</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626263</span><span class="w">
+   </span><span class="s2">"bundle_identifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"com.airbnb.app"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"18.24"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"description"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Unforgettable travel experiences start with Airbnb. Find travel adventures and new places to go faraway or near to you, and access vacation home rentals, new experiences, and places to visit all around the world. Book everything for your trip, or start earning money as a host. </span><span class="se">\n\n</span><span class="s2">BOOK TRAVEL EXPERIENCES</span><span class="se">\n</span><span class="s2">Go on local experiences led by native experts, whether it’s for multiple days or just an afternoon. Explore Seoul's underground music scene, hunt for truffles in a Tuscan forest, or give back to the community with a social impact experience.</span><span class="se">\n\n</span><span class="s2">BOOK VACATION HOMES</span><span class="se">\n</span><span class="s2">Choose from over 4 million vacation home rentals across 191+ countries. Search by price, neighborhood, amenities, and more.</span><span class="se">\n\n</span><span class="s2">POPULAR DESTINATIONS</span><span class="se">\n</span><span class="s2">Experience the beautiful sights &amp; find local guides for the perfect vacation:</span><span class="se">\n</span><span class="s2">• Rio – Explore the birth place of Samba or Hand Glide over the sights</span><span class="se">\n</span><span class="s2">• Paris – Find your fill in some of the best culinary tours and museums</span><span class="se">\n</span><span class="s2">• Barcelona – Discover the cities beauty with guided walking tours</span><span class="se">\n\n</span><span class="s2">For travelers: </span><span class="se">\n</span><span class="s2">• Book vacation home rentals and travel experiences for your next solo journey, family vacation, or business trip</span><span class="se">\n</span><span class="s2">• Search for last minute travel accommodations or long term rentals</span><span class="se">\n</span><span class="s2">• Save your favorite rental homes, experiences, and places—and invite friends and family to plan the trip with you</span><span class="se">\n</span><span class="s2">• Add experiences and events to your itinerary</span><span class="se">\n</span><span class="s2">• Message your host and get directions to your home</span><span class="se">\n\n</span><span class="s2">For hosts:</span><span class="se">\n</span><span class="s2">• Share your extra space or lead experiences that showcase what makes your city great</span><span class="se">\n</span><span class="s2">• Update your listing and calendar availability</span><span class="se">\n</span><span class="s2">• Share what’s special about your neighborhood with a host guidebook</span><span class="se">\n</span><span class="s2">• Message guests and manage their reservations"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"taken_down"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-11T02:29:06.000Z"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-11-10"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-08T16:52:49.000Z"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">110570</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626266</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-06-13"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.5"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Ad Attribution"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Adjust"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-10T18:29:06.000-08:00"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-03-22T22:25:04.000-07:00"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">181528</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-05-31T00:44:31.000Z"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <h3 id="http-request-format">HTTP Request Format</h3>
@@ -369,10 +374,6 @@ You must replace <code>&ltyour-api-token&gt</code> with your personal API token.
 <td>The MightySignal ID of the publisher</td>
 </tr>
 <tr>
-<td>publisher.websites</td>
-<td>Websites listed under the publisher</td>
-</tr>
-<tr>
 <td>publisher.name</td>
 <td>Name of the publisher</td>
 </tr>
@@ -482,7 +483,7 @@ You must replace <code>&ltyour-api-token&gt</code> with your personal API token.
 
 <p>You can use the <a href="http://mightysignal.com/app/app">MightySignal web portal</a> to find the ids for the query parameters.</p>
 
-<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">200033</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/ios/200033">http://mightysignal.com/app/app#/publisher/ios/200033</a>, and the <code class="prettyprint">installed_sdk_id</code> for Mixpanel would be <code class="prettyprint">1896</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/ios/1896">http://mightysignal.com/app/app#/sdk/ios/1896</a>. </p>
+<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">200033</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/ios/200033">http://mightysignal.com/app/app#/publisher/ios/200033</a>, and the <code class="prettyprint">installed_sdk_id</code> for Mixpanel would be <code class="prettyprint">1896</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/ios/1896">http://mightysignal.com/app/app#/sdk/ios/1896</a>.</p>
 
 <p>Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the <a href="#filter-on-ios-apps">simple app route</a> and pluck the IDs off the response.</p>
 
@@ -828,7 +829,7 @@ You can specify multiple values for a given query parameter, and they will be tr
 
 <p>You can use the <a href="http://mightysignal.com/app/app">MightySignal web portal</a> to find the ids for the query parameters.</p>
 
-<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">12</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/android/12">http://mightysignal.com/app/app#/publisher/android/12</a>, and the <code class="prettyprint">installed_sdk_id</code> for Crashlytics would be <code class="prettyprint">7</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/android/7">http://mightysignal.com/app/app#/sdk/android/7</a>. </p>
+<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">12</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/android/12">http://mightysignal.com/app/app#/publisher/android/12</a>, and the <code class="prettyprint">installed_sdk_id</code> for Crashlytics would be <code class="prettyprint">7</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/android/7">http://mightysignal.com/app/app#/sdk/android/7</a>.</p>
 
 <p>Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the <a href="#filter-on-android-apps">simple app route</a> and pluck the IDs off the response.</p>
 
@@ -900,7 +901,7 @@ You can specify multiple values for a given query parameter, and they will be tr
 
 <p><code class="prettyprint">GET /&lt;platform&gt;/sdk/&lt;sdk_id&gt;</code></p>
 
-<p>where <code class="prettyprint">&lt;platform&gt;</code> is either <code class="prettyprint">ios</code> or <code class="prettyprint">android</code> and <code class="prettyprint">&lt;sdk_id&gt;</code> is the MightySignal id of the SDK. </p>
+<p>where <code class="prettyprint">&lt;platform&gt;</code> is either <code class="prettyprint">ios</code> or <code class="prettyprint">android</code> and <code class="prettyprint">&lt;sdk_id&gt;</code> is the MightySignal id of the SDK.</p>
 
 <p>One way to find the <code class="prettyprint">&lt;sdk_id&gt;</code> is by using the <a href="http://mightysignal.com/app/app">MightySignal web portal</a>. For example, the <code class="prettyprint">&lt;sdk_id&gt;</code> for the Mixpanel iOS SDK would be <code class="prettyprint">1896</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/ios/1896">http://mightysignal.com/app/app#/sdk/ios/1896</a>.</p>
 
@@ -1231,7 +1232,7 @@ SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code
 </tr>
 </tbody></table>
 
-<h2 id="beta-lookup-a-publisher-by-domain">Lookup a publisher by domain</h2>
+<h2 id="lookup-a-publisher-by-domain">Lookup a publisher by domain</h2>
 
 <blockquote>
 <p>Example: Retrieve the publisher who owns the domain <code class="prettyprint">snapchat.com</code></p>
@@ -1258,120 +1259,6 @@ SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code
 <p><code class="prettyprint">GET /android/publisher?domain=&lt;domain&gt;</code></p>
 
 <p>where <code class="prettyprint">&lt;domain&gt;</code> is the domain in question. Make sure to use only the domain, and not the scheme (i.e <code class="prettyprint">http/s</code>), subdomains, or path</p>
-
-
-<h2 id="get-the-company-given-the-ios-or-android-publisher">Get the company given the iOS or Android publisher</h2>
-
-<blockquote>
-<p>Example: Retrieve the latest information about Shazam (for iOS)</p>
-</blockquote>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/app_company?ios_publisher_id=207911"</span>
-    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
-</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-   </span><span class="s2">"android_publishers"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-         </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-            </span><span class="s2">"http://shazam.com"</span><span class="w">
-         </span><span class="p">],</span><span class="w">
-         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
-         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="p">,</span><span class="w">
-         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1162</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-   </span><span class="p">],</span><span class="w">
-   </span><span class="s2">"ios_publishers"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-         </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">284993479</span><span class="p">,</span><span class="w">
-         </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-            </span><span class="s2">"http://www.shazam.com/iphone"</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"http://www.shazam.com"</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"http://www.shazam.com/music/web/faqs.html?platform=iPhone"</span><span class="w">
-         </span><span class="p">],</span><span class="w">
-         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
-         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
-         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">207911</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-   </span><span class="p">],</span><span class="w">
-   </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
-   </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">38343</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<h3 id="http-request-format">HTTP Request Format</h3>
-
-<p><code class="prettyprint">GET /app_company?&lt;key1&gt;=&lt;publisher_id&gt;</code></p>
-
-<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the iOS publisher or Android publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/ios/207911">http://mightysignal.com/app/app#/publisher/ios/207911</a>, <a href="http://mightysignal.com/app/app#/publisher/android/1162">http://mightysignal.com/app/app#/publisher/android/1162</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an iOS or Android app.</p>
-
-<h3 id="query-parameters">Query Parameters</h3>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ios_publisher_id</td>
-<td>The iOS publisher ID</td>
-</tr>
-<tr>
-<td>android_publisher_id</td>
-<td>The Android publisher ID</td>
-</tr>
-</tbody></table>
-
-<aside class="notice">
-Pass the <code>ios_publisher_id</code> key or the <code>android_publisher_id</code> key, but not both simulatenously.
-</aside>
-
-<h3 id="response">Response</h3>
-
-<table><thead>
-<tr>
-<th>Key</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>android_publishers.websites</td>
-<td>An array of all websites of all Android apps of the publisher</td>
-</tr>
-<tr>
-<td>android_publishers.name</td>
-<td>Name of the Android publisher</td>
-</tr>
-<tr>
-<td>android_publishers.platform</td>
-<td><code class="prettyprint">android</code></td>
-</tr>
-<tr>
-<td>android_publishers.id</td>
-<td>The MightySignal ID of the Android publisher</td>
-</tr>
-<tr>
-<td>ios_publishers.websites</td>
-<td>An array of all websites of all iOS apps of the publisher</td>
-</tr>
-<tr>
-<td>ios_publishers.name</td>
-<td>Name of the iOS publisher</td>
-</tr>
-<tr>
-<td>ios_publishers.platform</td>
-<td><code class="prettyprint">ios</code></td>
-</tr>
-<tr>
-<td>ios_publishers.id</td>
-<td>The MightySignal ID of the iOS publisher</td>
-</tr>
-<tr>
-<td>name</td>
-<td>Name of the company</td>
-</tr>
-<tr>
-<td>id</td>
-<td>MightySignal ID of the company</td>
-</tr>
-</tbody></table>
 
 <h1 id="pagination">Pagination</h1>
 
