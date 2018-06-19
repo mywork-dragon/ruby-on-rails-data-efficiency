@@ -740,14 +740,14 @@ class SalesforceExportService
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
           imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: record_id}
 
-          export(object_id: record_id, publisher: ios_publisher) if date
+          SalesforceWorker.set(queue: queue).perform_async(:export_ios_publisher, ios_publisher.id, record_id, @user.id, @model_name) if date
         end
 
         if !record.MightySignal_Android_Publisher_ID__c && android_publisher
           new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
           imports << {publisher_id: android_publisher.id, platform: 'android', export_id: record_id}
 
-          export(object_id: record_id, publisher: android_publisher) if date
+          SalesforceWorker.set(queue: queue).perform_async(:export_android_publisher, android_publisher.id, record_id, @user.id, @model_name) if date
         end
 
         puts "Domain is #{domain}"
