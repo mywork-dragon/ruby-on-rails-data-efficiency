@@ -87,7 +87,21 @@
         max-width: 32px;
       }
     }
+  }
 
+  .rt-table::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .rt-table::-webkit-scrollbar-track {
+    border-radius: 2px;
+    background-color: rgba(0,0,0,.1);
+  }
+
+  .rt-table::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: rgba(0,0,0,.3);
   }
 }
 
