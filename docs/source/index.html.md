@@ -201,9 +201,6 @@ curl "https://api.mightysignal.com/ios/app?publisher_id=200033"
          "has_ad_spend" : true,
          "publisher" : {
             "platform" : "ios",
-            "websites" : [
-                "..."
-            ],
             "name" : "Uber Technologies, Inc.",
             "id" : 200033
          },
