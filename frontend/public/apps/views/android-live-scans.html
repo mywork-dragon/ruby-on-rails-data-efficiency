@@ -69,18 +69,18 @@
                           <i class="fa fa-circle" ng-hide="sdk['favicon']"></i>
                         </div>
                         <div class="sdkLiveScanDisplayTitleSection">
-                          <span ng-if="canViewStorewideSdks">
+                          <span>
                             <a href="#/sdk/android/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" title="installed on {{sdk['first_seen_date'] | date : shortDate}}" uib-tooltip="{{sdk['first_seen_date'] | date : shortDate}}">
-                              installed <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk['first_seen_date'])}}</strong> ago
-                            </span>
-                          </span>
-                          <span ng-if="!canViewStorewideSdks">
-                            <a href="{{sdk['website']}}" ng-show="{{sdk['website']}}" target="_blank">{{sdk['name']}}</a>
-                            <strong ng-hide="sdk['website']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" title="installed on {{sdk['first_seen_date'] | date : shortDate}}" uib-tooltip="{{sdk['first_seen_date'] | date : shortDate}}">
-                              installed <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk['first_seen_date'])}}</strong> ago
+                            <span
+                              class="sdkLiveScanInstallDate {{ sdk.activities.length > 1 ? 'tooltip-item' : '' }}"
+                              ng-if="sdk['first_seen_date']"
+                              uib-popover-template="'install-history.html'"
+                              popover-placement="auto right"
+                              popover-append-to-body="true"
+                              popover-trigger="mouseenter"
+                            >
+                              installed <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong> ago
                             </span>
                           </span>
                         </div>
@@ -100,18 +100,18 @@
                           <i class="fa fa-github" ng-hide="sdk['favicon']"></i>
                         </div>
                         <div class="sdkLiveScanDisplayTitleSection">
-                          <span ng-if="canViewStorewideSdks">
+                          <span>
                             <a href="#/sdk/android/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['first_unseen_date']" title="uninstalled on {{sdk['first_unseen_date'] | date : shortDate}}" uib-tooltip="{{sdk['first_unseen_date'] | date : shortDate}}">
-                              uninstalled <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk['first_unseen_date'])}}</strong> ago
-                            </span>
-                          </span>
-                          <span ng-if="!canViewStorewideSdks">
-                            <a href="{{sdk['website']}}" ng-show="{{sdk['website']}}" target="_blank">{{sdk['name']}}</a>
-                            <strong ng-hide="sdk['website']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['first_unseen_date']" title="uninstalled on {{sdk['first_unseen_date'] | date : shortDate}}" uib-tooltip="{{sdk['first_unseen_date'] | date : shortDate}}">
-                              uninstalled <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk['first_unseen_date'])}}</strong> ago
+                            <span
+                              class="sdkLiveScanUninstallDate {{ sdk.activities.length > 2 ? 'tooltip-item' : '' }}"
+                              ng-if="sdk['first_unseen_date']"
+                              uib-popover-template="'install-history.html'"
+                              popover-placement="auto right"
+                              popover-append-to-body="true"
+                              popover-trigger="mouseenter"
+                            >
+                              uninstalled <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong> ago
                             </span>
                           </span>
                         </div>
@@ -148,5 +148,13 @@
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="install-history.html">
+  <ul class="international-data">
+    <li ng-repeat="activity in sdk.activities">
+      {{activity.type | capitalize }}ed {{ activity.date | date : shortDate }}
+    </li>
+  </ul>
+</script>
 
 <aside><helpVideo></aside>
