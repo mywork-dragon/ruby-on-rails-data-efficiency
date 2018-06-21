@@ -326,9 +326,6 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
   "publisher" : {
      "id" : 360,
      "name" : "Snapchat Inc",
-     "websites" : [
-        "http://snapchat.com"
-     ],
      "platform" : "android"
   },
   "platform" : "android",
@@ -374,7 +371,6 @@ uninstalled_sdks.first_seen_date | The first date the SDK was seen in the app
 uninstalled_sdks.categories | The categories of this SDK.
 publisher.id | The MightySignal ID of the publisher
 publisher.name | Name of the publisher
-publisher.websites | Websites listed under the publisher
 publisher.platform | `android`
 platform | `android`
 google_play_id | The Google Play ID of the app
@@ -405,9 +401,6 @@ curl "https://api.mightysignal.com/android/app?publisher_id=12"
       "id" : 16,
       "publisher" : {
          "id" : 12,
-         "websites" : [
-             "..."
-         ],
          "name" : "Supercell",
          "platform" : "android"
       },
@@ -831,9 +824,6 @@ curl "https://api.mightysignal.com/ios/app?installed_sdk_id=2362"
         "support_url" : "http://tappsgames.com/contact/",
         "publisher" : {
            "platform" : "ios",
-           "websites" : [
-               "..."
-           ],
            "id" : 10795,
            "name" : "Tapps Tecnologia da Informacao LTDA."
         },
@@ -884,9 +874,6 @@ curl "https://api.mightysignal.com/ios/app/446768343"
   "publisher" : {
      "platform" : "ios",
      "id" : 10795,
-     "websites" : [
-       "..."
-     ],
      "name" : "Tapps Tecnologia da Informacao LTDA."
   },
   "current_version" : "1.6.10",
