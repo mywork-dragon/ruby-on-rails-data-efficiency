@@ -12,8 +12,8 @@ const LocationCell = ({
     const x = locations[0].state || locations[0].city;
     return (
       <span>
-        <SmallIcon src={`/lib/images/flags/${locations[0].country_code.toLowerCase()}.png`} />
-        <span>{x ? `${x}, ` : ''}{locations[0].country_code}</span>
+        {locations[0].country_code && <SmallIcon src={`/lib/images/flags/${locations[0].country_code.toLowerCase()}.png`} />}
+        <span>{x}{x ? ', ' : ''}{locations[0].country_code}</span>
       </span>
     );
   }
@@ -23,7 +23,7 @@ const LocationCell = ({
       <ul className="international-data">
         {locations.map(x => (
           <li key={`location_${x.state}_${x.country_code}`}>
-            <SmallIcon src={`/lib/images/flags/${locations[0].country_code.toLowerCase()}.png`} />
+            {x.country_code && <SmallIcon src={`/lib/images/flags/${x.country_code.toLowerCase()}.png`} />}
             {' '}
             <span>{x.state}, {x.country_code}</span>
           </li>
@@ -37,8 +37,7 @@ const LocationCell = ({
       <OverlayTrigger overlay={popover} placement="left" trigger={['hover', 'focus']}>
         <div>
           <span className="tooltip-item">
-            {/* <SmallIcon src={`/lib/images/flags/${locations[0].country_code.toLowerCase()}.png`} /> */}
-            <span>{`${locations[0].state}, ${locations[0].country_code}`}</span>
+            <span>{locations[0].state}{locations[0].state ? ', ' : ''}{locations[0].country_code}</span>
           </span>
         </div>
       </OverlayTrigger>
