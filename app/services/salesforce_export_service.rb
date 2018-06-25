@@ -39,7 +39,7 @@ class SalesforceExportService
                           metadata_server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0", 
                           server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
                           host: host
-                        )
+                        ) 
     if Rails.env.production?
       begin
         @client.query('select Id from Account limit 1') 
@@ -215,6 +215,7 @@ class SalesforceExportService
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
+      {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -325,11 +326,13 @@ class SalesforceExportService
       #mapping[APP_STORE_PUB_ID] = {"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}
       mapping[IOS_LINK] = {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"}
       mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
+      mapping[IOS_RATINGS_COUNT] = {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
     when 'android'
       mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
       #mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
       mapping[ANDROID_LINK] = {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"}
       mapping[ANDROID_SDK_SUMMARY] = {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
+      mapping[ANDROID_RATINGS_COUNT] = {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
     end
 
     case @model_name
@@ -448,6 +451,7 @@ class SalesforceExportService
       'Category__c' => app.categories.first,
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
+      'Ratings_Count__c' => app.total_rating_count,
       'User_Base__c' => app.international_userbase[:user_base],
       'Ad_Spend__c' => app.ad_spend?,
       'Release_Date__c' => app.release_date,
@@ -473,6 +477,7 @@ class SalesforceExportService
       'Category__c' => app.categories.first,
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
+      'Ratings_Count__c' => app.ratings_all_count,
       'User_Base__c' => app.user_base,
       'Ad_Spend__c' => app.ad_spend?,
       'Last_Scanned_Date__c' => app.last_scanned.try(:to_date)
@@ -789,6 +794,8 @@ class SalesforceExportService
   IOS_SDK_SUMMARY = "MightySignal iOS SDK Summary"
   ANDROID_SDK_SUMMARY = "MightySignal Android SDK Summary"
   LAST_SYNCED = "MightySignal Last Synced"
+  ANDROID_RATINGS_COUNT = "MightySignal Android Ratings Count"
+  IOS_RATINGS_COUNT = "MightySignal iOS Ratings Count"
 
   def data_fields(app: nil, publisher: nil)
     fields = { 
@@ -802,7 +809,9 @@ class SalesforceExportService
       #GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
       ANDROID_LINK => {type: 'Url', label: "MightySignal Android Link"},
       ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
-      LAST_SYNCED => {type: 'Date', label: 'MightySignal Last Synced'}
+      LAST_SYNCED => {type: 'Date', label: 'MightySignal Last Synced'},
+      IOS_RATINGS_COUNT => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
+      ANDROID_RATINGS_COUNT => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0}
     }
 
     publisher ||= app.try(:publisher)
@@ -816,6 +825,7 @@ class SalesforceExportService
         fields[PUBLISHER_NAME][:data] = publisher.try(:name) || app.try(:name)
         fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
+        fields[IOS_RATINGS_COUNT][:data] = publisher.ratings_all_count
       when 'android'
         fields[ANDROID_PUB_ID][:data] = publisher.try(:id)
         #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
@@ -823,6 +833,7 @@ class SalesforceExportService
         fields[PUBLISHER_NAME][:data] = publisher.try(:name) || app.try(:name)
         fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
         fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
+        fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
       end
 
       fields[LAST_SYNCED][:data] = Date.today

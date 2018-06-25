@@ -407,6 +407,10 @@ class IosApp < ActiveRecord::Base
     first_international_snapshot['ratings_all_count'] || newest_ios_app_snapshot.try(:ratings_all_count)
   end
 
+  def total_rating_count #includes international snapshots
+    ratings.inject(0) {|sum, hash| sum + hash[:ratings_count].to_i}
+  end
+
   def released_days
     released =  first_international_snapshot['first_released'] || newest_ios_app_snapshot.try(:first_released)
     released ? (Date.today - released).to_i : 0

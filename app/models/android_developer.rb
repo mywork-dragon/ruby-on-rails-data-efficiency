@@ -30,6 +30,10 @@ class AndroidDeveloper < ActiveRecord::Base
     websites.map(&:domain_datum).uniq.compact
   end
 
+  def ratings_all_count
+    apps.limit(500).inject(0){|sum,app| sum + app.ratings_all_count.to_i}
+  end
+
   def developer_json
     {
       id: id,

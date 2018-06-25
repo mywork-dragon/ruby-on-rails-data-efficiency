@@ -12,7 +12,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       salesforce_token: salesforce_token, 
       salesforce_refresh_token: salesforce_refresh_token,
       salesforce_uid: '0050a00000ForTZAAZ',
-      salesforce_settings: {"is_sandbox"=>true},
+      salesforce_settings: {"is_sandbox"=>true,'tier'=>'pro',},
       salesforce_instance_url: 'https://cs17.salesforce.com',
     ) 
 
@@ -21,7 +21,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       salesforce_token: salesforce_token, 
       salesforce_refresh_token: salesforce_refresh_token,
       salesforce_uid: '0050a00000ForTZAAZ',
-      salesforce_settings: {"is_sandbox"=>true, 'custom_website_fields' => {'Lead' => ['Email_Domain__c']}},
+      salesforce_settings: {"is_sandbox"=>true, 'tier'=>'pro', 'custom_website_fields' => {'Lead' => ['Email_Domain__c']}},
       salesforce_instance_url: 'https://cs17.salesforce.com',
     ) 
 
@@ -52,6 +52,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
+      {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -124,7 +125,9 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal Android Publisher ID" => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
       "MightySignal Android Link" => {type: 'Url', label: "MightySignal Android Link"},
       "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
-      "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"}
+      "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"},
+      "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
+      "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0}
     }
     fields.each do |field_key, field|
       @sf.expects(:add_custom_field).with('Account', field)
@@ -266,7 +269,8 @@ end
       "MightySignal iOS Publisher ID" => {"id"=>"MightySignal_iOS_Publisher_ID__c", "name"=>"New Field: MightySignal iOS Publisher ID"},
       "MightySignal iOS Link" => {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
-      "MightySignal iOS SDK Summary" => {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
+      "MightySignal iOS SDK Summary" => {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"},
+      "MightySignal iOS Ratings Count" => {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
     }
   end
 
@@ -277,7 +281,8 @@ end
       "MightySignal Android Publisher ID" => {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"},
       "MightySignal Android Link" => {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
-      "MightySignal Android SDK Summary" => {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
+      "MightySignal Android SDK Summary" => {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"},
+      "MightySignal Android Ratings Count" => {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
     }
   end
 
@@ -322,11 +327,13 @@ end
     SalesforceLogger.stubs(:new).returns(mock)
     @sf.stubs(:sdk_display).returns("123")
 
-    new_object = {"MightySignal_iOS_Publisher_ID__c" => @ios_developer.id, 
+    new_object = {
+                  "MightySignal_Last_Synced__c" => Date.today,
+                  "MightySignal_iOS_Publisher_ID__c" => @ios_developer.id, 
                   "MightySignal_iOS_Link__c" => "https://mightysignal.com/app/app#/publisher/ios/#{@ios_developer.id}?utm_source=salesforce",
                   "MightySignal_iOS_SDK_Summary__c" => "123",
+                  "MightySignal_iOS_Ratings_Count__c" => 0,
                   "Name" => "3 Comma Studio LLC",
-                  "MightySignal_Last_Synced__c" => Date.today,
                   "AccountSource" => "MightySignal"}
 
     SalesforceWorker.expects(:perform_async)
@@ -339,6 +346,7 @@ end
       "MightySignal iOS Publisher ID" => {data: '123', type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
       "MightySignal iOS Link" => {data: '123', type: 'Url', label: "MightySignal iOS Link"},
       "MightySignal iOS SDK Summary" => {data: '123', length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
+      "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
       "MightySignal Last Synced" => {:type => "Date", :label => "MightySignal Last Synced"}
     }
 
