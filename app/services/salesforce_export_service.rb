@@ -279,7 +279,9 @@ class SalesforceExportService
     remaining_limits = @client.limits
     {
       daily_api_calls: remaining_limits["DailyApiRequests"]["Remaining"],
-      daily_bulk_api_calls: remaining_limits["DailyBulkApiRequests"]["Remaining"]
+      daily_api_calls_max: remaining_limits["DailyApiRequests"]["Max"],
+      daily_bulk_api_calls: remaining_limits["DailyBulkApiRequests"]["Remaining"],
+      daily_bulk_api_calls_max: remaining_limits["DailyBulkApiRequests"]["Max"]
     }
   end
 
