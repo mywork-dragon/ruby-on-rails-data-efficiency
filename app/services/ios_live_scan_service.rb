@@ -62,7 +62,7 @@ class IosLiveScanService
         result_map[:preparing]
       elsif snapshot.scan_status == 'scanned'
         result_map[:complete]
-      elsif snapshot.scan_status == 'scanning'
+      elsif snapshot.scan_status == 'scanning' || (snapshot.download_status == 'complete' && snapshot.success)
         result_map[:scanning]
       elsif snapshot.scan_status == 'failed'
         result_map[:failed]

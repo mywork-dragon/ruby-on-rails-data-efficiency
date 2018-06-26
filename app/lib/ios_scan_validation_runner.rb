@@ -42,9 +42,53 @@ class IosScanValidationRunner
       return handle_recently_queued
     end
     start_job unless @options[:disable_job_start]
+    start_job_v2 if @options[:v2_download] && !@options[:disable_job_start]
   rescue
     update_job(status: :failed) if @options[:update_job_status]
     raise
+  end
+
+  # create a job using v2 of the download system
+  def start_job_v2
+    ipa_snapshot = IpaSnapshot.create!(
+      ipa_snapshot_job_id: @ipa_snapshot_job_id,
+      ios_app_id: @ios_app_id,
+      version: @app_info['version'],
+      lookup_content: @app_info.to_json,
+      app_store_id: @app_store_id,
+      download_status: :starting
+    )
+    cd = ClassDump.create!(
+      ipa_snapshot: ipa_snapshot,
+      complete: false
+    )
+    expiration_time = options[:recently_queued_expiration] || 24.hours.to_i
+    redis.setex(recent_key, expiration_time, @app_info['version'])
+    a = select_apple_account
+    queue_url = if options[:classification_priority] == :high
+                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_live_scan_download_requests"
+                else
+                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_mass_scan_download_requests"
+                end
+    client = Aws::SQS::Client.new(region: 'us-east-1')
+    # make sure message has all necessary attributes
+    client.send_message(
+      queue_url: queue_url,
+      message_body: JSON.dump({
+        classification_priority: options[:classification_priority],
+        itunes_user: a.email,
+        itunes_password: a.password,
+        app_identifier: IosApp.find(@ios_app_id).app_identifier.to_s,
+        varys_cd_id: cd.id,
+      }))
+    update_job(status: :initiated) if @options[:update_job_status]
+  end
+
+  def select_apple_account
+    AppleAccount
+      .where(app_store_id: @app_store_id)
+      .where(kind: AppleAccount.kinds[:v2_download])
+      .to_a.sample
   end
 
   def start_job

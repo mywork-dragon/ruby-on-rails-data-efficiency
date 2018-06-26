@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402225535) do
+ActiveRecord::Schema.define(version: 20180626174001) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -2007,7 +2007,7 @@ ActiveRecord::Schema.define(version: 20180402225535) do
   add_index "ipa_snapshots", ["good_as_of_date"], name: "index_ipa_snapshots_on_good_as_of_date", using: :btree
   add_index "ipa_snapshots", ["ios_app_id", "good_as_of_date"], name: "index_ipa_snapshots_on_ios_app_id_and_good_as_of_date", using: :btree
   add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
-  add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
+  add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snaps_job_id_app_id", using: :btree
   add_index "ipa_snapshots", ["scan_status"], name: "index_ipa_snapshots_on_scan_status", using: :btree
   add_index "ipa_snapshots", ["success", "scan_status"], name: "index_ipa_snapshots_on_success_and_scan_status", using: :btree
 
