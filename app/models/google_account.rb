@@ -11,7 +11,8 @@ class GoogleAccount < ActiveRecord::Base
     :galaxy_prime_2,
     :moto_x_1,
     :motog4_1,
-    :samsung_galaxy_s7_1
+    :samsung_galaxy_s7_1,
+    :samsung_galaxy_s7_2,
   ]
 	enum scrape_type: [:full, :live, :test]
 
@@ -29,6 +30,8 @@ class GoogleAccount < ActiveRecord::Base
       'Android-Finsky/7.0.17.H-all%20%5B0%5D (api=3,versionCode=80701700,sdk=23,device=athene,hardware=qcom,product=athene_amz,platformVersionRelease=6.0.1,model=Moto%20G%20%284%29,buildId=MPJ24.139-64,isWideScreen=0)'
     elsif [:samsung_galaxy_s7_1].include? dev
       'Android-Finsky/8.5.39.W-all%20%5B0%5D%20%5BPR%5D%20178322352 (api=3,versionCode=80853900,sdk=23,device=heroqltevzw,hardware=qcom,product=heroqltevzw,platformVersionRelease=6.0.1,model=SM-G930V,buildId=MMB29M,isWideScreen=0,supportedAbis=arm64-v8a;armeabi-v7a;armeabi)'
+    elsif [:samsung_galaxy_s7_2].include? dev
+      'Android-Finsky/8.5.39.W-all%20%5B0%5D%20%5BPR%5D%20178322352 (api=3,versionCode=80853900,sdk=27,device=heroqltevzw,hardware=qcom,product=heroqltevzw,platformVersionRelease=6.0.1,model=SM-G930V,buildId=MMB29M,isWideScreen=0,supportedAbis=arm64-v8a;armeabi-v7a;armeabi)'
     else
       fail 'No User-Agent'
     end
