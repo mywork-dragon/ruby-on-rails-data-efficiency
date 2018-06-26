@@ -22,6 +22,8 @@ export const getRankingsCountries = state => state.appStoreInfo.rankingsCountrie
 
 export const getCategoryNameById = (state, id, platform) => state.appStoreInfo.categories[`${platform}CategoriesById`][id] || {};
 
+export const getCountryById = (state, id) => state.appStoreInfo.rankingsCountries.rankingsCountries.find(x => x.id === id);
+
 export const needAppPermissionsOptions = state => !state.appStoreInfo.appPermissionsOptions.loaded && !state.appStoreInfo.appPermissionsOptions.fetching;
 
 export const getAppPermissionsOptions = state => Object.entries(state.appStoreInfo.appPermissionsOptions.options).map(x => ({ key: x[0], ...x[1] }));

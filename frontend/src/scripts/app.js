@@ -60,6 +60,12 @@ angular
       template: require('containers/AppPage/views/info.html'),
     };
 
+    const appRankingsState = {
+      name: 'app.rankings',
+      url: '/rankings',
+      template: require('containers/AppPage/views/rankings.html'),
+    };
+
     const appState = {
       name: 'app',
       url: '/app/{platform}/{id}?utm_source',
@@ -190,6 +196,7 @@ angular
     $stateProvider.state(appState);
     $stateProvider.state(appInfoState);
     $stateProvider.state(appAdIntelState);
+    $stateProvider.state(appRankingsState);
     $stateProvider.state(publisherState);
     $stateProvider.state(publisherInfoState);
     $stateProvider.state(publisherAdIntelState);

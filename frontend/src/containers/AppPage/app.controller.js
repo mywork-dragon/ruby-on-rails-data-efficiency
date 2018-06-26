@@ -10,9 +10,9 @@ import 'AngularService/app.service';
 import 'AngularService/ad-intelligence.service';
 import 'AngularService/newsfeed';
 import MightyQueryService from 'services/mightyQuery.service';
-
 import { addAdIds } from 'utils/app.utils';
 import { attachGetCompanyContactsLoader } from 'utils/contact.utils';
+import './components/rankings-tab/rankings-tab.directive';
 
 angular
   .module('appApp')
@@ -77,6 +77,7 @@ function AppController (
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
     { title: 'Ad Intelligence', index: 1, route: 'app.ad-intelligence' },
+    // { title: 'Rankings', index: 2, route: 'app.rankings' },
   ];
   app.userInfo = {};
 

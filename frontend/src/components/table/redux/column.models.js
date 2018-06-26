@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas, numberShorthand } from 'utils/format.utils';
+import { numberWithCommas, numberShorthand, longDate } from 'utils/format.utils';
 import Rating from 'components/rating/Rating.component';
 
 // header cells
@@ -17,6 +17,8 @@ import AdAttributionSdkCell from '../components/cells/AdAttributionSdkCell.compo
 import AdNetworkCellContainer from '../containers/AdNetworkCell.container';
 import AdSpendCell from '../components/cells/AdSpendCell.component';
 import AppNameCell from '../components/cells/AppNameCell.component';
+import CategoryCell from '../containers/CategoryCell.container';
+import CountryCell from '../containers/CountryCell.container';
 import CreativeFormatCell from '../components/cells/CreativeFormatCell.component';
 import DateCell from '../components/cells/DateCell.component';
 import DomainCell from '../components/cells/DomainCell.component';
@@ -48,6 +50,7 @@ export const headerNames = {
   APP: 'App',
   CATEGORY: 'Category',
   COUNTRIES_AVAILABLE_IN: 'Available In',
+  COUNTRY: 'Country',
   CREATIVE_FORMATS: 'Formats',
   DOMAINS: 'Domains',
   DOWNLOADS: 'Downloads',
@@ -67,6 +70,10 @@ export const headerNames = {
   RATING: 'Rating',
   RATINGS_COUNT: 'Ratings Count',
   RELEASE_DATE: 'Release Date',
+  SIMPLE_ENTERED_CHART: 'Simple Entered Chart',
+  SIMPLE_RANK: 'Simpe Rank',
+  SIMPLE_MONTH_CHANGE: 'Simple 1 Month Rank Change',
+  SIMPLE_WEEK_CHANGE: 'Simple 1 Week Rank Change',
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
   USER_BASE: 'User Base',
   WEEKLY_CHANGE: '1 Week Rank Change',
@@ -110,7 +117,15 @@ export const columnModels = [
     accessor: 'categories',
     minWidth: widths.small,
     sortable: false,
-    Cell: cell => <div>{cell.value.length ? cell.value.join(', ') : <span className="invalid">No data</span>}</div>,
+    Cell: cell => <CategoryCell categories={cell.original.categories || cell.original.category} platform={cell.original.platform} />,
+  },
+  {
+    Header: headerNames.COUNTRY,
+    id: headerNames.COUNTRY,
+    accessor: 'country',
+    minWidth: widths.medium,
+    sortable: false,
+    Cell: cell => <CountryCell country={cell.value} {...cell.tdProps.rest} />,
   },
   {
     Header: headerNames.CREATIVE_FORMATS,
@@ -251,6 +266,50 @@ export const columnModels = [
     accessor: 'original_release_date',
     width: widths.xSmall,
     Cell: cell => <DateCell releaseDate={cell.value} />,
+  },
+  {
+    Header: 'Date Entered Chart',
+    id: headerNames.SIMPLE_ENTERED_CHART,
+    accessor: 'date',
+    Cell: cell => (cell.value ? longDate(cell.value) : 'N/A'),
+  },
+  {
+    Header: 'Rank',
+    id: headerNames.SIMPLE_RANK,
+    accessor: 'rank',
+    width: widths.small,
+  },
+  {
+    Header: '1 Week Rank Change',
+    id: headerNames.SIMPLE_WEEK_CHANGE,
+    accessor: 'weekly_change',
+    width: widths.medium,
+    Cell: (cell) => {
+      if (cell.value < 0) {
+        return <span style={{ color: 'red' }}>{cell.value}</span>;
+      } else if (cell.value > 0) {
+        return <span style={{ color: 'green' }}>{cell.value}</span>;
+      } else if (cell.value === 0) {
+        return cell.value;
+      }
+      return 'N/A';
+    },
+  },
+  {
+    Header: '1 Month Rank Change',
+    id: headerNames.SIMPLE_MONTH_CHANGE,
+    accessor: 'monthly_change',
+    width: widths.medium,
+    Cell: (cell) => {
+      if (cell.value < 0) {
+        return <span style={{ color: 'red' }}>{cell.value}</span>;
+      } else if (cell.value > 0) {
+        return <span style={{ color: 'green' }}>{cell.value}</span>;
+      } else if (cell.value === 0) {
+        return cell.value;
+      }
+      return 'N/A';
+    },
   },
   {
     Header: headerNames.TOTAL_CREATIVES_SEEN,

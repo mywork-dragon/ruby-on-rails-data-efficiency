@@ -36,6 +36,7 @@ const Table = ({
   selectedItems,
   showColumnDropdown,
   showControls,
+  showHeader,
   sort,
   title,
   toggleAll,
@@ -65,33 +66,39 @@ const Table = ({
 
   return (
     <section className="panel panel-default table-dynamic">
-      <div className="panel-heading" id="dashboardResultsTableHeading">
-        <strong><i className="fa fa-list panel-icon" />{title}</strong>
-        {' '}
-        <span id="dashboardResultsTableHeadingNumDisplayed">
-          | {`${numberWithCommas(resultsCount)} ${capitalize(resultType)}${resultsCount > 1 ? 's' : ''}`}
-        </span>
-        {canFetch && csvLink && resultsCount ? (
-          <a href={csvLink}>
-            <button
-              className="btn btn-primary pull-right"
-              onClick={() => onCsvExport()}
-            >
-              Export to CSV
-            </button>
-          </a>
-        ) : (
-          <button
-            className="btn btn-primary pull-right"
-            disabled
-          >
-            Export to CSV
-          </button>
-        )}
-        <ListDropdownContainer
-          selectedItems={selectedItems}
-        />
-      </div>
+      {
+        showHeader && (
+          <div className="panel-heading" id="dashboardResultsTableHeading">
+            <strong><i className="fa fa-list panel-icon" />{title}</strong>
+            {' '}
+            <span id="dashboardResultsTableHeadingNumDisplayed">
+              | {`${numberWithCommas(resultsCount)} ${capitalize(resultType)}${resultsCount > 1 ? 's' : ''}`}
+            </span>
+            {canFetch && csvLink && resultsCount ? (
+              <a href={csvLink}>
+                <button
+                  className="btn btn-primary pull-right"
+                  onClick={() => onCsvExport()}
+                >
+                  Export to CSV
+                </button>
+              </a>
+            ) : (
+              <button
+                className="btn btn-primary pull-right"
+                disabled
+              >
+                Export to CSV
+              </button>
+            )}
+            {toggleAll && toggleItem && (
+              <ListDropdownContainer
+                selectedItems={selectedItems}
+              />
+            )}
+          </div>
+        )
+      }
       {
         isManual ? (
           <ReactTable
@@ -143,6 +150,7 @@ const Table = ({
             getTheadThProps={getTheadThProps}
             loading={loading}
             minRows={0}
+            pageSize={results.length}
             showPaginationBottom={false}
             showPaginationTop={false}
             TdComponent={({
@@ -166,7 +174,7 @@ Table.propTypes = {
     App: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     Publisher: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   }).isRequired,
-  error: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
   csvLink: PropTypes.string,
   isManual: PropTypes.bool,
   loading: PropTypes.bool,
@@ -185,13 +193,14 @@ Table.propTypes = {
   })),
   showColumnDropdown: PropTypes.bool,
   showControls: PropTypes.bool,
+  showHeader: PropTypes.bool,
   sort: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     desc: PropTypes.bool,
   })),
-  title: PropTypes.string.isRequired,
-  toggleAll: PropTypes.func.isRequired,
-  toggleItem: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  toggleAll: PropTypes.func,
+  toggleItem: PropTypes.func,
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
@@ -200,6 +209,7 @@ Table.propTypes = {
 Table.defaultProps = {
   canFetch: false,
   csvLink: null,
+  error: false,
   isManual: false,
   loading: false,
   message: 'No results',
@@ -219,6 +229,10 @@ Table.defaultProps = {
   selectedItems: [],
   showColumnDropdown: false,
   showControls: false,
+  showHeader: true,
+  title: '',
+  toggleAll: null,
+  toggleItem: null,
   updateColumns: null,
 };
 
