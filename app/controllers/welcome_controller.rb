@@ -332,7 +332,7 @@ class WelcomeController < ApplicationController
     utm_medium = params['utm_medium']
     utm_campaign = params['utm_campaign']
 
-    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative)
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative, :app_identifier, :app_platform, :app_name, :app_id)
     lead_data[:utm_source] = request.cookies['utm_source']
     lead_data[:utm_medium] = request.cookies['utm_medium']
     lead_data[:utm_campaign] = request.cookies['utm_campaign']
