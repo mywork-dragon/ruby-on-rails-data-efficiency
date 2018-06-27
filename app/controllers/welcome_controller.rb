@@ -294,15 +294,6 @@ class WelcomeController < ApplicationController
     redirect_to root_path(form: 'lead')
   end
 
-  def contact_us_from_modal
-    lead_data = lead_data_from_params
-    lead_data[:lead_source] = 'Web Form'
-    lead_data[:web_form_button_id] = params['button_id']
-    Lead.create_lead(lead_data)
-
-    redirect_to well_be_in_touch_path
-  end
-
   def well_be_in_touch
   end
 

@@ -45,7 +45,6 @@ Rails.application.routes.draw do
 
   post 'subscribe' => 'welcome#subscribe', as: :subscribe
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
-  post 'contact_us_from_modal' => 'welcome#contact_us_from_modal', as: :contact_us_from_modal
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get '/privacy', to: redirect('/legal/privacy.pdf')
 
