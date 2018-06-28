@@ -82,6 +82,8 @@ class IosScanValidationRunner
         varys_cd_id: cd.id,
       }))
     update_job(status: :initiated) if @options[:update_job_status]
+  rescue => e
+    Bugsnag.notify(e)
   end
 
   def select_apple_account
