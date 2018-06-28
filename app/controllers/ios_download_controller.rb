@@ -16,6 +16,7 @@ class IosDownloadController < ApplicationController
       apple_account_id: account.try(:id),
       ios_device_id: device_id,
       success: success,
+      dump_success: success,
       complete: true
     )
 
