@@ -1,6 +1,6 @@
 class IosDownloadController < ApplicationController
   skip_before_filter  :verify_authenticity_token
-  before_action :set_current_user, :authenticate_request, :authenticate_admin_request
+  before_action :set_current_user, :authenticate_request, :authenticate_admin_account
 
   def update
     cd = ClassDump.find(params.fetch(:varys_cd_id))
