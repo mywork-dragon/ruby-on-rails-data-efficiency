@@ -285,6 +285,40 @@ class SalesforceExportService
     }
   end
 
+  def under_api_limit?(uses_bulk_api: false)
+    api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-api-limit')
+    bulk_api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-bulk-api-limit')
+
+    threshold = 0.4
+    current_limits = nil
+
+    under_api_limit = if api_throttler.status[:current] > 0 #cached limit check
+      false
+    else 
+      current_limits ||= limits
+      under_limit = current_limits[:daily_api_calls]/current_limits[:daily_api_calls_max].to_f >= threshold
+      unless under_limit
+        api_throttler.increment
+      end
+      
+      under_limit
+    end
+
+    under_bulk_api_limit = if bulk_api_throttler.status[:current] > 0 #cached limit check
+      false
+    else 
+      current_limits ||= limits
+      under_limit = current_limits[:daily_bulk_api_calls]/current_limits[:daily_bulk_api_calls_max].to_f.to_f >= threshold
+      unless under_limit
+        bulk_api_throttler.increment
+      end
+      
+      under_limit
+    end
+
+    under_api_limit && (under_bulk_api_limit || !uses_bulk_api)
+  end
+
   def uninstall
     @metadata_client.delete(:custom_object, 
       @app_model, 

@@ -37,7 +37,7 @@ class SalesforceWorker
     account = Account.find(account_id)
     sf = SalesforceExportService.new(user: account.users.first)
 
-    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+    if sf.under_api_limit?(uses_bulk_api: true)
       sf.sync_domain_mapping(date: date, queue: queue)
     else
       SalesforceWorker.perform_in(6.hours, :sync_domain_mapping, account_id, date, queue)
@@ -48,7 +48,7 @@ class SalesforceWorker
   def export_ios_publisher(publisher_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
 
-    if under_api_limit(limits: sf.client.limits)
+    if sf.under_api_limit?
       dev = IosDeveloper.find(publisher_id)
       sf.export(publisher: dev, object_id: export_id, export_apps: false)
     else
@@ -59,7 +59,7 @@ class SalesforceWorker
   def export_android_publisher(publisher_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
 
-    if under_api_limit(limits: sf.client.limits)
+    if sf.under_api_limit?
       dev = AndroidDeveloper.find(publisher_id)
       sf.export(publisher: dev, object_id: export_id, export_apps: false)
     else
@@ -71,7 +71,7 @@ class SalesforceWorker
   def export_publishers_apps(imports, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
 
-    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+    if sf.under_api_limit?(uses_bulk_api: true)
       imports.each do |import|
         import['publisher'] = if import['platform'] == 'ios'
           IosDeveloper.find(import['publisher_id'])
@@ -88,7 +88,7 @@ class SalesforceWorker
 
   def export_ios_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
-    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+    if sf.under_api_limit?(uses_bulk_api: true)
       app = IosApp.find(app_id)
       sf.import_publishers_apps([{publisher: app.ios_developer, export_id: export_id}])
     else
@@ -99,7 +99,7 @@ class SalesforceWorker
   def export_android_apps(app_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
 
-    if under_api_limit(limits: sf.client.limits, uses_bulk_api: true)
+    if sf.under_api_limit?(uses_bulk_api: true)
       app = AndroidApp.find(app_id)
       sf.import_publishers_apps([{publisher: app.android_developer, export_id: export_id}])
     else
@@ -115,14 +115,6 @@ class SalesforceWorker
     }
 
     mapping[frequency]
-  end
-
-  def under_api_limit(limits:, uses_bulk_api: false)
-    threshold = 0.4
-    under_api_limit = limits["DailyApiRequests"]["Remaining"]/limits["DailyApiRequests"]["Max"].to_f >= threshold
-    under_bulk_api_limit = limits["DailyBulkApiRequests"]["Remaining"]/limits["DailyBulkApiRequests"]["Max"].to_f >= threshold
-
-    under_api_limit && (under_bulk_api_limit || !uses_bulk_api)
   end
 
 end
