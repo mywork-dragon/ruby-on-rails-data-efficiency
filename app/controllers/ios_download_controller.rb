@@ -20,10 +20,16 @@ class IosDownloadController < ApplicationController
       complete: true
     )
 
-    snapshot.update!(
+    info = {
       download_status: :complete,
       success: success
-    )
+    }
+
+    if body['date_downloaded']
+      info[:good_as_of_date] = DateTime.parse(body['date_downloaded'])
+    end
+
+    snapshot.update!(info)
 
     # queue for classification
     classification_worker = if body['classification_priority'] == 'high'

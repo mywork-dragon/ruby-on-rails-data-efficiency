@@ -175,7 +175,7 @@ class ClassDump < ActiveRecord::Base
     s3_client.retrieve(
       bucket: Rails.application.config.ios_pkg_summary_bucket,
       key_path: s3_key(content_type)
-    )
+    ).encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
   end
 
   def store_blob(content_type, blob)
@@ -187,11 +187,7 @@ class ClassDump < ActiveRecord::Base
   end
 
   def retrieve_list(content_type)
-    raw = s3_client.retrieve(
-      bucket: Rails.application.config.ios_pkg_summary_bucket,
-      key_path: s3_key(content_type)
-    )
-    extract_table_format(raw)
+    extract_table_format(retrieve_blob(content_type))
   end
 
   def store_list(content_type, list)
