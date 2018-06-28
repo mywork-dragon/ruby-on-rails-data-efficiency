@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas, numberShorthand, longDate } from 'utils/format.utils';
+import { numberWithCommas, numberShorthand, longDate, capitalize } from 'utils/format.utils';
 import Rating from 'components/rating/Rating.component';
 
 // header cells
@@ -67,6 +67,7 @@ export const headerNames = {
   PLATFORM: 'Platform',
   PUBLISHER: 'Publisher',
   RANK: 'Rank',
+  RANKING_TYPE: 'Ranking Type',
   RATING: 'Rating',
   RATINGS_COUNT: 'Ratings Count',
   RELEASE_DATE: 'Release Date',
@@ -278,6 +279,14 @@ export const columnModels = [
     id: headerNames.SIMPLE_RANK,
     accessor: 'rank',
     width: widths.small,
+  },
+  {
+    Header: headerNames.RANKING_TYPE,
+    id: headerNames.RANKING_TYPE,
+    accessor: 'ranking_type',
+    width: widths.small,
+    sortable: false,
+    Cell: cell => capitalize(cell.value),
   },
   {
     Header: '1 Week Rank Change',

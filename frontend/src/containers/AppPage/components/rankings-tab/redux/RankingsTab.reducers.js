@@ -4,6 +4,7 @@ const initialState = {
   id: '',
   selectedCountries: '',
   selectedCategories: '',
+  selectedRankingTypes: '',
 };
 
 function rankingsTab(state = initialState, action) {
@@ -14,6 +15,7 @@ function rankingsTab(state = initialState, action) {
         id: action.payload.id,
         selectedCountries: '',
         selectedCategories: '',
+        selectedRankingTypes: '',
       };
     case rankingsTabActionTypes.UPDATE_COUNTRIES_FILTER:
       return {
@@ -24,6 +26,11 @@ function rankingsTab(state = initialState, action) {
       return {
         ...state,
         selectedCategories: action.payload.categories,
+      };
+    case rankingsTabActionTypes.UPDATE_RANKING_TYPES_FILTER:
+      return {
+        ...state,
+        selectedRankingTypes: action.payload.types,
       };
     default:
       return state;

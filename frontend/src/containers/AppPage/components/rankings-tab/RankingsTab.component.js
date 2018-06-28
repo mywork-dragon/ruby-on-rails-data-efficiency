@@ -10,13 +10,17 @@ const RankingsTab = ({
   platform,
   countryOptions,
   categoryOptions,
+  rankingTypeOptions,
   selectedCountries,
   selectedCategories,
+  selectedRankingTypes,
   updateCountriesFilter,
   updateCategoriesFilter,
+  updateRankingTypesFilter,
 }) => {
   const columns = {
     [headerNames.COUNTRY]: true,
+    [headerNames.RANKING_TYPE]: true,
     [headerNames.CATEGORY]: true,
     [headerNames.SIMPLE_RANK]: true,
     [headerNames.SIMPLE_WEEK_CHANGE]: true,
@@ -36,6 +40,15 @@ const RankingsTab = ({
             placeholder="Filter countries..."
             simpleValue
             value={selectedCountries}
+          />
+          <Select
+            className="rankings-tab-category-select"
+            multi
+            onChange={vals => updateRankingTypesFilter(vals)}
+            options={rankingTypeOptions}
+            placeholder="Filter ranking types..."
+            simpleValue
+            value={selectedRankingTypes}
           />
           <Select
             className="rankings-tab-category-select"
@@ -78,16 +91,23 @@ RankingsTab.propTypes = {
     value: PropTypes.string,
     label: PropTypes.string,
   })),
+  rankingTypeOptions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  })),
   updateCountriesFilter: PropTypes.func.isRequired,
   updateCategoriesFilter: PropTypes.func.isRequired,
+  updateRankingTypesFilter: PropTypes.func.isRequired,
   selectedCountries: PropTypes.string.isRequired,
   selectedCategories: PropTypes.string.isRequired,
+  selectedRankingTypes: PropTypes.string.isRequired,
 };
 
 RankingsTab.defaultProps = {
   charts: [],
   countryOptions: [],
   categoryOptions: [],
+  rankingTypeOptions: [],
 };
 
 export default RankingsTab;
