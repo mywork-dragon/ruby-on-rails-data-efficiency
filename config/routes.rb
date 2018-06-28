@@ -230,6 +230,7 @@ Rails.application.routes.draw do
   # devices in the lab
   get 'ios_devices' => 'ios_device#filter'
   get 'ios_devices/fb_accounts' => 'ios_device#get_device_fb_accounts'
+  get 'ios_devices/device_email' => 'ios_device#get_device_apple_account_email'
   put 'ios_devices/enable' => 'ios_device#enable_device'
   put 'ios_devices/disable' => 'ios_device#disable_device'
 

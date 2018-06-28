@@ -59,6 +59,19 @@ class IosDeviceControllerTest < ActionController::TestCase
     end
   end
 
+  def test_get_device_apple_account_email
+    apple_account = AppleAccount.create!(:email => "zergling@mightysignal.com", :password => "overlord")
+    @device1.apple_account = apple_account
+    @device1.save
+
+    @controller.stub :authenticate_admin_account, nil do
+      response = get(:get_device_apple_account_email, {:id => @device1.id})
+      data = JSON.parse(response.body)
+      assert_equal 200, response.status
+      assert_equal apple_account.email, data['device_email']
+    end
+  end
+
   def test_enable_device
     @controller.stub :authenticate_admin_account, nil do
       @device1.update(:disabled => true)

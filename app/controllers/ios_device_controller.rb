@@ -19,6 +19,15 @@ class IosDeviceController < ApplicationController
     end
   end
 
+  def get_device_apple_account_email
+    device = IosDevice.where(id: params.fetch(:id))
+    if device.empty? or device.first.apple_account.nil?
+      render json: { success: false }, status: 404 
+    else
+      render json: { success: true, device_email: device.first.apple_account.email }, status: 200
+    end
+  end
+
   def enable_device
     device = IosDevice.where(:id => params[:id])
     if device.empty?
