@@ -2,12 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Table from 'components/table/Table.container';
 import { headerNames } from 'components/table/redux/column.models';
+import Select from 'components/select/CustomSelect.component';
 import NoDataMessage from 'Messaging/NoData.component';
 
 const RankingsTab = ({
-  rankings,
+  charts,
   platform,
-  newcomers,
+  countryOptions,
+  categoryOptions,
+  selectedCountries,
+  selectedCategories,
+  updateCountriesFilter,
+  updateCategoriesFilter,
 }) => {
   const columns = {
     [headerNames.COUNTRY]: true,
@@ -18,20 +24,29 @@ const RankingsTab = ({
     [headerNames.SIMPLE_ENTERED_CHART]: true,
   };
 
-  const charts = rankings.map((x) => {
-    const newcomerChart = newcomers.find(y => y.category === x.category && y.country === x.country && y.ranking_type === x.ranking_type);
-    const date = newcomerChart ? newcomerChart.date : null;
-
-    return {
-      ...x,
-      date,
-      platform,
-    };
-  });
-
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
+        <div className="rankings-filter-container">
+          <Select
+            className="rankings-tab-country-select"
+            multi
+            onChange={vals => updateCountriesFilter(vals)}
+            options={countryOptions}
+            placeholder="Filter countries..."
+            simpleValue
+            value={selectedCountries}
+          />
+          <Select
+            className="rankings-tab-category-select"
+            multi
+            onChange={vals => updateCategoriesFilter(vals)}
+            options={categoryOptions}
+            placeholder="Filter categories..."
+            simpleValue
+            value={selectedCategories}
+          />
+        </div>
         { charts.length ? (
           <Table
             columns={columns}
@@ -54,13 +69,25 @@ const RankingsTab = ({
 
 RankingsTab.propTypes = {
   platform: PropTypes.string.isRequired,
-  rankings: PropTypes.arrayOf(PropTypes.object),
-  newcomers: PropTypes.arrayOf(PropTypes.object),
+  charts: PropTypes.arrayOf(PropTypes.object),
+  countryOptions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  })),
+  categoryOptions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  })),
+  updateCountriesFilter: PropTypes.func.isRequired,
+  updateCategoriesFilter: PropTypes.func.isRequired,
+  selectedCountries: PropTypes.string.isRequired,
+  selectedCategories: PropTypes.string.isRequired,
 };
 
 RankingsTab.defaultProps = {
-  rankings: [],
-  newcomers: [],
+  charts: [],
+  countryOptions: [],
+  categoryOptions: [],
 };
 
 export default RankingsTab;

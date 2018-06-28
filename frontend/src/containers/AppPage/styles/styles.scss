@@ -26,3 +26,19 @@
 .app-rank-table {
   max-height: 400px;
 }
+
+.rankings-filter-container {
+  display: flex;
+}
+
+.rankings-tab-country-select {
+  margin-bottom: 10px;
+  margin-right: 10px;
+  width: 500px !important;
+}
+
+.rankings-tab-category-select {
+  height: 38px;
+  margin-bottom: 10px;
+  width: 200px !important;
+}

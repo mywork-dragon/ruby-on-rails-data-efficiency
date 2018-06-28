@@ -5,7 +5,7 @@ import { store } from 'store';
 import { Provider } from 'react-redux';
 import ErrorBoundary from 'components/bugsnag-wrapper/BugsnagWrapper.component';
 
-import RankingsTab from './RankingsTab.component';
+import RankingsTab from './RankingsTab.container';
 
 angular
   .module('appApp')
@@ -19,9 +19,10 @@ function rankingsTab() {
       rankings: '=',
       platform: '=',
       newcomers: '=',
+      itemId: '=',
     },
     link (scope, element) {
-      scope.$watch('rankings', renderReactElement);
+      scope.$watchGroup(['rankings', 'itemId'], renderReactElement);
 
       scope.$on('$destroy', unmountReactElement);
 
