@@ -13,7 +13,9 @@ class IosLiveScanServiceWorker
       enable_international: true,
       update_job_status: true,
       enable_update_check: true,
-      enable_recent_queue_check: false
+      enable_recent_queue_check: false,
+      v2_download: true,
+      classification_priority: :high
     }
     IosScanValidationRunner.new(ipa_snapshot_job_id, ios_app_id, options).run
   end
