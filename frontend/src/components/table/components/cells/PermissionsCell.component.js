@@ -6,7 +6,7 @@ const PermissionsCell = ({
   permissions,
 }) => {
   if (!permissions || permissions.length === 0) {
-    return <span className="invalid">No permissions</span>;
+    return <span className="invalid">{!permissions ? 'N/A' : 'No permissions'}</span>;
   }
 
   const popover = (
