@@ -74,34 +74,7 @@
         </div>
 
         <!-- Keeping this for targeting info -->
-        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend">
-          <div class="panel-heading"><strong>Facebook Ads</strong></div>
-          <div class="panel-body">
-            <uib-carousel active="app.activeSlide" id="adIntelligenceCarousel">
-              <uib-slide ng-repeat="ad in app.facebookAds" index="ad.id">
-                <div class="ad-container">
-                  <img
-                    smart-src="{{ad.ad_image}}"
-                    smart-src-id={{ad.id}}
-                    smart-src-watch="app.activeSlide"
-                    smart-src-last="{{app.facebookAds.length - 1}}"
-                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}"
-                    onerror="this.onerror = null; this.src = 'https://assetscdn.paytm.com/images/catalog/product/9/97/9788123923154_23843/0x1920/70/0.jpg'">
-                  <img
-                    ng-if="ad.ad_info_image"
-                    smart-src="{{ad.ad_info_image}}"
-                    smart-src-id="{{ad.id}}"
-                    smart-src-watch="app.activeSlide"
-                    smart-src-last="{{app.facebookAds.length - 1}}"
-                    class="ad-slide">
-                </div>
-                <div class="carousel-caption">
-                  <p>Spotted {{app.calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{app.facebookAds.length}}</p>
-                </div>
-              </uib-slide>
-            </uib-carousel>
-          </div>
-        </div>
+        <facebook-carousel ads="app.facebookAds" />
 
         <!-- Support Platform Optional Display Panel -->
         <div class="panel panel-default" ng-show="canViewSupportDesk && app.supportDesk"> <!-- && app.supportDesk"> -->

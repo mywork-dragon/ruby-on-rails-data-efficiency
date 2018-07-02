@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import 'components/export-permissions/export-permissions.directive';
 import 'components/ad-intel-tab/ad-intel-tab.directive';
+import 'components/facebook-carousel/facebook-carousel.directive';
 import 'AngularUtils/app.utils';
 import 'AngularUtils/creative-gallery.utils';
 import 'AngularMixpanel/app.mixpanel.service';
