@@ -295,6 +295,7 @@ class SalesforceExportService
     under_api_limit = if api_throttler.status[:current] > 0 #cached limit check
       false
     else 
+      puts 'will check under api limit'
       current_limits ||= limits
       under_limit = current_limits[:daily_api_calls]/current_limits[:daily_api_calls_max].to_f >= threshold
       unless under_limit
@@ -304,9 +305,12 @@ class SalesforceExportService
       under_limit
     end
 
+    return under_api_limit if !under_api_limit || !uses_bulk_api 
+
     under_bulk_api_limit = if bulk_api_throttler.status[:current] > 0 #cached limit check
       false
     else 
+      puts 'will check under bulk api limit'
       current_limits ||= limits
       under_limit = current_limits[:daily_bulk_api_calls]/current_limits[:daily_bulk_api_calls_max].to_f.to_f >= threshold
       unless under_limit
@@ -740,8 +744,8 @@ class SalesforceExportService
     SalesforceExportService.new(user: account.users.first, model_name: model_name, logging: logging)
   end
 
-  def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer)
-    dl = DomainLinker.new
+  def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer, update_mappings: false)
+    
     models.each do |model|
       @model_name = model
       model_query = @account.domain_mapping_query(model)
@@ -755,7 +759,8 @@ class SalesforceExportService
         website_filter = " and (Website != null or #{custom_website_fields.join(' != null or ')} != null)"
       end
 
-      query = "select #{select_fields} from #{model} where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
+      query = "select #{select_fields} from #{model} where "
+      query += update_mappings ? "Id != null" : "(MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null)"
       query += website_filter
       query += " and #{model_query}" if model_query
       query += " and IsConverted = false" if model == 'Lead'
@@ -773,25 +778,26 @@ class SalesforceExportService
           record.Website
         end
 
-        domain = UrlHelper.url_with_domain_only(website)
-        publishers = dl.domain_to_publisher(domain)
-        ios_publisher = publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
-        android_publisher = publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
-        if !record.MightySignal_iOS_Publisher_ID__c && ios_publisher
+        publishers = self.class.publishers_from_website(website)
+
+        ios_publisher = publishers[:ios_publisher]
+        android_publisher = publishers[:android_publisher]
+        
+        if (!record.MightySignal_iOS_Publisher_ID__c || update_mappings) && ios_publisher
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
           imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: record_id}
 
           SalesforceWorker.set(queue: queue).perform_async(:export_ios_publisher, ios_publisher.id, record_id, @user.id, @model_name) if date
         end
 
-        if !record.MightySignal_Android_Publisher_ID__c && android_publisher
+        if (!record.MightySignal_Android_Publisher_ID__c || update_mappings) && android_publisher
           new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
           imports << {publisher_id: android_publisher.id, platform: 'android', export_id: record_id}
 
           SalesforceWorker.set(queue: queue).perform_async(:export_android_publisher, android_publisher.id, record_id, @user.id, @model_name) if date
         end
 
-        puts "Domain is #{domain}"
+        puts "Website is #{website}"
         puts new_record if new_record.size > 1
 
         @update_records[model] ||= []
@@ -912,6 +918,24 @@ class SalesforceExportService
     end
 
     fields
+  end
+
+  def self.publishers_from_website(website)
+    dl = DomainLinker.new
+
+    domain = UrlHelper.url_with_domain_only(website)
+    
+    publishers = dl.domain_to_publisher(domain)
+
+    valid_publishers = publishers.select{|publisher| publisher.valid_websites.pluck(:url).map{|url| UrlHelper.url_with_domain_only(url)}.include?(domain)}
+
+    ios_publisher = valid_publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
+    android_publisher = valid_publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
+
+    ios_publisher ||= publishers.select{|pub| pub.class.name == 'IosDeveloper'}.first
+    android_publisher ||= publishers.select{|pub| pub.class.name == 'AndroidDeveloper'}.first
+
+    {android_publisher: android_publisher, ios_publisher: ios_publisher}
   end
 
   def sdk_display(app)
