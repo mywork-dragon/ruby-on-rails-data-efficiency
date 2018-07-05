@@ -20,6 +20,7 @@ function rankingsTab() {
       platform: '=',
       newcomers: '=',
       itemId: '=',
+      loaded: '=',
     },
     link (scope, element) {
       scope.$watchGroup(['rankings', 'itemId'], renderReactElement);

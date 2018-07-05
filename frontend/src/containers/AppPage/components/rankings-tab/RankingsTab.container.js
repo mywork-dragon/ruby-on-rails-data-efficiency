@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { getCountryById, getCategoryNameById } from 'selectors/appStore.selectors';
+import * as rankingsSelectors from 'selectors/rankingsTab.selectors';
 import { capitalize } from 'utils/format.utils';
 import * as actions from './redux/RankingsTab.actions';
 import RankingsTab from './RankingsTab.component';
@@ -13,10 +14,10 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = (state, props) => {
-  const currentId = state.appPage.rankings.id;
-  const selectedCountries = state.appPage.rankings.selectedCountries;
-  const selectedCategories = state.appPage.rankings.selectedCategories;
-  const selectedRankingTypes = state.appPage.rankings.selectedRankingTypes;
+  const currentId = rankingsSelectors.getCurrentId(state);
+  const selectedCountries = rankingsSelectors.getSelectedCountries(state);
+  const selectedCategories = rankingsSelectors.getSelectedCategories(state);
+  const selectedRankingTypes = rankingsSelectors.getSelectedRankingTypes(state);
   let countryOptions = [];
   let categoryOptions = [];
   let rankingTypeOptions = [];
@@ -36,7 +37,7 @@ const mapStateToProps = (state, props) => {
       platform: props.platform,
     };
   }).filter(x =>
-    (!selectedCountries.length || selectedCountries.includes(x.country)) &&
+    (!selectedCountries.length || selectedCountries.map(i => i.value).join(',').includes(x.country)) &&
     (!selectedCategories.length || selectedCategories.includes(x.category)) &&
     (!selectedRankingTypes.length || selectedRankingTypes.includes(x.ranking_type)));
 
@@ -63,6 +64,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     propsId: props.itemId,
+    loaded: props.loaded,
     currentId,
     selectedCountries,
     selectedCategories,

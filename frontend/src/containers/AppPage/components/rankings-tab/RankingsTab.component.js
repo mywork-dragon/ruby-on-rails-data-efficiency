@@ -4,9 +4,11 @@ import Table from 'components/table/Table.container';
 import { headerNames } from 'components/table/redux/column.models';
 import Select from 'components/select/CustomSelect.component';
 import NoDataMessage from 'Messaging/NoData.component';
+import LoadingSpinner from 'Messaging/LoadingSpinner.component';
 
 const RankingsTab = ({
   charts,
+  loaded,
   platform,
   countryOptions,
   categoryOptions,
@@ -18,6 +20,14 @@ const RankingsTab = ({
   updateCategoriesFilter,
   updateRankingTypesFilter,
 }) => {
+  if (!loaded) {
+    return (
+      <div className="ad-intel-spinner-ctnr">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   const columns = {
     [headerNames.COUNTRY]: true,
     [headerNames.RANKING_TYPE]: true,
@@ -34,11 +44,11 @@ const RankingsTab = ({
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
+            maxItems={11}
             multi
             onChange={vals => updateCountriesFilter(vals)}
             options={countryOptions}
             placeholder="Filter countries..."
-            simpleValue
             value={selectedCountries}
           />
           <Select
@@ -81,6 +91,7 @@ const RankingsTab = ({
 };
 
 RankingsTab.propTypes = {
+  loaded: PropTypes.bool.isRequired,
   platform: PropTypes.string.isRequired,
   charts: PropTypes.arrayOf(PropTypes.object),
   countryOptions: PropTypes.arrayOf(PropTypes.shape({
@@ -98,7 +109,10 @@ RankingsTab.propTypes = {
   updateCountriesFilter: PropTypes.func.isRequired,
   updateCategoriesFilter: PropTypes.func.isRequired,
   updateRankingTypesFilter: PropTypes.func.isRequired,
-  selectedCountries: PropTypes.string.isRequired,
+  selectedCountries: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  })).isRequired,
   selectedCategories: PropTypes.string.isRequired,
   selectedRankingTypes: PropTypes.string.isRequired,
 };

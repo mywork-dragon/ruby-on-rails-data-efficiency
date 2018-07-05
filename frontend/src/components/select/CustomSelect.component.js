@@ -53,10 +53,18 @@ const Select = (props) => {
     );
   }
 
+  let newOptions = props.options;
+  const atMax = props.value !== null && !props.simpleValue && props.value.length === props.maxItems;
+  if (atMax) {
+    newOptions = [];
+  }
+
   return (
     <ReactSelect
       arrowRenderer={SelectArrow}
       {...props}
+      noResultsText={atMax ? 'Max options selected' : 'No results found'}
+      options={newOptions}
     />
   );
 };
@@ -70,6 +78,8 @@ Select.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
   }),
+  maxItems: PropTypes.number,
+  simpleValue: PropTypes.bool,
 };
 
 Select.defaultProps = {
@@ -79,6 +89,8 @@ Select.defaultProps = {
     value: '*',
   },
   value: null,
+  maxItems: null,
+  simpleValue: false,
 };
 
 export default Select;

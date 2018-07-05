@@ -14,7 +14,7 @@
           {{app.name}}
         </h4>
         <p>
-          <a ng-if="app.publisher.id && $state.is('app.info')" ui-sref="publisher.info({ id: app.publisher.id, platform: app.platform })">{{app.publisher.name}}</a>
+          <a ng-if="app.publisher.id && !$state.is('app.ad-intelligence')" ui-sref="publisher.info({ id: app.publisher.id, platform: app.platform })">{{app.publisher.name}}</a>
           <a ng-if="app.publisher.id && $state.is('app.ad-intelligence')" ui-sref="publisher.ad-intelligence({ id: app.publisher.id, platform: app.platform })">{{app.publisher.name}}</a>
           <span ng-if="!app.publisher.id">{{app.publisher.name}}</span>
         </p>

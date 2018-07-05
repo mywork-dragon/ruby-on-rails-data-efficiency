@@ -75,6 +75,7 @@ function AppController (
   app.currentContactsPage = 1;
   app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class="fa fa-external-link"></span>');
   app.permissionText = 'Not Available';
+  app.queryDataLoaded = false;
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
     { title: 'Ad Intelligence', index: 1, route: 'app.ad-intelligence' },
@@ -204,6 +205,7 @@ function AppController (
   function getMightyQueryData () {
     MightyQueryService.getAppInfo(app.platform, app.id)
       .then(({ data }) => {
+        app.queryDataLoaded = true;
         app.newcomers = data.newcomers;
         app.rankings = data.rankings.charts;
         app.permissions = data.permissions ? _.sortBy(data.permissions, x => x.display) : data.permissions;
