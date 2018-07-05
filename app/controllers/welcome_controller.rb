@@ -16,7 +16,7 @@ class WelcomeController < ApplicationController
       #{image: 'mparticle.png', width: 180},
       # {image: 'tune.png', width: 135},
       {image: 'amplitude.png', width: 170},
-      {image: 'microsoft.png', width: 160},
+      # {image: 'microsoft.png', width: 160},
       # {image: 'ironsrc.png', width: 170},
       #{image: 'vungle.png', width: 125},
       #{image: 'realm.png', width: 135},
