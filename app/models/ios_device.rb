@@ -13,7 +13,7 @@ class IosDevice < ActiveRecord::Base
   has_many :fb_accounts_ios_devices
   has_many :fb_accounts, through: :fb_accounts_ios_devices
 
-	validates :ip, uniqueness: true
+	validates :ip, uniqueness: true, allow_nil: true
 	validates :serial_number, uniqueness: true, presence: true
 
 	# either dedicated for a one off scrape or for mass scrapes
