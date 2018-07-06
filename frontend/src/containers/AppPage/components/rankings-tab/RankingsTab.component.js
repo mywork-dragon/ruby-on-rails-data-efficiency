@@ -15,9 +15,11 @@ const RankingsTab = ({
   rankingTypeOptions,
   selectedCountries,
   selectedCategories,
+  selectedDateRange,
   selectedRankingTypes,
   updateCountriesFilter,
   updateCategoriesFilter,
+  updateDateRange,
   updateRankingTypesFilter,
 }) => {
   if (!loaded) {
@@ -69,6 +71,17 @@ const RankingsTab = ({
             simpleValue
             value={selectedCategories}
           />
+          <Select
+            className="rankings-tab-category-select"
+            onChange={val => updateDateRange(val)}
+            options={[
+              { value: 7, label: 'Last Week' },
+              { value: 14, label: 'Last Two Weeks' },
+              { value: 30, label: 'Last 30 Days' },
+              { value: 90, label: 'Last 90 Days' },
+            ]}
+            value={selectedDateRange}
+          />
         </div>
         { charts.length ? (
           <Table
@@ -108,12 +121,17 @@ RankingsTab.propTypes = {
   })),
   updateCountriesFilter: PropTypes.func.isRequired,
   updateCategoriesFilter: PropTypes.func.isRequired,
+  updateDateRange: PropTypes.func.isRequired,
   updateRankingTypesFilter: PropTypes.func.isRequired,
   selectedCountries: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   })).isRequired,
   selectedCategories: PropTypes.string.isRequired,
+  selectedDateRange: PropTypes.shape({
+    value: PropTypes.number,
+    label: PropTypes.string,
+  }).isRequired,
   selectedRankingTypes: PropTypes.string.isRequired,
 };
 

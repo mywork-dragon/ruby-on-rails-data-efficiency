@@ -6,6 +6,15 @@ export const getSelectedCategories = state => state.appPage.rankings.selectedCat
 
 export const getSelectedRankingTypes = state => state.appPage.rankings.selectedRankingTypes;
 
+export const getSelectedDateRange = state => state.appPage.rankings.selectedDateRange;
+
+export const getAllSelectedOptions = state => ({
+  countries: state.appPage.rankings.selectedCountries,
+  categories: state.appPage.rankings.selectedCategories,
+  rankingTypes: state.appPage.rankings.selectedRankingTypes,
+  dateRange: state.appPage.rankings.selectedDateRange,
+});
+
 export const getCountryOptions = state => state.appPage.rankings.countryOptions;
 
 export const getCategoryOptions = state => state.appPage.rankings.categoryOptions;

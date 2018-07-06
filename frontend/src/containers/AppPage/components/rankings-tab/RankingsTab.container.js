@@ -11,6 +11,7 @@ const mapDispatchToProps = dispatch => ({
   updateCategoriesFilter: categories => dispatch(actions.updateCategoriesFilter(categories)),
   updateId: id => dispatch(actions.updateId(id)),
   updateRankingTypesFilter: types => dispatch(actions.updateRankingTypesFilter(types)),
+  updateDateRange: value => dispatch(actions.updateDateRange(value)),
 });
 
 const mapStateToProps = (state, props) => {
@@ -18,6 +19,7 @@ const mapStateToProps = (state, props) => {
   const selectedCountries = rankingsSelectors.getSelectedCountries(state);
   const selectedCategories = rankingsSelectors.getSelectedCategories(state);
   const selectedRankingTypes = rankingsSelectors.getSelectedRankingTypes(state);
+  const selectedDateRange = rankingsSelectors.getSelectedDateRange(state);
   let countryOptions = [];
   let categoryOptions = [];
   let rankingTypeOptions = [];
@@ -69,6 +71,7 @@ const mapStateToProps = (state, props) => {
     selectedCountries,
     selectedCategories,
     selectedRankingTypes,
+    selectedDateRange,
     countryOptions,
     charts,
     categoryOptions,

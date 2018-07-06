@@ -1,12 +1,13 @@
-import { all, put, call, takeLatest } from 'redux-saga/effects';
+import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import { formatAppAdData, formatAppCreatives } from 'utils/app.utils';
 import AppService from 'services/app.service';
-// import { appSummary, appCreatives } from 'utils/mock-data.utils';
-
+import rankingsData from 'utils/mocks/uber_charts.json';
 import {
   AD_INTEL_TYPES as actionTypes,
   adIntelActions,
 } from 'containers/AppPage/redux/App.actions';
+import { getAllSelectedOptions } from 'selectors/rankingsTab.selectors';
+import { RANKINGS_TAB_ACTION_TYPES, rankingsChartRequestActions } from '../components/rankings-tab/redux/RankingsTab.actions';
 
 function* requestAppAdIntelInfo(action) {
   const { id, platform } = action.payload;
@@ -18,8 +19,6 @@ function* requestAppAdIntelInfo(action) {
   } catch (error) {
     console.log(error);
     yield put(adIntelActions.adIntelInfo.failure(id, platform));
-    // const data = formatAppAdData(appSummary);
-    // yield put(adIntelActions.adIntelInfo.success(id, platform, data));
   }
 }
 
@@ -35,9 +34,27 @@ function* requestAppCreatives(action) {
     yield put(adIntelActions.creatives.success(id, data));
   } catch (error) {
     console.log(error);
-    // const data = formatAppCreatives(appCreatives(params));
-    // yield put(adIntelActions.creatives.success(id, data));
   }
+}
+
+function* requestChartData() {
+  try {
+    yield put(rankingsChartRequestActions.request());
+    const options = yield select(getAllSelectedOptions);
+    yield put(rankingsChartRequestActions.success(rankingsData));
+  } catch (error) {
+    console.log(error);
+    yield put(rankingsChartRequestActions.failure());
+  }
+}
+
+function* watchRankingsFilterChange() {
+  yield takeLatest([
+    RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER,
+    RANKINGS_TAB_ACTION_TYPES.UPDATE_CATEGORIES_FILTER,
+    RANKINGS_TAB_ACTION_TYPES.UPDATE_RANKING_TYPES_FILTER,
+    RANKINGS_TAB_ACTION_TYPES.UPDATE_DATE_RANGE,
+  ], requestChartData);
 }
 
 function* watchAppAdIntelInfoRequest() {
@@ -52,5 +69,6 @@ export default function* appSaga() {
   yield all([
     watchAppAdIntelInfoRequest(),
     watchAppCreativesRequest(),
+    watchRankingsFilterChange(),
   ]);
 }
