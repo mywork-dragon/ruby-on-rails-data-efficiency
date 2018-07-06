@@ -87,10 +87,10 @@ class IosScanValidationRunner
   end
 
   def select_apple_account
-    AppleAccount
-      .where(app_store_id: @app_store_id)
-      .where(kind: AppleAccount.kinds[:v2_download])
-      .to_a.sample
+    potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
+    potential_accounts = potential_accounts.select {|x| x.app_store_id == @app_store_id}
+
+    potential_accounts.sample
   end
 
   def start_job
