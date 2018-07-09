@@ -49,6 +49,7 @@ export const headerNames = {
   AD_SPEND: 'Ad Spend',
   APP: 'App',
   CATEGORY: 'Category',
+  COLOR: 'Color',
   COUNTRIES_AVAILABLE_IN: 'Available In',
   COUNTRY: 'Country',
   CREATIVE_FORMATS: 'Formats',
@@ -119,6 +120,14 @@ export const columnModels = [
     minWidth: widths.small,
     sortable: false,
     Cell: cell => <CategoryCell categories={cell.original.categories || cell.original.category} platform={cell.original.platform} />,
+  },
+  {
+    Header: '',
+    id: headerNames.COLOR,
+    accessor: 'color',
+    width: 30,
+    sortable: false,
+    Cell: cell => <i className="fa fa-square" style={{ color: cell.value }} />,
   },
   {
     Header: headerNames.COUNTRY,

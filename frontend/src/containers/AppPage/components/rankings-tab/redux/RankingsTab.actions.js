@@ -12,7 +12,7 @@ export const RANKINGS_TAB_ACTION_TYPES = namespaceActions('rankingsTab', actionT
 
 export const RANKINGS_CHART_REQUEST_TYPES = createRequestTypes('rankingsTab/RANKINGS_CHART');
 
-export const rankingsChartRequestActions = {
+export const rankingsChart = {
   request: () => action(RANKINGS_CHART_REQUEST_TYPES.REQUEST),
   success: data => action(RANKINGS_CHART_REQUEST_TYPES.SUCCESS, { data }),
   failure: error => action(RANKINGS_CHART_REQUEST_TYPES.FAILURE, { error }),

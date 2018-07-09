@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getCountryById, getCategoryNameById } from 'selectors/appStore.selectors';
 import * as rankingsSelectors from 'selectors/rankingsTab.selectors';
 import { capitalize } from 'utils/format.utils';
+import { getChartColor, googleChartColors } from 'utils/chart.utils';
 import * as actions from './redux/RankingsTab.actions';
 import RankingsTab from './RankingsTab.component';
 
@@ -12,6 +13,7 @@ const mapDispatchToProps = dispatch => ({
   updateId: id => dispatch(actions.updateId(id)),
   updateRankingTypesFilter: types => dispatch(actions.updateRankingTypesFilter(types)),
   updateDateRange: value => dispatch(actions.updateDateRange(value)),
+  requestChartData: () => dispatch(actions.rankingsChart.request()),
 });
 
 const mapStateToProps = (state, props) => {
@@ -26,7 +28,7 @@ const mapStateToProps = (state, props) => {
 
   const rankings = props.rankings || [];
 
-  const charts = rankings.map((x) => {
+  let charts = rankings.map((x) => {
     countryOptions.push(x.country);
     categoryOptions.push(x.category);
     rankingTypeOptions.push(x.ranking_type);
@@ -39,9 +41,11 @@ const mapStateToProps = (state, props) => {
       platform: props.platform,
     };
   }).filter(x =>
-    (!selectedCountries.length || selectedCountries.map(i => i.value).join(',').includes(x.country)) &&
+    (selectedCountries.map(i => i.value).join(',').includes(x.country)) &&
     (!selectedCategories.length || selectedCategories.includes(x.category)) &&
     (!selectedRankingTypes.length || selectedRankingTypes.includes(x.ranking_type)));
+
+  charts = charts.map((x, idx) => ({ ...x, color: getChartColor(idx) }));
 
   countryOptions = _.sortBy(_.uniq(countryOptions).map((x) => {
     const country = getCountryById(state, x);
@@ -64,6 +68,14 @@ const mapStateToProps = (state, props) => {
     label: capitalize(x),
   })), x => x.label);
 
+  // eventually should not need to filter
+  let chartData = rankingsSelectors.getChartData(state).filter(x =>
+    (selectedCountries.map(i => i.value).join(',').includes(x.info.country_code)) &&
+    (!selectedCategories.length || selectedCategories.includes(x.info.category)) &&
+    (!selectedRankingTypes.length || selectedRankingTypes.includes(x.info.rank_type)));
+
+  chartData = _.sortBy(chartData, x => charts.findIndex(y => y.country === x.info.country_code && y.ranking_type === x.info.rank_type && y.category === x.info.category));
+
   return {
     propsId: props.itemId,
     loaded: props.loaded,
@@ -77,6 +89,11 @@ const mapStateToProps = (state, props) => {
     categoryOptions,
     rankingTypeOptions,
     platform: props.platform,
+    chartData,
+    isChartDataLoading: rankingsSelectors.isChartDataLoading(state),
+    isChartDataLoaded: rankingsSelectors.isChartDataLoaded(state),
+    getCategoryNameById: id => getCategoryNameById(state, id, props.platform).name,
+    colors: googleChartColors,
   };
 };
 

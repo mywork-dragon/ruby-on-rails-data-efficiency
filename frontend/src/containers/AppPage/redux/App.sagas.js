@@ -7,7 +7,11 @@ import {
   adIntelActions,
 } from 'containers/AppPage/redux/App.actions';
 import { getAllSelectedOptions } from 'selectors/rankingsTab.selectors';
-import { RANKINGS_TAB_ACTION_TYPES, rankingsChartRequestActions } from '../components/rankings-tab/redux/RankingsTab.actions';
+import {
+  RANKINGS_TAB_ACTION_TYPES,
+  rankingsChart,
+  RANKINGS_CHART_REQUEST_TYPES,
+} from '../components/rankings-tab/redux/RankingsTab.actions';
 
 function* requestAppAdIntelInfo(action) {
   const { id, platform } = action.payload;
@@ -37,14 +41,16 @@ function* requestAppCreatives(action) {
   }
 }
 
-function* requestChartData() {
+function* requestChartData(action) {
   try {
-    yield put(rankingsChartRequestActions.request());
+    if (action.type !== RANKINGS_CHART_REQUEST_TYPES.REQUEST) {
+      yield put(rankingsChart.request());
+    }
     const options = yield select(getAllSelectedOptions);
-    yield put(rankingsChartRequestActions.success(rankingsData));
+    yield put(rankingsChart.success(rankingsData));
   } catch (error) {
     console.log(error);
-    yield put(rankingsChartRequestActions.failure());
+    yield put(rankingsChart.failure());
   }
 }
 
@@ -54,6 +60,7 @@ function* watchRankingsFilterChange() {
     RANKINGS_TAB_ACTION_TYPES.UPDATE_CATEGORIES_FILTER,
     RANKINGS_TAB_ACTION_TYPES.UPDATE_RANKING_TYPES_FILTER,
     RANKINGS_TAB_ACTION_TYPES.UPDATE_DATE_RANGE,
+    RANKINGS_CHART_REQUEST_TYPES.REQUEST,
   ], requestChartData);
 }
 

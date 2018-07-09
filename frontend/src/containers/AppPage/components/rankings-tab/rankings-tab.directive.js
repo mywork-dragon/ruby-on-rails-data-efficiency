@@ -23,7 +23,7 @@ function rankingsTab() {
       loaded: '=',
     },
     link (scope, element) {
-      scope.$watchGroup(['rankings', 'itemId'], renderReactElement);
+      scope.$watchGroup(['rankings', 'itemId', 'loaded'], renderReactElement);
 
       scope.$on('$destroy', unmountReactElement);
 

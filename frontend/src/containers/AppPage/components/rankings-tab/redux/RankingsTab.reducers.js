@@ -4,13 +4,13 @@ const defaultCountries = [
   { value: 'US', label: 'United States' },
   { value: 'CA', label: 'Canada' },
   { value: 'AU', label: 'Australia' },
-  { value: 'CN', label: 'China' },
+  // { value: 'CN', label: 'China' },
   { value: 'RU', label: 'Russia' },
-  { value: 'DE', label: 'Germany' },
+  // { value: 'DE', label: 'Germany' },
   { value: 'FR', label: 'France' },
   { value: 'GB', label: 'United Kingdom' },
-  { value: 'JP', label: 'Japan' },
-  { value: 'KR', label: 'South Korea' },
+  // { value: 'JP', label: 'Japan' },
+  // { value: 'KR', label: 'South Korea' },
   { value: 'ES', label: 'Spain' },
 ];
 
@@ -22,6 +22,7 @@ const initialState = {
   selectedDateRange: { value: 7, label: 'Last Week' },
   chartData: [],
   chartLoading: false,
+  chartLoaded: false,
 };
 
 function rankingsTab(state = initialState, action) {
@@ -55,12 +56,14 @@ function rankingsTab(state = initialState, action) {
       return {
         ...state,
         chartLoading: true,
+        chartLoaded: false,
       };
     case RANKINGS_CHART_REQUEST_TYPES.SUCCESS:
       return {
         ...state,
         chartData: action.payload.data,
         chartLoading: false,
+        chartLoaded: true,
       };
     default:
       return state;

@@ -22,3 +22,9 @@ export const getCategoryOptions = state => state.appPage.rankings.categoryOption
 export const getRankingTypesOptions = state => state.appPage.rankings.rankingTypesOptions;
 
 export const needOptions = state => !state.appPage.rankings.optionsLoaded;
+
+export const getChartData = state => state.appPage.rankings.chartData;
+
+export const isChartDataLoading = state => state.appPage.rankings.chartLoading;
+
+export const isChartDataLoaded = state => state.appPage.rankings.chartLoaded;

@@ -5,6 +5,7 @@ import { headerNames } from 'components/table/redux/column.models';
 import Select from 'components/select/CustomSelect.component';
 import NoDataMessage from 'Messaging/NoData.component';
 import LoadingSpinner from 'Messaging/LoadingSpinner.component';
+import RankingsTable from './RankingsTable.component';
 
 const RankingsTab = ({
   charts,
@@ -21,6 +22,7 @@ const RankingsTab = ({
   updateCategoriesFilter,
   updateDateRange,
   updateRankingTypesFilter,
+  ...rest
 }) => {
   if (!loaded) {
     return (
@@ -31,6 +33,7 @@ const RankingsTab = ({
   }
 
   const columns = {
+    [headerNames.COLOR]: true,
     [headerNames.COUNTRY]: true,
     [headerNames.RANKING_TYPE]: true,
     [headerNames.CATEGORY]: true,
@@ -43,6 +46,7 @@ const RankingsTab = ({
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
+        <RankingsTable {...rest} />
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
