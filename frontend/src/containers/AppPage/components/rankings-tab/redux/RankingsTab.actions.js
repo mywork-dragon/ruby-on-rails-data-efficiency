@@ -18,7 +18,7 @@ export const rankingsChart = {
   failure: error => action(RANKINGS_CHART_REQUEST_TYPES.FAILURE, { error }),
 };
 
-export const updateId = id => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_ID, { id });
+export const updateId = (id, platform) => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_ID, { id, platform });
 
 export const updateCountriesFilter = countries => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER, { countries });
 

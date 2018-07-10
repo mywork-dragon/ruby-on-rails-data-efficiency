@@ -50,7 +50,7 @@ const RankingsTab = ({
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
-            maxItems={11}
+            maxItems={5}
             multi
             onChange={vals => updateCountriesFilter(vals)}
             options={countryOptions}

@@ -1,5 +1,6 @@
 import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import { formatAppAdData, formatAppCreatives } from 'utils/app.utils';
+import { $localStorage } from 'utils/localStorage.utils';
 import AppService from 'services/app.service';
 import rankingsData from 'utils/mocks/uber_charts.json';
 import {
@@ -54,6 +55,10 @@ function* requestChartData(action) {
   }
 }
 
+function updateDefaultCountries ({ payload: { countries } }) {
+  $localStorage.set('defaultRankingsCountries', countries);
+}
+
 function* watchRankingsFilterChange() {
   yield takeLatest([
     RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER,
@@ -72,10 +77,15 @@ function* watchAppCreativesRequest() {
   yield takeLatest(actionTypes.CREATIVES.REQUEST, requestAppCreatives);
 }
 
+function* watchRankingsCountriesChange() {
+  yield takeLatest(RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER, updateDefaultCountries);
+}
+
 export default function* appSaga() {
   yield all([
     watchAppAdIntelInfoRequest(),
     watchAppCreativesRequest(),
     watchRankingsFilterChange(),
+    watchRankingsCountriesChange(),
   ]);
 }

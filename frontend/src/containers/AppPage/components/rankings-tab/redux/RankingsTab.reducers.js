@@ -1,9 +1,10 @@
+import { $localStorage } from 'utils/localStorage.utils';
 import { RANKINGS_TAB_ACTION_TYPES, RANKINGS_CHART_REQUEST_TYPES } from './RankingsTab.actions';
 
 const defaultCountries = [
   { value: 'US', label: 'United States' },
   { value: 'CA', label: 'Canada' },
-  { value: 'AU', label: 'Australia' },
+  // { value: 'AU', label: 'Australia' },
   // { value: 'CN', label: 'China' },
   { value: 'RU', label: 'Russia' },
   // { value: 'DE', label: 'Germany' },
@@ -11,12 +12,12 @@ const defaultCountries = [
   { value: 'GB', label: 'United Kingdom' },
   // { value: 'JP', label: 'Japan' },
   // { value: 'KR', label: 'South Korea' },
-  { value: 'ES', label: 'Spain' },
+  // { value: 'ES', label: 'Spain' },
 ];
 
 const initialState = {
   id: '',
-  selectedCountries: defaultCountries,
+  selectedCountries: $localStorage.get('defaultRankingsCountries') || defaultCountries,
   selectedCategories: '',
   selectedRankingTypes: '',
   selectedDateRange: { value: 7, label: 'Last Week' },
@@ -31,6 +32,7 @@ function rankingsTab(state = initialState, action) {
       return {
         ...initialState,
         id: action.payload.id,
+        selectedCategories: action.payload.platform === 'ios' ? '36' : 'OVERALL',
       };
     case RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER:
       return {

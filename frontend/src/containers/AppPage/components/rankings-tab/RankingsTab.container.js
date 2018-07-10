@@ -10,7 +10,7 @@ import RankingsTab from './RankingsTab.component';
 const mapDispatchToProps = dispatch => ({
   updateCountriesFilter: countries => dispatch(actions.updateCountriesFilter(countries)),
   updateCategoriesFilter: categories => dispatch(actions.updateCategoriesFilter(categories)),
-  updateId: id => dispatch(actions.updateId(id)),
+  updateId: (id, platform) => dispatch(actions.updateId(id, platform)),
   updateRankingTypesFilter: types => dispatch(actions.updateRankingTypesFilter(types)),
   updateDateRange: value => dispatch(actions.updateDateRange(value)),
   requestChartData: () => dispatch(actions.rankingsChart.request()),
@@ -101,7 +101,7 @@ const mergeProps = (stateProps, dispatchProps) => {
   const { currentId, propsId, ...rest } = stateProps;
   const { updateId, ...other } = dispatchProps;
 
-  if (propsId !== currentId) updateId(propsId);
+  if (propsId !== currentId) updateId(propsId, rest.platform);
 
   return {
     ...rest,
