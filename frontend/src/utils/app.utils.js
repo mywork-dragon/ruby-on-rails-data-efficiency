@@ -1,3 +1,5 @@
+import { subtractDays } from 'utils/format.utils';
+
 export function formatAppAdData (data) {
   return Object.values(data)[0];
 }
@@ -17,4 +19,18 @@ export function addAdIds (ads) {
     }
   }
   return ads;
+}
+
+export function formatRankingsParams (options) {
+  const params = {};
+  params.countries = JSON.stringify(options.countries);
+  params.platform = options.platform;
+  params.app_identifier = options.appIdentifier;
+  params.max_date = new Date();
+  params.min_date = subtractDays(options.dateRange);
+
+  if (options.categories.length) params.categories = JSON.stringify(options.categories);
+  if (options.rankingTypes.length) params.rank_types = JSON.stringify(options.rankingTypes.split(','));
+
+  return params;
 }

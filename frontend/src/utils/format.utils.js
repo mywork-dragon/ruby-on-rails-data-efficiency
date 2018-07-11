@@ -110,3 +110,9 @@ export const numberShorthand = (x) => {
 export const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 export const getNestedValue = (path, object) => path.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), object);
+
+export const subtractDays = (x) => {
+  const e = new Date();
+  e.setDate(e.getDate() - x);
+  return new Date(e);
+};

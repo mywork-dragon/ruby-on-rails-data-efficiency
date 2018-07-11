@@ -1,7 +1,7 @@
 import { action, namespaceActions, createRequestTypes } from 'utils/action.utils';
 
 const actionTypes = [
-  'UPDATE_ID',
+  'UPDATE_APP_INFO',
   'UPDATE_COUNTRIES_FILTER',
   'UPDATE_CATEGORIES_FILTER',
   'UPDATE_RANKING_TYPES_FILTER',
@@ -18,7 +18,7 @@ export const rankingsChart = {
   failure: error => action(RANKINGS_CHART_REQUEST_TYPES.FAILURE, { error }),
 };
 
-export const updateId = (id, platform) => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_ID, { id, platform });
+export const updateAppInfo = (id, platform, appIdentifier) => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_APP_INFO, { id, platform, appIdentifier });
 
 export const updateCountriesFilter = countries => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER, { countries });
 

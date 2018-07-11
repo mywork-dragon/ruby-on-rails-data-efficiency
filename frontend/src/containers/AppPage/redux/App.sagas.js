@@ -1,5 +1,5 @@
 import { all, put, call, takeLatest, select } from 'redux-saga/effects';
-import { formatAppAdData, formatAppCreatives } from 'utils/app.utils';
+import * as utils from 'utils/app.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import AppService from 'services/app.service';
 import rankingsData from 'utils/mocks/uber_charts.json';
@@ -19,7 +19,7 @@ function* requestAppAdIntelInfo(action) {
   try {
     yield put({ type: actionTypes.CLEAR_AD_INTEL_INFO });
     const res = yield call(AppService().getAdIntelInfo, id, platform);
-    const data = res.data ? formatAppAdData(res.data) : null;
+    const data = res.data ? utils.formatAppAdData(res.data) : null;
     yield put(adIntelActions.adIntelInfo.success(id, platform, data));
   } catch (error) {
     console.log(error);
@@ -35,7 +35,7 @@ function* requestAppCreatives(action) {
   } = action.payload;
   try {
     const res = yield call(AppService().getCreatives, id, platform, params);
-    const data = formatAppCreatives(res.data);
+    const data = utils.formatAppCreatives(res.data);
     yield put(adIntelActions.creatives.success(id, data));
   } catch (error) {
     console.log(error);
@@ -47,7 +47,8 @@ function* requestChartData(action) {
     if (action.type !== RANKINGS_CHART_REQUEST_TYPES.REQUEST) {
       yield put(rankingsChart.request());
     }
-    const options = yield select(getAllSelectedOptions);
+    const selectedOptions = yield select(getAllSelectedOptions);
+    const params = utils.formatRankingsParams(selectedOptions);
     yield put(rankingsChart.success(rankingsData));
   } catch (error) {
     console.log(error);

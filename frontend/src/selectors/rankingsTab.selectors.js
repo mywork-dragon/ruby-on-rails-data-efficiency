@@ -11,10 +11,12 @@ export const getSelectedRankingTypes = state => state.appPage.rankings.selectedR
 export const getSelectedDateRange = state => state.appPage.rankings.selectedDateRange;
 
 export const getAllSelectedOptions = state => ({
-  countries: state.appPage.rankings.selectedCountries,
+  countries: state.appPage.rankings.selectedCountries.map(x => x.value),
   categories: state.appPage.rankings.selectedCategories,
   rankingTypes: state.appPage.rankings.selectedRankingTypes,
-  dateRange: state.appPage.rankings.selectedDateRange,
+  dateRange: state.appPage.rankings.selectedDateRange.value,
+  platform: state.appPage.rankings.platform,
+  appIdentifier: state.appPage.rankings.appIdentifier,
 });
 
 export const getCountryOptions = state => state.appPage.rankings.countryOptions;
