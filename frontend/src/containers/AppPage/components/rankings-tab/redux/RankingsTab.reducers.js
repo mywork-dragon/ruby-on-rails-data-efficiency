@@ -17,6 +17,7 @@ const defaultCountries = [
 
 const initialState = {
   id: '',
+  platform: '',
   selectedCountries: $localStorage.get('defaultRankingsCountries') || defaultCountries,
   selectedCategories: '',
   selectedRankingTypes: '',
@@ -32,6 +33,7 @@ function rankingsTab(state = initialState, action) {
       return {
         ...initialState,
         id: action.payload.id,
+        platform: action.payload.platform,
         selectedCategories: action.payload.platform === 'ios' ? '36' : 'OVERALL',
       };
     case RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER:

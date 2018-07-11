@@ -1,5 +1,7 @@
 export const getCurrentId = state => state.appPage.rankings.id;
 
+export const getCurrentPlatform = state => state.appPage.rankings.platform;
+
 export const getSelectedCountries = state => state.appPage.rankings.selectedCountries;
 
 export const getSelectedCategories = state => state.appPage.rankings.selectedCategories;

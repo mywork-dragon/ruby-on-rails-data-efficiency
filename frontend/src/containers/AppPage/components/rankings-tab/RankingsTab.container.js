@@ -78,6 +78,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     propsId: props.itemId,
+    currentPlatform: rankingsSelectors.getCurrentPlatform(state),
     loaded: props.loaded,
     currentId,
     selectedCountries,
@@ -98,10 +99,15 @@ const mapStateToProps = (state, props) => {
 };
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const { currentId, propsId, ...rest } = stateProps;
+  const {
+    currentId,
+    propsId,
+    currentPlatform,
+    ...rest
+  } = stateProps;
   const { updateId, ...other } = dispatchProps;
 
-  if (propsId !== currentId) updateId(propsId, rest.platform);
+  if (propsId !== currentId || rest.platform !== currentPlatform) updateId(propsId, rest.platform);
 
   return {
     ...rest,
