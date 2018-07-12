@@ -46,7 +46,7 @@ const RankingsTab = ({
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
-        <RankingsTable {...rest} />
+        {charts.length ? <RankingsTable {...rest} /> : null}
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
