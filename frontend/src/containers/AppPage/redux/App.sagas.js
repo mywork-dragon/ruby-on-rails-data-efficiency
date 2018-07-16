@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import * as utils from 'utils/app.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import AppService from 'services/app.service';
-import rankingsData from 'utils/mocks/uber_charts.json';
+import { getRankingsData } from 'utils/mocks/mock-data.utils';
 import {
   AD_INTEL_TYPES as actionTypes,
   adIntelActions,
@@ -49,7 +49,8 @@ function* requestChartData(action) {
     }
     const selectedOptions = yield select(getAllSelectedOptions);
     const params = utils.formatRankingsParams(selectedOptions);
-    yield put(rankingsChart.success(rankingsData));
+    const data = getRankingsData(params);
+    yield put(rankingsChart.success(data));
   } catch (error) {
     console.log(error);
     yield put(rankingsChart.failure());

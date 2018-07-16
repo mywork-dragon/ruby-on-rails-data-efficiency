@@ -29,8 +29,8 @@ export function formatRankingsParams (options) {
   params.max_date = new Date();
   params.min_date = subtractDays(options.dateRange);
 
-  if (options.categories.length) params.categories = JSON.stringify(options.categories);
-  if (options.rankingTypes.length) params.rank_types = JSON.stringify(options.rankingTypes.split(','));
+  if (options.categories.length) params.categories = options.categories.split(',');
+  if (options.rankingTypes.length) params.rank_types = options.rankingTypes.split(',');
 
   return params;
 }

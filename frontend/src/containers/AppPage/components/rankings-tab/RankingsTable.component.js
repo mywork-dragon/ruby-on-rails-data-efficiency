@@ -15,7 +15,7 @@ const RankingsTable = ({
 
   const data = chartData.map((x) => {
     const result = {
-      name: `${x.info.country_code} ${capitalize(x.info.rank_type)} ${getCategoryNameById(x.info.category)}`,
+      name: `${x.country_code} ${capitalize(x.rank_type)} ${getCategoryNameById(x.category)}`,
       data: {},
     };
 

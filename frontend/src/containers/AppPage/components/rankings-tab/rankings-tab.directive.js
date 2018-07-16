@@ -18,7 +18,7 @@ function rankingsTab() {
     scope: {
       rankings: '=',
       platform: '=',
-      newcomers: '=',
+      categories: '=',
       itemId: '=',
       loaded: '=',
       appIdentifier: '=',

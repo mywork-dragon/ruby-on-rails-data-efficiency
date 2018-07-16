@@ -13,7 +13,11 @@ const RankingsTab = ({
   platform,
   countryOptions,
   categoryOptions,
+  needAppCategories,
+  needRankingsCountries,
   rankingTypeOptions,
+  requestAppCategories,
+  requestRankingsCountries,
   selectedCountries,
   selectedCategories,
   selectedDateRange,
@@ -24,6 +28,9 @@ const RankingsTab = ({
   updateRankingTypesFilter,
   ...rest
 }) => {
+  if (needAppCategories) requestAppCategories();
+  if (needRankingsCountries) requestRankingsCountries();
+
   if (!loaded) {
     return (
       <div className="ad-intel-spinner-ctnr">
@@ -40,13 +47,13 @@ const RankingsTab = ({
     [headerNames.SIMPLE_RANK]: true,
     [headerNames.SIMPLE_WEEK_CHANGE]: true,
     [headerNames.SIMPLE_MONTH_CHANGE]: true,
-    [headerNames.SIMPLE_ENTERED_CHART]: true,
+    // [headerNames.SIMPLE_ENTERED_CHART]: true,
   };
 
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
-        {charts.length ? <RankingsTable {...rest} /> : null}
+        <RankingsTable chartData={charts} {...rest} />
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
@@ -119,10 +126,14 @@ RankingsTab.propTypes = {
     value: PropTypes.string,
     label: PropTypes.string,
   })),
+  needAppCategories: PropTypes.bool.isRequired,
+  needRankingsCountries: PropTypes.bool.isRequired,
   rankingTypeOptions: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   })),
+  requestAppCategories: PropTypes.func.isRequired,
+  requestRankingsCountries: PropTypes.func.isRequired,
   updateCountriesFilter: PropTypes.func.isRequired,
   updateCategoriesFilter: PropTypes.func.isRequired,
   updateDateRange: PropTypes.func.isRequired,

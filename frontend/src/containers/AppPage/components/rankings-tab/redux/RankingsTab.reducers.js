@@ -22,7 +22,7 @@ const initialState = {
   selectedCountries: $localStorage.get('defaultRankingsCountries') || defaultCountries,
   selectedCategories: '',
   selectedRankingTypes: '',
-  selectedDateRange: { value: 7, label: 'Last Week' },
+  selectedDateRange: { value: 30, label: 'Last Month' },
   chartData: [],
   chartLoading: false,
   chartLoaded: false,

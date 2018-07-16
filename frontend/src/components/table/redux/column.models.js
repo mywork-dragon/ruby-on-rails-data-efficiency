@@ -292,7 +292,7 @@ export const columnModels = [
   {
     Header: headerNames.RANKING_TYPE,
     id: headerNames.RANKING_TYPE,
-    accessor: 'ranking_type',
+    accessor: 'rank_type',
     width: widths.small,
     sortable: false,
     Cell: cell => capitalize(cell.value),

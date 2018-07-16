@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { getCountryById, getCategoryNameById } from 'selectors/appStore.selectors';
 import * as rankingsSelectors from 'selectors/rankingsTab.selectors';
+import * as appStoreSelectors from 'selectors/appStore.selectors';
+import * as appStoreActions from 'actions/AppStore.actions';
 import { capitalize } from 'utils/format.utils';
 import { getChartColor, googleChartColors } from 'utils/chart.utils';
 import * as actions from './redux/RankingsTab.actions';
@@ -14,6 +15,8 @@ const mapDispatchToProps = dispatch => ({
   updateRankingTypesFilter: types => dispatch(actions.updateRankingTypesFilter(types)),
   updateDateRange: value => dispatch(actions.updateDateRange(value)),
   requestChartData: () => dispatch(actions.rankingsChart.request()),
+  requestAppCategories: () => dispatch(appStoreActions.categories.request()),
+  requestRankingsCountries: () => dispatch(appStoreActions.rankingsCountries.request()),
 });
 
 const mapStateToProps = (state, props) => {
@@ -22,59 +25,38 @@ const mapStateToProps = (state, props) => {
   const selectedCategories = rankingsSelectors.getSelectedCategories(state);
   const selectedRankingTypes = rankingsSelectors.getSelectedRankingTypes(state);
   const selectedDateRange = rankingsSelectors.getSelectedDateRange(state);
-  let countryOptions = [];
-  let categoryOptions = [];
-  let rankingTypeOptions = [];
-
   const rankings = props.rankings || [];
+  const chartData = rankingsSelectors.getChartData(state);
 
-  let charts = rankings.map((x) => {
-    countryOptions.push(x.country);
-    categoryOptions.push(x.category);
-    rankingTypeOptions.push(x.ranking_type);
-    const newcomerChart = props.newcomers.find(y => y.category === x.category && y.country === x.country && y.ranking_type === x.ranking_type);
-    const date = newcomerChart ? newcomerChart.date : null;
+  const charts = chartData.map((x, idx) => {
+    const rankingsChart = rankings.find(y => y.country === x.info.country_code && y.category === x.info.category && y.ranking_type === x.info.rank_type) || {};
 
     return {
-      ...x,
-      date,
+      ...x.info,
+      ranks: x.ranks,
       platform: props.platform,
+      weekly_change: rankingsChart.weekly_change,
+      monthly_change: rankingsChart.monthly_change,
+      rank: x.ranks[x.ranks.length - 1][1],
+      country: x.info.country_code,
+      color: getChartColor(idx),
     };
-  }).filter(x =>
-    (selectedCountries.map(i => i.value).join(',').includes(x.country)) &&
-    (!selectedCategories.length || selectedCategories.includes(x.category)) &&
-    (!selectedRankingTypes.length || selectedRankingTypes.includes(x.ranking_type)));
+  });
 
-  charts = charts.map((x, idx) => ({ ...x, color: getChartColor(idx) }));
+  // format ranking type options
+  const rankingTypeOptions = _.uniq(rankings.map(x => x.ranking_type)).map(x => ({ value: x, label: capitalize(x) }));
 
-  countryOptions = _.sortBy(_.uniq(countryOptions).map((x) => {
-    const country = getCountryById(state, x);
-    return {
-      value: x,
-      label: country ? country.name : x,
-    };
-  }), x => x.label);
+  // format country options
+  const countryOptions = _.sortBy(appStoreSelectors.getRankingsCountries(state).filter(x => x.platforms.includes(props.platform)).map(x => ({ value: x.id, label: x.name })), x => x.label);
 
-  categoryOptions = _.sortBy(_.uniq(categoryOptions).map((x) => {
-    const category = getCategoryNameById(state, x, props.platform);
-    return {
-      value: x,
-      label: category ? category.name : x,
-    };
-  }), x => x.label);
-
-  rankingTypeOptions = _.sortBy(_.uniq(rankingTypeOptions).map(x => ({
-    value: x,
-    label: capitalize(x),
-  })), x => x.label);
-
-  // eventually should not need to filter
-  let chartData = rankingsSelectors.getChartData(state).filter(x =>
-    (selectedCountries.map(i => i.value).join(',').includes(x.info.country_code)) &&
-    (!selectedCategories.length || selectedCategories.includes(x.info.category)) &&
-    (!selectedRankingTypes.length || selectedRankingTypes.includes(x.info.rank_type)));
-
-  chartData = _.sortBy(chartData, x => charts.findIndex(y => y.country === x.info.country_code && y.ranking_type === x.info.rank_type && y.category === x.info.category));
+  // format category options
+  let categoryOptions;
+  if (props.platform === 'ios') {
+    categoryOptions = appStoreSelectors.getIosCategories(state).filter(x => ['Overall', ...props.categories].includes(x.name));
+  } else {
+    categoryOptions = appStoreSelectors.getAndroidCategories(state).filter(x => ['Overall', ...props.categories].includes(x.name));
+  }
+  categoryOptions = categoryOptions.map(x => ({ value: x.id, label: x.name }));
 
   return {
     propsId: props.itemId,
@@ -91,11 +73,12 @@ const mapStateToProps = (state, props) => {
     categoryOptions,
     rankingTypeOptions,
     platform: props.platform,
-    chartData,
     isChartDataLoading: rankingsSelectors.isChartDataLoading(state),
     isChartDataLoaded: rankingsSelectors.isChartDataLoaded(state),
-    getCategoryNameById: id => getCategoryNameById(state, id, props.platform).name,
+    getCategoryNameById: id => appStoreSelectors.getCategoryNameById(state, id, props.platform).name,
     colors: googleChartColors,
+    needAppCategories: appStoreSelectors.needAppCategories(state),
+    needRankingsCountries: appStoreSelectors.needRankingsCountries(state),
   };
 };
 
