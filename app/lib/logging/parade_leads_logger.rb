@@ -6,6 +6,7 @@ class ParadeLeadsLogger
     @last_name = last_name
     @email = email
     @title = title
+    @event = {}
   end
 
   def send!

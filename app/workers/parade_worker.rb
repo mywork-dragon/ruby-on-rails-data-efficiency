@@ -10,7 +10,7 @@ class ParadeWorker
 
   def queue_ios_advertisers
     titles = ['marketing', 'acquisition', 'creative', 'growth', 'advertising', 'ads', 'performance']
-    IosFbAd.joins(:ios_app => :ios_developer).pluck('ios_developers.id').each do |dev_id|
+    IosFbAd.joins(:ios_app => :ios_developer).pluck('ios_developers.id').uniq.each do |dev_id|
       titles.each do |title|
         ParadeWorker.perform_async(:log_ios_advertiser, dev_id, title)
       end
