@@ -17,7 +17,7 @@ class ParadeWorker
     end
   end
 
-  def log_ios_adveritiser(dev_id, title)
+  def log_ios_advertiser(dev_id, title)
     contact_service = ContactDiscoveryService.new
     dev = IosDeveloper.find(dev_id)
     contacts = contact_service.get_contacts_for_developer(dev, title)
