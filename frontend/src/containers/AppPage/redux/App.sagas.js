@@ -49,7 +49,7 @@ function* requestChartData(action) {
     }
     const selectedOptions = yield select(getAllSelectedOptions);
     const params = utils.formatRankingsParams(selectedOptions);
-    const data = getRankingsData(params);
+    const { data } = yield call(AppService().getHistoricalRankings, params);
     yield put(rankingsChart.success(data));
   } catch (error) {
     console.log(error);

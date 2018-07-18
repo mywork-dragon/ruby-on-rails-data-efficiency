@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { LineChart } from 'react-chartkick';
 import { capitalize } from 'utils/format.utils';
+import LoadingSpinner from 'Messaging/LoadingSpinner.component';
 
 const RankingsTable = ({
   chartData,
@@ -15,7 +16,7 @@ const RankingsTable = ({
 
   const data = chartData.map((x) => {
     const result = {
-      name: `${x.country_code} ${capitalize(x.rank_type)} ${getCategoryNameById(x.category)}`,
+      name: `${x.country} ${capitalize(x.rank_type)} ${getCategoryNameById(x.category)}`,
       data: {},
     };
 
@@ -28,22 +29,29 @@ const RankingsTable = ({
 
   return (
     <div>
-      <LineChart
-        data={data}
-        library={{
-          vAxis: {
-            direction: -1,
-            format: '0',
-            viewWindow: {
-              min: 1,
+      {isChartDataLoading ? (
+        <div className="ad-intel-spinner-ctnr">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <LineChart
+          data={data}
+          height="500px"
+          library={{
+            vAxis: {
+              direction: -1,
+              format: '0',
+              viewWindow: {
+                min: 1,
+              },
             },
-          },
-          pointsVisible: false,
-          focusTarget: 'category',
-          legend: { position: 'none' },
-          colors,
-        }}
-      />
+            pointsVisible: false,
+            focusTarget: 'category',
+            legend: { position: 'none' },
+            colors,
+          }}
+        />
+      )}
     </div>
   );
 };

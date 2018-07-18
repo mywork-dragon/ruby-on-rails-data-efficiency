@@ -7,19 +7,19 @@ class RankingsAccessor
   end
 
   # Returns a list of apps that have moved postions on a top chart. If an app appears on more than one top
-  # chart, the chart in which the app jumped the most is returned. If any of the platforms, countries, categories, 
+  # chart, the chart in which the app jumped the most is returned. If any of the platforms, countries, categories,
   # rank_types parameters are left out, it is treated as a wildcard.
   #
   # By default the list is sorted by the highest weekly change first. Sorting can be toggled via the sort_by
   # ("weekly_change", "monthly_change", "rank") and desc parameters.
-  # 
+  #
   #
   #
   # Possible values for parameters:
-  #   
+  #
   #   platforms: "ios", "android"
   #   countries: two letter code of country based on "ISO 3166-1 alpha-2" standard
-  #   categories: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"), 
+  #   categories: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"),
   #               on Android this is the human readable category name ("GAME")
   #   rank_types: "free", "paid", "grossing"
   #
@@ -55,10 +55,10 @@ class RankingsAccessor
   #
   #
   # Possible values for parameters:
-  #   
+  #
   #   platforms: "ios", "android"
   #   countries: two letter code of country based on "ISO 3166-1 alpha-2" standard
-  #   categories: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"), 
+  #   categories: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"),
   #               on Android this is the human readable category name ("GAME")
   #   rank_types: "free", "paid", "grossing"
   #
@@ -90,10 +90,10 @@ class RankingsAccessor
   #
   #
   # Possible values for parameters:
-  #   
+  #
   #   platform: "ios", "android"
   #   country: two letter code of country based on "ISO 3166-1 alpha-2" standard
-  #   category: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"), 
+  #   category: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"),
   #               on Android this is the human readable category name ("GAME")
   #   rank_type: "free", "paid", "grossing"
   #
@@ -138,6 +138,18 @@ class RankingsAccessor
   # scrapes for missing Android apps.
   def unique_newcomers(platform:, lookback_time:, page_size:, page_num:, count: false)
     return @delegate.unique_newcomers(platform: platform, lookback_time: lookback_time, page_size: page_size, page_num: page_num, count: count)
+  end
+
+  def get_historical_app_rankings(app_identifier:, platform:, countries:, categories:, rank_types:, min_date:, max_date:)
+    return @delegate.get_historical_app_rankings(
+      app_identifier: app_identifier,
+      platform: platform,
+      countries: countries,
+      categories: categories,
+      rank_types: rank_types,
+      min_date: min_date,
+      max_date: max_date
+    )
   end
 
 end

@@ -16,6 +16,11 @@ const AppService = (client = httpClient) => ({
       },
     })
   ),
+  getHistoricalRankings: params => (
+    client.get('/api/get_app_rankings', {
+      params,
+    })
+  ),
 });
 
 export default AppService;

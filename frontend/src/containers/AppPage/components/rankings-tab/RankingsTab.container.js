@@ -26,19 +26,17 @@ const mapStateToProps = (state, props) => {
   const selectedRankingTypes = rankingsSelectors.getSelectedRankingTypes(state);
   const selectedDateRange = rankingsSelectors.getSelectedDateRange(state);
   const rankings = props.rankings || [];
-  const chartData = rankingsSelectors.getChartData(state);
-
+  const chartData = rankingsSelectors.getChartData(state)
   const charts = chartData.map((x, idx) => {
-    const rankingsChart = rankings.find(y => y.country === x.info.country_code && y.category === x.info.category && y.ranking_type === x.info.rank_type) || {};
+    const rankingsChart = rankings.find(y => y.country === x.country && y.category === x.category && y.ranking_type === x.rank_type) || {};
 
     return {
-      ...x.info,
+      ...x,
       ranks: x.ranks,
       platform: props.platform,
       weekly_change: rankingsChart.weekly_change,
       monthly_change: rankingsChart.monthly_change,
-      rank: x.ranks[x.ranks.length - 1][1],
-      country: x.info.country_code,
+      rank: rankingsChart ? rankingsChart.rank : null,
       color: getChartColor(idx),
     };
   });

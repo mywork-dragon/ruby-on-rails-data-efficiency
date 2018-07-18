@@ -74,6 +74,8 @@ Rails.application.routes.draw do
   get 'api/get_ios_sdk_categories' => 'api#get_ios_sdk_categories'
   get 'api/get_android_sdk_categories' => 'api#get_android_sdk_categories'
 
+  get 'api/get_app_rankings' => 'rankings#get_historical_app_rankings'
+
   get 'api/get_ios_developer' => 'api#get_ios_developer'
   get 'api/get_android_developer' => 'api#get_android_developer'
   get 'api/get_developer_apps' => 'api#get_developer_apps'

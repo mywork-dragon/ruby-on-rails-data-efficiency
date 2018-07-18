@@ -73,7 +73,7 @@ export const headerNames = {
   RATINGS_COUNT: 'Ratings Count',
   RELEASE_DATE: 'Release Date',
   SIMPLE_ENTERED_CHART: 'Simple Entered Chart',
-  SIMPLE_RANK: 'Simpe Rank',
+  SIMPLE_RANK: 'Simple Rank',
   SIMPLE_MONTH_CHANGE: 'Simple 1 Month Rank Change',
   SIMPLE_WEEK_CHANGE: 'Simple 1 Week Rank Change',
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
@@ -284,10 +284,11 @@ export const columnModels = [
     Cell: cell => (cell.value ? longDate(cell.value) : 'N/A'),
   },
   {
-    Header: 'Rank',
+    Header: "Today's Rank",
     id: headerNames.SIMPLE_RANK,
     accessor: 'rank',
     width: widths.small,
+    Cell: cell => (cell.value ? cell.value : <span className="invalid">Not ranked</span>),
   },
   {
     Header: headerNames.RANKING_TYPE,
@@ -310,7 +311,7 @@ export const columnModels = [
       } else if (cell.value === 0) {
         return cell.value;
       }
-      return 'N/A';
+      return <span className="invalid">N/A</span>;
     },
   },
   {
@@ -326,7 +327,7 @@ export const columnModels = [
       } else if (cell.value === 0) {
         return cell.value;
       }
-      return 'N/A';
+      return <span className="invalid">N/A</span>;
     },
   },
   {

@@ -111,8 +111,4 @@ export const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/
 
 export const getNestedValue = (path, object) => path.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), object);
 
-export const subtractDays = (x) => {
-  const e = new Date();
-  e.setDate(e.getDate() - x);
-  return new Date(e);
-};
+export const subtractDays = x => moment().subtract(x, 'days').startOf('day');

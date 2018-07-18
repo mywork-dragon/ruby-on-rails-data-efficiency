@@ -26,11 +26,11 @@ export function formatRankingsParams (options) {
   params.countries = JSON.stringify(options.countries);
   params.platform = options.platform;
   params.app_identifier = options.appIdentifier;
-  params.max_date = new Date();
+  // params.max_date = moment().endOf('day');
   params.min_date = subtractDays(options.dateRange);
 
-  if (options.categories.length) params.categories = options.categories.split(',');
-  if (options.rankingTypes.length) params.rank_types = options.rankingTypes.split(',');
+  if (options.categories.length) params.categories = JSON.stringify(options.categories.split(','));
+  if (options.rankingTypes.length) params.rank_types = JSON.stringify(options.rankingTypes.split(','));
 
   return params;
 }

@@ -6,7 +6,7 @@ class RedshiftRankingsAccessor
   end
 
   def get_trending(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
-    
+
     # Validate parameters
 
     validate_parameters(platforms: platforms, countries: countries, categories: categories, rank_types: rank_types, size: size, page_num: page_num)
@@ -55,7 +55,7 @@ class RedshiftRankingsAccessor
   end
 
   def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 1)
-    
+
     # Validate parameters
 
     if !['ios', 'android'].include? platform
@@ -81,7 +81,7 @@ class RedshiftRankingsAccessor
 
     denormalized_country = platform == 'ios' ? country_code_to_ios(country) : country
     denormalized_rank_type = platform == 'ios' ? rank_type_to_ios(rank_type) : rank_type_to_android(rank_type)
-    
+
     # Perform queries
 
     get_chart_query = "SELECT *, count(*) OVER() FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}' ORDER BY rank ASC OFFSET #{(page_num - 1) * size} LIMIT #{size}"
@@ -89,6 +89,54 @@ class RedshiftRankingsAccessor
     counts_extracted = extract_count(raw_result)
     counts_extracted["apps"] = normalize_app_records(counts_extracted["apps"])
     counts_extracted
+  end
+
+  def get_historical_app_rankings(app_identifier:, platform:, countries:[], categories:[], rank_types:[], min_date:, max_date:)
+
+    # Validate parameters
+
+    if !['ios', 'android'].include? platform
+      raise "Unsupported platform option"
+    end
+
+    if (rank_types - ['free', 'paid', 'grossing']).any?
+      raise "Unsupported rank_type option"
+    end
+
+    countries.each do |country|
+      raise "Invalid country code." if country.length != 2
+    end
+
+    categories.each do |category|
+      raise "Invalid category" if category.include? "\"" or category.include? "'"
+    end
+
+    begin
+      Date.iso8601(min_date)
+    rescue
+      raise "Invalid min date"
+    end
+
+    begin
+      Date.iso8601(max_date)
+    rescue
+      raise "Invalid max date"
+    end
+
+    # Denormalize necessary parameters
+
+    denormalized_countries = generate_denormalized_countries([platform], countries)
+    denormalized_rank_types = generate_denormalized_rank_types([platform], rank_types)
+
+    # Perform queries
+
+    where_clauses = build_where_clauses([platform], denormalized_countries, categories, denormalized_rank_types)
+    query = "SELECT * from historical_rankings_test #{where_clauses}" +
+      " AND app_identifier = '#{app_identifier}'" +
+      " AND created_at BETWEEN '#{min_date}' AND '#{max_date}'" +
+      " ORDER BY created_at"
+    raw_results = @connection.query(query, expires: 30.minutes).fetch()
+    normalize_app_records(raw_results)
   end
 
   def ios_countries
