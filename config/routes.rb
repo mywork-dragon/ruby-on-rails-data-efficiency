@@ -48,7 +48,7 @@ Rails.application.routes.draw do
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get '/privacy', to: redirect('/legal/privacy.pdf')
 
-  get 'coding-challenge', to: redirect('https://github.com/MightySignal/coding-challenge-directions') 
+  get 'coding-challenge', to: redirect('https://mightysignal.github.io/coding-challenge-directions/') 
 
   match 'auth/:provider/callback', to: 'salesforce_sessions#create', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
