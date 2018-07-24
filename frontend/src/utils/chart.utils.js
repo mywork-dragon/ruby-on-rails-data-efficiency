@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const googleChartColors = [
   '#3366cc',
   '#dc3912',
@@ -33,3 +35,19 @@ export const googleChartColors = [
 ];
 
 export const getChartColor = idx => (googleChartColors[idx] ? googleChartColors[idx] : googleChartColors[idx - googleChartColors.length - 1]);
+
+export const generateDateList = (startDate, endDate = new Date()) => {
+  const dates = [];
+  const currDate = moment(startDate).startOf('day');
+  const lastDate = moment(endDate).startOf('day');
+
+  dates.push(currDate.clone().toDate());
+
+  while (currDate.add(1, 'days').diff(lastDate) < 0) {
+    dates.push(currDate.clone().toDate());
+  }
+
+  dates.push(currDate.toDate());
+
+  return dates;
+};

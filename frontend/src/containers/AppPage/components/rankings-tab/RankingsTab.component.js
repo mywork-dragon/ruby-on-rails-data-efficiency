@@ -5,18 +5,23 @@ import { headerNames } from 'components/table/redux/column.models';
 import Select from 'components/select/CustomSelect.component';
 import NoDataMessage from 'Messaging/NoData.component';
 import LoadingSpinner from 'Messaging/LoadingSpinner.component';
-import RankingsTable from './RankingsTable.component';
+import RankingsChart from './RankingsChart.component';
 
 const RankingsTab = ({
   charts,
+  error,
+  errorMessage,
   loaded,
   platform,
   countryOptions,
   categoryOptions,
+  isChartDataLoaded,
+  isChartDataLoading,
   needAppCategories,
   needRankingsCountries,
   rankingTypeOptions,
   requestAppCategories,
+  requestChartData,
   requestRankingsCountries,
   selectedCountries,
   selectedCategories,
@@ -31,6 +36,8 @@ const RankingsTab = ({
   if (needAppCategories) requestAppCategories();
   if (needRankingsCountries) requestRankingsCountries();
 
+  if (!isChartDataLoaded && !isChartDataLoading) requestChartData();
+
   if (!loaded) {
     return (
       <div className="ad-intel-spinner-ctnr">
@@ -39,21 +46,65 @@ const RankingsTab = ({
     );
   }
 
-  const columns = {
-    [headerNames.COLOR]: true,
-    [headerNames.COUNTRY]: true,
-    [headerNames.RANKING_TYPE]: true,
-    [headerNames.CATEGORY]: true,
-    [headerNames.SIMPLE_RANK]: true,
-    [headerNames.SIMPLE_WEEK_CHANGE]: true,
-    [headerNames.SIMPLE_MONTH_CHANGE]: true,
-    // [headerNames.SIMPLE_ENTERED_CHART]: true,
-  };
+  let content;
+  if (isChartDataLoading) {
+    content = (
+      <div className="ad-intel-spinner-ctnr">
+        <LoadingSpinner />
+      </div>
+    );
+  } else if (!isChartDataLoading) {
+    if (charts.length) {
+      const columns = {
+        [headerNames.COLOR]: true,
+        [headerNames.COUNTRY]: true,
+        [headerNames.RANKING_TYPE]: true,
+        [headerNames.CATEGORY]: true,
+        [headerNames.SIMPLE_RANK]: true,
+        [headerNames.SIMPLE_WEEK_CHANGE]: true,
+        [headerNames.SIMPLE_MONTH_CHANGE]: true,
+        // [headerNames.SIMPLE_ENTERED_CHART]: true,
+      };
+
+      content = (
+        <div>
+          <RankingsChart
+            chartData={charts}
+            dateRange={selectedDateRange}
+            isChartDataLoading={isChartDataLoading}
+            {...rest}
+          />
+          <div className="rankings-table-container">
+            <Table
+              columns={columns}
+              pageSize={charts.length}
+              platform={platform}
+              results={charts}
+              resultsCount={charts.length}
+              showHeader={false}
+              showPagination={false}
+            />
+          </div>
+        </div>
+      );
+    } else if (error) {
+      content = (
+        <NoDataMessage>
+          {errorMessage || 'Whoops! There was a problem fetching data for this app'}
+        </NoDataMessage>
+      );
+    } else {
+      content = (
+        <NoDataMessage>
+          No Rankings Data
+        </NoDataMessage>
+      );
+    }
+  }
 
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
-        <RankingsTable chartData={charts} {...rest} />
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"
@@ -94,27 +145,15 @@ const RankingsTab = ({
             value={selectedDateRange}
           />
         </div>
-        { charts.length ? (
-          <Table
-            columns={columns}
-            pageSize={charts.length}
-            platform={platform}
-            results={charts}
-            resultsCount={charts.length}
-            showHeader={false}
-            showPagination={false}
-          />
-        ) : (
-          <NoDataMessage>
-            No Rankings Data
-          </NoDataMessage>
-        )}
+        {content}
       </div>
     </div>
   );
 };
 
 RankingsTab.propTypes = {
+  error: PropTypes.bool.isRequired,
+  errorMessage: PropTypes.string,
   loaded: PropTypes.bool.isRequired,
   platform: PropTypes.string.isRequired,
   charts: PropTypes.arrayOf(PropTypes.object),
@@ -126,6 +165,8 @@ RankingsTab.propTypes = {
     value: PropTypes.string,
     label: PropTypes.string,
   })),
+  isChartDataLoaded: PropTypes.bool.isRequired,
+  isChartDataLoading: PropTypes.bool.isRequired,
   needAppCategories: PropTypes.bool.isRequired,
   needRankingsCountries: PropTypes.bool.isRequired,
   rankingTypeOptions: PropTypes.arrayOf(PropTypes.shape({
@@ -133,6 +174,7 @@ RankingsTab.propTypes = {
     label: PropTypes.string,
   })),
   requestAppCategories: PropTypes.func.isRequired,
+  requestChartData: PropTypes.func.isRequired,
   requestRankingsCountries: PropTypes.func.isRequired,
   updateCountriesFilter: PropTypes.func.isRequired,
   updateCategoriesFilter: PropTypes.func.isRequired,
@@ -154,6 +196,7 @@ RankingsTab.defaultProps = {
   charts: [],
   countryOptions: [],
   categoryOptions: [],
+  errorMessage: 'Whoops! There was a problem fetching data for this app',
   rankingTypeOptions: [],
 };
 

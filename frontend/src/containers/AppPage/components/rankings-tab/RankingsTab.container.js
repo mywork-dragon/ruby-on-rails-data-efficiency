@@ -1,9 +1,9 @@
-import _ from 'lodash';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import * as rankingsSelectors from 'selectors/rankingsTab.selectors';
 import * as appStoreSelectors from 'selectors/appStore.selectors';
 import * as appStoreActions from 'actions/AppStore.actions';
-import { capitalize } from 'utils/format.utils';
+import { capitalize, daysAgo } from 'utils/format.utils';
 import { getChartColor, googleChartColors } from 'utils/chart.utils';
 import * as actions from './redux/RankingsTab.actions';
 import RankingsTab from './RankingsTab.component';
@@ -20,15 +20,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = (state, props) => {
-  const currentId = rankingsSelectors.getCurrentId(state);
-  const selectedCountries = rankingsSelectors.getSelectedCountries(state);
-  const selectedCategories = rankingsSelectors.getSelectedCategories(state);
-  const selectedRankingTypes = rankingsSelectors.getSelectedRankingTypes(state);
-  const selectedDateRange = rankingsSelectors.getSelectedDateRange(state);
   const rankings = props.rankings || [];
   const chartData = rankingsSelectors.getChartData(state)
   const charts = chartData.map((x, idx) => {
     const rankingsChart = rankings.find(y => y.country === x.country && y.category === x.category && y.ranking_type === x.rank_type) || {};
+    const days = daysAgo(x.ranks[x.ranks.length - 1][0]);
+    if (days && rankingsChart.rank) {
+      x.ranks.push([moment().format('YYYY-MM-DD'), rankingsChart.rank]);
+    }
 
     return {
       ...x,
@@ -36,47 +35,54 @@ const mapStateToProps = (state, props) => {
       platform: props.platform,
       weekly_change: rankingsChart.weekly_change,
       monthly_change: rankingsChart.monthly_change,
-      rank: rankingsChart ? rankingsChart.rank : null,
+      rank: rankingsChart.rank,
       color: getChartColor(idx),
     };
   });
 
+  // prep options
+  let rankingTypeOptions = new Set();
+  let categoryOptions = new Set();
+  rankings.forEach((x) => {
+    rankingTypeOptions.add(x.ranking_type);
+    categoryOptions.add(x.category);
+  });
+
   // format ranking type options
-  const rankingTypeOptions = _.uniq(rankings.map(x => x.ranking_type)).map(x => ({ value: x, label: capitalize(x) }));
+  rankingTypeOptions = [...rankingTypeOptions].map(x => ({ value: x, label: capitalize(x) }));
 
   // format country options
-  const countryOptions = _.sortBy(appStoreSelectors.getRankingsCountries(state).filter(x => x.platforms.includes(props.platform)).map(x => ({ value: x.id, label: x.name })), x => x.label);
+  const countryOptions = appStoreSelectors.getRankingsCountries(state)
+    .filter(x => x.platforms.includes(props.platform))
+    .map(x => ({ value: x.id, label: x.name }));
 
   // format category options
-  let categoryOptions;
-  if (props.platform === 'ios') {
-    categoryOptions = appStoreSelectors.getIosCategories(state).filter(x => ['Overall', ...props.categories].includes(x.name));
-  } else {
-    categoryOptions = appStoreSelectors.getAndroidCategories(state).filter(x => ['Overall', ...props.categories].includes(x.name));
-  }
-  categoryOptions = categoryOptions.map(x => ({ value: x.id, label: x.name }));
+  const getCategoryNameById = id => appStoreSelectors.getCategoryNameById(state, id, props.platform).name;
+  categoryOptions = [...categoryOptions].map(x => ({ value: x, label: getCategoryNameById(x) }));
 
   return {
-    propsId: props.itemId,
-    currentPlatform: rankingsSelectors.getCurrentPlatform(state),
-    loaded: props.loaded,
     appIdentifier: props.appIdentifier,
-    currentId,
-    selectedCountries,
-    selectedCategories,
-    selectedRankingTypes,
-    selectedDateRange,
-    countryOptions,
-    charts,
     categoryOptions,
-    rankingTypeOptions,
-    platform: props.platform,
+    charts,
+    colors: googleChartColors,
+    countryOptions,
+    currentId: rankingsSelectors.getCurrentId(state),
+    currentPlatform: rankingsSelectors.getCurrentPlatform(state),
+    error: rankingsSelectors.hasRankingsError(state),
+    errorMessage: rankingsSelectors.getErrorMessage(state),
+    getCategoryNameById,
     isChartDataLoading: rankingsSelectors.isChartDataLoading(state),
     isChartDataLoaded: rankingsSelectors.isChartDataLoaded(state),
-    getCategoryNameById: id => appStoreSelectors.getCategoryNameById(state, id, props.platform).name,
-    colors: googleChartColors,
+    loaded: props.loaded,
     needAppCategories: appStoreSelectors.needAppCategories(state),
     needRankingsCountries: appStoreSelectors.needRankingsCountries(state),
+    propsId: props.itemId,
+    platform: props.platform,
+    rankingTypeOptions,
+    selectedCountries: rankingsSelectors.getSelectedCountries(state),
+    selectedCategories: rankingsSelectors.getSelectedCategories(state),
+    selectedRankingTypes: rankingsSelectors.getSelectedRankingTypes(state),
+    selectedDateRange: rankingsSelectors.getSelectedDateRange(state),
   };
 };
 

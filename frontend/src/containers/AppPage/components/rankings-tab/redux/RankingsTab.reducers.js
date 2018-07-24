@@ -1,5 +1,6 @@
 import { $localStorage } from 'utils/localStorage.utils';
-import { RANKINGS_TAB_ACTION_TYPES, RANKINGS_CHART_REQUEST_TYPES } from './RankingsTab.actions';
+import { getNestedValue } from 'utils/format.utils';
+import { RANKINGS_TAB_ACTION_TYPES, RANKINGS_CHART } from './RankingsTab.actions';
 
 const defaultCountries = [
   { value: 'US', label: 'United States' },
@@ -26,6 +27,8 @@ const initialState = {
   chartData: [],
   chartLoading: false,
   chartLoaded: false,
+  error: false,
+  errorMessage: null,
 };
 
 function rankingsTab(state = initialState, action) {
@@ -34,7 +37,6 @@ function rankingsTab(state = initialState, action) {
       return {
         ...initialState,
         ...action.payload,
-        selectedCategories: action.payload.platform === 'ios' ? '36' : 'OVERALL',
       };
     case RANKINGS_TAB_ACTION_TYPES.UPDATE_COUNTRIES_FILTER:
       return {
@@ -56,18 +58,27 @@ function rankingsTab(state = initialState, action) {
         ...state,
         selectedDateRange: action.payload.value,
       };
-    case RANKINGS_CHART_REQUEST_TYPES.REQUEST:
+    case RANKINGS_CHART.REQUEST:
       return {
         ...state,
         chartLoading: true,
         chartLoaded: false,
       };
-    case RANKINGS_CHART_REQUEST_TYPES.SUCCESS:
+    case RANKINGS_CHART.SUCCESS:
       return {
         ...state,
         chartData: action.payload.data,
         chartLoading: false,
         chartLoaded: true,
+      };
+    case RANKINGS_CHART.FAILURE:
+      return {
+        ...state,
+        chartData: [],
+        chartLoaded: true,
+        chartLoading: false,
+        error: true,
+        errorMessage: action.payload.message,
       };
     default:
       return state;

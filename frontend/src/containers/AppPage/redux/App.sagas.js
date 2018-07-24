@@ -2,7 +2,6 @@ import { all, put, call, takeLatest, select } from 'redux-saga/effects';
 import * as utils from 'utils/app.utils';
 import { $localStorage } from 'utils/localStorage.utils';
 import AppService from 'services/app.service';
-import { getRankingsData } from 'utils/mocks/mock-data.utils';
 import {
   AD_INTEL_TYPES as actionTypes,
   adIntelActions,
@@ -11,7 +10,7 @@ import { getAllSelectedOptions } from 'selectors/rankingsTab.selectors';
 import {
   RANKINGS_TAB_ACTION_TYPES,
   rankingsChart,
-  RANKINGS_CHART_REQUEST_TYPES,
+  RANKINGS_CHART,
 } from '../components/rankings-tab/redux/RankingsTab.actions';
 
 function* requestAppAdIntelInfo(action) {
@@ -44,13 +43,17 @@ function* requestAppCreatives(action) {
 
 function* requestChartData(action) {
   try {
-    if (action.type !== RANKINGS_CHART_REQUEST_TYPES.REQUEST) {
+    if (action.type !== RANKINGS_CHART.REQUEST) {
       yield put(rankingsChart.request());
     }
     const selectedOptions = yield select(getAllSelectedOptions);
     const params = utils.formatRankingsParams(selectedOptions);
-    const { data } = yield call(AppService().getHistoricalRankings, params);
-    yield put(rankingsChart.success(data));
+    if (JSON.parse(params.countries).length === 0) {
+      yield put(rankingsChart.failure('Must select a country'));
+    } else {
+      const { data } = yield call(AppService().getHistoricalRankings, params);
+      yield put(rankingsChart.success(data));
+    }
   } catch (error) {
     console.log(error);
     yield put(rankingsChart.failure());
@@ -67,7 +70,7 @@ function* watchRankingsFilterChange() {
     RANKINGS_TAB_ACTION_TYPES.UPDATE_CATEGORIES_FILTER,
     RANKINGS_TAB_ACTION_TYPES.UPDATE_RANKING_TYPES_FILTER,
     RANKINGS_TAB_ACTION_TYPES.UPDATE_DATE_RANGE,
-    RANKINGS_CHART_REQUEST_TYPES.REQUEST,
+    RANKINGS_CHART.REQUEST,
   ], requestChartData);
 }
 

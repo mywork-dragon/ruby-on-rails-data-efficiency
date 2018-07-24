@@ -26,6 +26,10 @@ import {
   TABLE_TYPES,
 } from 'containers/ExplorePage/redux/Explore.actions';
 
+import {
+  RANKINGS_CHART,
+} from 'containers/AppPage/components/rankings-tab/redux/RankingsTab.actions';
+
 function sendToBugsnag ({ type, payload: { error } }) {
   Bugsnag.notifyException(error, {
     user_id: getUserIdFromToken(),
@@ -51,6 +55,7 @@ function* watchError() {
     RANKINGS_COUNTRIES.FAILURE,
     APP_PERMISSIONS_OPTIONS.FAILURE,
     GEO_OPTIONS.FAILURE,
+    RANKINGS_CHART.FAILURE,
   ], sendToBugsnag);
 }
 

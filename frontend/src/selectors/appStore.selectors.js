@@ -18,7 +18,7 @@ export const getAndroidSdkCategories = state => state.appStoreInfo.sdkCategories
 
 export const needRankingsCountries = state => !state.appStoreInfo.rankingsCountries.loaded && !state.appStoreInfo.rankingsCountries.fetching;
 
-export const getRankingsCountries = state => state.appStoreInfo.rankingsCountries.rankingsCountries;
+export const getRankingsCountries = state => _.sortBy(state.appStoreInfo.rankingsCountries.rankingsCountries, x => x.name);
 
 export const getCategoryNameById = (state, id, platform) => state.appStoreInfo.categories[`${platform}CategoriesById`][id] || {};
 

@@ -131,7 +131,7 @@ class RedshiftRankingsAccessor
     # Perform queries
 
     where_clauses = build_where_clauses([platform], denormalized_countries, categories, denormalized_rank_types)
-    query = "SELECT * from historical_rankings_test #{where_clauses}" +
+    query = "SELECT * from historical_rankings #{where_clauses}" +
       " AND app_identifier = '#{app_identifier}'" +
       " AND created_at BETWEEN '#{min_date}' AND '#{max_date}'" +
       " ORDER BY created_at"

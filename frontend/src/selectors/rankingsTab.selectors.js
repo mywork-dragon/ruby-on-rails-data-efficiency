@@ -32,3 +32,7 @@ export const getChartData = state => state.appPage.rankings.chartData;
 export const isChartDataLoading = state => state.appPage.rankings.chartLoading;
 
 export const isChartDataLoaded = state => state.appPage.rankings.chartLoaded;
+
+export const hasRankingsError = state => state.appPage.rankings.error;
+
+export const getErrorMessage = state => state.appPage.rankings.errorMessage;

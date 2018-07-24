@@ -10,12 +10,12 @@ const actionTypes = [
 
 export const RANKINGS_TAB_ACTION_TYPES = namespaceActions('rankingsTab', actionTypes);
 
-export const RANKINGS_CHART_REQUEST_TYPES = createRequestTypes('rankingsTab/RANKINGS_CHART');
+export const RANKINGS_CHART = createRequestTypes('rankingsTab/RANKINGS_CHART');
 
 export const rankingsChart = {
-  request: () => action(RANKINGS_CHART_REQUEST_TYPES.REQUEST),
-  success: data => action(RANKINGS_CHART_REQUEST_TYPES.SUCCESS, { data }),
-  failure: error => action(RANKINGS_CHART_REQUEST_TYPES.FAILURE, { error }),
+  request: () => action(RANKINGS_CHART.REQUEST),
+  success: data => action(RANKINGS_CHART.SUCCESS, { data }),
+  failure: message => action(RANKINGS_CHART.FAILURE, { message }),
 };
 
 export const updateAppInfo = (id, platform, appIdentifier) => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_APP_INFO, { id, platform, appIdentifier });
