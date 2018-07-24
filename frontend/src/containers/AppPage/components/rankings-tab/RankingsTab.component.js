@@ -104,6 +104,9 @@ const RankingsTab = ({
   return (
     <div id="appPage">
       <div className="col-md-12 info-column">
+        <div className="pull-right rankings-help-link">
+          <a href="https://support.mightysignal.com/article/90-historical-app-rankings">How to use App Rankings</a>
+        </div>
         <div className="rankings-filter-container">
           <Select
             className="rankings-tab-country-select"

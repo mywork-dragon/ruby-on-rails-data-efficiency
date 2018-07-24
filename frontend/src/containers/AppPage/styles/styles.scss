@@ -28,6 +28,7 @@
 }
 
 .rankings-filter-container {
+  clear: both;
   display: flex;
 }
 
@@ -49,4 +50,12 @@
 
 .rankings-table-container {
   margin-top: 15px;
+}
+
+.rankings-help-link {
+  a {
+    color: #767676;
+    margin-right: 5px;
+    text-decoration: underline;
+  }
 }
