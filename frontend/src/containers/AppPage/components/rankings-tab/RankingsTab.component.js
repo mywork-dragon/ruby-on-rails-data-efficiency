@@ -63,7 +63,6 @@ const RankingsTab = ({
         [headerNames.SIMPLE_RANK]: true,
         [headerNames.SIMPLE_WEEK_CHANGE]: true,
         [headerNames.SIMPLE_MONTH_CHANGE]: true,
-        // [headerNames.SIMPLE_ENTERED_CHART]: true,
       };
 
       content = (
@@ -109,6 +108,7 @@ const RankingsTab = ({
           <Select
             className="rankings-tab-country-select"
             maxItems={5}
+            maxText="A maximum of five countries can be selected"
             multi
             onChange={vals => updateCountriesFilter(vals)}
             options={countryOptions}

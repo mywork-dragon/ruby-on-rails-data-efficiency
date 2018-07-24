@@ -63,7 +63,7 @@ const Select = (props) => {
     <ReactSelect
       arrowRenderer={SelectArrow}
       {...props}
-      noResultsText={atMax ? 'Max options selected' : 'No results found'}
+      noResultsText={atMax ? props.maxText : 'No results found'}
       options={newOptions}
     />
   );
@@ -79,6 +79,7 @@ Select.propTypes = {
     value: PropTypes.string,
   }),
   maxItems: PropTypes.number,
+  maxText: PropTypes.string,
   simpleValue: PropTypes.bool,
 };
 
@@ -90,6 +91,7 @@ Select.defaultProps = {
   },
   value: null,
   maxItems: null,
+  maxText: 'Max options selected',
   simpleValue: false,
 };
 
