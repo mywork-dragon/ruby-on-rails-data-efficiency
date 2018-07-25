@@ -51,3 +51,29 @@ export const generateDateList = (startDate, endDate = new Date()) => {
 
   return dates;
 };
+
+export const fillRankingsGaps = (ranks, dateRange) => {
+  const dates = generateDateList(moment().subtract(dateRange, 'days')).map(x => x.toISOString().slice(0, 10));
+
+  const ranksByDate = {};
+  ranks.forEach((rank) => {
+    ranksByDate[rank[0]] = rank[1];
+  });
+
+  let mapped = {};
+  dates.forEach((date) => { mapped[date] = ranksByDate[date]; });
+
+  mapped = Object.entries(mapped);
+  mapped = mapped.map((x, i) => {
+    const [date, rank] = x;
+    const prevRank = mapped[i - 1] ? mapped[i - 1][1] : null;
+    const nextRank = mapped[i + 1] ? mapped[i + 1][1] : null;
+    if (!rank && prevRank && nextRank) {
+      return [date, prevRank];
+    }
+
+    return x;
+  });
+
+  return mapped;
+};

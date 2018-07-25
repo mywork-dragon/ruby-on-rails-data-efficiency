@@ -3,31 +3,26 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Chart } from 'react-google-charts';
 import { capitalize } from 'utils/format.utils';
-import { generateDateList } from 'utils/chart.utils';
 
 const RankingsChart = ({
   chartData,
   colors,
-  dateRange,
   getCategoryNameById,
 }) => {
   let maxRank = 0;
-  const data = generateDateList(moment().subtract(dateRange.value, 'days')).map(x => [x]);
+  const data = [];
   const columns = [{ type: 'datetime', label: 'Date' }];
 
-  chartData.forEach((x) => {
+  chartData.forEach((x, i) => {
     const name = `${x.country} ${capitalize(x.rank_type)} ${getCategoryNameById(x.category)}`;
     columns.push({ type: 'number', label: name });
 
-    const ranksByDate = {};
-    x.ranks.forEach((rank) => {
-      ranksByDate[rank[0]] = rank[1];
+    x.ranks.forEach((rank, idx) => {
+      if (i === 0) {
+        data.push([moment(rank[0]).toDate()]);
+      }
+      data[idx].push(rank[1]);
       if (rank[1]) maxRank = Math.max(maxRank, rank[1]);
-    });
-
-    data.forEach((date) => {
-      const value = date[0].toISOString().slice(0, 10);
-      date.push(ranksByDate[value]);
     });
   });
 
@@ -38,9 +33,8 @@ const RankingsChart = ({
     ticks.push(i * multiplier);
   }
 
-  const maxDate = new Date();
-  const minDate = new Date();
-  minDate.setDate(minDate.getDate() - dateRange.value);
+  const minDate = data[0][0];
+  const maxDate = data[data.length - 1][0];
 
   return (
     <div>
@@ -92,7 +86,6 @@ const RankingsChart = ({
           },
           fontName: 'Open Sans',
           fontSize: 12,
-          // interpolateNulls: true,
         }}
         rows={data}
         width="100%"
@@ -104,10 +97,6 @@ const RankingsChart = ({
 RankingsChart.propTypes = {
   chartData: PropTypes.arrayOf(PropTypes.object).isRequired,
   colors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dateRange: PropTypes.shape({
-    value: PropTypes.number,
-    label: PropTypes.string,
-  }).isRequired,
   getCategoryNameById: PropTypes.func.isRequired,
 };
 

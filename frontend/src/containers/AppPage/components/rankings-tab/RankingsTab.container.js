@@ -4,7 +4,7 @@ import * as rankingsSelectors from 'selectors/rankingsTab.selectors';
 import * as appStoreSelectors from 'selectors/appStore.selectors';
 import * as appStoreActions from 'actions/AppStore.actions';
 import { capitalize, daysAgo } from 'utils/format.utils';
-import { getChartColor, googleChartColors } from 'utils/chart.utils';
+import { getChartColor, googleChartColors, fillRankingsGaps } from 'utils/chart.utils';
 import * as actions from './redux/RankingsTab.actions';
 import RankingsTab from './RankingsTab.component';
 
@@ -21,7 +21,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state, props) => {
   const rankings = props.rankings || [];
-  const chartData = rankingsSelectors.getChartData(state)
+  const chartData = rankingsSelectors.getChartData(state);
+  const selectedDateRange = rankingsSelectors.getSelectedDateRange(state);
   const charts = chartData.map((x, idx) => {
     const rankingsChart = rankings.find(y => y.country === x.country && y.category === x.category && y.ranking_type === x.rank_type) || {};
     const days = daysAgo(x.ranks[x.ranks.length - 1][0]);
@@ -31,7 +32,7 @@ const mapStateToProps = (state, props) => {
 
     return {
       ...x,
-      ranks: x.ranks,
+      ranks: fillRankingsGaps(x.ranks, selectedDateRange.value),
       platform: props.platform,
       weekly_change: rankingsChart.weekly_change,
       monthly_change: rankingsChart.monthly_change,
@@ -82,7 +83,7 @@ const mapStateToProps = (state, props) => {
     selectedCountries: rankingsSelectors.getSelectedCountries(state),
     selectedCategories: rankingsSelectors.getSelectedCategories(state),
     selectedRankingTypes: rankingsSelectors.getSelectedRankingTypes(state),
-    selectedDateRange: rankingsSelectors.getSelectedDateRange(state),
+    selectedDateRange,
   };
 };
 

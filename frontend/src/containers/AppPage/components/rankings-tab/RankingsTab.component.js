@@ -69,7 +69,6 @@ const RankingsTab = ({
         <div>
           <RankingsChart
             chartData={charts}
-            dateRange={selectedDateRange}
             isChartDataLoading={isChartDataLoading}
             {...rest}
           />
