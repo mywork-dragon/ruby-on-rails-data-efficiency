@@ -79,7 +79,7 @@ function AppController (
   app.tabs = [
     { title: 'General Information', index: 0, route: 'app.info' },
     { title: 'Ad Intelligence', index: 1, route: 'app.ad-intelligence' },
-    // { title: 'Rankings', index: 2, route: 'app.rankings' },
+    { title: 'Rankings', index: 2, route: 'app.rankings' },
   ];
   app.userInfo = {};
 
