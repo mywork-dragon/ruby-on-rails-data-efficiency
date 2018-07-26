@@ -150,6 +150,7 @@ const Table = ({
             getTheadThProps={getTheadThProps}
             loading={loading}
             minRows={0}
+            onSortedChange={onSortedChange}
             pageSize={results.length}
             showPaginationBottom={false}
             showPaginationTop={false}

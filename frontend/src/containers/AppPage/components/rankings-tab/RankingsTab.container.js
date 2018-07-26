@@ -17,6 +17,7 @@ const mapDispatchToProps = dispatch => ({
   requestChartData: () => dispatch(actions.rankingsChart.request()),
   requestAppCategories: () => dispatch(appStoreActions.categories.request()),
   requestRankingsCountries: () => dispatch(appStoreActions.rankingsCountries.request()),
+  trackTableSort: (field, order) => dispatch(actions.updateTableSort(field, order)),
 });
 
 const mapStateToProps = (state, props) => {

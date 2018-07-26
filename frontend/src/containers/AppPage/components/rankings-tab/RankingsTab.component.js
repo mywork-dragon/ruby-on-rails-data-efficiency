@@ -27,6 +27,7 @@ const RankingsTab = ({
   selectedCategories,
   selectedDateRange,
   selectedRankingTypes,
+  trackTableSort,
   updateCountriesFilter,
   updateCategoriesFilter,
   updateDateRange,
@@ -75,6 +76,7 @@ const RankingsTab = ({
           <div className="rankings-table-container">
             <Table
               columns={columns}
+              onSortedChange={newSorted => trackTableSort(newSorted[0].id, newSorted[0].desc ? 'desc' : 'asc')}
               pageSize={charts.length}
               platform={platform}
               results={charts}
@@ -178,10 +180,6 @@ RankingsTab.propTypes = {
   requestAppCategories: PropTypes.func.isRequired,
   requestChartData: PropTypes.func.isRequired,
   requestRankingsCountries: PropTypes.func.isRequired,
-  updateCountriesFilter: PropTypes.func.isRequired,
-  updateCategoriesFilter: PropTypes.func.isRequired,
-  updateDateRange: PropTypes.func.isRequired,
-  updateRankingTypesFilter: PropTypes.func.isRequired,
   selectedCountries: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
@@ -192,6 +190,11 @@ RankingsTab.propTypes = {
     label: PropTypes.string,
   }).isRequired,
   selectedRankingTypes: PropTypes.string.isRequired,
+  trackTableSort: PropTypes.func.isRequired,
+  updateCountriesFilter: PropTypes.func.isRequired,
+  updateCategoriesFilter: PropTypes.func.isRequired,
+  updateDateRange: PropTypes.func.isRequired,
+  updateRankingTypesFilter: PropTypes.func.isRequired,
 };
 
 RankingsTab.defaultProps = {

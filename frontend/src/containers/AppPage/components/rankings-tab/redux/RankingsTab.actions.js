@@ -6,6 +6,7 @@ const actionTypes = [
   'UPDATE_CATEGORIES_FILTER',
   'UPDATE_RANKING_TYPES_FILTER',
   'UPDATE_DATE_RANGE',
+  'UPDATE_TABLE_SORT',
 ];
 
 export const RANKINGS_TAB_ACTION_TYPES = namespaceActions('rankingsTab', actionTypes);
@@ -27,3 +28,5 @@ export const updateCategoriesFilter = categories => action(RANKINGS_TAB_ACTION_T
 export const updateRankingTypesFilter = types => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_RANKING_TYPES_FILTER, { types });
 
 export const updateDateRange = value => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_DATE_RANGE, { value });
+
+export const updateTableSort = (field, order) => action(RANKINGS_TAB_ACTION_TYPES.UPDATE_TABLE_SORT, { field, order });

@@ -1,4 +1,5 @@
 import accountSaga from 'sagas/Account.sagas';
+import appRankingsMixpanelSaga from 'containers/AppPage/redux/Mixpanel.sagas';
 import appSaga from 'containers/AppPage/redux/App.sagas';
 import appStoreSaga from 'sagas/AppStore.sagas';
 import bugsnagSaga from 'sagas/Bugsnag.sagas';
@@ -10,6 +11,7 @@ import tableSaga from 'Table/redux/Table.sagas';
 
 const runSagas = (sagaMiddleware) => {
   sagaMiddleware.run(accountSaga);
+  sagaMiddleware.run(appRankingsMixpanelSaga);
   sagaMiddleware.run(appSaga);
   sagaMiddleware.run(appStoreSaga);
   sagaMiddleware.run(bugsnagSaga);
