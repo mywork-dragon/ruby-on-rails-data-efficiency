@@ -17,7 +17,7 @@ const AppService = (client = httpClient) => ({
     })
   ),
   getHistoricalRankings: params => (
-    client.get('/api/get_app_rankings', {
+    client.get('/api/historical_app_rankings/get_app_rankings', {
       params,
     })
   ),

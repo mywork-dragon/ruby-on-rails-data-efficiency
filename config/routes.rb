@@ -48,7 +48,7 @@ Rails.application.routes.draw do
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get '/privacy', to: redirect('/legal/privacy.pdf')
 
-  get 'coding-challenge', to: redirect('https://mightysignal.github.io/coding-challenge-directions/') 
+  get 'coding-challenge', to: redirect('https://mightysignal.github.io/coding-challenge-directions/')
 
   match 'auth/:provider/callback', to: 'salesforce_sessions#create', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
@@ -75,8 +75,6 @@ Rails.application.routes.draw do
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
   get 'api/get_ios_sdk_categories' => 'api#get_ios_sdk_categories'
   get 'api/get_android_sdk_categories' => 'api#get_android_sdk_categories'
-
-  get 'api/get_app_rankings' => 'rankings#get_historical_app_rankings'
 
   get 'api/get_ios_developer' => 'api#get_ios_developer'
   get 'api/get_android_developer' => 'api#get_android_developer'
@@ -210,6 +208,11 @@ Rails.application.routes.draw do
       put 'delete_items' => 'lists#delete_from_list'
       put 'delete' => 'lists#delete_list'
     end
+
+    scope '/historical_app_rankings' do
+      get 'get_app_rankings' => 'historical_app_rankings#get_historical_app_rankings'
+    end
+
   end
 
   # TODO: change from ewok to extension name
