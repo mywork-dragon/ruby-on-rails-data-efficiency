@@ -72,6 +72,8 @@ const mergeProps = (stateProps, dispatchProps) => {
     updatePageNum,
     updateColumns,
     updatePageSize,
+    toggleAll,
+    toggleItem,
     ...rest
   } = dispatchProps;
 
@@ -91,6 +93,8 @@ const mergeProps = (stateProps, dispatchProps) => {
     pageNum,
     resultType,
     resultsCount,
+    toggleAll: resultType === 'app' ? toggleAll : null,
+    toggleItem: resultType === 'app' ? toggleItem : null,
     ...other,
     ...rest,
     onPageChange: page => updatePageNum(queryResultId, page),

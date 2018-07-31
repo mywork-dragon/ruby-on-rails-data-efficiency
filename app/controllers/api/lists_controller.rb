@@ -82,6 +82,7 @@ class Api::ListsController < ApplicationController
     end
 
     apps.each { |app|
+      raise 'Invalid list item type' unless !app['type'].nil? && app['type'].downcase.include?('app')
       if ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: app['type']).nil?
         ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: app['type'])
       end

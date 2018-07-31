@@ -91,7 +91,7 @@ const Table = ({
                 Export to CSV
               </button>
             )}
-            {toggleAll && toggleItem && (
+            {toggleAll && toggleItem && resultType === 'app' && (
               <ListDropdownContainer
                 selectedItems={selectedItems}
               />
