@@ -14,7 +14,7 @@
       </div>
 
       <div id="results-table-wrapper">
-        <table class="table table-bordered table-striped table-responsive" ng-init="row = customSearchCtrl.rowSort">
+        <table class="table table-bordered table-striped table-responsive">
           <thead>
             <tr>
               <th class="selectAllCheckboxHeader">
@@ -24,10 +24,10 @@
                 App Name
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('name', 'asc')"
-                      data-ng-class="{active: row == 'name'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'name'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('name', 'desc')"
-                      data-ng-class="{active: row == '-name'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-name'}"></span>
               </div></th>
               <th><div class="th normal-right-padding appDetailsHeader">
                 App Type
@@ -36,67 +36,67 @@
                 Publisher / Fortune Rank <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Fortune 500 or 1000 companies"></span>
                                 <span class="glyphicon glyphicon-chevron-up"
                                       data-ng-click="customSearchCtrl.sortApps('publisher_name', 'asc') "
-                                      data-ng-class="{active: row == 'publisher_name'}"></span>
+                                      data-ng-class="{active: customSearchCtrl.rowSort == 'publisher_name'}"></span>
                                 <span class="glyphicon glyphicon-chevron-down"
                                       data-ng-click=" customSearchCtrl.sortApps('publisher_name', 'desc') "
-                                      data-ng-class="{active: row == '-publisher_name'}"></span>
+                                      data-ng-class="{active: customSearchCtrl.rowSort == '-publisher_name'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="mobilePriorityExplanation"></span>
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('mobile_priority', 'desc')"
-                      data-ng-class="{active: row == '-mobile_priority'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-mobile_priority'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('mobile_priority', 'asc')"
-                      data-ng-class="{active: row == 'mobile_priority'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'mobile_priority'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Ad Spend <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Based on Facebook ads seen"></span>
                 <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('facebook_ads', 'asc')"
-                      data-ng-class="{active: row == 'facebook_ads'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'facebook_ads'}"></span>
                 <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('facebook_ads', 'desc')"
-                      data-ng-class="{active: row == '-facebook_ads'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-facebook_ads'}"></span>
               </div></th>
               <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
                 User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('user_base_display_score', 'desc')"
-                      data-ng-class="{active: row == '-user_base_display_score'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-user_base_display_score'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('user_base_display_score', 'asc')"
-                      data-ng-class="{active: row == 'user_base_display_score'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'user_base_display_score'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Categories
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('categories', 'asc')"
-                      data-ng-class="{active: row == 'categories'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'categories'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click="customSearchCtrl.sortApps('categories', 'desc')"
-                      data-ng-class="{active: row == '-categories'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-categories'}"></span>
               </div></th>
-              <th ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'"><div class="th normal-right-padding">
+              <th ng-if="canViewSupportDesk"><div class="th normal-right-padding">
                 Support Desk
               </div></th>
-              <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
+              <th><div class="th normal-right-padding">
                 Downloads
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('downloads_max', 'asc')"
-                      data-ng-class="{active: row == 'downloads_max'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'downloads_max'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('downloads_max', 'desc')"
-                      data-ng-class="{active: row == '-downloads_max'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-downloads_max'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Last Updated
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('last_updated', 'desc')"
-                      data-ng-class="{active: row == '-last_updated'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == '-last_updated'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('last_updated', 'asc')"
-                      data-ng-class="{active: row == 'last_updated'}"></span>
+                      data-ng-class="{active: customSearchCtrl.rowSort == 'last_updated'}"></span>
               </div></th>
             </tr>
           </thead>
@@ -120,7 +120,7 @@
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
               <td class="resultsTableAppPublisher">
-              <a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('publisher', app.publisher)">{{app.publisher.name}}</a>
+              <a ng-if="app.publisher.name" href="#/publisher/{{app.platform}}/{{app.publisher.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('publisher', app.publisher)">{{app.publisher.name}}</a>
               <span ng-if="app.fortuneRank" class="fortune-rank">
                  / {{app.fortuneRank}}</span>
               </td>
@@ -133,16 +133,16 @@
                 </span>
               </td>
               <td class="resultsTableAppUserbase">
-                <span ng-if="customSearchCtrl.platform != 'ios'">{{app.userBase | capitalize}}</span>
-                <span ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length == 1">
+                <span ng-if="app.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="app.platform == 'ios' && app.userBases.length == 1">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </span>
-                <a ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                <a ng-if="app.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </a>
-                <script ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                <script ng-if="app.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
                   <ul class="international-data">
                     <li ng-repeat="row in app.userBases">
                       <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
@@ -153,8 +153,9 @@
                 </script>
               </td>
               <td>{{app.categories.join(', ')}}</td>
-              <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.supportDesk | supportDeskName}}</td>
-              <td ng-if="customSearchCtrl.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>
+              <td ng-if="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
+              <td ng-if="app.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>
+              <td ng-if="app.platform == 'ios'">N/A</td>
               <td>
                   <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
                     <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.lastUpdatedDays)">

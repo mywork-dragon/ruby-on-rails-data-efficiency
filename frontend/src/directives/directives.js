@@ -618,17 +618,15 @@ angular.module('app.directives', []).directive('imgHolder', [
       controllerAs: 'appPlatformCtrl',
     };
   }])
-  .directive('customPlatformSelect', ['apiService', 'authToken', '$rootScope', 'AppPlatform', 'authService', function (apiService, authToken, $rootScope, AppPlatform, authService) {
+  .directive('customItemSelect', ['apiService', 'authToken', '$rootScope', 'AppPlatform', 'authService', function (apiService, authToken, $rootScope, AppPlatform, authService) {
     return {
       replace: true,
       restrict: 'E',
       scope: {
-        customSearchPlatform: '=customSearchPlatform',
+        customSearchItem: '=customSearchItem',
       },
-      template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'ios\'" ng-change="changeAppPlatform(searchPlatform)"><option value="ios">iOS Apps</option><option value="android" selected="selected">Android Apps</option><option ng-if="canViewStorewideSdks" value="iosSdks">iOS SDKs</option><option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option></select></span>',
+      template: '<span class="ui-select"> <select ng-model="searchItem" ng-init="searchItem = \'app\'" ng-change="changeSearchItem(searchItem)"><option value="app">Apps</option><option ng-if="canViewStorewideSdks" value="sdk">SDKs</option></select></span>',
       controller: ['$scope', function ($scope) {
-        $scope.appPlatform = AppPlatform;
-
         if (authToken.isAuthenticated()) {
           authService.permissions()
             .success((data) => {
@@ -636,8 +634,8 @@ angular.module('app.directives', []).directive('imgHolder', [
             });
         }
 
-        $scope.changeAppPlatform = function (platform) {
-          $scope.customSearchPlatform = platform;
+        $scope.changeSearchItem = function (item) {
+          $scope.customSearchItem = item;
         };
       }],
       controllerAs: 'appPlatformCtrl',

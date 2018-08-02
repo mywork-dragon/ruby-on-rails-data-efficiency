@@ -58,10 +58,8 @@ Rails.application.routes.draw do
   get 'api/app_status' => 'api#check_app_status'
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
-  post 'api/search/ios' => 'api#search_ios_apps'
-  post 'api/search/android' => 'api#search_android_apps'
-  post 'api/search/iosSdks' => 'api#search_ios_sdk'
-  post 'api/search/androidSdks' => 'api#search_android_sdk'
+  post 'api/search/apps' => 'api#search_apps'
+  post 'api/search/sdks' => 'api#search_sdks'
   get 'api/search/export_to_csv' => 'api#export_results_to_csv'
 
   get 'api/get_ios_app' => 'api#get_ios_app'

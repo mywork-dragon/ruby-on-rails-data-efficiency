@@ -11,13 +11,12 @@ angular.module('appApp')
 
         const routeParams = $location.search();
 
-        sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.platform)
+        sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage)
           .success((data) => {
             sdkSearchCtrl.sdks = data.sdkData;
             sdkSearchCtrl.sdkNum = data.sdkData.length;
             sdkSearchCtrl.numSdks = data.totalSdksCount;
             sdkSearchCtrl.numPerPage = data.numPerPage;
-            sdkSearchCtrl.changeAppPlatform(routeParams.platform);
             sdkSearchCtrl.searchInput = routeParams.query;
             sdkSearchCtrl.currentPage = data.page;
             sdkSearchCtrl.queryInProgress = false;
@@ -30,10 +29,6 @@ angular.module('appApp')
       };
 
       sdkSearchCtrl.loadTableData();
-
-      sdkSearchCtrl.changeAppPlatform = function(platform) {
-        sdkSearchCtrl.platform = platform;
-      };
 
       sdkSearchCtrl.sdksDisplayedCount = function() {
         const lastPageMaxApps = sdkSearchCtrl.numPerPage * sdkSearchCtrl.currentPage;

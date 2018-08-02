@@ -24,7 +24,7 @@
             <th><div class="th normal-right-padding appDetailsHeader">
               Website
             </div></th>
-            <th ng-if="sdkSearchCtrl.platform == 'iosSdks'"><div class="th normal-right-padding">
+            <th><div class="th normal-right-padding">
               Description
             </div></th>
           </tr>
@@ -46,7 +46,8 @@
             <td>
               <a ng-if="sdk.website" href="{{sdk.website}}" target="_blank">{{sdk.website}}</a>
             </td>
-            <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.summary}}</td>
+            <td ng-if="sdk.platform == 'ios'">{{sdk.summary}}</td>
+            <td ng-if="sdk.platform == 'android'"></td>
           </tr>
           </tbody>
         </table>

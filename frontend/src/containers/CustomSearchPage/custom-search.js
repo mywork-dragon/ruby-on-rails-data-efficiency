@@ -7,7 +7,7 @@ angular.module('appApp')
   .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', 'slacktivity', 'searchService', '$window', 'pageTitleService', 'bugsnagHelper',
     function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService, bugsnagHelper) {
       const customSearchCtrl = this;
-      customSearchCtrl.platform = window.APP_PLATFORM; // default
+      customSearchCtrl.searchItem = 'app'; // default
       customSearchCtrl.newSearch = false;
 
       /* For query load when /search/:query path hit */
@@ -16,13 +16,12 @@ angular.module('appApp')
         customSearchCtrl.queryInProgress = true;
 
         const routeParams = $location.search();
-        customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.sortBy, routeParams.orderBy)
+        customSearchService.customSearch(routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.sortBy, routeParams.orderBy)
           .success((data) => {
-            customSearchCtrl.apps = data.appData;
+            customSearchCtrl.apps = data.appData.map(x => ({ ...x, publisher: { ...x.publisher, platform: x.platform } }));
             customSearchCtrl.appNum = data.appData.length;
             customSearchCtrl.numApps = data.totalAppsCount;
             customSearchCtrl.numPerPage = data.numPerPage;
-            customSearchCtrl.changeAppPlatform(routeParams.platform);
             customSearchCtrl.searchInput = routeParams.query;
             customSearchCtrl.currentPage = data.page;
             $rootScope.apps = customSearchCtrl.apps;
@@ -32,7 +31,6 @@ angular.module('appApp')
             if (customSearchCtrl.newSearch) {
               mixpanel.track('Custom Search Loaded', {
                 Query: customSearchCtrl.searchInput,
-                Platform: customSearchCtrl.platform,
                 'Results Count': customSearchCtrl.numApps,
               });
             }
@@ -45,10 +43,9 @@ angular.module('appApp')
           });
       };
 
-      if ($location.search().platform) {
+      if ($location.search().item) {
         customSearchCtrl.loadTableData();
       }
-
 
       // When orderby/sort arrows on dashboard table are clicked
       customSearchCtrl.sortApps = function(category, order) {
@@ -59,20 +56,15 @@ angular.module('appApp')
         mixpanel.track('Custom Search Table Sorting Changed', {
           category,
           order,
-          appPlatform: window.APP_PLATFORM,
           Query: customSearchCtrl.searchInput,
         });
         /* -------- Mixpanel Analytics End -------- */
         const routeParams = $location.search();
         routeParams.orderBy = order;
         routeParams.sortBy = category;
-        const targetUrl = (customSearchCtrl.platform === 'iosSdks' || customSearchCtrl.platform === 'androidSdks') ? `/search/sdk/${customSearchCtrl.platform}?` : '/search/custom?';
+        const targetUrl = customSearchCtrl.searchItem === 'sdk' ? '/search/sdks?' : '/search/custom?';
         $location.url(targetUrl + $httpParamSerializer(routeParams));
         customSearchCtrl.loadTableData();
-      };
-
-      customSearchCtrl.changeAppPlatform = function(platform) {
-        customSearchCtrl.platform = platform;
       };
 
       customSearchCtrl.onPageChange = function(nextPage) {
@@ -91,7 +83,7 @@ angular.module('appApp')
         const routeParams = $location.search();
         const payload = {
           query: customSearchCtrl.searchInput,
-          platform: customSearchCtrl.platform,
+          item: customSearchCtrl.searchItem,
           page: newPageNum || 1,
           numPerPage: 30,
         };
@@ -99,15 +91,15 @@ angular.module('appApp')
           payload.sortBy = routeParams.sortBy;
           payload.orderBy = routeParams.orderBy;
         }
-        const targetUrl = (customSearchCtrl.platform === 'iosSdks' || customSearchCtrl.platform === 'androidSdks') ? `/search/sdk/${customSearchCtrl.platform}?` : '/search/custom?';
 
-        if (customSearchCtrl.platform === 'androidSdks' || customSearchCtrl.platform === 'iosSdks') {
+        const targetUrl = (customSearchCtrl.searchItem === 'sdk') ? '/search/sdks?' : '/search/custom?';
+
+        if (customSearchCtrl.searchItem === 'sdk') {
           // Set URL & process/redirect to SDK Search Ctrl
           $window.location.href = `#${targetUrl}${$httpParamSerializer(payload)}`;
 
           mixpanel.track('SDK Custom Search', {
             query: customSearchCtrl.searchInput,
-            platform: customSearchCtrl.platform.split('Sdks')[0], // grabs 'android' or 'ios'
           });
         } else {
           // Set URL & process request using Custom Search Ctrl
@@ -117,18 +109,14 @@ angular.module('appApp')
       };
 
       customSearchCtrl.searchPlaceholderText = function() {
-        if (customSearchCtrl.platform === 'ios') {
-          return 'Search for iOS app or company';
-        } else if (customSearchCtrl.platform === 'android') {
-          return 'Search for Android app or company';
-        } else if (customSearchCtrl.platform === 'androidSdks') {
-          return 'Search for Android SDKs';
-        } else if (customSearchCtrl.platform === 'iosSdks') {
-          return 'Search for iOS SDKs';
+        if (customSearchCtrl.searchItem === 'app') {
+          return 'Search for app or company';
+        } else if (customSearchCtrl.searchItem === 'sdk') {
+          return 'Search for SDKs';
         }
       };
 
-      $scope.$watch('customSearchCtrl.platform', () => {
+      $scope.$watch('customSearchCtrl.searchItem', () => {
         customSearchCtrl.apps = [];
         customSearchCtrl.appNum = 0;
         customSearchCtrl.numApps = 0;
@@ -169,7 +157,7 @@ angular.module('appApp')
           type,
           id: item.id,
           name: item.name,
-          platform: customSearchCtrl.platform,
+          platform: item.platform,
           query: customSearchCtrl.searchInput,
         });
       };
