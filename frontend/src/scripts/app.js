@@ -152,7 +152,7 @@ angular
 
     const sdkSearchState = {
       name: 'sdk-search',
-      url: '/search/sdks?query',
+      url: '/search/sdks?item&numPerPage&page&query',
       template: require('containers/CustomSearchPage/views/sdk-search.html'),
     };
 

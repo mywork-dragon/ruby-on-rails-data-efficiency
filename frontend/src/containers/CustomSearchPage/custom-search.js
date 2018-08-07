@@ -23,6 +23,7 @@ angular.module('appApp')
             customSearchCtrl.numApps = data.totalAppsCount;
             customSearchCtrl.numPerPage = data.numPerPage;
             customSearchCtrl.searchInput = routeParams.query;
+            customSearchCtrl.searchItem = routeParams.item;
             customSearchCtrl.currentPage = data.page;
             $rootScope.apps = customSearchCtrl.apps;
             $rootScope.numApps = customSearchCtrl.numApps;
