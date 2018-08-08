@@ -43,4 +43,15 @@ class IosDownloadController < ApplicationController
 
     render json: {'status' => 'ok'}
   end
+
+  def set_ipa_snapshot_status
+    ipa_snapshot_id = ClassDump.find(params.fetch(:varys_cd_id)).ipa_snapshot_id
+    ipa_snapshot = IpaSnapshot.find(ipa_snapshot_id)
+    body = JSON.parse(request.body.read)
+    
+    ipa_snapshot.update(:download_status => body["download_status"]) unless body["download_status"].nil?
+    ipa_snapshot.update(:scan_status => body["scan_status"]) unless body["scan_status"].nil?
+
+    render json: {'status' => 'ok'}
+  end
 end

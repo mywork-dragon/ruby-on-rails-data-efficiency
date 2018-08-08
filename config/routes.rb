@@ -254,6 +254,7 @@ Rails.application.routes.draw do
 
   # internal api for v2 of ios download system
   put '/ios_download/download/:varys_cd_id' => 'ios_download#update'
+  put '/ios_download/set_ipa_snapshot_status/:varys_cd_id' => 'ios_download#set_ipa_snapshot_status'
 
   # DEPRECATED
   # post 'ios_sdk/new' => 'ios_sdk#create'
