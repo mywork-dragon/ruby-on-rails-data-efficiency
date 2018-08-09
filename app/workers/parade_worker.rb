@@ -28,6 +28,7 @@ class ParadeWorker
   end
 
   def log_advertiser(dev, title)
+    contact_service = ContactDiscoveryService.new
     contacts = contact_service.get_contacts_for_developer(dev, title)
 
     contacts.each do |contact|
