@@ -17,9 +17,17 @@ class ParadeWorker
     end
   end
 
+  def log_android_advertiser(dev_id, title)
+    dev = AndroidDeveloper.find(dev_id)
+    log_advertiser(dev, title)
+  end
+
   def log_ios_advertiser(dev_id, title)
-    contact_service = ContactDiscoveryService.new
     dev = IosDeveloper.find(dev_id)
+    log_advertiser(dev, title)
+  end
+
+  def log_advertiser(dev, title)
     contacts = contact_service.get_contacts_for_developer(dev, title)
 
     contacts.each do |contact|
