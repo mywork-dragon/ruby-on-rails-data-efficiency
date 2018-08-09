@@ -38,6 +38,44 @@ class WelcomeController < ApplicationController
     @abm_blog_icon = graphics_folder + 'mightysignal_plus_salesforce_equals.png'
   end
 
+  def search_apps
+    query = params['query']
+
+    result_ids = AppsIndex.query(
+      multi_match: {
+        query: query,
+        fields: ['name.title^2', 'seller_url', 'seller'],
+        type: 'phrase_prefix',
+        max_expansions: 50,
+      }
+    ).boost_factor(
+      3,
+      filter: { term: { user_base: 'elite' } }
+    ).boost_factor(
+      2,
+      filter: { term: { user_base: 'strong' } }
+    ).boost_factor(
+      1,
+      filter: { term: { user_base: 'moderate' } }
+    )
+    result_ids = result_ids.limit(10)
+
+    apps = result_ids.map do |result|
+      id = result.attributes["id"]
+      type = result._data["_type"]
+      app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+      {
+        name: app.name,
+        icon: app.icon_url,
+        platform: app.platform,
+        app_identifier: app.app_identifier,
+        publisher: app.publisher.try(:name),
+      }
+    end
+
+    render json: apps
+  end
+
   def ios_app_sdks
     newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)

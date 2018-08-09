@@ -81,6 +81,81 @@ h1, h2, h3, h4, h5, h6, body {
     font-weight: 100;
 }
 
+.nav-bar-container {
+  width: 1200px;
+}
+
+.app-search-container {
+  display: inline-block;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.easy-autocomplete {
+  font-family: inherit !important;
+  width: 100% !important;
+}
+
+#app-search {
+  background-image: url("images/icons/icon_search.png");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding: .5em 1em;
+  border-radius: 6px;
+  border: 1px solid #888;
+}
+
+.easy-autocomplete-container {
+  margin-left: auto;
+  margin-right: auto;
+  right: 0;
+}
+
+.easy-autocomplete-container ul {
+  margin-left: 0;
+  color: black;
+  top: 0 !important;
+}
+
+.easy-autocomplete-container ul li div {
+  word-break: break-word !important;
+}
+
+div.eac-item {
+  display: flex !important;
+}
+
+.app-result-img-container {
+  display: flex !important;
+  align-items: center;
+}
+
+.app-result-platform {
+  color: #8f8b8b;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+.app-result-icon {
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+}
+
+.app-result-name-container {
+  width: 75%;
+}
+
+.app-result-name {
+  text-align: left;
+}
+
+.app-result-publisher {
+  color: #8f8b8b;
+  font-size: 12px;
+  text-align: left;
+}
+
 form .form-group {
     margin-bottom: 10px;
 }
@@ -110,6 +185,18 @@ form .form-group {
     display: none;
 }
 
+.login-button {
+  background-color: #2db6d8;
+  width: 100px;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 5px;
+}
+
+.login-button > a {
+  padding: 0 !important;
+}
 /* Social Icons */
 
 .icons a {
