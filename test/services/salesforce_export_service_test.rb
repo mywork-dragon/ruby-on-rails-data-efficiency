@@ -139,7 +139,6 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
 
   def test_that_domain_mapping_updates_salesforce
     DomainLinker.any_instance.stub(:domain_to_publisher) { [@ios_developer, @android_developer] }
-    SalesforceLogger.stubs(:new).returns(mock)
     
     mock = Minitest::Mock.new
     mock.expect(:Id, '12345')

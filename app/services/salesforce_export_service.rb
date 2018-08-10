@@ -785,7 +785,7 @@ class SalesforceExportService
         
         if (!record.MightySignal_iOS_Publisher_ID__c || update_mappings) && ios_publisher
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
-          SalesforceLogger.new('Domain Mapping', @account, ios_publisher, @model_name, false).send!
+          SalesforceLogger.new('Domain Mapping', @account, ios_publisher, @model_name, false).send! if Rails.env.production?
           imports << {publisher_id: ios_publisher.id, platform: 'ios', export_id: record_id}
 
           SalesforceWorker.set(queue: queue).perform_async(:export_ios_publisher, ios_publisher.id, record_id, @user.id, @model_name) if date
@@ -793,7 +793,7 @@ class SalesforceExportService
 
         if (!record.MightySignal_Android_Publisher_ID__c || update_mappings) && android_publisher
           new_record[:MightySignal_Android_Publisher_ID__c] = android_publisher.id
-          SalesforceLogger.new('Domain Mapping', @account, android_publisher, @model_name, false).send!
+          SalesforceLogger.new('Domain Mapping', @account, android_publisher, @model_name, false).send! if Rails.env.production?
           imports << {publisher_id: android_publisher.id, platform: 'android', export_id: record_id}
 
           SalesforceWorker.set(queue: queue).perform_async(:export_android_publisher, android_publisher.id, record_id, @user.id, @model_name) if date
