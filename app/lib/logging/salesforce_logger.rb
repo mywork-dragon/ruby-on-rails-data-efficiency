@@ -1,8 +1,9 @@
 class SalesforceLogger
   attr_reader :event
 
-  def initialize(account, publisher, model_name, new_record)
+  def initialize(event_name, account, publisher, model_name, new_record)
     @account = account # mightsignal account of export
+    @event_name = event_name 
     @publisher = publisher # ios or android publisher getting exported
     @model_name = model_name # exporting into lead or account?
     @new_record = new_record # enriching existing salesforce object or creating new salesforce record?
@@ -16,6 +17,7 @@ class SalesforceLogger
 
   def build_event
     set_info(:timestamp, DateTime.now.utc.iso8601)
+    set_info(:event_name, @event_name)
     set_info(:account_id, @account.id)
     set_info(:account_name, @account.name)
     set_info(:export_model, @model_name)
