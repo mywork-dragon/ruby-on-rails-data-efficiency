@@ -8,7 +8,6 @@ $(document).ready(function() {
     },
     getValue: "name",
     theme: 'round',
-    width: '100%',
     template: {
       type: 'custom',
       method: function (value, item) {
@@ -27,7 +26,7 @@ $(document).ready(function() {
     list: {
       onChooseEvent: function () {
         const item = $("#app-search").getSelectedItemData();
-        const url = `/a/${item.platform === 'ios' ? 'ios' : 'google-play'}/${item.app_identifier}`;
+        const url = `/a/${item.platform === 'ios' ? 'ios' : 'google-play'}/${item.app_identifier}?utm_source=search_box`;
         document.location.href = url;
       }
     }
