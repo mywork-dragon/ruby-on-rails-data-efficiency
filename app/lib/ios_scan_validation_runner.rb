@@ -41,8 +41,24 @@ class IosScanValidationRunner
     if @options[:enable_recent_queue_check] and recently_queued?
       return handle_recently_queued
     end
-    start_job unless @options[:disable_job_start]
-    start_job_v2 if @options[:v2_download] && !@options[:disable_job_start]
+
+    if @options[:disable_job_start]
+      return
+    end
+
+    # For mass scan, distribute the tasks between the scanning systems.
+    # For live scan, queue on both.
+    if @options[:classification_priority] == :high
+      start_job
+      start_job_v2 if @options[:v2_download]
+    else
+      if rand * 100 <= 50 and @options[:v2_download]
+        start_job_v2
+      else
+        start_job
+      end
+    end
+    
   rescue
     update_job(status: :failed) if @options[:update_job_status]
     raise
