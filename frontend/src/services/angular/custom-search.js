@@ -5,7 +5,7 @@ const API_URI_BASE = window.API_URI_BASE;
 angular.module('appApp')
   .service('customSearchService', ['$http', function ($http) {
     return {
-      customSearch(query, page, numPerPage, category, order) {
+      customSearch(resultType, query, page, numPerPage, category, order) {
         const params = {
           query,
           numPerPage,
@@ -17,7 +17,7 @@ angular.module('appApp')
         }
         return $http({
           method: 'POST',
-          url: `${API_URI_BASE}api/search/apps`,
+          url: `${API_URI_BASE}api/search/${resultType}s`,
           data: params,
         });
       },

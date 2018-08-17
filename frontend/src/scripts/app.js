@@ -76,7 +76,7 @@ angular
 
     const customSearchState = {
       name: 'custom-search',
-      url: '/search/custom',
+      url: '/search/custom?item&numPerPage&page&query',
       template: require('containers/CustomSearchPage/views/custom-search-results.html'),
     };
 

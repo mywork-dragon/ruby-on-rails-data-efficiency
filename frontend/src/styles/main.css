@@ -8076,7 +8076,7 @@ pre {
 }
 
 #followMoreModal #mainSearchBox .input-group {
-  width: 422px;
+  width: 432px;
 }
 
 #mainSearchBox .input-group {
@@ -8085,6 +8085,11 @@ pre {
 
 #mainSearchBox {
   padding-left: 0;
+}
+
+.more-results-btn-ctnr {
+  display: flex;
+  justify-content: center;
 }
 
 .sdkOpenSourceSection .fa-github {
@@ -8583,10 +8588,6 @@ ul.majorAppsList {
 
 ul.following {
   padding-left: 0;
-}
-
-#followMoreModal ul.following {
-  margin-top: 60px;
 }
 
 .newsfeedPageRow .empty-message {

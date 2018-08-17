@@ -4,8 +4,8 @@ import mixpanel from 'mixpanel-browser';
 import 'components/top-header/top-header.directive.js';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', 'slacktivity', 'searchService', '$window', 'pageTitleService', 'bugsnagHelper',
-    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService, bugsnagHelper) {
+  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', 'slacktivity', 'searchService', '$window', 'pageTitleService', 'bugsnagHelper', '$state',
+    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService, bugsnagHelper, $state) {
       const customSearchCtrl = this;
       customSearchCtrl.searchItem = 'app'; // default
       customSearchCtrl.newSearch = false;
@@ -16,7 +16,7 @@ angular.module('appApp')
         customSearchCtrl.queryInProgress = true;
 
         const routeParams = $location.search();
-        customSearchService.customSearch(routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.sortBy, routeParams.orderBy)
+        customSearchService.customSearch(customSearchCtrl.searchItem, routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.sortBy, routeParams.orderBy)
           .success((data) => {
             customSearchCtrl.apps = data.appData.map(x => ({ ...x, publisher: { ...x.publisher, platform: x.platform } }));
             customSearchCtrl.appNum = data.appData.length;
@@ -44,7 +44,7 @@ angular.module('appApp')
           });
       };
 
-      if ($location.search().item) {
+      if ($location.search().item === 'app') {
         customSearchCtrl.loadTableData();
       }
 
@@ -123,6 +123,17 @@ angular.module('appApp')
         customSearchCtrl.numApps = 0;
         customSearchCtrl.queryInProgress = false;
         if (customSearchCtrl.searchInput && customSearchCtrl.searchInput !== '') customSearchCtrl.submitSearch();
+      });
+
+      $scope.$on('$locationChangeSuccess', function () {
+        if ($state.current.name === 'custom-search') {
+          customSearchCtrl.searchItem = $location.search().item;
+          const query = $location.search().query;
+          if (query !== customSearchCtrl.searchInput) {
+            customSearchCtrl.searchInput = $location.search().query;
+            customSearchCtrl.loadTableData();
+          }
+        }
       });
 
       customSearchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {

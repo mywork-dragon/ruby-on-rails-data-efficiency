@@ -634,6 +634,10 @@ angular.module('app.directives', []).directive('imgHolder', [
             });
         }
 
+        $scope.$watch('customSearchItem', (newVal) => {
+          $scope.searchItem = newVal;
+        });
+
         $scope.changeSearchItem = function (item) {
           $scope.customSearchItem = item;
         };

@@ -297,13 +297,11 @@
           <h3 class="modal-title" id="myModalLabel">Follow new Apps & SDKs</h3>
         </div>
         <div class="modal-body">
+          <custom-item-select custom-search-item="modalSearchCtrl.searchItem"></custom-item-select>
           <div id="mainSearchBox" class="pull-right">
             <div class="input-group">
               <input type="text" class="form-control" ng-model="modalSearchCtrl.searchInput" ng-change="modalSearchCtrl.changeSearchInput()" placeholder="{{modalSearchCtrl.searchPlaceholderText()}}" autofocus>
             </div>
-          </div>
-          <div class="pull-left">
-            <custom-platform-select custom-search-platform="modalSearchCtrl.platform"></custom-platform-select>
           </div>
           <div data-ng-show="modalSearchCtrl.queryInProgress" id="wrap_spinner">
             <div class="loading outer">
@@ -312,11 +310,13 @@
           </div>
           <ul class="following" ng-hide="modalSearchCtrl.queryInProgress">
             <li data-ng-repeat="result in modalSearchCtrl.results">
-              <a ng-if="isSdk(result.type)" href="#/sdk/{{result.type == 'IosSdk' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+              <a ng-if="isSdk(result.type)" href="#/sdk/{{result.platform}}/{{result.id}}" target="_blank">
+                <i class="fa fa-{{result.platform == 'ios' ? 'apple' : 'android'}}"></i>
                 <img ng-src="{{result.icon}}" ng-show="result.icon">
                 {{result.name}}
               </a>
-              <a ng-if="isApp(result.type)" href="#/app/{{result.type == 'IosApp' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+              <a ng-if="isApp(result.type)" href="#/app/{{result.platform}}/{{result.id}}" target="_blank">
+                <i class="fa fa-{{result.platform == 'ios' ? 'apple' : 'android'}}"></i>
                 <img ng-src="{{result.icon}}" ng-show="result.icon">
                 {{result.name}}
               </a>
@@ -327,6 +327,9 @@
             </li>
             <li ng-show="modalSearchCtrl.results && !modalSearchCtrl.results.length">Oh no. There were no results.</li>
           </ul>
+          <div class="more-results-btn-ctnr">
+            <button class="btn btn-primary" ng-if="modalSearchCtrl.resultsCount > 10" data-dismiss="modal" ng-click="modalSearchCtrl.seeMoreResults()">See more results</button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import angular from 'angular';
 
 angular.module('appApp')
-  .controller('SdkSearchCtrl', ['$rootScope', 'sdkSearchService', '$httpParamSerializer', '$location',
-    function($rootScope, sdkSearchService, $httpParamSerializer, $location) {
+  .controller('SdkSearchCtrl', ['$rootScope', 'sdkSearchService', '$httpParamSerializer', '$location', '$state', '$scope',
+    function($rootScope, sdkSearchService, $httpParamSerializer, $location, $state, $scope) {
       const sdkSearchCtrl = this;
 
       /* For query load when /search/:query path hit */

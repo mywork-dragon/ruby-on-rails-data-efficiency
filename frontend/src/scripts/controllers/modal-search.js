@@ -1,18 +1,19 @@
 import angular from 'angular';
 
 angular.module('appApp')
-  .controller('ModalSearchCtrl', ['$scope', 'customSearchService',
-    function ($scope, customSearchService) {
+  .controller('ModalSearchCtrl', ['$scope', 'customSearchService', '$state',
+    function ($scope, customSearchService, $state) {
       const modalSearchCtrl = this;
-      modalSearchCtrl.platform = window.APP_PLATFORM; // default
+      modalSearchCtrl.searchItem = 'app';
       modalSearchCtrl.results = null;
 
       /* For query load when /search/:query path hit */
       modalSearchCtrl.loadData = function () {
         modalSearchCtrl.queryInProgress = true;
-        customSearchService.customSearch(modalSearchCtrl.platform, modalSearchCtrl.searchInput, 1, 10)
+        customSearchService.customSearch(modalSearchCtrl.searchItem, modalSearchCtrl.searchInput, 1, 10)
           .success((data) => {
             modalSearchCtrl.results = data[modalSearchCtrl.appsKey()];
+            modalSearchCtrl.resultsCount = data[modalSearchCtrl.countKey()];
             modalSearchCtrl.numPerPage = data.numPerPage;
             modalSearchCtrl.currentPage = data.page;
             modalSearchCtrl.queryInProgress = false;
@@ -39,32 +40,33 @@ angular.module('appApp')
       };
 
       modalSearchCtrl.searchPlaceholderText = function () {
-        if (modalSearchCtrl.platform === 'ios') {
-          return 'Search for iOS app or company';
-        } else if (modalSearchCtrl.platform === 'android') {
-          return 'Search for Android app or company';
-        } else if (modalSearchCtrl.platform === 'androidSdks') {
-          return 'Search for Android SDKs';
-        } else if (modalSearchCtrl.platform === 'iosSdks') {
-          return 'Search for iOS SDKs';
-        }
+        return modalSearchCtrl.searchItem === 'app' ? 'Search for app or company' : 'Search for SDKs';
       };
 
       modalSearchCtrl.appsKey = function () {
-        if (modalSearchCtrl.platform === 'ios') {
-          return 'appData';
-        } else if (modalSearchCtrl.platform === 'android') {
-          return 'appData';
-        } else if (modalSearchCtrl.platform === 'androidSdks') {
-          return 'sdkData';
-        } else if (modalSearchCtrl.platform === 'iosSdks') {
-          return 'sdkData';
-        }
+        return modalSearchCtrl.searchItem === 'app' ? 'appData' : 'sdkData';
       };
 
-      $scope.$watch('modalSearchCtrl.platform', () => {
+      modalSearchCtrl.countKey = function () {
+        return modalSearchCtrl.searchItem === 'app' ? 'totalAppsCount' : 'totalSdksCount';
+      };
+
+      modalSearchCtrl.seeMoreResults = function () {
+        const state = modalSearchCtrl.searchItem === 'app' ? 'custom-search' : 'sdk-search';
+        setTimeout(function () {
+          $state.go(state, {
+            item: modalSearchCtrl.searchItem,
+            numPerPage: 30,
+            page: 1,
+            query: modalSearchCtrl.searchInput,
+          }, { reload: state });
+        }, 1000);
+      };
+
+      $scope.$watch('modalSearchCtrl.searchItem', () => {
         modalSearchCtrl.searchInput = '';
         modalSearchCtrl.results = null;
+        modalSearchCtrl.resultsCount = null;
         modalSearchCtrl.queryInProgress = false;
       });
     },
