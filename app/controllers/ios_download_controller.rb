@@ -51,6 +51,7 @@ class IosDownloadController < ApplicationController
     
     ipa_snapshot.update(:download_status => body["download_status"]) unless body["download_status"].nil?
     ipa_snapshot.update(:scan_status => body["scan_status"]) unless body["scan_status"].nil?
+    ipa_snapshot.update(:success => body["success"]) unless body["success"].nil?
 
     render json: {'status' => 'ok'}
   end
