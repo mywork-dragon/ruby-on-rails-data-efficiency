@@ -126,7 +126,7 @@ angular.module('appApp')
       });
 
       $scope.$on('$locationChangeSuccess', function () {
-        if ($state.current.name === 'custom-search') {
+        if ($location.path().includes('/search/custom')) {
           customSearchCtrl.searchItem = $location.search().item;
           const query = $location.search().query;
           if (query !== customSearchCtrl.searchInput) {
