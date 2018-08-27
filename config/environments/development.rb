@@ -64,6 +64,8 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000}
 
+  config.action_dispatch.tld_length = 0
+
   config.env = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'env.yml'))).result)
 
   # The bucket to store apk pkg summary files.
