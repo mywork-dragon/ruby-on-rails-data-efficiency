@@ -272,7 +272,7 @@ Rails.application.routes.draw do
   # Client-facing API
   constraints subdomain: ['api', 'staging.api'] do
     scope module: 'client_api' do
-      get '/', to: redirect('/docs')
+      get '/', to: redirect('https://mightysignal.com', status: 302)
 
       # app
       get 'ios/app' => 'ios_app#filter'
