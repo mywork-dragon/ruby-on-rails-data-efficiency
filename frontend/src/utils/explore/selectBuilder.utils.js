@@ -171,12 +171,11 @@ export const csvSelect = (facebookOnly, resultType, form) => {
       total_ratings: true,
       last_app_update_date: true,
       mightysignal_publisher_page: true,
-      state: true,
       state_code: true,
       city: true,
       country: true,
-      country_code: true,
       postal_code: true,
+      domains: true,
     };
 
     if (!facebookOnly) {
