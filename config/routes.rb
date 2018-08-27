@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-    
+
   get 'ping' => 'application#ping'
   
   constraints lambda { |req| req.subdomain != 'api' }  do
@@ -272,6 +272,8 @@ Rails.application.routes.draw do
   # Client-facing API
   constraints subdomain: ['api', 'staging.api'] do
     scope module: 'client_api' do
+      get '/', to: redirect('/docs')
+
       # app
       get 'ios/app' => 'ios_app#filter'
       get 'android/app' => 'android_app#filter'
