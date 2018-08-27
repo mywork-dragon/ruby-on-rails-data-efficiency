@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-
+    
+  get 'ping' => 'application#ping'
+  
   constraints lambda { |req| req.subdomain != 'api' }  do
 
     require 'sidekiq/web'
@@ -227,7 +229,6 @@ Rails.application.routes.draw do
     get 'auth/account/info' => 'auth#account_info'
     post 'auth/:provider', to: 'auth#authenticate_provider'
 
-    get 'ping' => 'application#ping'
     get 'fb-recruiting-privacy-policy' => 'privacy_policy#fb_recruiting'
 
     # internal api for FB account reservations
