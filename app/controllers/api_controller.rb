@@ -834,10 +834,10 @@ class ApiController < ApplicationController
     apps = result_ids.map do |result|
       id = result.attributes["id"]
       type = result._data["_type"]
-      type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+      type == "ios_app" ? IosApp.find_by(id: id) : AndroidApp.find_by(id: id)
     end
 
-    render json: {appData: apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+    render json: {appData: apps.compact.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
   def search_sdks
@@ -861,10 +861,10 @@ class ApiController < ApplicationController
     sdks = result_ids.map do |result|
       id = result.attributes["id"]
       type = result._data["_type"]
-      type == 'ios_sdk' ? IosSdk.find(id) : AndroidSdk.find(id)
+      type == 'ios_sdk' ? IosSdk.find_by(id: id) : AndroidSdk.find_by(id: id)
     end
 
-    render json: {sdkData: sdks.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+    render json: {sdkData: sdks.compact.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
   def get_android_sdk
