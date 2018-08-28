@@ -72,12 +72,18 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     SalesforceExportService.stubs(:new).with(user: @user).returns(@sf)
     SalesforceExportService.stubs(:new).with(user: @user2).returns(@sf2)
     SalesforceExportService.stubs(:new).with(user: @user3).returns(@sf3)
-    
-    @sf.expects(:sync_all_objects)
-    @sf3.expects(:sync_all_objects)
-    @sf2.expects(:sync_all_objects).never
+
+    SalesforceWorker.expects(:perform_async).with(:sync_account, @user.account.id)
+    SalesforceWorker.expects(:perform_async).with(:sync_account, @user2.account.id).never
+    SalesforceWorker.expects(:perform_async).with(:sync_account, @user3.account.id)
 
     SalesforceWorker.new.perform(:sync_all_accounts)
+  end
+
+  def test_that_sync_account_runs_sync
+    SalesforceExportService.stubs(:new).with(user: @user).returns(@sf)
+    @sf.expects(:sync_all_objects)
+    SalesforceWorker.new.perform(:sync_account, @user.account.id)
   end
 
   def test_that_sync_all_domain_mapping_runs_sync
