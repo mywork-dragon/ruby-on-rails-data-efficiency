@@ -18,10 +18,15 @@ class SalesforceWorker
   end
 
   def sync_all_accounts
-    Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.each do |account|
-      sf = SalesforceExportService.new(user: account.users.first)
-      sf.sync_all_objects
+    Account.where.not(salesforce_refresh_token: nil).where(salesforce_syncing: true).ready.pluck(:id).each do |account_id|
+      SalesforceWorker.perform_async(:sync_account, account_id)
     end
+  end
+
+  def sync_account(account_id)
+    account = Account.find(account_id)
+    sf = SalesforceExportService.new(user: account.users.first)
+    sf.sync_all_objects
   end
 
   def sync_domain_mapping_all_accounts(frequency: '1w', queue: :salesforce_syncer)
