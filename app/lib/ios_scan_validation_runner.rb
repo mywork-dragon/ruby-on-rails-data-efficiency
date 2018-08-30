@@ -80,7 +80,7 @@ class IosScanValidationRunner
     )
     expiration_time = options[:recently_queued_expiration] || 24.hours.to_i
     redis.setex(recent_key, expiration_time, @app_info['version'])
-    a = select_apple_account
+    a = select_apple_account(options[:classification_priority])
     queue_url = if options[:classification_priority] == :high
                   "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_live_scan_download_requests"
                 else
@@ -102,10 +102,13 @@ class IosScanValidationRunner
     Bugsnag.notify(e)
   end
 
-  def select_apple_account
-    potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
+  def select_apple_account(priority)
+    if priority == :high
+      potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['one_off_scan_v2']).map {|x| x.apple_account}.uniq.compact
+    else
+      potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
+    end
     potential_accounts = potential_accounts.select {|x| x.app_store_id == @app_store_id}
-
     potential_accounts.sample
   end
 
