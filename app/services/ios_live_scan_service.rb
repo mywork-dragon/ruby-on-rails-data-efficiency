@@ -79,5 +79,65 @@ class IosLiveScanService
 
       status
     end
+
+    def check_status_v2(job_id:)
+      result_map = {
+        validating: 0,
+        unchanged: 1,
+        not_available: 2,
+        paid: 3,
+        device_incompatible: 4,
+        preparing: 5,
+        devices_busy: 6,
+        downloading: 7,
+        retrying: 8,
+        scanning: 9,
+        complete: 10,
+        failed: 11
+      }
+
+      job = IpaSnapshotJob.find(job_id)
+
+      return nil if job.nil? || !(job.job_type == 'one_off' || job.job_type == 'test')
+      
+      # first set of checks: validation stage
+      status = if %w(validating not_available paid unchanged device_incompatible failed).include?(job.live_scan_status)
+        result_map[job.live_scan_status.to_sym]
+      elsif job.live_scan_status != "initiated"
+        result_map[:validating]
+      end
+
+      return status if !status.nil?
+
+      # second set of checks: download and scan stages
+      # Note: the order of these checks matter
+      all_snapshots = job.ipa_snapshots
+      not_failed_snapshots = all_snapshots.where(success: [true, nil])
+      download_snapshot = not_failed_snapshots.order(:download_status).last || all_snapshots.order(:download_status).last
+      scan_snapshot = not_failed_snapshots.order(:scan_status).last || all_snapshots.order(:scan_status).last
+
+      status = if all_snapshots.empty? || (download_snapshot.download_status.nil?)
+        result_map[:preparing]
+      elsif scan_snapshot.scan_status == 'scanned'
+        result_map[:complete]
+      elsif scan_snapshot.scan_status == 'scanning' || (download_snapshot.download_status == 'complete' && download_snapshot.success != false)
+        result_map[:scanning]
+      elsif all_snapshots.all? { |x| x.scan_status == 'failed' || x.success == false }
+        result_map[:failed]
+      elsif download_snapshot.download_status == 'starting' || download_snapshot.download_status == 'cleaning'
+        # check for any failed scans to prevent status from jumping from 'scanning' to 'downloading'
+        if all_snapshots.any? { |x| x.scan_status == 'failed' }
+          result_map[:scanning]
+        else
+          result_map[:downloading]
+        end
+      elsif download_snapshot.download_status == 'retrying'
+        result_map[:retrying]
+      else
+        result_map[:failed]
+      end
+
+      status
+    end
   end
 end

@@ -8,7 +8,7 @@
         <ul class="list-unstyled list-info" ng-if="!iosLiveScanCtrl.sdkLiveScanPageLoading">
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData || iosLiveScanCtrl.sdkQueryInProgress">
             <div id="sdkScanErrorMessage">
-              <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 3-7 minutes.</em></h5>
               <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan"><strong>{{iosLiveScanCtrl.scanErrorMessage}}</strong></h5>
             </div>
             <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress">
@@ -80,7 +80,7 @@
                               popover-append-to-body="true"
                               popover-trigger="mouseenter"
                             >
-                              installed <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong> ago
+                              installed <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong>
                             </span>
                           </span>
                         </div>
@@ -111,7 +111,7 @@
                               popover-append-to-body="true"
                               popover-trigger="mouseenter"
                             >
-                              uninstalled <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong> ago
+                              uninstalled <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk.activities[sdk.activities.length - 1].date)}}</strong>
                             </span>
                           </span>
                         </div>

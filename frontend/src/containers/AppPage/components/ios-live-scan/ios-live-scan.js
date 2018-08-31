@@ -1,6 +1,6 @@
 import angular from 'angular';
 import $ from 'jquery';
-import { daysAgo } from 'utils/format.utils';
+import { calculateDaysAgo } from 'utils/format.utils';
 
 angular
   .module('appApp')
@@ -46,18 +46,12 @@ function IosLiveScanCtrl (
   iosLiveScanCtrl.calculateDaysAgo = calculateDaysAgo;
   iosLiveScanCtrl.checkForIosSdks = checkForIosSdks;
   iosLiveScanCtrl.getSdks = getSdks;
-  iosLiveScanCtrl.isEmpty = isEmpty;
-  iosLiveScanCtrl.notify = notify;
 
   activate();
 
   function activate () {
     iosLiveScanCtrl.iosAppId = $stateParams.id;
     checkForIosSdks($stateParams.id);
-  }
-
-  function calculateDaysAgo (date) {
-    return `${daysAgo(date)} days`;
   }
 
   function checkForIosSdks (appId, calledAfterSuccess) {
@@ -134,16 +128,14 @@ function IosLiveScanCtrl (
       });
   }
 
-  function isEmpty (obj) {
-    try { return Object.keys(obj).length === 0; } catch (err) {}
-  }
-
   function notify (type) {
     switch (type) {
       case 'data-unchanged':
         return loggitService.log('App has not changed since last scan. SDKs are currently up to date!');
       case 'updated':
         return loggitService.logSuccess('SDKs up to date!');
+      case 'timeout':
+        return loggitService.logError("We're sorry, something went wrong. Please refresh the page and try again.")
     }
   }
 
@@ -176,6 +168,7 @@ function IosLiveScanCtrl (
           // Reset 'query in progress' if pulling times out
           if (intervalCount === numRepeat) {
             iosLiveScanCtrl.sdkQueryInProgress = false;
+            notify('timeout');
             sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosLiveScanCtrl.iosAppId, -1); // Failed analytics response - MixPanel & Slacktivity
           }
 
@@ -188,7 +181,7 @@ function IosLiveScanCtrl (
               iosLiveScanCtrl.scanStatusPercentage = 5;
               break;
             case 1:
-              iosLiveScanCtrl.notify('data-unchanged');
+              notify('data-unchanged');
               iosLiveScanCtrl.checkForIosSdks(iosLiveScanCtrl.iosAppId, true); // Loads new sdks on page
               break;
             case 5:
@@ -206,7 +199,7 @@ function IosLiveScanCtrl (
             case 10:
               iosLiveScanCtrl.scanStatusPercentage = 100;
               iosLiveScanCtrl.noSdkData = false;
-              iosLiveScanCtrl.notify('updated');
+              notify('updated');
               iosLiveScanCtrl.checkForIosSdks(iosLiveScanCtrl.iosAppId, true); // Loads new sdks on page
               break;
             case 11:

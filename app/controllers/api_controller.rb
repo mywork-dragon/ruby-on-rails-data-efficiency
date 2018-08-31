@@ -613,7 +613,7 @@ class ApiController < ApplicationController
   def ios_scan_status
     job_id = params['jobId']
 
-    code = IosLiveScanService.check_status(job_id: job_id)
+    code = IosLiveScanService.check_status_v2(job_id: job_id)
     render json: {status: code}
   end
 
