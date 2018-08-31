@@ -7,15 +7,7 @@ angular
   .controller('IosLiveScanCtrl', IosLiveScanCtrl);
 
 IosLiveScanCtrl.$inject = [
-  '$scope',
-  '$http',
-  '$window',
-  'pageTitleService',
-  'listApiService',
   'loggitService',
-  '$rootScope',
-  'apiService',
-  'authService',
   'sdkLiveScanService',
   '$interval',
   '$timeout',
@@ -23,15 +15,7 @@ IosLiveScanCtrl.$inject = [
 ];
 
 function IosLiveScanCtrl (
-  $scope,
-  $http,
-  $window,
-  pageTitleService,
-  listApiService,
   loggitService,
-  $rootScope,
-  apiService,
-  authService,
   sdkLiveScanService,
   $interval,
   $timeout,
@@ -200,7 +184,10 @@ function IosLiveScanCtrl (
               iosLiveScanCtrl.scanStatusPercentage = 100;
               iosLiveScanCtrl.noSdkData = false;
               notify('updated');
-              iosLiveScanCtrl.checkForIosSdks(iosLiveScanCtrl.iosAppId, true); // Loads new sdks on page
+              iosLiveScanCtrl.sdkLiveScanPageLoading = true;
+              $timeout(() => {
+                iosLiveScanCtrl.checkForIosSdks(iosLiveScanCtrl.iosAppId, true);
+              }, 5000);
               break;
             case 11:
               iosLiveScanCtrl.noSdkData = true;
