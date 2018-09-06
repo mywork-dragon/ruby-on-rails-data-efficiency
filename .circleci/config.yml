@@ -19,6 +19,9 @@ jobs:
             - run:
                 name: Run tests
                 command: docker-compose -f circleci-compose.yml run varys bash -c "sleep 5 && rake db:create db:schema:load test"
+            - run:
+                name: Run frontend tests
+                command: docker-compose -f circleci-compose.yml run varys bash -c "sleep 5 && cd frontend/ && yarn install && yarn test --coverage"
     build:
         docker:
             - image: circleci/python:2.7
