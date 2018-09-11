@@ -425,6 +425,14 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def downloads_max
+    newest_android_app_snapshot.try(:downloads_max)
+  end
+
+  def downloads_min
+    newest_android_app_snapshot.try(:downloads_min)
+  end
+
   def downloads_human
     if newest_snapshot = self.newest_android_app_snapshot
       "#{ActionController::Base.helpers.number_to_human(newest_snapshot.downloads_min)}-#{ActionController::Base.helpers.number_to_human(newest_snapshot.downloads_max)}"

@@ -216,6 +216,7 @@ class SalesforceExportService
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
       {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
+      {label: 'Downloads Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -518,6 +519,7 @@ class SalesforceExportService
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'Ratings_Count__c' => app.ratings_all_count,
+      'Downloads_Count__c' => app.downloads_min,
       'User_Base__c' => app.user_base,
       'Ad_Spend__c' => app.ad_spend?,
       'Last_Scanned_Date__c' => app.last_scanned.try(:to_date)
