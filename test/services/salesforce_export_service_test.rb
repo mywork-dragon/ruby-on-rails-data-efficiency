@@ -53,6 +53,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
       {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
+      {label: 'Downloads Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
