@@ -374,6 +374,7 @@ class SalesforceExportService
       mapping[ANDROID_LINK] = {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"}
       mapping[ANDROID_SDK_SUMMARY] = {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
       mapping[ANDROID_RATINGS_COUNT] = {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
+      mapping[ANDROID_DOWNLOADS_COUNT] = {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"}
     end
 
     case @model_name
@@ -842,6 +843,7 @@ class SalesforceExportService
   LAST_SYNCED = "MightySignal Last Synced"
   ANDROID_RATINGS_COUNT = "MightySignal Android Ratings Count"
   IOS_RATINGS_COUNT = "MightySignal iOS Ratings Count"
+  ANDROID_DOWNLOADS_COUNT = "MightySignal Android Downloads Count"
 
   def data_fields(app: nil, publisher: nil)
     fields = { 
@@ -857,7 +859,8 @@ class SalesforceExportService
       ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
       LAST_SYNCED => {type: 'Date', label: 'MightySignal Last Synced'},
       IOS_RATINGS_COUNT => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
-      ANDROID_RATINGS_COUNT => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0}
+      ANDROID_RATINGS_COUNT => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
+      ANDROID_DOWNLOADS_COUNT => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
     }
 
     publisher ||= app.try(:publisher)
@@ -880,6 +883,7 @@ class SalesforceExportService
         fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
         fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
+        fields[ANDROID_DOWNLOADS_COUNT][:data] = publisher.downloads_count
       end
 
       fields[LAST_SYNCED][:data] = Date.today

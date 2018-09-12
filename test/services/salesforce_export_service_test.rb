@@ -128,7 +128,8 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
       "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"},
       "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
-      "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0}
+      "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
+      "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
     }
     fields.each do |field_key, field|
       @sf.expects(:add_custom_field).with('Account', field)
@@ -282,9 +283,10 @@ end
       "MightySignal Last Synced" => {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"},
       "MightySignal Android Publisher ID" => {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"},
       "MightySignal Android Link" => {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"},
-      "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
       "MightySignal Android SDK Summary" => {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"},
-      "MightySignal Android Ratings Count" => {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
+      "MightySignal Android Ratings Count" => {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"},
+      "MightySignal Android Downloads Count" => {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"},
+      "Publisher Name" => {"id"=>"Name", "name"=>"Name"}
     }
   end
 
