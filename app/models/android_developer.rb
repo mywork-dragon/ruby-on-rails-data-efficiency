@@ -38,6 +38,11 @@ class AndroidDeveloper < ActiveRecord::Base
     apps.limit(500).inject(0){|sum,app| sum + app.downloads_min.to_i}
   end
 
+  def ratings_score
+    select_apps = apps.limit(500)
+    select_apps.inject(0){|sum,app| sum + app.newest_android_app_snapshot.try(:ratings_all_stars).to_f} / select_apps.size
+  end
+
   def developer_json
     {
       id: id,

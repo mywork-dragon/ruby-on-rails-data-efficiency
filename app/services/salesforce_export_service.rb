@@ -216,6 +216,7 @@ class SalesforceExportService
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
       {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
+      {label: 'Ratings Score', type: 'Number', precision: 18, scale: 2},
       {label: 'Downloads Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
@@ -368,12 +369,14 @@ class SalesforceExportService
       mapping[IOS_LINK] = {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"}
       mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
       mapping[IOS_RATINGS_COUNT] = {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
+      mapping[IOS_RATINGS_SCORE] = {"id"=>"MightySignal_iOS_Ratings_Score__c", "name"=>"New Field: MightySignal iOS Ratings Score"}
     when 'android'
       mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
       #mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
       mapping[ANDROID_LINK] = {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"}
       mapping[ANDROID_SDK_SUMMARY] = {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
       mapping[ANDROID_RATINGS_COUNT] = {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
+      mapping[ANDROID_RATINGS_SCORE] = {"id"=>"MightySignal_Android_Ratings_Score__c", "name"=>"New Field: MightySignal Android Ratings Score"}
       mapping[ANDROID_DOWNLOADS_COUNT] = {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"}
     end
 
@@ -494,6 +497,7 @@ class SalesforceExportService
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'Ratings_Count__c' => app.total_rating_count,
+      'Ratings_Score__c' => app.rating[:rating] ? app.rating[:rating].to_f : nil,
       'User_Base__c' => app.international_userbase[:user_base],
       'Ad_Spend__c' => app.ad_spend?,
       'Release_Date__c' => app.release_date,
@@ -520,6 +524,7 @@ class SalesforceExportService
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'Ratings_Count__c' => app.ratings_all_count,
+      'Ratings_Score__c' => app.newest_android_app_snapshot.try(:ratings_all_stars) ? app.newest_android_app_snapshot.try(:ratings_all_stars).to_f : nil,
       'Downloads_Count__c' => app.downloads_min,
       'User_Base__c' => app.user_base,
       'Ad_Spend__c' => app.ad_spend?,
@@ -843,7 +848,9 @@ class SalesforceExportService
   LAST_SYNCED = "MightySignal Last Synced"
   ANDROID_RATINGS_COUNT = "MightySignal Android Ratings Count"
   IOS_RATINGS_COUNT = "MightySignal iOS Ratings Count"
+  IOS_RATINGS_SCORE = "MightySignal iOS Ratings Score"
   ANDROID_DOWNLOADS_COUNT = "MightySignal Android Downloads Count"
+  ANDROID_RATINGS_SCORE = "MightySignal Android Ratings Score"
 
   def data_fields(app: nil, publisher: nil)
     fields = { 
@@ -860,6 +867,8 @@ class SalesforceExportService
       LAST_SYNCED => {type: 'Date', label: 'MightySignal Last Synced'},
       IOS_RATINGS_COUNT => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
       ANDROID_RATINGS_COUNT => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
+      IOS_RATINGS_SCORE => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
+      ANDROID_RATINGS_SCORE => {type: 'Number', label: 'MightySignal Android Ratings Score', precision: 18, scale: 2},
       ANDROID_DOWNLOADS_COUNT => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
     }
 
@@ -875,6 +884,7 @@ class SalesforceExportService
         fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[IOS_RATINGS_COUNT][:data] = publisher.ratings_all_count
+        fields[IOS_RATINGS_SCORE][:data] = publisher.ratings_score
       when 'android'
         fields[ANDROID_PUB_ID][:data] = publisher.try(:id)
         #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
@@ -884,6 +894,7 @@ class SalesforceExportService
         fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[ANDROID_DOWNLOADS_COUNT][:data] = publisher.downloads_count
+        fields[ANDROID_RATINGS_SCORE][:data] = publisher.ratings_score
       end
 
       fields[LAST_SYNCED][:data] = Date.today

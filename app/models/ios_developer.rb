@@ -36,6 +36,11 @@ class IosDeveloper < ActiveRecord::Base
     apps.limit(500).inject(0){|sum,app| sum + app.total_rating_count.to_i}
   end
 
+  def ratings_score
+    select_apps = apps.limit(500)
+    select_apps.inject(0){|sum,app| sum + app.rating[:rating].to_f} / select_apps.size
+  end
+
   def developer_json
     {
       id: id,

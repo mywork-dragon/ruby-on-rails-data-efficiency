@@ -53,6 +53,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Category', type: 'Text', length: 255},
       {label: 'Ratings Count', type: 'Number', precision: 18, scale: 0},
+      {label: 'Ratings Score', type: 'Number', precision: 18, scale: 2},
       {label: 'Downloads Count', type: 'Number', precision: 18, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
@@ -128,7 +129,9 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
       "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"},
       "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
+      "MightySignal iOS Ratings SCore" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
+      "MightySignal Android Ratings Score" => {type: 'Number', label: 'MightySignal Android Ratings Score', precision: 18, scale: 2},
       "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
     }
     fields.each do |field_key, field|
@@ -273,7 +276,8 @@ end
       "MightySignal iOS Link" => {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
       "MightySignal iOS SDK Summary" => {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"},
-      "MightySignal iOS Ratings Count" => {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
+      "MightySignal iOS Ratings Count" => {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"},
+      "MightySignal iOS Ratings Score" => {"id"=>"MightySignal_iOS_Ratings_Score__c", "name"=>"New Field: MightySignal iOS Ratings Score"},
     }
   end
 
@@ -285,6 +289,7 @@ end
       "MightySignal Android Link" => {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"},
       "MightySignal Android SDK Summary" => {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"},
       "MightySignal Android Ratings Count" => {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"},
+      "MightySignal Android Ratings Score" => {"id"=>"MightySignal_Android_Ratings_Score__c", "name"=>"New Field: MightySignal Android Ratings Score"},
       "MightySignal Android Downloads Count" => {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"}
     }
@@ -337,6 +342,7 @@ end
                   "MightySignal_iOS_Link__c" => "https://mightysignal.com/app/app#/publisher/ios/#{@ios_developer.id}?utm_source=salesforce",
                   "MightySignal_iOS_SDK_Summary__c" => "123",
                   "MightySignal_iOS_Ratings_Count__c" => 0,
+                  "MightySignal_iOS_Ratings_Score__c" => 0,
                   "Name" => "3 Comma Studio LLC",
                   "AccountSource" => "MightySignal"}
 
@@ -351,6 +357,7 @@ end
       "MightySignal iOS Link" => {data: '123', type: 'Url', label: "MightySignal iOS Link"},
       "MightySignal iOS SDK Summary" => {data: '123', length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
       "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
+      "MightySignal iOS Ratings Score" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       "MightySignal Last Synced" => {:type => "Date", :label => "MightySignal Last Synced"}
     }
 
