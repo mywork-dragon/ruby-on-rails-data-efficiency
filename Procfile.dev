@@ -1,0 +1,2 @@
+web: bundle exec rails s
+frontend: cd frontend && yarn install && yarn start

@@ -29,7 +29,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 
 ### Local Development
 
-For Docker-based flows:
+#### For Docker-based flows:
 
 * Use docker-compose to build the containers: `docker-compose up`
 * [1st time only] Use `docker-compose run` to set up the mysql container with the proper database structure
@@ -56,8 +56,12 @@ For Docker-based flows:
 * To run syntax linter: `docker-compose run varys bundle exec rubocop`
 * To run tests: `docker-compose run varys rake test`
 
-For non-Docker flows:
-* Just develop on your machine as a normal Rails app
+#### For non-Docker flows:
+* With foreman: `foreman start -f Procfile.dev`
+* Without foreman or to run the processes separately:
+  * Run the Rails app normally
+  * In the frontend directory, install dependencies and start the webpack dev server: `yarn install && yarn start`
+* The landing pages are hosted at `localhost:3000`, while the main web app can be found at `localhost:8000`
 * To run syntax linter: `rubocop`
 * To run tests: `rake test`
 
