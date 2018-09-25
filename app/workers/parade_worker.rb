@@ -17,8 +17,19 @@ class ParadeWorker
     end
   end
 
-  def log_zendesk_domain(domain, ios_publisher_id, android_publisher_id, zendesk_id=nil)
-    DomainMappingLogger.new(domain, ios_publisher_id, android_publisher_id, zendesk_id).send!
+  def log_zendesk_domain(website, zendesk_id=nil)
+
+    blacklisted_domains = ['gmail.com', 'googlemail.com', 'outlook.com', 
+       'hotmail.com', 'live.com', 'yahoo.com', 'aol.com', 'aim.com', 'yandex.com',
+        'protonmail.com', 'protonmail.ch', 'zoho.com']
+
+    domain = UrlHelper.url_with_domain_only(website)
+
+    return if blacklisted_domains.include?(domain)
+
+    publishers = SalesforceExportService.publishers_from_website(website)
+
+    DomainMappingLogger.new(domain, publishers[:ios_publisher].try(:id), publishers[:android_publisher].try(:id), zendesk_id).send!
   end
 
   def log_android_advertiser(dev_id, title)
