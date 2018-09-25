@@ -119,7 +119,7 @@ gem 'net', require: 'net/http'
 
 gem 'mixpanel-ruby', '2.1.0', require: 'mixpanel-ruby'
 
-gem 'domainator', '2.0.0'
+gem 'domainatrix', github: 'mhui/domainatrix'
 
 gem 'parallel', '1.6.0'
 

@@ -11,7 +11,7 @@ class DomainMappingLogger
 
   def send!
     build_event
-    RedshiftLogger.new(records: [@event], table: 'domain_mapping_zd').send!
+    RedshiftLogger.new(records: [@event], table: 'domain_mapping_zd1').send!
   end
 
   def build_event

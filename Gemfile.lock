@@ -8,6 +8,13 @@ GIT
       sidekiq
 
 GIT
+  remote: git://github.com/mhui/domainatrix.git
+  revision: 6baae8e8e1fb4c34b45d2420a02638ccdafdf65f
+  specs:
+    domainatrix (0.0.11)
+      addressable
+
+GIT
   remote: git://github.com/yatish27/salesforce_bulk_api.git
   revision: 3ff3f41ad7e5a5217b4c278ddb0343f4cb50b182
   specs:
@@ -173,7 +180,6 @@ GEM
     docile (1.1.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
-    domainator (2.0.0)
     dotenv (2.1.2)
     dotenv-rails (2.1.2)
       dotenv (= 2.1.2)
@@ -604,7 +610,7 @@ DEPENDENCIES
   colorize (= 0.7.7)
   countries
   diff_dirs (= 0.1.2)
-  domainator (= 2.0.0)
+  domainatrix!
   dotenv-rails (~> 2.1.1)
   elasticsearch-model (= 0.1.7)
   elasticsearch-rails (= 0.1.7)

@@ -15,8 +15,8 @@ class UrlHelper
     
     def url_with_domain_only(url)
       begin
-        url = "http://" + url if !url.match(/^(http[s]*:\/\/)/)
-        Domainator.parse(url.downcase)
+        url = Domainatrix.parse(url.downcase)
+        "#{url.domain}.#{url.public_suffix}"
       rescue => e
         return nil
       end
@@ -41,7 +41,7 @@ class UrlHelper
     # Subdomain and domain
     # @author Jason Lew
     def full_domain(url)
-      main_domain = Domainator.parse(url)
+      main_domain = url_with_domain_only(url)
       prefix_plus_subdomain = url.split(main_domain).first # https[s]://www.
       prefix_plus_subdomain.gsub(/^(http[s]*:\/\/)*(www.)*/, '') + main_domain
     end
