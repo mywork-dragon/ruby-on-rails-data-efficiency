@@ -24,7 +24,7 @@ const Explore = ({
   shouldFetchGeoOptions,
   requestGeoOptions,
 }) => {
-  if (queryId && !existingId) {
+  if (queryId && (!existingId || queryId !== existingId)) {
     populateFromQueryId(queryId);
   }
 

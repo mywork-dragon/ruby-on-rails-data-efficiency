@@ -1,12 +1,14 @@
 import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
+import MightyQueryService from 'services/mightyQuery.service';
+import { sdkQuery } from 'utils/angular/sdk.utils';
 
 import 'AngularService/newsfeed';
 
 const API_URI_BASE = window.API_URI_BASE;
 
-angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', '$stateParams', '$window', 'loggitService', 'pageTitleService', 'authService', 'newsfeedService', 'slacktivity',
-  function($scope, $q, $http, $stateParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity) {
+angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', '$stateParams', '$window', 'loggitService', 'pageTitleService', 'authService', 'newsfeedService', 'slacktivity', '$state',
+  function($scope, $q, $http, $stateParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity, $state) {
     const sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
     $scope.appPlatform = $stateParams.platform;
@@ -140,6 +142,14 @@ angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', 
     sdkDetailsCtrl.submitSdkQuery = function(platform) {
       const path = `${API_URI_BASE}app/app#/search?app=%7B%22sdkFiltersAnd%22:%5B%7B%22id%22:${sdkDetailsCtrl.sdkData.id},%22status%22:%220%22,%22date%22:%220%22,%22name%22:%22${encodeURI(sdkDetailsCtrl.sdkData.name)}%22%7D%5D%7D&company=%7B%7D&pageNum=1&pageSize=100&platform=%7B%22appPlatform%22:%22${platform}%22%7D`;
       $window.location.href = path;
+    };
+
+    sdkDetailsCtrl.routeToExploreV2 = function() {
+      const params = sdkQuery(sdkDetailsCtrl.sdkData.id, sdkDetailsCtrl.sdkData.platform, sdkDetailsCtrl.sdkData.name, sdkDetailsCtrl.sdkData.icon);
+      MightyQueryService.getQueryId(params)
+        .then((response) => {
+          $state.go('explore-v2-query', { queryId: response.data.query_id });
+        });
     };
   },
 ]);
