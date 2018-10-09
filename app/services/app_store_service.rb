@@ -268,7 +268,7 @@ class AppStoreService
   end
   
   def developer_app_store_identifier_json
-    @json['artistId']
+    @json['artistId'].to_i
   end
 
   def developer_app_store_identifier_html
