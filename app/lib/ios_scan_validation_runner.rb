@@ -10,6 +10,7 @@ class IosScanValidationRunner
   class NotIos < RuntimeError; end
   class NotDeviceCompatible < RuntimeError; end
   class NotFree < RuntimeError; end
+  class NoDevicesAvailable < RuntimeError; end
 
   def initialize(ipa_snapshot_job_id, ios_app_id, options={})
     @ipa_snapshot_job_id = ipa_snapshot_job_id
@@ -116,7 +117,11 @@ class IosScanValidationRunner
       potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
     end
     potential_accounts = potential_accounts.select {|x| x.app_store_id == @app_store_id}
-    potential_accounts.sample
+    a = potential_accounts.sample
+    if a.nil?
+      raise NoDevicesAvailable, "app store id: #{@app_store_id}"
+    end
+    a
   end
 
   def start_job
