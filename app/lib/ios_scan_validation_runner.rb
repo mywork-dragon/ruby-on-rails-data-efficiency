@@ -48,15 +48,22 @@ class IosScanValidationRunner
 
     # For mass scan, distribute the tasks between the scanning systems.
     # For live scan, queue on both.
-    if @options[:classification_priority] == :high
+    # if @options[:classification_priority] == :high
+    #   start_job
+    #   start_job_v2 if @options[:v2_download]
+    # else
+    #   if rand * 100 <= 50 and @options[:v2_download]
+    #     start_job_v2
+    #   else
+    #     start_job
+    #   end
+    # end
+    if ServiceStatus.is_active?(:ios_v1_download)
       start_job
-      start_job_v2 if @options[:v2_download]
-    else
-      if rand * 100 <= 50 and @options[:v2_download]
-        start_job_v2
-      else
-        start_job
-      end
+    end
+
+    if ServiceStatus.is_active?(:ios_v2_download)
+      start_job_v2
     end
     
   rescue

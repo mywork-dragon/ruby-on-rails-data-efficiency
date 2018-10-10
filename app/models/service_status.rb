@@ -10,7 +10,9 @@ class ServiceStatus < ActiveRecord::Base
     :auto_ios_intl_scrape,
     :ios_auto_sdk_creation,
     :clearbit_contact_service,
-    :general_maintenance
+    :general_maintenance,
+    :ios_v1_download,
+    :ios_v2_download
   ]
 
   class << self
