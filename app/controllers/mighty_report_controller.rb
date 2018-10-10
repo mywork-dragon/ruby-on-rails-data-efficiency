@@ -35,6 +35,7 @@ class MightyReportController < ApplicationController
       lead_data.merge!(lead_source: ad_source) if ad_source.present?
 
       Lead.create_lead(lead_data)
+      ahoy.track "Submitted Mighty Report", request.path_parameters
 
       flash[:success] = "Thanks for requesting the report. We'll be in touch soon!"
     else

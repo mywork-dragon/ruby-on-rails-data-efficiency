@@ -309,6 +309,7 @@ class WelcomeController < ApplicationController
       lead_data[:referring_domain] = current_visit.referring_domain
       
       Lead.create_lead(lead_data)
+      ahoy.track "Submitted subscribe", request.path_parameters
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
@@ -323,6 +324,7 @@ class WelcomeController < ApplicationController
       lead_data[:web_form_button_id] = params['button_id']
       puts "lead_data: #{lead_data}"
       Lead.create_lead(lead_data)
+      ahoy.track "Submitted contact us", request.path_parameters
       redirect_to well_be_in_touch_path(form: 'lead')
       return
     end
