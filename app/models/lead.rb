@@ -12,6 +12,12 @@ class Lead < ActiveRecord::Base
     lead.sdk = data[:sdk]
     lead.message = data[:message]
     lead.lead_source = data[:lead_source]
+    lead.lead_source ||= data[:ad_source] # need to clean up lead_source vs ad_source
+    lead.utm_source = data[:utm_source]
+    lead.utm_medium = data[:utm_medium]
+    lead.utm_campaign = data[:utm_campaign]
+    lead.referrer = data[:referrer]
+    lead.referring_domain = data[:referring_domain]
     lead.lead_data = data
     lead.save
 

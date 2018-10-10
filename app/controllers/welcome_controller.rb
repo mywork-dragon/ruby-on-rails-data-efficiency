@@ -300,17 +300,14 @@ class WelcomeController < ApplicationController
       lead_data = {email: params[:email], message: message, lead_source: message}
 
       ad_source = params['ad_source']
-      lead_data.merge!(ad_source: ad_source) if ad_source.present?
+      lead_data.merge!(lead_source: ad_source) if ad_source.present?
 
-      utm_source = params['utm_source']
-      lead_data.merge!(utm_source: utm_source) if utm_source.present?
-
-      utm_medium = params['utm_medium']
-      lead_data.merge!(utm_medium: utm_medium) if utm_medium.present?
-
-      utm_campaign = params['utm_campaign']
-      lead_data.merge!(utm_campaign: utm_campaign) if utm_campaign.present?
-
+      lead_data[:utm_source] = current_visit.utm_source
+      lead_data[:utm_medium] = current_visit.utm_source
+      lead_data[:utm_campaign] = current_visit.utm_campaign
+      lead_data[:referrer] = current_visit.referrer
+      lead_data[:referring_domain] = current_visit.referring_domain
+      
       Lead.create_lead(lead_data)
       flash[:success] = "We will be in touch soon!"
     else
@@ -357,15 +354,14 @@ class WelcomeController < ApplicationController
     message = params['message']
     ad_source = params['ad_source']
     creative = params['creative']
-    utm_source = params['utm_source']
-    utm_medium = params['utm_medium']
-    utm_campaign = params['utm_campaign']
 
     lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source, :creative, :app_identifier, :app_platform, :app_name, :app_id)
-    lead_data[:utm_source] = request.cookies['utm_source']
-    lead_data[:utm_medium] = request.cookies['utm_medium']
-    lead_data[:utm_campaign] = request.cookies['utm_campaign']
-
+    lead_data[:utm_source] = current_visit.utm_source
+    lead_data[:utm_medium] = current_visit.utm_source
+    lead_data[:utm_campaign] = current_visit.utm_campaign
+    lead_data[:referrer] = current_visit.referrer
+    lead_data[:referring_domain] = current_visit.referring_domain
+    
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
       lead_data[:company] = email.match(email_regex).to_s[1..-1]
