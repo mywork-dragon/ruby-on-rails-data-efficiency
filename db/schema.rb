@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180626174001) do
+ActiveRecord::Schema.define(version: 20181010221532) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -56,6 +56,41 @@ ActiveRecord::Schema.define(version: 20180626174001) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.integer  "visit_id",   limit: 4
+    t.integer  "user_id",    limit: 4
+    t.string   "name",       limit: 191
+    t.text     "properties", limit: 65535
+    t.datetime "time"
+  end
+
+  add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
+
+  create_table "ahoy_visits", force: :cascade do |t|
+    t.string   "visit_token",      limit: 191
+    t.string   "visitor_token",    limit: 191
+    t.integer  "user_id",          limit: 4
+    t.string   "ip",               limit: 191
+    t.text     "user_agent",       limit: 65535
+    t.text     "referrer",         limit: 65535
+    t.string   "referring_domain", limit: 191
+    t.text     "landing_page",     limit: 65535
+    t.string   "browser",          limit: 191
+    t.string   "os",               limit: 191
+    t.string   "device_type",      limit: 191
+    t.string   "country",          limit: 191
+    t.string   "region",           limit: 191
+    t.string   "city",             limit: 191
+    t.string   "utm_source",       limit: 191
+    t.string   "utm_medium",       limit: 191
+    t.string   "utm_term",         limit: 191
+    t.string   "utm_content",      limit: 191
+    t.string   "utm_campaign",     limit: 191
+    t.datetime "started_at"
+  end
+
+  add_index "ahoy_visits", ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true, using: :btree
 
   create_table "android_ads", force: :cascade do |t|
     t.integer  "ad_type",                          limit: 4
@@ -2085,18 +2120,26 @@ ActiveRecord::Schema.define(version: 20180626174001) do
   add_index "known_ios_words", ["word"], name: "index_known_ios_words_on_word", using: :btree
 
   create_table "leads", force: :cascade do |t|
-    t.string   "email",       limit: 191
-    t.string   "first_name",  limit: 191
-    t.string   "last_name",   limit: 191
-    t.string   "company",     limit: 191
-    t.string   "phone",       limit: 191
-    t.string   "crm",         limit: 191
-    t.string   "sdk",         limit: 191
-    t.text     "message",     limit: 65535
-    t.string   "lead_source", limit: 191
-    t.text     "lead_data",   limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.string   "email",            limit: 191
+    t.string   "first_name",       limit: 191
+    t.string   "last_name",        limit: 191
+    t.string   "company",          limit: 191
+    t.string   "phone",            limit: 191
+    t.string   "crm",              limit: 191
+    t.string   "sdk",              limit: 191
+    t.text     "message",          limit: 65535
+    t.string   "lead_source",      limit: 191
+    t.text     "lead_data",        limit: 65535
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.text     "referrer",         limit: 65535
+    t.string   "referring_domain", limit: 191
+    t.string   "utm_source",       limit: 191
+    t.string   "utm_medium",       limit: 191
+    t.string   "utm_campaign",     limit: 191
+    t.string   "landing_page",     limit: 191
+    t.string   "landing_variant",  limit: 191
+    t.integer  "visit_id",         limit: 8
   end
 
   add_index "leads", ["email"], name: "index_leads_on_email", using: :btree

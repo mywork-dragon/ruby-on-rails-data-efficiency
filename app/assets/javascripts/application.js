@@ -16,4 +16,5 @@
 //= require jquery-ui
 //= require foundation
 //= require turbolinks
+//= require ahoy
 //= require_tree .
