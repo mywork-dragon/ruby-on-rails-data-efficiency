@@ -10,6 +10,7 @@ class IosScanValidationRunner
   class NotIos < RuntimeError; end
   class NotDeviceCompatible < RuntimeError; end
   class NotFree < RuntimeError; end
+  class NoDevicesAvailable < RuntimeError; end
 
   def initialize(ipa_snapshot_job_id, ios_app_id, options={})
     @ipa_snapshot_job_id = ipa_snapshot_job_id
@@ -48,15 +49,22 @@ class IosScanValidationRunner
 
     # For mass scan, distribute the tasks between the scanning systems.
     # For live scan, queue on both.
-    if @options[:classification_priority] == :high
+    # if @options[:classification_priority] == :high
+    #   start_job
+    #   start_job_v2 if @options[:v2_download]
+    # else
+    #   if rand * 100 <= 50 and @options[:v2_download]
+    #     start_job_v2
+    #   else
+    #     start_job
+    #   end
+    # end
+    if ServiceStatus.is_active?(:ios_v1_download)
       start_job
-      start_job_v2 if @options[:v2_download]
-    else
-      if rand * 100 <= 50 and @options[:v2_download]
-        start_job_v2
-      else
-        start_job
-      end
+    end
+
+    if ServiceStatus.is_active?(:ios_v2_download)
+      start_job_v2
     end
     
   rescue
@@ -109,7 +117,11 @@ class IosScanValidationRunner
       potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
     end
     potential_accounts = potential_accounts.select {|x| x.app_store_id == @app_store_id}
-    potential_accounts.sample
+    a = potential_accounts.sample
+    if a.nil?
+      raise NoDevicesAvailable, "app store id: #{@app_store_id}"
+    end
+    a
   end
 
   def start_job

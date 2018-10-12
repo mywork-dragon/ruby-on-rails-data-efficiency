@@ -12,7 +12,8 @@ class IosMassScanServiceWorker
       update_job_status: false,
       enable_update_check: true,
       enable_recent_queue_check: true,
-      v2_download: true
+      v2_download: true,
+      classification_priority: :mass
     }
     IosScanValidationRunner.new(ipa_snapshot_job_id, ios_app_id, options).run
   end
