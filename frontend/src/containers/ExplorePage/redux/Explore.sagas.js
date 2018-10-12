@@ -30,7 +30,7 @@ function* requestResults ({ payload }) {
   try {
     const { data: { query_id } } = yield call(service.getQueryId, params);
     yield put(tableActions.clearResults());
-    history.pushState(null, null, `#/search/v2/${query_id}`);
+    window.location.href = `#/search/v2/${query_id}`;
     const { searchForm } = yield select(getCurrentState);
     yield fork(requestCsvQueryId, params, searchForm);
     yield call(requestResultsByQueryId, query_id, params, pageNum);
@@ -90,7 +90,7 @@ function* requestCsvQueryId (params, form) {
 
 function* requestResultsByQueryId (id, params, pageNum) {
   if (!isCurrentQuery(id)) {
-    history.pushState(null, null, `#/search/v2/${id}`);
+    window.location.href = `#/search/v2/${id}`;
   }
   try {
     yield put(updateQueryId(id, JSON.parse(params.formState)));
