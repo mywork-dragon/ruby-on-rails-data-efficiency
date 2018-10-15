@@ -1,6 +1,6 @@
 import { capitalize } from 'utils/format.utils';
 
-export const sdkQuery = (id, platform, name, icon) => ({
+export const sdkQuery = (id, platform, name, icon, facebookOnly) => ({
   "page_settings": {
     "page_size": 100
   },
@@ -119,7 +119,7 @@ export const sdkQuery = (id, platform, name, icon) => ({
         "publisher": true,
         "platform": true,
         "mobile_priority": true,
-        "ad_summaries": true,
+        "ad_summaries": facebookOnly ? ['facebook'] : true,
         "sdk_activity": true,
         "user_base": true,
         "international_user_bases": true,

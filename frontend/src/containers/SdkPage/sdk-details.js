@@ -7,8 +7,8 @@ import 'AngularService/newsfeed';
 
 const API_URI_BASE = window.API_URI_BASE;
 
-angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', '$stateParams', '$window', 'loggitService', 'pageTitleService', 'authService', 'newsfeedService', 'slacktivity', '$state',
-  function($scope, $q, $http, $stateParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity, $state) {
+angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', '$stateParams', '$window', 'loggitService', 'pageTitleService', 'authService', 'newsfeedService', 'slacktivity', '$state', 'adIntelService',
+  function($scope, $q, $http, $stateParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity, $state, adIntelService) {
     const sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
     $scope.appPlatform = $stateParams.platform;
@@ -145,10 +145,15 @@ angular.module('appApp').controller('SdkDetailsCtrl', ['$scope', '$q', '$http', 
     };
 
     sdkDetailsCtrl.routeToExploreV2 = function() {
-      const params = sdkQuery(sdkDetailsCtrl.sdkData.id, sdkDetailsCtrl.sdkData.platform, sdkDetailsCtrl.sdkData.name, sdkDetailsCtrl.sdkData.icon);
-      MightyQueryService.getQueryId(params)
-        .then((response) => {
-          $state.go('explore-v2-query', { queryId: response.data.query_id });
+      return adIntelService.getAdSources()
+        .then((data) => {
+          const accessibleNetworks = Object.values(data).filter(x => x.can_access);
+          const facebookOnly = accessibleNetworks.length === 1 && accessibleNetworks[0].id === 'facebook';
+          const params = sdkQuery(sdkDetailsCtrl.sdkData.id, sdkDetailsCtrl.sdkData.platform, sdkDetailsCtrl.sdkData.name, sdkDetailsCtrl.sdkData.icon, facebookOnly);
+          return MightyQueryService.getQueryId(params)
+            .then((response) => {
+              $state.go('explore-v2-query', { queryId: response.data.query_id });
+            });
         });
     };
   },
