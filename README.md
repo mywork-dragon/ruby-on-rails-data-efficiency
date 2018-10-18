@@ -1,5 +1,3 @@
-Hello Julian
-
 ## Introduction
 
 We're currently migrating from our current architecture to a hybrid container and static instance flow
@@ -12,7 +10,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 ### Installation
 
 * Install RVM: https://rvm.io/
-* Install the aws cli http://docs.aws.amazon.com/cli/latest/userguide/installing.html 
+* Install the aws cli http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 * Add this to your bash profile eg ~/.bashrc `$(aws ecr get-login --region us-east-1)`.
   * If you're on docker 17.06.0 or higher, make sure your aws cli is updated and add `$(aws ecr get-login --region us-east-1 --no-include-email)`
 * Clone the repository
