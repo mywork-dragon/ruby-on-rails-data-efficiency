@@ -129,7 +129,7 @@ class SalesforceExportService
   end
 
   def use_true_update?
-    [1, 12, 36].include? @account.id
+    [1, 12, 36, 142].include? @account.id
   end
 
   def should_sync_publisher?(platform:, publisher_id:, last_synced:)
