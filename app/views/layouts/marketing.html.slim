@@ -32,6 +32,7 @@ html lang="en"
     script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"
     script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
     script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"
+    script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"
     script src="/lib/script.js"
     meta content="authenticity_token" name="csrf-param" /
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
@@ -186,7 +187,8 @@ html lang="en"
           $("html, body").animate({ scrollTop: 0 }, 600);
           return false;
         });
-        console.log('Hi! We like people like you. Check out https://mightysignal.com/challenge')
+        console.log('Hi! We like people like you. Check out https://mightysignal.com/challenge');
+        ahoy.trackAll();
       });
     script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
     script type="text/javascript" id="hs-script-loader" async='true' defer='true' src="//js.hs-scripts.com/565753.js"

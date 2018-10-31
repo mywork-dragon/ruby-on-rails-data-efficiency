@@ -20,7 +20,7 @@ class ContactUsMailer < ActionMailer::Base
     @app_id = options[:app_id]
     @app_name = options[:app_name]
     @app_platform = options[:app_platform]
-    mail(to: "founders@mightysignal.com", bcc: "h1p1t0g3w9o9d5j9@mightysignal.slack.com", reply_to: @email, subject: 'MightySignal Interest')
+    mail(to: "sales@mightysignal.com", bcc: "h1p1t0g3w9o9d5j9@mightysignal.slack.com", reply_to: @email, subject: 'MightySignal Interest')
   end
 
 end

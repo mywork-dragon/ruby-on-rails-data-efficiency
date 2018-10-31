@@ -178,6 +178,7 @@ gem 'dotenv-rails', '~>2.1.1', group: [:development, :test]
 gem 'lograge', '~> 0.4.1'
 # for mixpanel analytics
 gem 'mixpanel_client', '4.1.5'
+gem 'ahoy_matey'
 
 # for customer success url generation
 gem 'addressable', '~>2.4'
