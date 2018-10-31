@@ -28,7 +28,7 @@ module AppStoreInternationalSnapshotModule
     ios_apps = IosApp.where(id: @ios_app_ids)
     ios_apps.each_slice(100) do |apps|
       identifier_to_app_map = apps.reduce({}) do |memo, app|
-        memo[app.app_identifier] = app if app.app_identifier
+        memo[app.app_identifier.to_s] = app if app.app_identifier
         memo
       end
       res = ItunesApi.batch_lookup(identifier_to_app_map.keys, @app_store.country_code.downcase)
@@ -57,7 +57,7 @@ module AppStoreInternationalSnapshotModule
 
   def add_app(app_json, identifier_to_app_map)
     extractor = AppStoreHelper::ExtractorJson.new(app_json)
-    ios_app = identifier_to_app_map[extractor.app_identifier]
+    ios_app = identifier_to_app_map[extractor.app_identifier.to_s]
     extractor.verify_ios!
 
     most_recent_snapshot = IosAppCurrentSnapshot.where(["ios_app_id = ? and app_store_id = ? and latest = ?", ios_app.id, @app_store.id, true]).first
