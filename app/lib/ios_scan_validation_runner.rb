@@ -66,7 +66,7 @@ class IosScanValidationRunner
     if ServiceStatus.is_active?(:ios_v2_download)
       start_job_v2
     end
-    
+
   rescue
     update_job(status: :failed) if @options[:update_job_status]
     raise
@@ -216,11 +216,13 @@ class IosScanValidationRunner
 
   def lookup_app
     app_identifier = IosApp.find(@ios_app_id).app_identifier
+    start = Time.now
     stores = AppStore.joins(:ios_apps)
       .where('ios_apps.id = ?', @ios_app_id)
       .where(enabled: true, tos_valid: true).where.not(priority: nil)
       .order(:priority)
-
+    duration = Time.now - start
+    Rails.logger.info "lookup_app took #{duration}s"
     if not @options[:enable_international]
       stores = stores.select { |store| store.country_code == 'US' } # us only
     end
