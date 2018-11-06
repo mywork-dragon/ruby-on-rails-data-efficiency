@@ -4,7 +4,4 @@
 # User-agent: *
 # Disallow: /
 
-User-agent: *
-Disallow: /a/
-
 # Sitemap: https://mightysignal.com/a/static/sitemaps/sitemapindex.xml

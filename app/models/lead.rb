@@ -1,6 +1,9 @@
 class Lead < ActiveRecord::Base
   visitable
   
+  has_many :visits, class_name: "Ahoy::Visit"
+  has_many :events, class_name: "Ahoy::Event"
+  
   serialize :lead_data, Hash
 
   def self.create_lead(data)
