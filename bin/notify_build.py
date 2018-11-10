@@ -3,7 +3,7 @@
 import os, json
 import urllib2
 
-url = 'https://hooks.slack.com/services/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'
+url = 'https://hooks.slack.com/services/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'
 circle_tag = os.environ.get('CIRCLE_TAG', 'unspecified')
 
 data = json.dumps({
