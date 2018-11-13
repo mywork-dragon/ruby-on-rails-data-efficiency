@@ -307,7 +307,7 @@ class WelcomeController < ApplicationController
       lead_data[:utm_campaign] = current_visit.utm_campaign
       lead_data[:referrer] = current_visit.referrer
       lead_data[:referring_domain] = current_visit.referring_domain
-      
+
       Lead.create_lead(lead_data)
       ahoy.track "Submitted subscribe", request.path_parameters
       flash[:success] = "We will be in touch soon!"
@@ -363,7 +363,7 @@ class WelcomeController < ApplicationController
     lead_data[:utm_campaign] = current_visit.utm_campaign
     lead_data[:referrer] = current_visit.referrer
     lead_data[:referring_domain] = current_visit.referring_domain
-    
+
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
       lead_data[:company] = email.match(email_regex).to_s[1..-1]

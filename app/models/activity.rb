@@ -72,7 +72,7 @@ class Activity < ActiveRecord::Base
     should_notify = false
     blacklist = TWITTER_BLACKLIST.map do |object|
       class_name,id = object.split(':')
-      class_name.constantize.find(id)
+      class_name.constantize.find(id) rescue false
     end
 
     self.weekly_batches.each do |batch|
