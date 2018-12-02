@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   encrypt_attribute(:salesforce_token, @@kms_key)
 
   # email/pw login
-  EMAIL_USERS = [498, 794]
+  EMAIL_USERS = [498, 794, 897, 2096, 1]
 
   def record_feature_use(feature_name, last_used)
     # Record website feature use.

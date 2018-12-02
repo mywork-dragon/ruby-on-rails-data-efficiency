@@ -191,9 +191,9 @@ end
   apk_snapshot = ApkSnapshot.create(android_app_id: 1)
 
   account = Account.create(name: 'MightySignal', can_view_support_desk: true, can_view_ad_spend: true, can_view_sdks: true, can_view_storewide_sdks: true, can_view_exports: true, can_view_ios_live_scan: true, is_admin_account: true)
-  user = User.create(email: 'matt@mightysignal.com', account_id: account.id, password: '12345')
-  user = User.create(email: 'dawn@mightysignal.com', account_id: account.id, password: '12345')
-  user = User.create(email: 'marco@mightysignal.com', account_id: account.id, password: '12345')
+  user = User.create(email: 'ryan@mightysignal.com', account_id: account.id, password: '12345')
+  user = User.create(email: 'julian@mightysignal.com', account_id: account.id, password: '12345')
+  user = User.create(email: 'juan@mightysignal.com', account_id: account.id, password: '12345')
   FollowRelationship.create(followable_id: 14, followable_type: 'IosSdk', follower_id: 2, follower_type: 'User')
   FollowRelationship.create(followable_id: 14, followable_type: 'IosApp', follower_id: 2, follower_type: 'User')
   # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')

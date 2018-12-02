@@ -79,11 +79,7 @@ class IosApp < ActiveRecord::Base
   ad_table :ios_fb_ads
   # update_index('apps#ios_app') { self } if Rails.env.production?
 
-  WHITELISTED_APPS =  if Rails.env.production?
-                        [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730]
-                      else
-                        IosApp.pluck(:id).sample(14)
-                      end
+  WHITELISTED_APPS = Rails.env.production? ? [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730] : IosApp.pluck(:id).sample(14)
 
   attr_writer :es_client
 

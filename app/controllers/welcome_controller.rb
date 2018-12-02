@@ -100,6 +100,10 @@ class WelcomeController < ApplicationController
       format.js
     end
   end
+  
+  def app_pages
+    platform = store_to_platform params[:platform]
+  end
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids

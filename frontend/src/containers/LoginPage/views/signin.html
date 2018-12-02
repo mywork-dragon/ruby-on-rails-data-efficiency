@@ -12,51 +12,52 @@
                     <button class="signin-button" ng-click="authenticate('linkedin')" ng-if="!showEmailLogin">
                         <i class="fa fa-linkedin" aria-hidden="true"></i>
                         Log In Using LinkedIn
-                    </button>
-                    <!-- <div class="email-login-prompt" ng-if="!showEmailLogin">
-                        <a ng-click="toggleEmailLogin()">
-                            <i class="fa fa-envelope"></i>
-                            Login for Legacy Users
-                        </a>
-                    </div> -->
-                    <div ng-if="!token && showEmailLogin">
-                        <form ng-enter="onLoginButtonClick()">
-                                <!-- class="form-horizontal" -->
-                            <fieldset>
-                                <div class="form-group">
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-envelope"></span>
-                                        </span>
-                                        <input type="email"
-                                                class="form-control"
-                                                placeholder="Email"
-                                                ng-model="user.email"
-                                                >
-                                    </div>
+                    </a>
+                </div>
+                <div class="email-login-prompt" ng-if="!showEmailLogin">
+                  <a ng-click="toggleEmailLogin()">
+                    <i class="fa fa-envelope"></i>
+                    Login In With Email
+                  </a>
+                </div>
+                <div ng-if="!token && showEmailLogin">
+                    <form class="form-horizontal" ng-enter="onLoginButtonClick()">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-envelope"></span>
+                                    </span>
+                                    <input type="email"
+                                           class="form-control"
+                                           placeholder="Email"
+                                           ng-model="user.email"
+                                           >
                                 </div>
-                                <div class="form-group">
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-lock"></span>
-                                        </span>
-                                        <input type="password"
-                                                class="form-control"
-                                                placeholder="Password"
-                                                ng-model="user.password"
-                                                >
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                    </span>
+                                    <input type="password"
+                                           class="form-control"
+                                           placeholder="Password"
+                                           ng-model="user.password"
+                                           >
                                 </div>
-                                <div class="form-group">
-                                </div>
-                                <div class="form-group btn-row">
-                                    <button ng-click="toggleEmailLogin()" class="btn btn-primary">Go Back</button>
-                                    <button id="user-login-button" class="btn btn-primary" ng-click="onLoginButtonClick()">Log in</button>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <p>Trouble logging in?&nbsp<a href="mailto:support@mightysignal.com">E-mail us</a></p>
+                            </div>
+                            <div class="form-group">
+                            </div>
+                            <div class="form-group btn-row">
+                              <button ng-click="toggleEmailLogin()" class="btn btn-primary btn-lg">Go Back</button>
+                              <button id="user-login-button" class="btn btn-primary btn-lg" ng-click="onLoginButtonClick()">Log in</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="login-helper">
+                  Trouble logging in?&nbsp<a class="login-email-link" href="mailto:support@mightysignal.com">E-mail us</a>
                 </div>
             </section>
         </aside>
