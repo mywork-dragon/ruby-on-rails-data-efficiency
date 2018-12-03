@@ -138,6 +138,7 @@ end
 
   ios_apps = IosApp.all
   ios_sdks = IosSdk.all
+  android_apps = AndroidApp.all
   android_sdks = AndroidSdk.all
 
   puts 'creating Tags and Tag Relationships'
@@ -162,6 +163,11 @@ end
     TagRelationship.create(tag_id: rand(1..11), taggable_id: sdk.id, taggable_type: "AndroidSdk")
   end
 
+  50.times do
+    android_app_id = android_apps.sample.id
+    TagRelationship.create(tag_id: 48, taggable_id: android_app_id, taggable_type: "AndroidApp")
+  end
+  
   50.times do
     ios_app_id = ios_apps.sample.id
     TagRelationship.create(tag_id: 48, taggable_id: ios_app_id, taggable_type: "IosApp")
