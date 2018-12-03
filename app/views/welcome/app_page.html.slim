@@ -1,48 +1,48 @@
-#large-header.jumbotron
+#large-header
   .container.app-header
     canvas#demo-canvas
     .app-header-main.col-md-10.col-xs-12
-      img.app-logo.lg-logo.hidden-xs src=@app['icon_url']
+      img.app-logo.lg-logo.hidden-xs src=@json['icon_url']
       .header-info
         h1#app-name
           .app-logo.sm-logo.visible-xs-inline
-            img src=@app['icon_url']
-          = @app['name']
-        h3 = @app['publisher_name']
+            img src=@json['icon_url']
+          h1.name-link = @json['name']
+        h3 = @json['publisher_name']
         .app-header-details
           .col-xs-12
-            | Platform: #{@app['platform'] == 'ios' ? 'iOS' : 'Android'}
+            | Platform: #{@json['platform'] == 'ios' ? 'iOS' : 'Android'}
           .col-xs-12
-            | App ID: #{@app['app_identifier']}
+            | App ID: #{@app.app_identifier}
           .col-xs-12
-            | Price: #{@app['price']}
+            | Price: #{@json['price']}
           .col-xs-12
-            | Category: #{@app['categories'].map{ |c| c[:name]}.join(', ')}
-          - if @app['taken_down']
+            | Category: #{@json['categories'].map{ |c| c[:name]}.join(', ')}
+          - if @json['taken_down']
             .col-xs-12.taken-down-label
               span.label.label-warning
                 | App is no longer available in the app store
     .app-store-button.col-md-2.col-xs-12
-      a{href="#{@app['app_store_url']}" target='_blank'}
+      a{href="#{@json['app_store_url']}" target='_blank'}
         button.btn.btn-primary
           | View in App Store
 .white-panel
   .container.sdk-panel
     .sdk-total-container.col-md-12
-      - if @app['last_scanned_date'].present?
+      - if @json['last_scanned_date'].present?
         .sdk-total
           .total.installed
             i.fas.fa-cubes
-            = @app['installed_sdks_count']
+            = @json['installed_sdks_count']
           | SDKs Installed
 
         .sdk-total
           .total.uninstalled
             i.fas.fa-cubes
-            = @app['uninstalled_sdks_count']
+            = @json['uninstalled_sdks_count']
           | SDKs Uninstalled
         .sdk-total.last-scanned
-          | Last Scanned: "#{ time_ago_in_words(@app['last_scanned_date']) } ago"
+          | Last Scanned: "#{ time_ago_in_words(@json['last_scanned_date']) } ago"
       - else 
         .sdk-total.no-data
           .total.installed
@@ -50,21 +50,21 @@
             | No SDK Data
       = render 'contact_us_button', title: 'Scan This App for SDKs', button_id: 'app-page-live-scan'
     .col-md-7
-      - if @app['installed_sdk_categories'].present?
+      - if @json['installed_sdk_categories'].present?
         .col-md-6.col-xs-12
           h4 Installed SDKs
-          - @app['installed_sdk_categories'].each do |category, val|
+          - @json['installed_sdk_categories'].each do |category, val|
             li.sdk-li
               i.far.fa-check-circle
               = "#{category} (#{val['count']})"
               - if val['recently_updated']
                 span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="Installed in the last month"
                   i.fas.fa-exclamation-circle.tooltip-icon
-      - if @app['uninstalled_sdk_categories'] or @app['installed_sdk_categories']
+      - if @json['uninstalled_sdk_categories'] or @json['installed_sdk_categories']
         .col-md-6.col-xs-12
-          - if @app['uninstalled_sdk_categories']
+          - if @json['uninstalled_sdk_categories']
             h4 Uninstalled SDKs
-            - @app['uninstalled_sdk_categories'].each do |category, val|
+            - @json['uninstalled_sdk_categories'].each do |category, val|
             li.sdk-li
               i.far.fa-times-circle
               = "#{category} (#{val['count']})"
@@ -79,19 +79,19 @@
     .description-container.col-md-6.col-xs-12
       h3 Description
       .description-body
-        = @app['description']
-    - if @app['publisher_id']
+        = @json['description']
+    - if @json['publisher_id']
       .col-md-6.col-xs-12
       .publisher-panel
-        h4 Publisher: #{@app['publisher_name']}
+        h4 Publisher: #{@json['publisher_name']}
         .pub-app.s-title
           | Number of Apps: #{app['publisher_number_of_apps']}, including
         .pub-apps
-          -  @app['publisher_top_app'].each do |app|
+          -  @json['publisher_top_app'].each do |app|
             <a class="app-logo-link" href="#{ app['public_link'] }
               <img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }">
             </a>
-        | Latest Update/Release: #{ @app['publisher_last_updated_app']} days ago
+        | Latest Update/Release: #{ @json['publisher_last_updated_app']} days ago
 
 .white-panel
   .container.app-details
@@ -100,24 +100,24 @@
         .detail-item.
           h4 Rating:
           .big-num
-            - if @app['all_version_rating'] != 'No Rating'
+            - if @json['all_version_rating'] != 'No Rating'
               i.fas.fa-star
-            = @app['all_version_rating'].present?
-          - if @app['all_version_rating'] != 'No Rating'
-            | Based on #{@app['all_version_ratings_count'] } ratings
-        - if @app['latest_update_date'].present?
+            = @json['all_version_rating'].present?
+          - if @json['all_version_rating'] != 'No Rating'
+            | Based on #{@json['all_version_ratings_count'] } ratings
+        - if @json['latest_update_date'].present?
           .detail-item
           h4 Last Update
           .big-num
-            = @app['latest_version'] || @app['latest_update_date']
-          - if @app['latest_version'].present?
-            | Released #{ @app['latest_update_date'] }
+            = @json['latest_version'] || @json['latest_update_date']
+          - if @json['latest_version'].present?
+            | Released #{ @json['latest_update_date'] }
         .detail-item
           h4 Requested Permissions:
-          - if @app['permissions_count'].present?
+          - if @json['permissions_count'].present?
             .big-num
               i.fas.fa-mobile-alt
-              = @app['permissions_count']
+              = @json['permissions_count']
             = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data'
           - else
             .big-num
