@@ -50,7 +50,7 @@ angular.module('appApp')
       $scope.onLoginButtonClick = function() {
         authService.login($scope.user.email, $scope.user.password).then(
           () => {
-            $rootScope.isAuthenticated = authToken.isAuthenticated();
+            // $rootScope.isAuthenticated = authToken.isAuthenticated();
             listApiService.getLists().success((data) => {
               $rootScope.usersLists = data;
             });
