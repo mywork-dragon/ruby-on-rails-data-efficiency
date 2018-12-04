@@ -33,16 +33,16 @@
         .sdk-total
           .total.installed
             i.fas.fa-cubes
-            = @json['installed_sdks_count']
+            h1 = @json['installed_sdks'].count
           | SDKs Installed
 
         .sdk-total
           .total.uninstalled
             i.fas.fa-cubes
-            = @json['uninstalled_sdks_count']
+            h1 = @json['uninstalled_sdks'].count
           | SDKs Uninstalled
         .sdk-total.last-scanned
-          | Last Scanned: "#{ time_ago_in_words(@json['last_scanned_date']) } ago"
+          | Last Scanned: #{ time_ago_in_words(@json['last_scanned_date']) } ago
       - else 
         .sdk-total.no-data
           .total.installed
