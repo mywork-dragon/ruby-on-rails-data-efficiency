@@ -185,10 +185,6 @@ end
     end
   end
 
-  if Rails.env.development?
-    IosApp::WHITELISTED_APPS.each { |id| IosApp.all.sample.update_attributes!(app_identifier: id) }
-  end
-
 
   GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
 
