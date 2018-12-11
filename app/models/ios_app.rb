@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: ios_apps
+#
+#  id                         :integer          not null, primary key
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  app_identifier             :integer
+#  app_id                     :integer
+#  newest_ios_app_snapshot_id :integer
+#  user_base                  :integer
+#  mobile_priority            :integer
+#  released                   :date
+#  newest_ipa_snapshot_id     :integer
+#  display_type               :integer          default(0)
+#  ios_developer_id           :integer
+#  source                     :integer
+#  fb_app_id                  :integer
+#
+
 class IosApp < ActiveRecord::Base
   include AppAds
   include MobileApp

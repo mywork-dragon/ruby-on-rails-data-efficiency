@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: android_app_categories
+#
+#  id               :integer          not null, primary key
+#  name             :string(191)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  category_id      :string(191)
+#  is_ranking_label :boolean          default(FALSE)
+#
+
 class AndroidAppCategory < ActiveRecord::Base
 
   has_many :android_app_categories_snapshots

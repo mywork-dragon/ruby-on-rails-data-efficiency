@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: ios_fb_ads
+#
+#  id                         :integer          not null, primary key
+#  ios_fb_ad_job_id           :integer
+#  ios_app_id                 :integer
+#  fb_account_id              :integer
+#  ios_device_id              :integer
+#  status                     :integer
+#  flagged                    :boolean          default(FALSE)
+#  link_contents              :text(65535)
+#  ad_info_html               :text(65535)
+#  feed_index                 :integer
+#  carousel                   :boolean
+#  date_seen                  :datetime
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  ad_image_file_name         :string(191)
+#  ad_image_content_type      :string(191)
+#  ad_image_file_size         :integer
+#  ad_image_updated_at        :datetime
+#  ad_info_image_file_name    :string(191)
+#  ad_info_image_content_type :string(191)
+#  ad_info_image_file_size    :integer
+#  ad_info_image_updated_at   :datetime
+#  ios_fb_ad_appearances_id   :integer
+#  softlayer_proxy_id         :integer
+#  open_proxy_id              :integer
+#
+
 class IosFbAd < ActiveRecord::Base
 
   belongs_to :ios_fb_ad_job

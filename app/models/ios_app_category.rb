@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: ios_app_categories
+#
+#  id                  :integer          not null, primary key
+#  name                :string(191)
+#  created_at          :datetime
+#  updated_at          :datetime
+#  category_identifier :integer
+#  is_ranking_label    :boolean          default(FALSE)
+#  parent_identifier   :integer
+#
+
 class IosAppCategory < ActiveRecord::Base
   has_many :ios_app_categories_snapshots
   has_many :ios_app_snapshots, through: :ios_app_categories_snapshots

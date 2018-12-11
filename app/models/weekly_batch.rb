@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: weekly_batches
+#
+#  id               :integer          not null, primary key
+#  owner_id         :integer
+#  owner_type       :string(191)
+#  activity_type    :integer
+#  activities_count :integer          default(0), not null
+#  week             :date             not null
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 class WeeklyBatch < ActiveRecord::Base
   validates :activity_type, presence: true
 

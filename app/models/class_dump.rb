@@ -1,3 +1,42 @@
+# == Schema Information
+#
+# Table name: class_dumps
+#
+#  id                       :integer          not null, primary key
+#  created_at               :datetime
+#  updated_at               :datetime
+#  class_dump_file_name     :string(191)
+#  class_dump_content_type  :string(191)
+#  class_dump_file_size     :integer
+#  class_dump_updated_at    :datetime
+#  ipa_snapshot_id          :integer
+#  success                  :boolean
+#  install_success          :boolean
+#  dump_success             :boolean
+#  teardown_success         :boolean
+#  teardown_retry           :boolean
+#  duration                 :float(24)
+#  install_time             :float(24)
+#  dump_time                :float(24)
+#  teardown_time            :float(24)
+#  error                    :text(65535)
+#  trace                    :text(65535)
+#  error_root               :text(65535)
+#  error_teardown           :text(65535)
+#  error_teardown_trace     :text(65535)
+#  method                   :string(191)
+#  complete                 :boolean
+#  error_code               :integer
+#  ios_device_id            :integer
+#  has_fw_folder            :boolean
+#  apple_account_id         :integer
+#  app_content_file_name    :string(191)
+#  app_content_content_type :string(191)
+#  app_content_file_size    :integer
+#  app_content_updated_at   :datetime
+#  account_success          :integer
+#
+
 class ClassDump < ActiveRecord::Base
 
   class InvalidContentType < RuntimeError; end

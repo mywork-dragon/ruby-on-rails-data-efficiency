@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: clearbit_contacts
+#
+#  id              :integer          not null, primary key
+#  website_id      :integer
+#  clearbit_id     :string(191)
+#  given_name      :string(191)
+#  family_name     :string(191)
+#  full_name       :string(191)
+#  title           :string(191)
+#  email           :string(191)
+#  linkedin        :string(191)
+#  updated         :date
+#  created_at      :datetime
+#  updated_at      :datetime
+#  domain_datum_id :integer
+#
+
 # DEPRECATED model/class methods
 # we now rely on the mightybit (lense) service.
 

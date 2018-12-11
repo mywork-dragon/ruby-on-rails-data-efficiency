@@ -1,3 +1,33 @@
+# == Schema Information
+#
+# Table name: accounts
+#
+#  id                       :integer          not null, primary key
+#  name                     :string(191)
+#  created_at               :datetime
+#  updated_at               :datetime
+#  can_view_support_desk    :boolean          default(FALSE), not null
+#  can_view_ad_spend        :boolean          default(TRUE), not null
+#  can_view_sdks            :boolean          default(FALSE), not null
+#  can_view_storewide_sdks  :boolean          default(FALSE)
+#  can_view_exports         :boolean          default(TRUE)
+#  is_admin_account         :boolean          default(FALSE)
+#  can_view_ios_live_scan   :boolean
+#  seats_count              :integer          default(5)
+#  can_view_ad_attribution  :boolean          default(FALSE)
+#  salesforce_uid           :string(191)
+#  salesforce_token         :text(65535)
+#  salesforce_refresh_token :text(65535)
+#  salesforce_instance_url  :text(65535)
+#  salesforce_settings      :text(65535)
+#  mightysignal_id          :string(191)
+#  can_use_salesforce       :boolean          default(FALSE)
+#  salesforce_status        :integer          default(0)
+#  ad_data_permissions      :text(65535)
+#  salesforce_syncing       :boolean          default(FALSE)
+#  feature_permissions      :text(65535)
+#
+
 class Account < ActiveRecord::Base
   include Follower
   include AdDataPermissions
