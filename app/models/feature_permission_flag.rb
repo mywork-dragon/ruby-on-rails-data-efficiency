@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: feature_permission_flags
+#
+#  id         :integer          not null, primary key
+#  name       :string(191)      not null
+#  enabled    :boolean          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class FeaturePermissionFlag < ActiveRecord::Base
   validates :name, uniqueness: true
 

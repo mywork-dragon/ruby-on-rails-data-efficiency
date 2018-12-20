@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: ios_sdks
+#
+#  id                      :integer          not null, primary key
+#  name                    :string(191)
+#  website                 :string(191)
+#  favicon                 :string(191)
+#  flagged                 :boolean          default(FALSE)
+#  open_source             :boolean
+#  created_at              :datetime
+#  updated_at              :datetime
+#  summary                 :text(65535)
+#  deprecated              :boolean
+#  github_repo_identifier  :integer
+#  sdk_company_id          :integer
+#  ios_sdk_source_group_id :integer
+#  source                  :integer
+#  kind                    :integer
+#  uid                     :string(191)
+#
+
 class IosSdk < ActiveRecord::Base
   include Sdk
 

@@ -1,3 +1,32 @@
+# == Schema Information
+#
+# Table name: apk_snapshots
+#
+#  id                  :integer          not null, primary key
+#  version             :string(191)
+#  google_account_id   :integer
+#  android_app_id      :integer
+#  download_time       :float(24)
+#  unpack_time         :float(24)
+#  status              :integer
+#  apk_snapshot_job_id :integer
+#  created_at          :datetime
+#  updated_at          :datetime
+#  try                 :integer
+#  auth_token          :text(65535)
+#  micro_proxy_id      :integer
+#  last_device         :integer
+#  apk_file_id         :integer
+#  scan_status         :integer
+#  last_updated        :datetime
+#  scan_version        :integer
+#  version_code        :integer
+#  first_valid_date    :datetime
+#  good_as_of_date     :datetime
+#  last_scanned        :datetime
+#  region              :integer
+#
+
 class ApkSnapshot < ActiveRecord::Base
 
   belongs_to :google_account

@@ -1,3 +1,29 @@
+# == Schema Information
+#
+# Table name: companies
+#
+#  id                     :integer          not null, primary key
+#  name                   :string(191)
+#  website                :string(191)
+#  status                 :integer
+#  created_at             :datetime
+#  updated_at             :datetime
+#  fortune_1000_rank      :integer
+#  ceo_name               :string(191)
+#  street_address         :string(191)
+#  city                   :string(191)
+#  zip_code               :string(191)
+#  state                  :string(191)
+#  employee_count         :integer
+#  industry               :string(191)
+#  type                   :string(191)
+#  funding                :integer
+#  inc_5000_rank          :integer
+#  country                :string(191)
+#  app_store_identifier   :integer
+#  google_play_identifier :string(191)
+#
+
 class Company < ActiveRecord::Base
   has_many :installations
   has_many :scraped_results

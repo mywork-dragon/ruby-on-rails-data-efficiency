@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: google_accounts
+#
+#  id                 :integer          not null, primary key
+#  email              :string(191)
+#  password           :string(191)
+#  android_identifier :string(191)
+#  proxy_id           :integer
+#  blocked            :boolean
+#  flags              :integer
+#  last_used          :datetime
+#  created_at         :datetime
+#  updated_at         :datetime
+#  in_use             :boolean
+#  device             :integer
+#  scrape_type        :integer          default(0)
+#  auth_token         :string(191)
+#
+
 class GoogleAccount < ActiveRecord::Base
 
 	has_many :apk_snapshots

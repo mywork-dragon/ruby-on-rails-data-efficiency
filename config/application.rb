@@ -18,7 +18,15 @@ module Varys
     config.encoding = "utf-8"
     config.time_zone = 'Pacific Time (US & Canada)'
     config.cache_prefix = {namespace: 'cache:varys'}
-    config.cache_store = :redis_store, "redis://varys-production.bsqwsz.0001.use1.cache.amazonaws.com:6379", config.cache_prefix
+
+    # https://github.com/docker-library/redis/issues/45
+    redis_uri = if Rails.env.development?
+                  p "Trying out redis"
+                  "redis://redis:6379"
+                else
+                  "redis://varys-production.bsqwsz.0001.use1.cache.amazonaws.com:6379"
+                end
+    config.cache_store = :redis_store, redis_uri, config.cache_prefix
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: android_developers
+#
+#  id         :integer          not null, primary key
+#  name       :string(191)
+#  identifier :string(191)
+#  company_id :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class AndroidDeveloper < ActiveRecord::Base
 
   belongs_to :company

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: ios_app_ranking_snapshots
+#
+#  id         :integer          not null, primary key
+#  kind       :integer
+#  is_valid   :boolean          default(FALSE)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class IosAppRankingSnapshot < ActiveRecord::Base
 
   has_many :ios_app_rankings

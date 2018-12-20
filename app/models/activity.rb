@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: activities
+#
+#  id          :integer          not null, primary key
+#  created_at  :datetime
+#  updated_at  :datetime
+#  happened_at :datetime
+#  major_app   :boolean          default(FALSE)
+#
+
 class Activity < ActiveRecord::Base
   has_many :weekly_batches_activities, dependent: :destroy
   has_many :weekly_batches, through: :weekly_batches_activities
