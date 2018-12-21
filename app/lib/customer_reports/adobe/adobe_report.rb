@@ -39,6 +39,7 @@ class AdobeReport
       # file_content = File.read(Rails.root.join('app', 'lib', 'customer_reports', 'adobe', 'publishers.csv'))
       publisher_names = extract_publisher_names(file_content)
       publisher_names.each do |publisher_name|
+        p "Processing: #{publisher_name}"
         more_than_one_found_msg = 'More that one publisher matches that name'
 
         ios_developers = IosDeveloper.where(name: publisher_name)
@@ -58,7 +59,7 @@ class AdobeReport
 
         if android_devs_found_amnt >= 1
           found = true
-          line = generate_row_android(android_developer.first)
+          line = generate_row_android(android_developers.first)
           output_file_android.write(line)
         end
       end
