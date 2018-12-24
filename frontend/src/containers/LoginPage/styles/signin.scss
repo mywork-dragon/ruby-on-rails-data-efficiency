@@ -1,0 +1,229 @@
+* {
+    box-sizing: border-box;
+    font-size: 7px;
+    font-family: "Open Sans", sans-serif;
+    letter-spacing: 0.3px;
+}
+
+html {
+    line-height: normal;
+}
+
+img {
+    vertical-align: baseline;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+    color: black;
+    background-color: white;
+    font-size: 16px;
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer */
+    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none; /* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+}
+
+main#signin-main {
+    display: flex;
+}
+
+button.signin-button:hover {
+    cursor: pointer;
+}
+
+main#signin-main > aside#signin-aside {
+    padding: 29px 30px 15px;
+    min-width: 250px;
+    min-height: 100vh;
+    flex-basis: 33.3%;
+}
+
+main#signin-main > aside#signin-aside > section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    max-height: 45%;
+
+    background-color: white;
+}
+
+main#signin-main > aside#signin-aside > section > div {
+    margin-top: 15.9vh;
+    margin-bottom: -5px;
+}
+
+main#signin-main > aside#signin-aside > section > .logo {
+    margin-left: -3px;
+    width: 12.6vw;
+    min-width: 12.6vw;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+main#signin-main > aside#signin-aside > section > div p {
+    margin-left: 1px;
+    margin-bottom: 1.5vh;
+    margin-top: 1em;
+    font-size: 1.43vw;
+    letter-spacing: 0.27px;
+}
+
+main#signin-main > aside#signin-aside > section > div > p:last-child {
+    bottom: -14px;
+    font-size: 1.22vw;
+    position: relative;
+}
+
+main > aside#signin-aside > section > div > p > a {
+    font-size: 1.22vw;
+    color: #0393dd;
+}
+
+button.signin-button {
+    padding: 0;
+    margin-bottom: 0.75vw;
+
+    width: 99%;
+    height: 3.6vw;
+
+    border: 0;
+    border-radius: 0.3vh;
+
+    font-size: 1.2vw;
+
+    color: white;
+    background-color: #2db6d8;
+}
+
+button.signin-button:hover {
+    background-color: #209ab8;
+}
+
+button.signin-button > i {
+    left: -6px;
+    font-size: 1.4vw;
+    position: relative;
+}
+
+main > section {
+    height: auto;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    
+    background-color: #242b31;
+
+    overflow: hidden;
+    position: relative;
+}
+
+main > section > .bg {
+    position: absolute;
+
+    width: 65%;
+    height: 50%;
+    max-width: 142vh;
+
+    z-index: 1;
+}
+
+main > section > .bg-top {
+    top: 0;
+    right: 0;
+}
+
+main > section > .bg-bottom {
+    left: 0;
+    bottom: 0;
+}
+
+main > section > .elephant {
+    top: -10.3vh;
+    left: 3.7vw;
+
+    align-self: center;
+
+    width: 63.5vmin;
+    max-width: 80%;
+    height: 63.5vmin;
+
+    position: relative;
+    z-index: 10;
+}
+
+@media screen and (max-width: 1024px) {
+    main {
+        display: block;
+    }
+
+    main > section {
+        display: none;
+    }
+
+    main > aside {
+        max-width: 80%;
+        padding-right: 0;
+        padding-left: 0;
+        padding-top: 60px;
+        margin: 0 auto;
+    }
+
+    main > aside > section > .logo {
+        width: 35vw;
+        min-width: 0;
+    }
+    
+    main > aside > section > div {
+        width: 90%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    button {
+        margin-bottom: 10px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    button > i,
+    main > aside > section > div p,
+    main > aside > section > div > p:last-child,
+    main > aside > section > div > p > a {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 430px) {
+    main > aside {
+        padding-top: 29px;
+    }
+
+    main > aside > section > .logo {
+        width: 150px;
+        min-width: 0;
+    }
+    
+    button {
+        margin-bottom: 10px;
+        height: 50px;
+        font-size: 14px;
+    }
+
+    button > i,
+    main > aside > section > div p,
+    main > aside > section > div > p:last-child,
+    main > aside > section > div > p > a {
+        font-size: 14px;
+    }
+}

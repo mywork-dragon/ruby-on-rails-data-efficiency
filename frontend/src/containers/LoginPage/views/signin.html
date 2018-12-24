@@ -1,76 +1,58 @@
 <div class="page-signin" data-ng-controller="LoginCtrl">
-
-    <div class="signin-header">
-        <div class="container text-center">
-            <section class="logo">
+    <main id="signin-main">
+        <aside id="signin-aside">
+            <section>
                 <img ng-src="images/mighty_signal_logo.png"></img>
-            </section>
-        </div>
-    </div>
-
-    <div class="main-body">
-        <div class="container">
-            <div class="form-container">
-                <h4 ng-if="message" ng-bind-html="message" class="message {{redMessage ? 'red' : nil}}"></h4>
-                <div class="google social-button" ng-if="!showEmailLogin">
-                    <a ng-click="authenticate('google')" class="btn btn-primary">
+                <div>
+                    <p ng-if="message" ng-bind-html="message" class="message {{redMessage ? 'red' : nil}}"></p>
+                    <button class="signin-button" ng-click="authenticate('google')" ng-if="!showEmailLogin">
                         <i class="fa fa-google-plus" aria-hidden="true"></i>
                         Log In Using Google
-                    </a>
-                </div>
-                <div class="linkedin social-button" ng-if="!showEmailLogin">
-                    <a ng-click="authenticate('linkedin')" class="btn btn-primary">
+                    </button>
+                    <button class="signin-button" ng-click="authenticate('linkedin')" ng-if="!showEmailLogin">
                         <i class="fa fa-linkedin" aria-hidden="true"></i>
                         Log In Using LinkedIn
-                    </a>
+                    </button>
+                    <p>Trouble logging in?&nbsp<a href="mailto:support@mightysignal.com">E-mail us</a></p>
                 </div>
-                <!-- <div class="email-login-prompt" ng-if="!showEmailLogin">
-                  <a ng-click="toggleEmailLogin()">
-                    <i class="fa fa-envelope"></i>
-                    Login for Legacy Users
-                  </a>
-                </div> -->
-                <div ng-if="!token && showEmailLogin">
-                    <form class="form-horizontal" ng-enter="onLoginButtonClick()">
-                        <fieldset>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-envelope"></span>
-                                    </span>
-                                    <input type="email"
-                                           class="form-control"
-                                           placeholder="Email"
-                                           ng-model="user.email"
-                                           >
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-lock"></span>
-                                    </span>
-                                    <input type="password"
-                                           class="form-control"
-                                           placeholder="Password"
-                                           ng-model="user.password"
-                                           >
-                                </div>
-                            </div>
-                            <div class="form-group">
-                            </div>
-                            <div class="form-group btn-row">
-                              <button ng-click="toggleEmailLogin()" class="btn btn-primary btn-lg">Go Back</button>
-                              <button id="user-login-button" class="btn btn-primary btn-lg" ng-click="onLoginButtonClick()">Log in</button>
-                            </div>
-                        </fieldset>
-                    </form>
+            </section>
+        </aside>
+        <section></section>
+    </main>
+    <div ng-if="!token && showEmailLogin">
+        <form class="form-horizontal" ng-enter="onLoginButtonClick()">
+            <fieldset>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </span>
+                        <input type="email"
+                                class="form-control"
+                                placeholder="Email"
+                                ng-model="user.email"
+                                >
+                    </div>
                 </div>
-                <div class="login-helper">
-                  Trouble logging in?&nbsp<a class="login-email-link" href="mailto:support@mightysignal.com">E-mail us</a>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-lock"></span>
+                        </span>
+                        <input type="password"
+                                class="form-control"
+                                placeholder="Password"
+                                ng-model="user.password"
+                                >
+                    </div>
                 </div>
-            </div>
-        </div>
+                <div class="form-group">
+                </div>
+                <div class="form-group btn-row">
+                    <button ng-click="toggleEmailLogin()" class="btn btn-primary btn-lg">Go Back</button>
+                    <button id="user-login-button" class="btn btn-primary btn-lg" ng-click="onLoginButtonClick()">Log in</button>
+                </div>
+            </fieldset>
+        </form>
     </div>
-
 </div>
