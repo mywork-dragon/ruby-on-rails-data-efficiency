@@ -44,10 +44,11 @@ html lang="en"
     meta content="authenticity_token" name="csrf-param" /
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
     meta name="google-site-verification" content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo" /
+    <%= if Rails.env.production? %>
     = render 'shared/ga'
     = render 'shared/autopilot'
     script async="true" src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"
-
+    <% end %>
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
       iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
@@ -115,7 +116,6 @@ html lang="en"
         ahoy.trackAll();
       });
     script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
-    script type="text/javascript" id="hs-script-loader" async='true' defer='true' src="//js.hs-scripts.com/565753.js"
     = render 'shared/linkedin_insight_tag'
     = render 'shared/facebook_pixel_1'
     = render 'shared/beacon'
