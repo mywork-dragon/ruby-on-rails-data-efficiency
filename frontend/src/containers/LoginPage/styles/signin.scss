@@ -183,7 +183,7 @@ main#signin-main > section {
             max-width: 80%;
             padding-right: 0;
             padding-left: 0;
-            padding-top: 60px;
+            padding-top: 5vh;
             margin: 0 auto;
             > section {
                 > .login-logo {
@@ -195,6 +195,7 @@ main#signin-main > section {
                     width: 90%;
                     margin-right: auto;
                     margin-left: auto;
+                    margin-top: 2vh;
                 }
             }
         }
