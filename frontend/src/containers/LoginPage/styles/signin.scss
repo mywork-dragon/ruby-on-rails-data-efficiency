@@ -1,5 +1,5 @@
-$headingText: 20px;
-$regularText: 14px;
+$headingFontSize: 20px;
+$regularFontSize: 14px;
 
 @mixin linearGradient($degree:55deg, $transparency:transparent, $color:#242b31, $colorPercentage:42%, $secondColorPercentage:58px) {
     background: linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency);
@@ -200,13 +200,13 @@ $regularText: 14px;
             height: 50px;
             font-size: 18px;
             > i {
-                font-size: $headingText;
+                font-size: $headingFontSize;
             }
         }
     
         main#signin-main > aside#signin-aside > section > div {
             p, > p > a, p:last-child {
-                font-size: $headingText;
+                font-size: $headingFontSize;
             }
         }
     }
@@ -225,16 +225,16 @@ $regularText: 14px;
         button.signin-button {
             margin-bottom: 10px;
             height: 50px;
-            font-size: $regularText;
+            font-size: $regularFontSize;
         }
     
         button.signin-button > i {
-            font-size: $regularText;
+            font-size: $regularFontSize;
         }
 
         main > aside > section > div {
             p, > p > a, > p:last-child {
-                font-size: $regularText;
+                font-size: $regularFontSize;
             }
         }
     }
