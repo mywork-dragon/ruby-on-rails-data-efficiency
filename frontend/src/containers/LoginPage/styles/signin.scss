@@ -1,3 +1,15 @@
+$headingText: 20px;
+$regularText: 14px;
+
+@mixin linearGradient($degree:55deg, $transparency:transparent, $color:#242b31, $colorPercentage:42%, $secondColorPercentage:58px) {
+    background: linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency);
+    background: -moz-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* ff3.6+ */
+    background: -webkit-gradient(linear, left bottom, right top, color-stop($transparency), color-stop($colorPercentage, $color), color-stop($secondColorPercentage, $color), color-stop($transparency)); /* safari4+,chrome */
+    background: -webkit-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* safari5.1+,chrome10+ */
+    background: -o-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* opera 11.10+ */
+    background: -ms-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* ie10+ */   
+}
+
 .page-signin {
     line-height: normal;
     color: black;
@@ -32,7 +44,7 @@
             padding: 29px 30px 15px;
             min-width: 250px;
             min-height: 100vh;
-            flex-basis: 33.3%;
+            flex: 1;
             > section {
                 display: flex;
                 flex-direction: column;
@@ -41,7 +53,7 @@
             
                 max-height: 45%;
                 > div {
-                    margin-top: 15.9vh;
+                    margin-top: 16.0vh;
                     margin-bottom: -5px;
                     p {
                         margin-left: 1px;
@@ -102,7 +114,7 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        flex: 1;
+        flex: 2;
         
         background-color: #242b31;
     
@@ -152,12 +164,7 @@
     
                 pointer-events: none;
     
-                background: linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent);
-                background: -moz-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ff3.6+ */
-                background: -webkit-gradient(linear, left bottom, right top, color-stop(transparent), color-stop(42%, #242b31), color-stop(58%, #242b31), color-stop(transparent)); /* safari4+,chrome */
-                background: -webkit-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* safari5.1+,chrome10+ */
-                background: -o-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* opera 11.10+ */
-                background: -ms-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ie10+ */
+                @include linearGradient;
                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='transparent',GradientType=1 ); /* ie6-9 */
             }
         }
@@ -197,13 +204,13 @@
             height: 50px;
             font-size: 18px;
             > i {
-                font-size: 20px;
+                font-size: $headingText;
             }
         }
     
         main#signin-main > aside#signin-aside > section > div {
             p, > p > a, p:last-child {
-                font-size: 20px;
+                font-size: $headingText;
             }
         }
     }
@@ -222,14 +229,17 @@
         button.signin-button {
             margin-bottom: 10px;
             height: 50px;
-            font-size: 14px;
+            font-size: $regularText;
         }
     
-        button.signin-button > i,
-        main > aside > section > div p,
-        main > aside > section > div > p:last-child,
-        main > aside > section > div > p > a {
-            font-size: 14px;
+        button.signin-button > i {
+            font-size: $regularText;
+        }
+
+        main > aside > section > div {
+            p, > p > a, > p:last-child {
+                font-size: $regularText;
+            }
         }
     }
 }
