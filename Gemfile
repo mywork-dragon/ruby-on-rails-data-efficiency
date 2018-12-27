@@ -48,6 +48,7 @@ gem 'whenever', '0.9.4', require: false
 
 gem 'nokogiri', '1.6.4.1'
 gem "recaptcha", '4.0.1', require: "recaptcha/rails"
+gem 'andand'
 
 # for deployment
 group :development do
