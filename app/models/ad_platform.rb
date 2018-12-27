@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: ad_platforms
+#
+#  id         :integer          not null, primary key
+#  platform   :string(191)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class AdPlatform < ActiveRecord::Base
   has_many :weekly_batches, as: :owner
 

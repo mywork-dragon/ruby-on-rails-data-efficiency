@@ -1,3 +1,31 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                   :integer          not null, primary key
+#  email                :string(191)
+#  password_digest      :string(191)
+#  created_at           :datetime
+#  updated_at           :datetime
+#  account_id           :integer
+#  tos_accepted         :boolean          default(FALSE)
+#  access_revoked       :boolean          default(FALSE)
+#  is_admin             :boolean          default(FALSE)
+#  google_uid           :string(191)
+#  google_token         :text(65535)
+#  linkedin_uid         :string(191)
+#  linkedin_token       :text(65535)
+#  last_active          :datetime
+#  first_name           :string(191)
+#  last_name            :string(191)
+#  profile_url          :text(65535)
+#  refresh_token        :string(191)
+#  salesforce_uid       :string(191)
+#  salesforce_token     :text(65535)
+#  salesforce_name      :string(191)
+#  salesforce_image_url :text(65535)
+#
+
 class User < ActiveRecord::Base
   include Follower
   include EncryptedAttributes

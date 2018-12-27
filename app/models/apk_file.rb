@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: apk_files
+#
+#  id               :integer          not null, primary key
+#  created_at       :datetime
+#  updated_at       :datetime
+#  apk_file_name    :string(191)
+#  apk_content_type :string(191)
+#  apk_file_size    :integer
+#  apk_updated_at   :datetime
+#  zip_file_name    :string(191)
+#  zip_content_type :string(191)
+#  zip_file_size    :integer
+#  zip_updated_at   :datetime
+#
+
 class ApkFile < ActiveRecord::Base
 
   has_many :apk_snapshots

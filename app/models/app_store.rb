@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: app_stores
+#
+#  id               :integer          not null, primary key
+#  country_code     :string(191)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  name             :string(191)
+#  enabled          :boolean          default(FALSE)
+#  priority         :integer
+#  display_priority :integer
+#  tos_valid        :boolean          default(TRUE)
+#  tos_url_path     :text(65535)
+#  storefront_id    :string(191)
+#
+
 class AppStore < ActiveRecord::Base
 
   has_many :app_stores_ios_apps

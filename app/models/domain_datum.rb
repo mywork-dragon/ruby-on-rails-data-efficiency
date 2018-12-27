@@ -1,3 +1,56 @@
+# == Schema Information
+#
+# Table name: domain_data
+#
+#  id                :integer          not null, primary key
+#  clearbit_id       :string(191)
+#  name              :string(191)
+#  legal_name        :string(191)
+#  domain            :string(191)
+#  description       :text(65535)
+#  company_type      :string(191)
+#  tags              :text(65535)
+#  sector            :string(191)
+#  industry_group    :string(191)
+#  industry          :string(191)
+#  sub_industry      :string(191)
+#  tech_used         :text(65535)
+#  founded_year      :integer
+#  time_zone         :string(191)
+#  utc_offset        :integer
+#  street_number     :string(191)
+#  street_name       :string(191)
+#  sub_premise       :string(191)
+#  city              :string(191)
+#  postal_code       :string(191)
+#  state             :string(191)
+#  state_code        :string(191)
+#  country           :string(191)
+#  country_code      :string(191)
+#  lat               :decimal(10, 6)
+#  lng               :decimal(10, 6)
+#  logo_url          :string(191)
+#  facebook_handle   :string(191)
+#  linkedin_handle   :string(191)
+#  twitter_handle    :string(191)
+#  twitter_id        :string(191)
+#  crunchbase_handle :string(191)
+#  email_provider    :boolean
+#  ticker            :string(191)
+#  phone             :string(191)
+#  alexa_us_rank     :integer
+#  alexa_global_rank :integer
+#  google_rank       :integer
+#  employees         :integer
+#  employees_range   :string(191)
+#  market_cap        :integer
+#  raised            :integer
+#  annual_revenue    :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  fortune_1000_rank :integer
+#
+
 class DomainDatum < ActiveRecord::Base
   has_many :websites, through: :websites_domain_data
   has_many :websites_domain_data

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: ios_reclassification_methods
+#
+#  id         :integer          not null, primary key
+#  method     :integer
+#  active     :boolean
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class IosReclassificationMethod < ActiveRecord::Base
 
   # this should mirror the method field on IosSdksIpaSnapshot

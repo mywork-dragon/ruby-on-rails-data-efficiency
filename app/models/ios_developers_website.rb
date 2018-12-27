@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: ios_developers_websites
+#
+#  id               :integer          not null, primary key
+#  ios_developer_id :integer
+#  website_id       :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#  is_valid         :boolean          default(TRUE)
+#
+
 class IosDevelopersWebsite < ActiveRecord::Base
   belongs_to :ios_developer
   belongs_to :website

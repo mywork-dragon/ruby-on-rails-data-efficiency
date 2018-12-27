@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: apk_snapshot_jobs
+#
+#  id               :integer          not null, primary key
+#  notes            :text(65535)
+#  is_fucked        :boolean
+#  created_at       :datetime
+#  updated_at       :datetime
+#  job_type         :integer
+#  ls_lookup_code   :integer
+#  ls_download_code :integer
+#
+
 class ApkSnapshotJob < ActiveRecord::Base
   
   has_many :apk_snapshots

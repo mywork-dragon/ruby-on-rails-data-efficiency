@@ -122,6 +122,9 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
+    annotate (2.7.4)
+      activerecord (>= 3.2, < 6.0)
+      rake (>= 10.4, < 13.0)
     arel (6.0.4)
     ast (2.3.0)
     autoprefixer-rails (6.7.7.2)
@@ -613,6 +616,7 @@ DEPENDENCIES
   activerecord4-redshift-adapter (~> 0.2.4)!
   addressable (~> 2.4)
   ahoy_matey
+  annotate
   autoprefixer-rails
   awesome_print (= 1.6.1)
   bcrypt (= 3.1.10)
@@ -708,4 +712,4 @@ DEPENDENCIES
   www-favicon (= 0.0.6)
 
 BUNDLED WITH
-   1.16.3
+   1.17.1

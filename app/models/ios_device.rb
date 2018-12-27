@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: ios_devices
+#
+#  id                  :integer          not null, primary key
+#  serial_number       :string(191)
+#  ip                  :string(191)
+#  purpose             :integer
+#  created_at          :datetime
+#  updated_at          :datetime
+#  in_use              :boolean
+#  last_used           :datetime
+#  ios_version         :string(191)
+#  description         :text(65535)
+#  softlayer_proxy_id  :integer
+#  ios_device_model_id :integer
+#  ios_version_fmt     :string(191)
+#  disabled            :boolean          default(FALSE)
+#  open_proxy_id       :integer
+#  apple_account_id    :integer
+#  udid                :string(191)
+#
+
 class IosDevice < ActiveRecord::Base
 
 	has_many :class_dump
