@@ -1,243 +1,235 @@
-* {
-    box-sizing: border-box;
-    font-size: 7px;
-    font-family: "Open Sans", sans-serif;
-    letter-spacing: 0.3px;
-}
-
-html {
-    line-height: normal;
-}
-
-img {
-    vertical-align: baseline;
-}
-
-body {
-    margin: 0;
-    padding: 0;
+.page-signin {
     line-height: normal;
     color: black;
     background-color: white;
     font-size: 16px;
     height: 100vh;
-}
 
-img.elephant, img.login-logo {
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer */
-    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
-    -webkit-user-select: none; /* Chrome, Safari, and Opera */
-    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
-}
+    > * {
+        box-sizing: border-box;
+        font-size: 7px;
+        font-family: "Open Sans", sans-serif;
+        letter-spacing: 0.3px;
+    }
 
-main#signin-main {
-    display: flex;
-    min-height: 50vh;
-    overflow: hidden;
-    > aside#signin-aside {
-        padding: 29px 30px 15px;
-        min-width: 250px;
-        min-height: 100vh;
-        flex-basis: 33.3%;
-        > section {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        
-            max-height: 45%;
-        
-            background-color: white;
-            > div {
-                margin-top: 15.9vh;
-                margin-bottom: -5px;
-                p {
-                    margin-left: 1px;
-                    margin-bottom: 1.5vh;
-                    margin-top: 1em;
-                    font-size: 1.43vw;
-                    letter-spacing: 0.27px;
-                }
-                > p {
-                    &:last-child {
-                        bottom: -14px;
-                        font-size: 1.22vw;
-                        position: relative;
+    img {
+        vertical-align: baseline;
+    }
+    
+    img.elephant, img.login-logo {
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer */
+        -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+        -webkit-user-select: none; /* Chrome, Safari, and Opera */
+        -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+    }
+    
+    main#signin-main {
+        display: flex;
+        min-height: 50vh;
+        overflow: hidden;
+        > aside#signin-aside {
+            padding: 29px 30px 15px;
+            min-width: 250px;
+            min-height: 100vh;
+            flex-basis: 33.3%;
+            > section {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+            
+                max-height: 45%;
+                > div {
+                    margin-top: 15.9vh;
+                    margin-bottom: -5px;
+                    p {
+                        margin-left: 1px;
+                        margin-bottom: 1.5vh;
+                        margin-top: 1em;
+                        font-size: 1.43vw;
+                        letter-spacing: 0.27px;
                     }
-                    > a {
-                        font-size: 1.22vw;
-                        color: #0393dd;
+                    > p {
+                        &:last-child {
+                            bottom: -14px;
+                            font-size: 1.22vw;
+                            position: relative;
+                        }
+                        > a {
+                            font-size: 1.22vw;
+                            color: #0393dd;
+                        }
                     }
                 }
-            }
-            > .login-logo {
-                margin-left: -3px;
-                width: 12.6vw;
-                min-width: 12.6vw;
+                > .login-logo {
+                    margin-left: -3px;
+                    width: 12.6vw;
+                    min-width: 12.6vw;
+                }
             }
         }
     }
-}
 
-button.signin-button {
-    padding: 0;
-    margin-bottom: 0.75vw;
-
-    width: 99%;
-    height: 3.6vw;
-
-    border: 0;
-    border-radius: 0.3vh;
-
-    font-size: 1.2vw;
-
-    color: white;
-    background-color: #2db6d8;
-    &:hover {
-        cursor: pointer;
-        background-color: #209ab8;
+    button.signin-button {
+        padding: 0;
+        margin-bottom: 0.75vw;
+    
+        width: 99%;
+        height: 3.6vw;
+    
+        border: 0;
+        border-radius: 0.3vh;
+    
+        font-size: 1.2vw;
+    
+        color: white;
+        background-color: #2db6d8;
+        &:hover {
+            cursor: pointer;
+            background-color: #209ab8;
+        }
+        > i {
+            left: -6px;
+            font-size: 1.4vw;
+            position: relative;
+        }
     }
-    > i {
-        left: -6px;
-        font-size: 1.4vw;
+
+    main#signin-main > section {
+        height: auto;
+    
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex: 1;
+        
+        background-color: #242b31;
+    
+        overflow: hidden;
         position: relative;
-    }
-}
-
-main#signin-main > section {
-    height: auto;
-
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex: 1;
+        > .bg {
+            position: absolute;
+        
+            width: 65%;
+            height: 50%;
+            max-width: 142vh;
+        
+            z-index: 1;
+        }
     
-    background-color: #242b31;
-
-    overflow: hidden;
-    position: relative;
-    > .bg {
-        position: absolute;
+        > .bg-top {
+            top: 0;
+            right: 0;
+        }
     
-        width: 65%;
-        height: 50%;
-        max-width: 142vh;
+        > .bg-bottom {
+            left: 0;
+            bottom: 0;
+        }
+        
+        > .elephant {
+            top: -11.4vh;
+            left: 5.3vh;
+            align-self: center;
+            width: 65.5vmin;
+            height: 63.5vmin;
+            max-width: 80%;
+            position: relative;
+            z-index: 10;
+        }
     
-        z-index: 1;
-    }
-
-    > .bg-top {
-        top: 0;
-        right: 0;
-    }
-
-    > .bg-bottom {
-        left: 0;
-        bottom: 0;
-    }
-    
-    > .elephant {
-        top: -11.4vh;
-        left: 5.3vh;
-        align-self: center;
-        width: 65.5vmin;
-        height: 63.5vmin;
-        max-width: 80%;
-        position: relative;
-        z-index: 10;
-    }
-
-    > .particles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-
-        &:before {
-            content: '';
+        > .particles {
             position: absolute;
             width: 100%;
             height: 100%;
-
-            pointer-events: none;
-
-            background: linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent);
-            background: -moz-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ff3.6+ */
-            background: -webkit-gradient(linear, left bottom, right top, color-stop(transparent), color-stop(42%, #242b31), color-stop(58%, #242b31), color-stop(transparent)); /* safari4+,chrome */
-            background: -webkit-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* safari5.1+,chrome10+ */
-            background: -o-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* opera 11.10+ */
-            background: -ms-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ie10+ */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='transparent',GradientType=1 ); /* ie6-9 */
-        }
-    }
-}
-
-@media screen and (max-width: 1024px) {
-    main#signin-main {
-        display: block;
-        > section {
-            display: none;
-        }
-
-        > aside#signin-aside {
-            max-width: 80%;
-            padding-right: 0;
-            padding-left: 0;
-            padding-top: 5vh;
-            margin: 0 auto;
-            > section {
-                > .login-logo {
-                    width: 35vw;
-                    min-width: 0;
-                }
-
-                > div {
-                    width: 90%;
-                    margin-right: auto;
-                    margin-left: auto;
-                    margin-top: 2vh;
-                }
+    
+            &:before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+    
+                pointer-events: none;
+    
+                background: linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent);
+                background: -moz-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ff3.6+ */
+                background: -webkit-gradient(linear, left bottom, right top, color-stop(transparent), color-stop(42%, #242b31), color-stop(58%, #242b31), color-stop(transparent)); /* safari4+,chrome */
+                background: -webkit-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* safari5.1+,chrome10+ */
+                background: -o-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* opera 11.10+ */
+                background: -ms-linear-gradient(55deg, transparent, #242b31 42%, #242b31 58%, transparent); /* ie10+ */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='transparent',GradientType=1 ); /* ie6-9 */
             }
         }
     }
 
-    button.signin-button {
-        margin-bottom: 10px;
-        height: 50px;
-        font-size: 18px;
-        > i {
-            font-size: 20px;
+    @media screen and (max-width: 1024px) {
+        main#signin-main {
+            display: block;
+            > section {
+                display: none;
+            }
+    
+            > aside#signin-aside {
+                max-width: 80%;
+                padding-right: 0;
+                padding-left: 0;
+                padding-top: 5vh;
+                margin: 0 auto;
+                > section {
+                    > .login-logo {
+                        width: 35vw;
+                        min-width: 0;
+                    }
+    
+                    > div {
+                        width: 90%;
+                        margin-right: auto;
+                        margin-left: auto;
+                        margin-top: 2vh;
+                    }
+                }
+            }
         }
-    }
-
-    main#signin-main > aside#signin-aside > section > div {
-        p, > p > a, p:last-child {
-            font-size: 20px;
+    
+        button.signin-button {
+            margin-bottom: 10px;
+            height: 50px;
+            font-size: 18px;
+            > i {
+                font-size: 20px;
+            }
         }
-    }
-}
-
-@media screen and (max-width: 430px) {
-    main#signin-main {
-        > aside#signin-aside {
-            padding-top: 29px;
-            section > .login-logo {
-                width: 150px;
-                min-width: 0;
+    
+        main#signin-main > aside#signin-aside > section > div {
+            p, > p > a, p:last-child {
+                font-size: 20px;
             }
         }
     }
     
-    button.signin-button {
-        margin-bottom: 10px;
-        height: 50px;
-        font-size: 14px;
-    }
-
-    button.signin-button > i,
-    main > aside > section > div p,
-    main > aside > section > div > p:last-child,
-    main > aside > section > div > p > a {
-        font-size: 14px;
+    @media screen and (max-width: 430px) {
+        main#signin-main {
+            > aside#signin-aside {
+                padding-top: 29px;
+                section > .login-logo {
+                    width: 150px;
+                    min-width: 0;
+                }
+            }
+        }
+        
+        button.signin-button {
+            margin-bottom: 10px;
+            height: 50px;
+            font-size: 14px;
+        }
+    
+        button.signin-button > i,
+        main > aside > section > div p,
+        main > aside > section > div > p:last-child,
+        main > aside > section > div > p > a {
+            font-size: 14px;
+        }
     }
 }
