@@ -20,9 +20,10 @@ class AdobeReport
   # For this we will use parser v1 too.
 
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner "AdobeReport.generate('v1')"
+  # $ rails runner -e production "AdobeReport.generate('2018_Adobe_Mobile_SDK_Customers.csv.gz', 'v1')"
 
-  # Download the produced files from the S3_OUTPUT_BUCKET url
+  # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
+  # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/adobe/output/
 
   S3_REPORTS_BUCKET = 'mightysignal-customer-reports'
   S3_OBJECT = 'adobe/'
