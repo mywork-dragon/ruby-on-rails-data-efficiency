@@ -238,4 +238,10 @@ $regularFontSize: 14px;
             }
         }
     }
+
+    @media screen and (max-height: 410px) {
+        main#signin-main > aside#signin-aside > section > div > p {
+            margin-top: 5px;
+        }
+    }
 }
