@@ -53,6 +53,10 @@ $regularFontSize: 14px;
             
                 max-height: 45%;
                 > div {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    padding: 0 7.5%;
                     margin-top: 16.0vh;
                     margin-bottom: -5px;
                     p {
@@ -71,6 +75,12 @@ $regularFontSize: 14px;
                         > a {
                             font-size: 1.22vw;
                             color: #0393dd;
+                        }
+                    }
+                    fieldset > div.form-group {
+                        margin-bottom: 0.75vw;
+                        input, button, span.input-group-addon {
+                            height: 3.6vw;
                         }
                     }
                 }
@@ -170,6 +180,16 @@ $regularFontSize: 14px;
         }
     }
 
+    @media screen and (max-width: 1258px) {
+        main#signin-main > aside#signin-aside > section > div fieldset > div.form-group {
+            .input-group-addon {
+                height: auto;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+    }
+
     @media screen and (max-width: 1024px) {
         main#signin-main {
             display: block;
@@ -190,6 +210,12 @@ $regularFontSize: 14px;
                     > div {
                         width: 90%;
                         margin: 2vh auto 0;
+                        fieldset > div.form-group {
+                            margin-bottom: 10px;
+                            input, button {
+                                height: 50px;
+                            }
+                        }
                     }
                 }
             }
