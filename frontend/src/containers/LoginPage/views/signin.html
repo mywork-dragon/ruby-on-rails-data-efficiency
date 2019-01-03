@@ -13,10 +13,12 @@
                         <i class="fa fa-linkedin" aria-hidden="true"></i>
                         Log In Using LinkedIn
                     </button>
-                    <!-- <button class="signin-button" ng-click="toggleEmailLogin()" ng-if="!showEmailLogin">
-                        <i class="fa fa-envelope"></i>
-                        Login for Legacy Users
-                    </button> -->
+                    <!-- <div class="email-login-prompt" ng-if="!showEmailLogin">
+                        <a ng-click="toggleEmailLogin()">
+                            <i class="fa fa-envelope"></i>
+                            Login for Legacy Users
+                        </a>
+                    </div> -->
                     <div ng-if="!token && showEmailLogin">
                         <form ng-enter="onLoginButtonClick()">
                                 <!-- class="form-horizontal" -->
