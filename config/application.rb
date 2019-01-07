@@ -21,7 +21,6 @@ module Varys
 
     # https://github.com/docker-library/redis/issues/45
     redis_uri = if Rails.env.development?
-                  p "Trying out redis"
                   "redis://redis:6379"
                 else
                   "redis://varys-production.bsqwsz.0001.use1.cache.amazonaws.com:6379"

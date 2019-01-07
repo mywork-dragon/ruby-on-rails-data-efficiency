@@ -13,7 +13,7 @@ class Activity < ActiveRecord::Base
   has_many :weekly_batches_activities, dependent: :destroy
   has_many :weekly_batches, through: :weekly_batches_activities
 
-  TWITTER_BLACKLIST = ['IosSdk:200', 'AndroidSdk:442']
+  TWITTER_BLACKLIST = Rails.env.production? ? ['IosSdk:200', 'AndroidSdk:442'] : ['IosSdk:2', 'AndroidSdk:4']
 
   def self.log_activity(activity_type, time, *owners)
     # create activity, could pass in data in the future
