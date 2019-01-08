@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   get 'ping' => 'application#ping'
-  
+
   constraints lambda { |req| req.subdomain != 'api' }  do
 
     require 'sidekiq/web'
@@ -26,7 +26,8 @@ Rails.application.routes.draw do
     root 'welcome#index'
     get 'apps/ios/:app_identifier' => 'welcome#ios_app_sdks'
     get 'apps/android/:app_identifier' => 'welcome#android_app_sdks'
-    get 'a/:platform/:app_identifier' => 'welcome#app_page', :app_identifier => /.*/
+    get 'a/:platform/:app_identifier' => 'welcome#app_page'#, constraints: { platform: /ios|google-play/i,
+                                                            #                app_identifier: /.*/ }
     get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
     get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
     get 'timeline' => 'welcome#timeline', as: 'timeline'

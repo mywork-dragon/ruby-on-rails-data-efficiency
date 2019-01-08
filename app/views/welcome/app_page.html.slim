@@ -2,11 +2,11 @@
   .container.app-header
     canvas#demo-canvas
     .app-header-main.col-md-10.col-xs-12
-      img.app-logo.lg-logo.hidden-xs src=@json['icon_url']
+      img.app-logo.lg-logo.hidden-xs src = @json['icon_url']
       .header-info
         h1#app-name
           .app-logo.sm-logo.visible-xs-inline
-            img src=@json['icon_url']
+            img src = @json['icon_url']
           h1.name-link = @json['name']
         h3 = @json['publisher_name']
         .app-header-details
@@ -43,7 +43,7 @@
           | SDKs Uninstalled
         .sdk-total.last-scanned
           | Last Scanned: #{ time_ago_in_words(@json['last_scanned_date']) } ago
-      - else 
+      - else
         .sdk-total.no-data
           .total.installed
             i.fas.fa-cubes
@@ -87,10 +87,9 @@
         .pub-app.s-title
           | Number of Apps: #{app['publisher_number_of_apps']}, including
         .pub-apps
-          -  @json['publisher_top_app'].each do |app|
-            <a class="app-logo-link" href="#{ app['public_link'] }
-              <img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }">
-            </a>
+          - @json['publisher_top_app'].each do |app|
+            a class="app-logo-link" href="#{ app['public_link'] }"
+              img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }">
         | Latest Update/Release: #{ @json['publisher_last_updated_app']} days ago
 
 .white-panel
