@@ -2,7 +2,7 @@ class ErrorController < ApplicationController
   def not_found
     respond_to do |format|
       format.any(:json, :all) { render json: { error: 'Not Found' }, status: 404 }
-      format.html { render file: 'public/404.html', status: 404, layout: false }
+      format.html { render file: 'error/not_found.html', status: 404, layout: 'marketing' }
     end
   end
 

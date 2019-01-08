@@ -1,0 +1,185 @@
+#not-found-main {
+    padding-top: 80px;
+    padding-bottom: 100px;
+    background: #232a31;
+}
+#not-found-main h1, #not-found-main p {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#not-found-main h1 {
+    color: #ffffff;
+    font-size: 3.225vw;
+    white-space: nowrap;
+}
+#not-found-main p {
+    padding-top: 1.7%;
+    font-size: 1.447vw;
+    color: #ffffff;
+}
+#not-found-main p:last-child {
+    padding-top: 1px;
+    padding-bottom: 20px;
+}
+#not-found-main a {
+    color: #2db6d8;
+    text-decoration: none;
+}
+#not-found-main a:hover {
+    text-decoration: underline;
+}
+#not-found-main main > .wrapper {
+    margin: 0 auto;
+    padding: 0 4.2vw;
+}
+#not-found-main section {
+    text-align: left;
+}
+#not-found-main main > .wrapper > .content {
+    padding-top: 16vh;
+    width: 47.5vw;
+    position: relative;
+    z-index: 3;
+}
+#not-found-main form {
+    padding-top: 6.3%;
+    padding-bottom: 5.8%;
+    display: flex;
+}
+#not-found-main form > input,
+#not-found-main form > button {
+    border: 0;
+    margin-bottom: 0;
+    outline: none;
+    border-radius: 0.3vw;
+    min-height: 4vw;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.45vw;
+    font-weight: 400;
+}
+#not-found-main form > input {
+    padding-left: 3.4%;
+    flex: 3.5;
+}
+#not-found-main form > input::placeholder {
+    color: #bcbec3;
+}
+#not-found-main form > button {
+    margin-left: 2%;
+    padding: 0;
+    flex: 2;
+    text-transform: uppercase;
+    background-color: #2db6d8;
+}
+#not-found-main form > button:hover {
+    background-color: #209ab8;
+}
+#not-found-main main .wrapper .elephant {
+    position: absolute;
+    padding-top: 80px;
+    top: 3.3%;
+    bottom: 14.6%;
+    right: 7.9vw;
+    width: 49.5vw;
+    height: 80vh;
+    min-width: 62vmin;
+    min-height: 57vmin;
+    transform: scale(-1, 1);
+    z-index: 2;
+    user-select: none;
+    pointer-events: none;
+}
+
+.particles {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow: hidden;
+    z-index: 0;
+}
+
+@media screen and (max-width: 1024px) {
+    #not-found-main {
+        padding-bottom: 0;
+    }
+    #not-found-main h1 {
+        font-size: 4rem;
+    }
+    #not-found-main p {
+        font-size: 1.7rem;
+        line-height: 125%;
+    }
+    #not-found-main main > .wrapper > .content {
+        width: auto;
+        padding-top: 5%;
+    }
+    #not-found-main form > button,
+    #not-found-main form > input {
+        font-size: 2.8vw;
+        border-radius: 6px;
+        height: 6vw;
+    }
+    #not-found-main form > input {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #not-found-main main > .wrapper > .elephant {
+        height: 100%;
+        top: 0;
+        bottom: 0;
+    }
+    #not-found-main main > section > .particles {
+        display: none;
+    }
+}
+@media screen and (max-width: 768px) {
+    #not-found-main h1 {
+        font-size: 2.5rem;
+    }
+    #not-found-main p {
+        font-size: 1.2rem;
+    }
+    #not-found-main form > input,
+    #not-found-main form > button {
+        height: 8vw;
+        font-size: 3.2vw;
+    }
+    #not-found-main form > input {
+        width: auto;
+        font-size: 3.3vw;
+    }
+}
+@media screen and (max-width: 512px) {
+    #not-found-main h1 {
+        font-size: 28px;
+        white-space: normal;
+    }
+    #not-found-main p {
+        padding-top: 12px;
+        font-size: 16px;
+    }
+    #not-found-main form {
+        flex-direction: column;
+    }
+    #not-found-main form > input,
+    #not-found-main form > button {
+        margin: 7px 0;
+        padding: 0 8%;
+        height: 50px;
+        font-size: 4.8vw;
+    }
+    #not-found-main > .wrapper > .content {
+        padding-top: 3vh;
+    }
+    #not-found-main .elephant {
+        display: none;
+    }
+}

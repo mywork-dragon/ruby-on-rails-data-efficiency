@@ -1,0 +1,56 @@
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .navbar {
+    border-bottom: 1px solid #1c2329;
+  }
+
+  #not-found-main {
+    flex: 1 0 auto;
+  }
+
+  .footer {
+    border-top: 1px solid #1c2329;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+</style>
+
+<div id="not-found-main">
+  <main>
+    <section class="wrapper">
+      <div class="content" onsubmit="onSubmit(event)">
+        <h1>Uh-oh. Signal was lost!</h1>
+        <p>We're sorry, the page you were looking for could not be found. Error</p>
+
+        <form onsubmit="onSubmit(event)">
+          <input type="text" name="search" placeholder="Try searching for something else...">
+          <button type="submit">Search</button>
+        </form>
+
+        <p>Or you can return to our
+          <a href="/">home page</a>, or
+          <a href="/#contact_anchor">contact us</a> if you can't find what
+          you're looking for.
+        </p>
+      </div>
+      <%= image_tag("mighty_signal_elephant_search.svg", class: "elephant") %>
+    </section>
+    <div class="particles" id="large-header">
+      <canvas id="demo-canvas"></canvas>
+    </div>
+  </main>
+</div>
+
+<script type="text/javascript">
+    function onSubmit(e) {
+        e.preventDefault();
+        console.log();
+        if (e.target[0].value.trim() !== '') window.location.href = 'https://google.com/search?q=' + e.target[0].value.replace(/\s/g, "+") + '+site:mightysignal.com';
+        return false;
+    }
+</script>
