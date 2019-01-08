@@ -1,6 +1,7 @@
 module Oauth
   class Google < Oauth::Base
-    DATA_URL = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
+    # https://accounts.google.com/.well-known/openid-configuration
+    USER_INFO_ENDPOINT = 'https://openidconnect.googleapis.com/v1/userinfo'
 
     def get_names
       names = data[:name].try(:split).to_a
@@ -8,11 +9,13 @@ module Oauth
     end
 
     def self.access_token_url
-      'https://accounts.google.com/o/oauth2/token'
+      # Obtain the value for access_token_url from:
+      # https://accounts.google.com/.well-known/openid-configuration
+      'https://oauth2.googleapis.com/token'
     end
 
     def get_data
-      response = @client.get(DATA_URL, access_token: @access_token)
+      response = @client.get(USER_INFO_ENDPOINT, access_token: @access_token)
       @data = JSON.parse(response.body).with_indifferent_access
       @uid = @data[:id] ||= @data[:sub]
       @data
@@ -29,7 +32,7 @@ module Oauth
         image_url:      @data['picture'].gsub("?sz=50", ""),
         google_profile: @data['profile']
       }
-    end    
+    end
 
   end
 end
