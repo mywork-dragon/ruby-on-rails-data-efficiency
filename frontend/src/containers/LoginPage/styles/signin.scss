@@ -1,15 +1,6 @@
 $headingFontSize: 20px;
 $regularFontSize: 14px;
 
-@mixin linearGradient($degree:55deg, $transparency:transparent, $color:#242b31, $colorPercentage:42%, $secondColorPercentage:58px) {
-    background: linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency);
-    background: -moz-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* ff3.6+ */
-    background: -webkit-gradient(linear, left bottom, right top, color-stop($transparency), color-stop($colorPercentage, $color), color-stop($secondColorPercentage, $color), color-stop($transparency)); /* safari4+,chrome */
-    background: -webkit-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* safari5.1+,chrome10+ */
-    background: -o-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* opera 11.10+ */
-    background: -ms-linear-gradient($degree, $transparency, $color $colorPercentage, $color $secondColorPercentage, $transparency); /* ie10+ */   
-}
-
 .page-signin {
     line-height: normal;
     color: black;
@@ -166,20 +157,9 @@ $regularFontSize: 14px;
     
         > .particles {
             position: absolute;
-            width: 100%;
+            width: 100vw;
+            right: 0;
             height: 100%;
-    
-            &:before {
-                content: '';
-                position: absolute;
-                width: 100%;
-                height: 100%;
-    
-                pointer-events: none;
-    
-                @include linearGradient;
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='transparent',GradientType=1 ); /* ie6-9 */
-            }
         }
     }
 
