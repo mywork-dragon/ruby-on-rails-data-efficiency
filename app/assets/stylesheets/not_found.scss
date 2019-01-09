@@ -9,7 +9,8 @@ $break-mobile: 512px;
 
   main > .wrapper {
     margin: 0 auto;
-    padding: 0 4.2vw;
+    max-width: 1140px;
+    padding: 0px 10px;
     text-align: left;
 
     .content {
@@ -47,6 +48,7 @@ $break-mobile: 512px;
       form {
         padding-top: 6.3%;
         padding-bottom: 5.8%;
+        max-width: 590px;
         display: flex;
 
         input, button {
@@ -62,7 +64,7 @@ $break-mobile: 512px;
         }
 
         input {
-          padding-left: 3.3%;
+          padding-left: 3.4%;
           flex: 3.5;
 
           &::placeholder {
@@ -71,7 +73,7 @@ $break-mobile: 512px;
         }
 
         button {
-          margin-left: 2%;
+          margin-left: 10px;
           padding: 0;
           flex: 2;
           text-transform: uppercase;
@@ -141,6 +143,8 @@ $break-mobile: 512px;
           }
 
           form {
+            max-width: 100%;
+
             input, button {
               font-size: 2.8vw;
               border-radius: 6px;
