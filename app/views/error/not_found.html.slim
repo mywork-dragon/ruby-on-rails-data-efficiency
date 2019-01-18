@@ -1,0 +1,36 @@
+css:
+  body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .navbar {
+    border-bottom: 1px solid #1c2329;
+  }
+
+  #not-found-main {
+    flex: 1 0 auto;
+  }
+
+  .footer {
+    border-top: 1px solid #1c2329;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+
+#not-found-main
+  main
+    section.wrapper
+      .content onsubmit="onSubmit(event)"
+        h1 Uh-oh. Signal was lost!
+        p We're sorry, the page you were looking for could not be found. Error
+        p
+          | You can return to our
+          a<> href="/" home page,
+          | or
+          a<> href="/#contact_anchor" contact us
+          | if you can't find what you're looking for.
+      = image_tag("/lib/images/mighty_signal_elephant_search.svg", class: "elephant")
+    #large-header.particles
+      canvas#demo-canvas
