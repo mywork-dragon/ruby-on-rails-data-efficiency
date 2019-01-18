@@ -42,6 +42,8 @@ html lang="en"
     script async="true" src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"
 
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
+    noscript
+      iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
