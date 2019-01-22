@@ -168,21 +168,21 @@ end
   end
 
   puts 'creating Activities'
-  (n = 10000).times do |i|
+  (n = 1000).times do |i|
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
     Activity.log_activity(:uninstall, Time.now, ios_app, ios_sdk)
-    if i % 1000 == 0
-      puts "#{i + 1} out of #{n}"
-    end
+    # if i % 1000 == 0
+    #   puts "#{i + 1} out of #{n}"
+    # end
   end
-  (n = 10000).times do |i|
+  (n = 1000).times do |i|
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
     Activity.log_activity(:install, Time.now, ios_app, ios_sdk)
-    if i % 1000 == 0
-      puts "#{i + 1} out of #{n}"
-    end
+    # if i % 1000 == 0
+    #   puts "#{i + 1} out of #{n}"
+    # end
   end
 
 

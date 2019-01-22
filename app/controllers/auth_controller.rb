@@ -29,7 +29,6 @@ class AuthController < ApplicationController
 
   def authenticate_provider
     @oauth = "Oauth::#{params['provider'].classify}".constantize.new(params)
-
     if @oauth.authorized?
       email = @oauth.formatted_user_data.try(:[], :email)
       @user = User.from_auth(@oauth.formatted_user_data, params[:token])
