@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: installations
+#
+#  id                :integer          not null, primary key
+#  company_id        :integer
+#  service_id        :integer
+#  scraped_result_id :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  status            :integer
+#  scrape_job_id     :integer
+#
+
 class Installation < ActiveRecord::Base
   belongs_to :service
   belongs_to :company

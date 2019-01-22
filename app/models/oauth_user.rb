@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: oauth_users
+#
+#  id            :integer          not null, primary key
+#  provider      :string(191)
+#  uid           :string(191)
+#  name          :string(191)
+#  oauth_token   :string(191)
+#  refresh_token :string(191)
+#  instance_url  :string(191)
+#  created_at    :datetime
+#  updated_at    :datetime
+#  email         :string(191)
+#
+
 class OauthUser < ActiveRecord::Base
 
   def self.from_omniauth(auth)

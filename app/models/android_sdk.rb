@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: android_sdks
+#
+#  id                     :integer          not null, primary key
+#  name                   :string(191)
+#  website                :string(191)
+#  favicon                :string(191)
+#  flagged                :boolean          default(FALSE)
+#  open_source            :boolean
+#  created_at             :datetime
+#  updated_at             :datetime
+#  sdk_company_id         :integer
+#  github_repo_identifier :integer
+#  kind                   :integer
+#  summary                :text(65535)
+#
+
 class AndroidSdk < ActiveRecord::Base
   include Sdk
 

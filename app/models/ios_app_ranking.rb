@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: ios_app_rankings
+#
+#  id                          :integer          not null, primary key
+#  ios_app_id                  :integer
+#  ios_app_ranking_snapshot_id :integer
+#  rank                        :integer
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#
+
 class IosAppRanking < ActiveRecord::Base
   has_many :weekly_batches, as: :owner
 

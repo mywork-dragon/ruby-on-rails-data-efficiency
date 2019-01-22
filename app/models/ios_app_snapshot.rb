@@ -1,3 +1,43 @@
+# == Schema Information
+#
+# Table name: ios_app_snapshots
+#
+#  id                              :integer          not null, primary key
+#  created_at                      :datetime
+#  updated_at                      :datetime
+#  name                            :string(191)
+#  price                           :integer
+#  size                            :integer
+#  seller_url                      :string(191)
+#  support_url                     :string(191)
+#  version                         :string(191)
+#  released                        :date
+#  recommended_age                 :string(191)
+#  description                     :text(65535)
+#  ios_app_id                      :integer
+#  required_ios_version            :string(191)
+#  ios_app_snapshot_job_id         :integer
+#  release_notes                   :text(65535)
+#  seller                          :string(191)
+#  developer_app_store_identifier  :integer
+#  ratings_current_stars           :decimal(3, 2)
+#  ratings_current_count           :integer
+#  ratings_all_stars               :decimal(3, 2)
+#  ratings_all_count               :integer
+#  editors_choice                  :boolean
+#  status                          :integer
+#  exception_backtrace             :text(65535)
+#  exception                       :text(65535)
+#  icon_url_350x350                :string(191)
+#  icon_url_175x175                :string(191)
+#  ratings_per_day_current_release :decimal(10, 2)
+#  first_released                  :date
+#  by                              :string(191)
+#  copywright                      :string(191)
+#  seller_url_text                 :string(191)
+#  support_url_text                :string(191)
+#
+
 class IosAppSnapshot < ActiveRecord::Base
 
   has_many :ios_app_snapshots_languages

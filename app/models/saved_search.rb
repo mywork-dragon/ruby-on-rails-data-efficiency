@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: saved_searches
+#
+#  id            :integer          not null, primary key
+#  name          :string(191)
+#  user_id       :integer
+#  search_params :text(65535)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  version       :string(191)      default("v1"), not null
+#
+
 class SavedSearch < ActiveRecord::Base
 
   belongs_to :user

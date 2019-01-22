@@ -211,7 +211,6 @@ Pagination.defaultProps = {
   showPageJump: false,
   PreviousComponent: defaultButton,
   NextComponent: defaultButton,
-  paginationStyle: {},
   updateColumns: null,
 };
 

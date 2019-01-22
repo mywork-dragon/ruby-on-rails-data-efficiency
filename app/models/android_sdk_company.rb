@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: android_sdk_companies
+#
+#  id                :integer          not null, primary key
+#  name              :string(191)
+#  website           :string(191)
+#  favicon           :string(191)
+#  flagged           :boolean          default(FALSE)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  open_source       :boolean          default(FALSE)
+#  parent_company_id :integer
+#  is_parent         :boolean
+#
+
 class AndroidSdkCompany < ActiveRecord::Base
 
 	has_many :android_sdk_packages

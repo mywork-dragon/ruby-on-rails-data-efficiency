@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: android_apps
+#
+#  id                             :integer          not null, primary key
+#  created_at                     :datetime
+#  updated_at                     :datetime
+#  app_identifier                 :string(191)
+#  app_id                         :integer
+#  newest_android_app_snapshot_id :integer
+#  user_base                      :integer
+#  newest_apk_snapshot_id         :integer
+#  display_type                   :integer          default(0)
+#  android_developer_id           :integer
+#  regions                        :string(191)      default([])
+#
+
 class AndroidApp < ActiveRecord::Base
   include AppAds
   include MobileApp

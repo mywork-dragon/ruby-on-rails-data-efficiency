@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: ios_apps
+#
+#  id                         :integer          not null, primary key
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  app_identifier             :integer
+#  app_id                     :integer
+#  newest_ios_app_snapshot_id :integer
+#  user_base                  :integer
+#  mobile_priority            :integer
+#  released                   :date
+#  newest_ipa_snapshot_id     :integer
+#  display_type               :integer          default(0)
+#  ios_developer_id           :integer
+#  source                     :integer
+#  fb_app_id                  :integer
+#
+
 class IosApp < ActiveRecord::Base
   include AppAds
   include MobileApp
@@ -59,8 +79,11 @@ class IosApp < ActiveRecord::Base
   ad_table :ios_fb_ads
   # update_index('apps#ios_app') { self } if Rails.env.production?
 
-  WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
-                      529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730]
+  WHITELISTED_APPS =  if Rails.env.production?
+                        [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730]
+                      else
+                        IosApp.pluck(:id).sample(14)
+                      end
 
   attr_writer :es_client
 
@@ -592,7 +615,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def self.bulk_export(ids:[], options: {})
-      
+
       # Whitelist as a safeguard to prevent us from exporting any
       # attributes that we don't want to expose.
 
@@ -702,7 +725,7 @@ class IosApp < ActiveRecord::Base
         "ratings_per_day_current_release",
         "user_base"
       ]
-      
+
       snapshot_category_join_attributes = [
         "kind",
         "ios_app_category_id"
@@ -772,7 +795,7 @@ class IosApp < ActiveRecord::Base
       #
 
       # Build app_id => us snapshots attributes mapping
-      # 
+      #
       # {
       #   app_id => [
       #     [ app_id, snapshot_id, ios_app_id, seller_url, etc. ]
@@ -784,7 +807,7 @@ class IosApp < ActiveRecord::Base
 
       apps = IosApp.where(:id => ids).to_a
       app_ids = apps.map(&:id)
-      
+
       us_snapshot_attributes = IosAppSnapshot.where(:id => apps.map(&:newest_ios_app_snapshot_id)).pluck(*newest_ios_app_snapshot_attributes)
       us_snapshot_attributes_map = {}
       us_snapshot_attributes.each do |attributes|
@@ -807,11 +830,11 @@ class IosApp < ActiveRecord::Base
           snapshots_history_attributes_map[app_id] = [ snapshot ]
         end
       end
-      snapshots_history_attributes = nil 
+      snapshots_history_attributes = nil
 
 
       # Build app_id => storefront details mapping
-      # 
+      #
       # {
       #   app_id => [
       #     [ app_id, country_code, id, display_priority ]
@@ -833,7 +856,7 @@ class IosApp < ActiveRecord::Base
 
 
       # Build app_id => storefront snapshot attributes
-      # 
+      #
       # {
       #   app_id => [
       #     [ ios_app_id, app_store_id, ratings_all_stars, ratings_all_count, ratings_current_stars, etc. ]
@@ -875,7 +898,7 @@ class IosApp < ActiveRecord::Base
       end
 
       # Build app_id => first international snapshot details mapping
-      # 
+      #
       # {
       #   app_id => [
       #     [ app_id, ios_app_id, seller_url, etc. ]
@@ -883,7 +906,7 @@ class IosApp < ActiveRecord::Base
       # }
       #
 
-      prefixed_snapshot_attributes = first_international_snapshot_attributes.map { |a| "all_latest_snapshot_attributes.#{a}" } 
+      prefixed_snapshot_attributes = first_international_snapshot_attributes.map { |a| "all_latest_snapshot_attributes.#{a}" }
       first_international_snapshot_attribute_results = ActiveRecord::Base.connection.execute(
       "SELECT #{prefixed_snapshot_attributes.join(",")}
        FROM
@@ -902,14 +925,14 @@ class IosApp < ActiveRecord::Base
           WHERE `ios_app_current_snapshots`.`latest` = 1
             AND `ios_app_current_snapshots`.`ios_app_id` IN (#{app_ids.join(",")})) AS all_latest_snapshot_attributes ON ios_app_ids_to_highest_display_priority.ios_app_id = all_latest_snapshot_attributes.ios_app_id
        AND ios_app_ids_to_highest_display_priority.dp = all_latest_snapshot_attributes.display_priority")
-      
+
       first_international_snapshot_attributes_map = {}
       first_international_snapshot_attribute_results.each do |attributes|
         first_international_snapshot_attributes_map[attributes[first_international_snapshot_attributes.index("ios_app_id")]] = attributes
       end
 
       # Build app_id => newest_snapshot/category mapping
-      # 
+      #
       # {
       #   app_id => [
       #     [ app_id, kind, name, category_id ]
@@ -921,7 +944,7 @@ class IosApp < ActiveRecord::Base
       category_attributes_to_pluck = [ "ios_app_current_snapshots.ios_app_id" ] + prefixed_category_join_attributes
       category_results = IosAppCurrentSnapshot.where(:latest => true).where(:ios_app_id => ids).joins(:ios_app_categories_current_snapshots).pluck(*category_attributes_to_pluck).uniq
       kinds_map = IosAppCategoriesCurrentSnapshot.kinds.invert
-      
+
       # Build intermediate category info mapping instead of using triple join, since triple join only seems to return primary types
       # due to the has_many relationship declared in the IosAppCurrentSnapshots class.
       category_ids = category_results.map { |cra| cra[snapshot_category_join_attributes.index("ios_app_category_id") + 1] }
@@ -949,7 +972,7 @@ class IosApp < ActiveRecord::Base
       end
 
       # Build publisher => publisher details mapping
-      # 
+      #
       # {
       #   publisher_id => {
       #     "app_store_id" => id,
@@ -974,7 +997,7 @@ class IosApp < ActiveRecord::Base
       # Build developer_id to headquarters mapping:
       #
       # {
-      #   developer_id => [ 
+      #   developer_id => [
       #     {
       #       "id" => xxx
       #       "domain" => "xxxx"
@@ -1000,7 +1023,7 @@ class IosApp < ActiveRecord::Base
 
       domain_data_ids = website_id_to_domain_datum_id.values
       domain_data = DomainDatum.where(:id => domain_data_ids).pluck(*domain_data_attributes)
-      domain_data_map = {} 
+      domain_data_map = {}
       domain_data.each do |dd|
         domain_data_map[dd[domain_data_attributes.index("id")]] = dd
       end
@@ -1013,7 +1036,7 @@ class IosApp < ActiveRecord::Base
       # Step 2:
       #
       # Build out app exports from mappings generated in first step
-      # 
+      #
 
       apps.each do |app|
         id = app.id
@@ -1059,7 +1082,7 @@ class IosApp < ActiveRecord::Base
         end
 
         result["user_base"] = user_base_map[result["user_base"]]
-        
+
         if app_id_to_category_map[id]
           result["categories"] = app_id_to_category_map[id].map do |category_info|
             {
@@ -1075,7 +1098,7 @@ class IosApp < ActiveRecord::Base
             storefront_info[1 + app_store_attributes.index("country_code")]
           end.uniq
         end
-        
+
         result["publisher"] = developer_id_to_attributes[app.ios_developer_id] if developer_id_to_attributes[app.ios_developer_id]
         result["taken_down"] = app_country_codes_map[id].nil? || app.display_type == IosApp.display_types[:not_ios]
         result["platform"] = "ios"
@@ -1130,7 +1153,7 @@ class IosApp < ActiveRecord::Base
               "ratings_count" => storefront_snapshot_attributes[all_storefront_snapshot_attributes.index("ratings_all_count")],
               "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")]
             }
-            
+
             user_base_by_country << {
               "country_code" => app_store_details_map[app_store_id][app_store_map_attributes.index("country_code")],
               "country" => app_store_details_map[app_store_id][app_store_map_attributes.index("name")],
@@ -1156,10 +1179,10 @@ class IosApp < ActiveRecord::Base
         if result["ratings_by_country"]
           ratings_details = result["ratings_by_country"]
 
-          all_ratings_count = ratings_details.map { |storefront_rating| 
-            storefront_rating["ratings_count"] 
+          all_ratings_count = ratings_details.map { |storefront_rating|
+            storefront_rating["ratings_count"]
           }.compact.inject(0, &:+) # sums all the ratings_counts in list
-      
+
           result["all_version_ratings_count"] = all_ratings_count
           result["all_version_rating"] = 0
 
@@ -1169,11 +1192,11 @@ class IosApp < ActiveRecord::Base
               ratings_count = storefront_rating["ratings_count"]
               rating_stars = storefront_rating["rating"]
               next if ratings_count.nil? or rating_stars.nil?
-              
+
               weight = ratings_count.to_f / all_ratings_count
               storefront_ratings_average = storefront_ratings_average + ( weight * rating_stars )
             end
-        
+
             result["all_version_rating"] = storefront_ratings_average
           end
         end
@@ -1192,7 +1215,7 @@ class IosApp < ActiveRecord::Base
           else
             Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
           end
-    
+
           sdk_history[:installed_sdks].each do |sdk|
             sdk_ids << sdk["id"]
           end
@@ -1200,9 +1223,9 @@ class IosApp < ActiveRecord::Base
             sdk_ids << sdk["id"]
           end
         end
-        
+
         sdks_to_tags_tuples = IosSdk.where(:id => sdk_ids.to_a).joins(:tags).pluck("ios_sdks.id", "tags.name")
-    
+
         sdks_to_tags_map = {}
         sdks_to_tags_tuples.each do |sdk_id, tag_name|
           if sdks_to_tags_map[sdk_id]
@@ -1211,7 +1234,7 @@ class IosApp < ActiveRecord::Base
             sdks_to_tags_map[sdk_id] = [ tag_name ]
           end
         end
-    
+
         sdks_to_tags_map.keys.each do |sdk_id|
           sdks_to_tags_map[sdk_id] = sdks_to_tags_map[sdk_id].uniq
         end
@@ -1226,7 +1249,7 @@ class IosApp < ActiveRecord::Base
       # Step 3:
       #
       # Run final aggregate queries and finish building app export objects.
-      # 
+      #
 
       ad_stats = IosFbAd.where(:ios_app_id => app_ids).select('ios_app_id, min(date_seen) as created_at, max(date_seen) as updated_at').group(:ios_app_id)
       ad_stats.each do |ad_stat|
@@ -1308,7 +1331,7 @@ class IosApp < ActiveRecord::Base
           'countries_available_in',
           'taken_down',
           'icon_url',
-          'first_scraped' 
+          'first_scraped'
           ] + extra_white_list + extra_from_app
 
       rename = [
@@ -1348,7 +1371,7 @@ class IosApp < ActiveRecord::Base
       app_obj.merge!(app.first_international_snapshot.as_json || {})
 
       app_obj['mightysignal_app_version'] = '1'
-      
+
       if include_sdk_history
         app_obj.merge!(app.sdk_history)
         app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice(*sdk_fields)}
@@ -1375,11 +1398,11 @@ class IosApp < ActiveRecord::Base
       if app.newest_ios_app_snapshot
         app_obj["has_in_app_purchases"] = app.newest_ios_app_snapshot.ios_in_app_purchases.any?
       end
-      
+
       fields_from_app.map do |field, new_name|
           app_obj[new_name] = app.send(field).as_json
       end
-      
+
       rename.map do |field, new_name|
           app_obj[new_name] = app_obj[field]
           app_obj.delete(field)

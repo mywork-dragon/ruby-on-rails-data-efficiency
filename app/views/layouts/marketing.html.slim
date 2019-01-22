@@ -1,4 +1,3 @@
-doctype html
 html lang="en"
   head
     meta charset="utf-8" /
@@ -20,6 +19,8 @@ html lang="en"
     link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet" /
     link href="/lib/jquery.bxslider.css" rel="stylesheet" /
     link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'
+    link href="https://fonts.googleapis.com/css?family=Open+Sans" media="all" rel="stylesheet" /
+    link data-turbolinks-track="true" href="/lib/not_found.css" media="all" rel="stylesheet" /
     script data-turbolinks-track="true" src="/lib/jquery-2.1.3.min.js?body=1"
     script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
     script data-turbolinks-track="true" src="/lib/jquery.easing.1.3.js"
@@ -38,9 +39,12 @@ html lang="en"
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
     meta name="google-site-verification" content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo"
     = render 'shared/ga'
+    = render 'shared/autopilot'
     script async="true" src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"
 
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
+    noscript
+      iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]

@@ -1,3 +1,38 @@
+# == Schema Information
+#
+# Table name: android_app_snapshots
+#
+#  id                               :integer          not null, primary key
+#  created_at                       :datetime
+#  updated_at                       :datetime
+#  name                             :string(191)
+#  price                            :integer
+#  size                             :integer
+#  updated                          :date
+#  seller_url                       :string(191)
+#  version                          :string(191)
+#  released                         :date
+#  description                      :text(65535)
+#  android_app_id                   :integer
+#  google_plus_likes                :integer
+#  top_dev                          :boolean
+#  in_app_purchases                 :boolean
+#  required_android_version         :string(191)
+#  content_rating                   :string(191)
+#  seller                           :string(191)
+#  ratings_all_stars                :decimal(3, 2)
+#  ratings_all_count                :integer
+#  status                           :integer
+#  android_app_snapshot_job_id      :integer
+#  in_app_purchase_min              :integer
+#  in_app_purchase_max              :integer
+#  downloads_min                    :integer
+#  downloads_max                    :integer
+#  icon_url_300x300                 :string(191)
+#  developer_google_play_identifier :string(191)
+#  apk_access_forbidden             :boolean
+#
+
 class AndroidAppSnapshot < ActiveRecord::Base
 
   belongs_to :android_app
