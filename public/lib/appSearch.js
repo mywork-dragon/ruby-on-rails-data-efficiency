@@ -3,7 +3,8 @@ $(document).ready(function() {
   var options = {
     url: function (input) {
       if (input.length >= 2) {
-        return `${window.location.protocol}://${window.location.host}/welcome/search_apps?query=${input}`;
+        // Not working properly
+        return `/welcome/search_apps?query=${input}`;
       }
     },
     getValue: "name",

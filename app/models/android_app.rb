@@ -522,40 +522,68 @@ class AndroidApp < ActiveRecord::Base
 
   def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)
       app = self
-
+      p '------------------------------------------------'
+      p 'exporting app as json'
       # Only these attributes will be output in the final response.
-      white_list = ["id", "name", "price", "seller_url",
-          "current_version", "released",
-          "in_app_purchases", "required_android_version",
-          "content_rating", "seller", "in_app_purchase_min",
-          "in_app_purchase_max", "downloads_min", "downloads_max",
-          "icon_url", "categories", "publisher", "platform", "google_play_id",
-          "user_base", "last_updated", "all_version_rating",
-          "all_version_ratings_count", "first_scanned", "last_scanned",
-          "description", "installed_sdks", "uninstalled_sdks",
-          "mobile_priority", "developer_google_play_identifier",
-          "ratings_history", "versions_history", "downloads_history",
-          "taken_down", "last_seen_ads_date", "first_seen_ads_date",
-          "last_scanned_date", "first_scanned_date",
-          "download_regions", "first_scraped"
-          ] + extra_white_list + extra_from_app
+      white_list = [
+        "all_version_rating",
+        "all_version_ratings_count",
+        "categories",
+        "content_rating",
+        "current_version",
+        "description",
+        "developer_google_play_identifier",
+        "download_regions",
+        "downloads_history",
+        "downloads_max",
+        "downloads_min",
+        "first_scanned",
+        "first_scanned_date",
+        "first_scraped",
+        "first_seen_ads_date",
+        "google_play_id",
+        "icon_url",
+        "id",
+        "in_app_purchase_max",
+        "in_app_purchase_min",
+        "in_app_purchases",
+        "installed_sdks",
+        "last_scanned",
+        "last_scanned_date",
+        "last_seen_ads_date",
+        "last_updated",
+        "mobile_priority",
+        "name",
+        "platform",
+        "price",
+        "publisher",
+        "ratings_history",
+        "released",
+        "required_android_version",
+        "seller",
+        "seller_url",
+        "taken_down",
+        "uninstalled_sdks",
+        "user_base",
+        "versions_history"
+      ] + extra_white_list + extra_from_app
 
       rename = [
-          ['ratings_all_stars', 'all_version_rating'],
-          ['ratings_all_count', 'all_version_ratings_count'],
           ['icon_url_300x300', 'icon_url'],
+          ['ratings_all_count', 'all_version_ratings_count'],
+          ['ratings_all_stars', 'all_version_rating'],
           ['version', 'current_version']
           ]
 
       fields_from_app = [
           ['app_identifier', 'google_play_id'],
-          ['region_codes', 'download_regions'],
-          ['mobile_priority', 'mobile_priority'],
-          ['user_base', 'user_base'],
-          ['last_updated', 'last_updated'],
-          ['id', 'id'],
           ['downloads_history', 'downloads_history'],
+          ['id', 'id'],
+          ['last_updated', 'last_updated'],
+          ['mobile_priority', 'mobile_priority'],
           ['ratings_history', 'ratings_history'],
+          ['region_codes', 'download_regions'],
+          ['user_base', 'user_base'],
           ['versions_history', 'versions_history']
           ] + (extra_from_app.map { |field| [ field, field ] })
 
@@ -629,6 +657,7 @@ class AndroidApp < ActiveRecord::Base
           'min(good_as_of_date) as first_scanned')
 
       if data[0]
+        p 'snapshots found'
         app_obj["first_scanned_date"] = data[0].first_scanned.utc.iso8601
         app_obj["last_scanned_date"] = data[0].last_scanned.utc.iso8601
       end
@@ -636,7 +665,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def self.bulk_export(ids:[], options: {})
-      
+
       # Whitelist as a safeguard to prevent us from exporting any
       # attributes that we don't want to expose.
       attribute_whitelist = [
@@ -714,7 +743,7 @@ class AndroidApp < ActiveRecord::Base
         "icon_url_300x300",
         "developer_google_play_identifier"
       ]
-      
+
       category_attributes = [
         "name",
         "category_id"
@@ -766,7 +795,7 @@ class AndroidApp < ActiveRecord::Base
       results = {}
 
       apps = AndroidApp.where(:id => ids).to_a
-      
+
       ##
       # Step 1:
       #
@@ -774,10 +803,10 @@ class AndroidApp < ActiveRecord::Base
       #
 
       # Build app_id => newest_snapshot/category mapping
-      # 
+      #
       # {
       #   app_id => [
-      #     [ id, name, price, size, updated, seller_url, version, released, description, ... ] 
+      #     [ id, name, price, size, updated, seller_url, version, released, description, ... ]
       #   ]
       # }
       #
@@ -805,11 +834,11 @@ class AndroidApp < ActiveRecord::Base
       android_developers = AndroidDeveloper.where(:id => apps.map(&:android_developer_id)).pluck(:id, :name)
       android_developers = Hash[*android_developers.flatten] # converts tuples in to {:id => :name} dict
 
- 
+
       # Build developer_id to headquarters mapping:
       #
       # {
-      #   developer_id => [ 
+      #   developer_id => [
       #     {
       #       "id" => xxx
       #       "domain" => "xxxx"
@@ -835,22 +864,22 @@ class AndroidApp < ActiveRecord::Base
 
       domain_data_ids = website_id_to_domain_datum_id.values
       domain_data = DomainDatum.where(:id => domain_data_ids).pluck(*domain_data_attributes)
-      domain_data_map = {} 
+      domain_data_map = {}
       domain_data.each do |dd|
         domain_data_map[dd[domain_data_attributes.index("id")]] = dd
       end
       domain_data = nil
 
-      
+
       ##
       # Step 2:
       #
       # Build out app exports from mappings generated in first step
-      # 
+      #
 
       apps.each do |app|
         result = {}
-        
+
         attributes_from_app.each do |attribute|
           result[attribute] = app.send(attribute).as_json
         end
@@ -866,7 +895,7 @@ class AndroidApp < ActiveRecord::Base
             :platform => platform
           }.as_json
         end
-        
+
         # Gather headquarter data if any
 
         headquarters = []
@@ -940,11 +969,11 @@ class AndroidApp < ActiveRecord::Base
           result["categories"] = [ category_info ]
 
           result["last_updated"] = result["released"].as_json
-          
+
           result["mobile_priority"] = AndroidApp.mobile_priority_from_date(attributes_array[snapshot_attributes.index("released")])
 
           if result["ratings_all_stars"]
-            result["ratings_all_stars"] = result["ratings_all_stars"].to_f 
+            result["ratings_all_stars"] = result["ratings_all_stars"].to_f
           end
 
           results[app_id] = results[app_id].merge(result)
@@ -953,7 +982,7 @@ class AndroidApp < ActiveRecord::Base
 
       if options[:include_sdk_history]
         sdk_ids = Set.new
-    
+
         apps.each do |app|
           sdk_history = app.sdk_history
           if results[app.id]
@@ -962,7 +991,7 @@ class AndroidApp < ActiveRecord::Base
           else
             Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{app.id}"))
           end
-    
+
           sdk_history[:installed_sdks].each do |sdk|
             sdk_ids << sdk["id"]
           end
@@ -970,9 +999,9 @@ class AndroidApp < ActiveRecord::Base
             sdk_ids << sdk["id"]
           end
         end
-        
+
         sdks_to_tags_tuples = AndroidSdk.where(:id => sdk_ids.to_a).joins(:tags).pluck("android_sdks.id", "tags.name")
-    
+
         sdks_to_tags_map = {}
         sdks_to_tags_tuples.each do |sdk_id, tag_name|
           if sdks_to_tags_map[sdk_id]
@@ -981,7 +1010,7 @@ class AndroidApp < ActiveRecord::Base
             sdks_to_tags_map[sdk_id] = [ tag_name ]
           end
         end
-    
+
         sdks_to_tags_map.keys.each do |sdk_id|
           sdks_to_tags_map[sdk_id] = sdks_to_tags_map[sdk_id].uniq
         end
@@ -997,7 +1026,7 @@ class AndroidApp < ActiveRecord::Base
       # Step 3:
       #
       # Run final aggregate queries and finish building app export objects.
-      # 
+      #
 
       ad_stats = AndroidAd.where(:advertised_app_id => apps.map(&:id)).select('advertised_app_id, min(date_seen) as created_at, max(date_seen) as updated_at').group(:advertised_app_id)
       ad_stats.each do |ad_stat|
@@ -1025,14 +1054,14 @@ class AndroidApp < ActiveRecord::Base
           app.delete(field)
         end
       end
-      
+
       scan_statuses = ApkSnapshot.where("scan_status = ? OR status = ?",
         ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success])
         .where(:android_app_id => apps.map(&:id))
         .group(:android_app_id).select('android_app_id',
           'max(good_as_of_date) as last_scanned',
           'min(good_as_of_date) as created_at')
-      
+
       scan_statuses.each do |scan_status|
         if results[scan_status.android_app_id]
           results[scan_status.android_app_id]["first_scanned_date"] = scan_status.created_at.utc.iso8601
@@ -1041,7 +1070,7 @@ class AndroidApp < ActiveRecord::Base
           Bugsnag.notify(RuntimeError.new("Missing app snapshot entry for #{scan_status.android_app_id}"))
         end
       end
-      
+
       results.each do |app_id, result|
         results[app_id] = result.slice(*attribute_whitelist)
       end
