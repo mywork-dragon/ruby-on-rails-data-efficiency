@@ -279,11 +279,11 @@ form .form-group {
 }
 
 .header-info {
-  color: white;
   max-width: 500px;
 }
 
 .header-info h1, .header-info h3 {
+  color: white;
   padding: 0 15px;
 }
 
@@ -301,6 +301,7 @@ form .form-group {
 }
 
 .app-header-details {
+  color: white;
   align-items: center;
   display: flex;
   flex-wrap: wrap;
@@ -309,12 +310,6 @@ form .form-group {
 
 .app-header-details div {
   display: inline-block;
-}
-
-.app-store-button {
-  margin-left: 15px;
-  margin-top: 15px;
-  float: right;
 }
 
 .taken-down-label {
@@ -341,14 +336,6 @@ form .form-group {
     padding: 40px;
   }
 
-  .app-store-button {
-    margin-left: 25px;
-  }
-
-  .app-store-button {
-    margin-left: 12px;
-  }
-
   .container.app-header {
     padding: 30px 15px;
   }
@@ -360,15 +347,6 @@ form .form-group {
   }
 }
 
-@media (min-width: 992px) {
-  .app-store-button {
-    margin-left: 0;
-  }
-
-  .app-store-button a {
-    float: right;
-  }
-}
 
 #demo-canvas {
   position: absolute;

@@ -1,4 +1,5 @@
 class WelcomeController < ApplicationController
+  include AppsHelper
 
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
@@ -41,41 +42,30 @@ class WelcomeController < ApplicationController
   def search_apps
     query = params['query']
 
-    result_ids = AppsIndex.query(
-      multi_match: {
-        query: query,
-        fields: ['name.title^2', 'seller_url', 'seller'],
-        type: 'phrase_prefix',
-        max_expansions: 50,
-      }
-    ).boost_factor(
-      3,
-      filter: { term: { user_base: 'elite' } }
-    ).boost_factor(
-      2,
-      filter: { term: { user_base: 'strong' } }
-    ).boost_factor(
-      1,
-      filter: { term: { user_base: 'moderate' } }
-    )
-    result_ids = result_ids.limit(10)
-
-    apps = result_ids.map do |result|
-      id = result.attributes["id"]
-      type = result._data["_type"]
-      app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
-      {
-        name: app.name,
-        icon: app.icon_url,
-        platform: app.platform,
-        app_identifier: app.app_identifier,
-        publisher: app.publisher.try(:name),
-      }
-    end
-
-    # apps = 5.times.inject([]) do |memo, i|
-    #   app = IosApp.find(IosApp.pluck(:id).sample)
-    #   memo << {
+    # result_ids = AppsIndex.query(
+    #   multi_match: {
+    #     query: query,
+    #     fields: ['name.title^2', 'seller_url', 'seller'],
+    #     type: 'phrase_prefix',
+    #     max_expansions: 50,
+    #   }
+    # ).boost_factor(
+    #   3,
+    #   filter: { term: { user_base: 'elite' } }
+    # ).boost_factor(
+    #   2,
+    #   filter: { term: { user_base: 'strong' } }
+    # ).boost_factor(
+    #   1,
+    #   filter: { term: { user_base: 'moderate' } }
+    # )
+    # result_ids = result_ids.limit(10)
+    #
+    # apps = result_ids.map do |result|
+    #   id = result.attributes["id"]
+    #   type = result._data["_type"]
+    #   app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+    #   {
     #     name: app.name,
     #     icon: app.icon_url,
     #     platform: app.platform,
@@ -83,6 +73,19 @@ class WelcomeController < ApplicationController
     #     publisher: app.publisher.try(:name),
     #   }
     # end
+
+    apps = 5.times.inject([]) do |memo, i|
+      p "query: #{query}"
+      app = IosApp.joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE '#{query}%'").first
+      app = AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE '#{query}%'").first unless app
+      memo << {
+        name: app.name,
+        icon: app.icon_url,
+        platform: app.platform,
+        app_identifier: app.app_identifier,
+        publisher: app.publisher.try(:name),
+      }
+    end
 
     render json: apps
   end
@@ -113,15 +116,30 @@ class WelcomeController < ApplicationController
   end
 
   def app_page
-    p "platform: #{params[:platform]}"
-    p "app_identifier: #{params[:app_identifier]}"
-    case params[:platform]
-    when 'ios'
-      @app = IosApp.find_by_app_identifier(params[:app_identifier])
-    when 'google-play'
-      @app = AndroidApp.find_by_app_identifier(params[:app_identifier])
+    platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    app_identifier =  params[:app_identifier]
+    @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
+    @json_app = apps_hot_store.read(platform, @app.id)
+    @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
+    @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
+    most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
+    @last_update_date = latest_release_of(most_recent_app).to_date
+    @latest_update = (Date.current - @last_update_date).to_i
+    @sdks = @json_app['sdk_activity']
+    @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
+    @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
+    @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+      next memo unless sdk['installed'] && sdk['categories']
+      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      memo
     end
-    @json = @app.as_external_dump_json
+    @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+      next memo unless !sdk['installed'] && sdk['categories']
+      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      memo
+    end
+    @categories = @json_app['categories'].andand.map{|cat| cat['name']}
+    ap @json_app.except('sdk_activity').except('ratings_history')
   end
 
   def android_app_sdks
@@ -432,6 +450,16 @@ class WelcomeController < ApplicationController
   end
   
   def privacy
+  end
+
+  private
+
+  def publisher_hot_store
+    @publisher_hot_store ||= PublisherHotStore.new
+  end
+
+  def apps_hot_store
+    @apps_hot_store ||= AppHotStore.new
   end
 
 end

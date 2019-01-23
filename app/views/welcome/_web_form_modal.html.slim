@@ -14,16 +14,19 @@ div class="modal fade" id="webFormModal" tabindex="-1" role="dialog" aria-labell
                 input name="utf8" type="hidden" value="✓" /
                 input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
                 = hidden_field_tag('button_id', nil, id: 'button-id-field')
-              .form-group
-                input#first_name.form-control name="first_name" placeholder=("First Name") type="text" /
-              .form-group
-                input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" /
-              .form-group
-                input#company.form-control name="company" placeholder="Company" type="text" /
-              .form-group
-                input#email.form-control name="email" placeholder="Email" type="email" /
-              .form-group
-                input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+              .form-group.row
+                .col-md-6
+                  input#first_name.form-control name="first_name" placeholder=("First Name") type="text" /
+                .col-md-6
+                  input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" /
+              .form-group.row
+                .col-md-6
+                  input#email.form-control name="email" placeholder="Email" type="email" /
+                .col-md-6
+                  input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+              .form-group.row
+                .col-md-12
+                  input#company.form-control name="company" placeholder="Company" type="text" /
               .form-group
                 textarea#message.form-control name="message" placeholder=("Your Message")
               = recaptcha_tags

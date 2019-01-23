@@ -869,7 +869,7 @@ class IosApp < ActiveRecord::Base
 
       app_to_storefront_snapshot_attributes = {}
       if storefront_clauses.any?
-        storefront_snapshot_results = IosAppCurrentSnapshot.from('ios_app_current_snapshots FORCE INDEX(index_ios_app_current_snapshot_backups_on_ios_app_id_and_latest)').where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
+        storefront_snapshot_results = IosAppCurrentSnapshot.from('ios_app_current_snapshots FORCE INDEX(index_ios_app_current_snapshots_on_ios_app_id_and_latest)').where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
         storefront_snapshot_results.each do |result|
           app_id = result[all_storefront_snapshot_attributes.index("ios_app_id")]
           if app_to_storefront_snapshot_attributes[app_id]
@@ -1270,9 +1270,6 @@ class IosApp < ActiveRecord::Base
       scan_statuses = IpaSnapshot.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).where(:ios_app_id => app_ids)
         .group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as created_at')
 
-      p '------------------------------------------'
-      p "Found #{scan_statuses.count} scan statuses"
-
       scan_statuses.each do |scan_status|
         if results[scan_status.ios_app_id]
           results[scan_status.ios_app_id]["first_scanned_date"] = scan_status.created_at.utc.iso8601
@@ -1439,9 +1436,6 @@ class IosApp < ActiveRecord::Base
 
       data = app.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
-
-      p '-------------------------------'
-      p "Found data? #{data[0].present?}"
 
       if data[0]
         app_obj["first_scanned_date"] = data[0].first_scanned.utc.iso8601
