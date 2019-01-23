@@ -113,6 +113,8 @@ class WelcomeController < ApplicationController
   end
 
   def app_page
+    p "platform: #{params[:platform]}"
+    p "app_identifier: #{params[:app_identifier]}"
     case params[:platform]
     when 'ios'
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
