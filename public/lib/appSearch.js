@@ -3,7 +3,6 @@ $(document).ready(function() {
   var options = {
     url: function (input) {
       if (input.length >= 2) {
-        // Not working properly
         return `/welcome/search_apps?query=${input}`;
       }
     },

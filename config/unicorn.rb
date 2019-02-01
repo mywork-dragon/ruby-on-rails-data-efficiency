@@ -16,7 +16,7 @@ stdout_path "/dev/stdout"
 listen 3000
 
 # Number of processes
-worker_processes 1
+worker_processes 4
 
 # Time-out
 timeout 210

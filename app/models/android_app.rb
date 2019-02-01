@@ -522,8 +522,7 @@ class AndroidApp < ActiveRecord::Base
 
   def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)
       app = self
-      p '------------------------------------------------'
-      p 'exporting app as json'
+
       # Only these attributes will be output in the final response.
       white_list = [
         "all_version_rating",
@@ -657,7 +656,6 @@ class AndroidApp < ActiveRecord::Base
           'min(good_as_of_date) as first_scanned')
 
       if data[0]
-        p 'snapshots found'
         app_obj["first_scanned_date"] = data[0].first_scanned.utc.iso8601
         app_obj["last_scanned_date"] = data[0].last_scanned.utc.iso8601
       end

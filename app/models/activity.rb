@@ -41,7 +41,7 @@ class Activity < ActiveRecord::Base
       # create a weekly batch for each owner and add activity to it
       current_weekly_batch = owner.weekly_batches.find_or_create_by(week: current_week, activity_type: WeeklyBatch.activity_types[activity_type])
       current_weekly_batch.activities << activity
-      current_weekly_batch.clear_cache if Rails.env.production?
+      current_weekly_batch.clear_cache
     end
     activity.notify
   end
@@ -70,13 +70,13 @@ class Activity < ActiveRecord::Base
         batch.destroy
       else
         WeeklyBatch.reset_counters(batch.id, :activities)
-        batch.clear_cache if Rails.env.production?
+        batch.clear_cache
       end
     end
   end
 
   def notify
-    TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify? && Rails.env.production?
+    TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify?
   end
 
   def should_notify?

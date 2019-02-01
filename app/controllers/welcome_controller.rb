@@ -42,43 +42,30 @@ class WelcomeController < ApplicationController
   def search_apps
     query = params['query']
 
-    # result_ids = AppsIndex.query(
-    #   multi_match: {
-    #     query: query,
-    #     fields: ['name.title^2', 'seller_url', 'seller'],
-    #     type: 'phrase_prefix',
-    #     max_expansions: 50,
-    #   }
-    # ).boost_factor(
-    #   3,
-    #   filter: { term: { user_base: 'elite' } }
-    # ).boost_factor(
-    #   2,
-    #   filter: { term: { user_base: 'strong' } }
-    # ).boost_factor(
-    #   1,
-    #   filter: { term: { user_base: 'moderate' } }
-    # )
-    # result_ids = result_ids.limit(10)
-    #
-    # apps = result_ids.map do |result|
-    #   id = result.attributes["id"]
-    #   type = result._data["_type"]
-    #   app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
-    #   {
-    #     name: app.name,
-    #     icon: app.icon_url,
-    #     platform: app.platform,
-    #     app_identifier: app.app_identifier,
-    #     publisher: app.publisher.try(:name),
-    #   }
-    # end
+    result_ids = AppsIndex.query(
+      multi_match: {
+        query: query,
+        fields: ['name.title^2', 'seller_url', 'seller'],
+        type: 'phrase_prefix',
+        max_expansions: 50,
+      }
+    ).boost_factor(
+      3,
+      filter: { term: { user_base: 'elite' } }
+    ).boost_factor(
+      2,
+      filter: { term: { user_base: 'strong' } }
+    ).boost_factor(
+      1,
+      filter: { term: { user_base: 'moderate' } }
+    )
+    result_ids = result_ids.limit(10)
 
-    apps = 5.times.inject([]) do |memo, i|
-      p "query: #{query}"
-      app = IosApp.joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE '#{query}%'").first
-      app = AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE '#{query}%'").first unless app
-      memo << {
+    apps = result_ids.map do |result|
+      id = result.attributes["id"]
+      type = result._data["_type"]
+      app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+      {
         name: app.name,
         icon: app.icon_url,
         platform: app.platform,
