@@ -22,3 +22,6 @@ require('components/select/styles');
 
 // Explore Page
 require('containers/ExplorePage/styles/styles.js');
+
+// Login Page
+require('containers/LoginPage/styles/signin.scss');

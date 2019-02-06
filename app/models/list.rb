@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: lists
+#
+#  id         :integer          not null, primary key
+#  name       :string(191)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  filter     :text(65535)
+#
+
 class List < ActiveRecord::Base
 
   has_many :lists_users

@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: ipa_snapshots
+#
+#  id                  :integer          not null, primary key
+#  ios_app_id          :integer
+#  created_at          :datetime
+#  updated_at          :datetime
+#  download_status     :integer
+#  success             :boolean
+#  ipa_snapshot_job_id :integer
+#  scan_status         :integer
+#  version             :string(191)
+#  good_as_of_date     :datetime
+#  bundle_version      :string(191)
+#  lookup_content      :text(65535)
+#  first_valid_date    :datetime
+#  app_store_id        :integer
+#
+
 class IpaSnapshot < ActiveRecord::Base
 
 	has_many :class_dumps

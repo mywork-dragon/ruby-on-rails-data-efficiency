@@ -1,3 +1,30 @@
+# == Schema Information
+#
+# Table name: leads
+#
+#  id               :integer          not null, primary key
+#  email            :string(191)
+#  first_name       :string(191)
+#  last_name        :string(191)
+#  company          :string(191)
+#  phone            :string(191)
+#  crm              :string(191)
+#  sdk              :string(191)
+#  message          :text(65535)
+#  lead_source      :string(191)
+#  lead_data        :text(65535)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  referrer         :text(65535)
+#  referring_domain :string(191)
+#  utm_source       :string(191)
+#  utm_medium       :string(191)
+#  utm_campaign     :string(191)
+#  landing_page     :string(191)
+#  landing_variant  :string(191)
+#  visit_id         :integer
+#
+
 class Lead < ActiveRecord::Base
   visitable
   

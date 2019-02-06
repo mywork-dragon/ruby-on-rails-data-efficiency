@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: android_developers_websites
+#
+#  id                   :integer          not null, primary key
+#  android_developer_id :integer
+#  website_id           :integer
+#  created_at           :datetime
+#  updated_at           :datetime
+#  is_valid             :boolean          default(TRUE)
+#
+
 class AndroidDevelopersWebsite < ActiveRecord::Base
   belongs_to :android_developer
   belongs_to :website

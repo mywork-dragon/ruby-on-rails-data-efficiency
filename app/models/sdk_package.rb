@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: sdk_packages
+#
+#  id             :integer          not null, primary key
+#  package        :string(191)
+#  ios_sdk_id     :integer
+#  android_sdk_id :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class SdkPackage < ActiveRecord::Base
 
 	belongs_to :ios_sdk

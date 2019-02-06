@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: service_statuses
+#
+#  id             :integer          not null, primary key
+#  service        :integer          not null
+#  active         :boolean          default(TRUE)
+#  description    :text(65535)
+#  outage_message :text(65535)
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class ServiceStatus < ActiveRecord::Base
   enum service: [
     :ios_live_scan,

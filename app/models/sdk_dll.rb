@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: sdk_dlls
+#
+#  id         :integer          not null, primary key
+#  name       :string(191)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class SdkDll < ActiveRecord::Base
 
   has_many :apk_snapshots_sdk_dlls
