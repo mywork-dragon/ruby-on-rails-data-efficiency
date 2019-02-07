@@ -1,14 +1,13 @@
+- provide :title, "The Mightiest SDK Data"
+- provide :meta_description, "With 3 years of data across 4 million apps 4 thousand SDKs, and MightySignal is the largest SDK intelligence database in the world."
+
 .solution-page
-  - 4.times
-    .row
-      p
-  #title
-    | The Mightiest Data
-  #subtitle
-    | The Most Accurate and Real-Time Mobile App Data
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      h1#title.solution-page
+        | The Mightiest SDK Data<br/>
+      h2#subtitle.solution-page
+        | The Most Accurate and Real-Time Mobile App SDK Data
 
   .row
     .column.medium-5.medium-offset-1.graphic
@@ -21,20 +20,20 @@
       row
         p
       row
-        = render 'contact_us_button', title: 'Get Mobile Data from the Best', button_id: 'data-dna'
+        = render 'contact_us_button', title: 'Show Me The Data', button_id: 'data-dna'
   - 4.times do
     .row 
       p
   .row
     .column.medium-5.medium-offset-1.about-graphic
       .name
-        | Our Data is Real-Time
+        | Our SDK Data Is Real-Time
       .description
         | The mobile industry in constantly in flux, so it's critical that data be available at a moment's notice. We've built a high-performance backend that can find mobile data--on command.
       row
         p
       row
-        = render 'contact_us_button', title: 'See the Freshest Data', button_id: 'data-freshest'
+        = render 'contact_us_button', title: 'See The Freshest Data', button_id: 'data-freshest'
     .column.medium-5.end.graphic
       img src=@live_graphic width=200
   - 4.times do
@@ -45,26 +44,26 @@
         img src=@scope_graphic width=200
     .column.medium-5.end.about-graphic
       .name
-        | Our Data is Accurate
+        | Our SDK Data Is Accurate
       .description
         | Not only is our data real-time, but it's also accurate. When you're using data to make important business decision, it's of the utmost important for it to be correct. We've dedicated much engineering effort to build intelligent systems that classify data correctly.
       row
         p
       row
-        = render 'contact_us_button', title: 'Use Accurate Data', button_id: 'data-accurate'
+        = render 'contact_us_button', title: 'Get Accurate SDK Data', button_id: 'data-accurate'
   - 4.times do 
     .row
       p
   .row
     .column.medium-5.medium-offset-1.about-graphic
       .name
-        | Our Data is Scalable
+        | Our SDK Data Is Scalable
       .description
-        | Building an infrastructure which scales across millions of apps and types of data is a technically difficult problem. Luckily, we've been able to solve it, using advanced technologies like self-healing servers, machine learning, and advanced data pipelines.
+        | Building an infrastructure which scales across millions of apps and types of data is a technically difficult problem. Luckily, we've been able to solve it, using advanced technologies like self-healing servers, machine learning, and scalable data pipelines.
       row
         p
       row
-        = render 'contact_us_button', title: 'Give Me All the Data', button_id: 'data-scalable'
+        = render 'contact_us_button', title: 'Show Me The SDK Data', button_id: 'data-scalable'
     .column.medium-5.end.graphic
       img src=@legos_graphic width=200
   - 4.times do

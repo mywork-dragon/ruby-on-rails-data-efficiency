@@ -6,18 +6,18 @@ class FastestGrowingSdkReportGenerator
       relative_clause
     end
     sql = "
-      SELECT sdk, sdk_install_bases.month,install_base_count, derivative_of_install_base_count
-      FROM sdk_install_bases
+      SELECT sdk, android_sdk_install_bases.month, install_base_count, derivative_of_install_base_count
+      FROM android_sdk_install_bases
       WHERE sdk IN
         (SELECT sdk
-         FROM sdk_install_bases
+         FROM android_sdk_install_bases
          WHERE
             install_base_count > 10
-            AND sdk_install_bases.month <= dateadd('month', -2, '2017-12-12')
+            AND android_sdk_install_bases.month <= dateadd('month', -2, '2019-1-1')
             AND sdk NOT IN ('Firebase')
          GROUP BY sdk
          ORDER BY max(derivative_of_install_base_count #{relative_clause}) DESC LIMIT 100)
-      AND sdk_install_bases.month <= dateadd('month', -2, '2017-12-12')
+      AND android_sdk_install_bases.month <= dateadd('month', -2, '2019-1-1')
       ORDER BY month;
     "
     RedshiftDbConnection.new.query(sql).fetch
@@ -62,7 +62,7 @@ class FastestGrowingSdkReportGenerator
   def store_response
     MightyAws::S3.new.store(
       bucket: 'mightysignal-sdk-install-base-data',
-      key_path: 'fastest_growing_sdk_report_2017.json.gz',
+      key_path: 'fastest_growing_sdk_report_2018.json.gz',
       data_str: {
         "absolute" => _transform(_fetch(false), false),
         "relative" => _transform(_fetch(true), true)

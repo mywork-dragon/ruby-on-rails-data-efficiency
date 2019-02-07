@@ -1,16 +1,18 @@
+- provide :title, "Lead Generation"
+- provide :meta_description, "Use real-time SDK and ad intelligence to find new customers."
+
 .solution-page
-  - if @creative.present?
-    img src=@creative style="display: none;"
-  - 4.times
-    .row
-      p
-  #title
-    | Lead Generation
-  #subtitle
-    | Use real-time SDK and ad intelligence to find new customers.
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      - if @creative.present?
+        img src=@creative style="display: none;"
+      - 4.times
+        .row
+          p
+      h1#title.solution-page
+        | Lead Generation
+      h2#subtitle.solution-page
+        | Use real-time SDK and ad intelligence to find new customers.
 
   .row
     .column.medium-5.medium-offset-1.graphic
@@ -66,7 +68,7 @@
       .name
         | Sales-Centric Interface
       .description
-        | Our platform was made with salespeople in mind. You can easily run reports to find leads based on criteria of your choosing. The data is always returned instantly, thus enchancing your sales workflow.
+        | Our platform was made with salespeople in mind. You can easily run reports to find leads based on criteria of your choosing. The data is always returned instantly, streamlining your sales workflow.
       row
         p
       row
