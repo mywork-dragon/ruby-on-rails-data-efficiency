@@ -1,0 +1,20 @@
+<!-- List of posts -->
+<div class="index-template">
+  <% if @posts.count > 0 %>
+    <div class="list posts-container">
+      <% @posts.each do |post| %>
+        <%= render :partial => 'posts_list_item', :locals => {:post => post} %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="not_found">
+      <p>No posts were found</p>
+    </div>
+  <% end %>
+  <div class="sidebar">
+    <%= render 'buttercms/newsletter' %>
+    <%= render 'buttercms/request_demo' %>
+  </div>
+</div>
+
+<%= paginate @paginatable_array, window: 2, outer_window: 1 %>

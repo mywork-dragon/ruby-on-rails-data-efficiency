@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= content_for?(:html_title) ? "#{content_for(:html_title)} | MightySignal" : "Blog | MightySignal" %></title>
+  <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Blog | MightySignal" %>">
+  <link rel="alternate" type="application/atom+xml" title="My Blog - Atom" href="<%= buttercms_blog_atom_path %>">
+  <link rel="alternate" type="application/rss+xml" title="My Blog - RSS" href="<%= buttercms_blog_rss_path %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= stylesheet_link_tag 'blogs', media: 'all', 'data-turbolinks-track' => true %>
+</head>
+<body>
+
+<%= render 'layouts/buttercms/header' %>
+
+<% if flash[:alert] %>
+  <div class="alert-wrapper">
+    <p class="alert"><%= flash[:alert] %></p>
+  </div>
+<% end %>
+
+<%= yield %>
+
+<% if @related_posts %>
+  <%= render 'layouts/buttercms/related_reads' %>
+<% end %>
+
+<%= render 'layouts/buttercms/footer' %>
+
+</body>
+</html>

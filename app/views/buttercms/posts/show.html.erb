@@ -1,0 +1,49 @@
+<%= content_for :html_title, @post.seo_title %>
+<%= content_for :meta_description, @post.meta_description %>
+
+<article class="post">
+  <header>
+
+    <div class="img-container">
+      <!-- Post image -->
+      <%= image_tag(post_image(@post)) %>
+    </div>
+    <div class="info-container">
+
+      <!-- Post title -->
+      <h2><%= @post.title %></h2>
+
+      <!-- Post author and date -->
+      <span class="creator_and_date">
+      <%= image_tag(author_profile_image(@post)) %>
+        <%= "by " + @post.author.first_name + " " + @post.author.last_name + " on " + Time.parse(@post.published).strftime('%B %d, %Y') %>
+      </span>
+      <div class="social_networks_links">
+        <a href="#">
+          <%= image_tag("buttercms/icon_LinkedIn.svg") %>
+        </a>
+        <a href="#">
+          <%= image_tag("buttercms/icon_twitter.svg") %>
+        </a>
+        <a href="#">
+          <%= image_tag("buttercms/icon_facebook.svg") %>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <hr/>
+
+  <div class="content">
+
+    <!-- Post body -->
+    <%= @post.body.html_safe %>
+
+    <!-- Subscribe-->
+    <%= render 'buttercms/newsletter' %>
+
+    <!-- Request a Demo -->
+    <%= render 'buttercms/request_demo' %>
+
+  </div>
+</article>

@@ -1,0 +1,18 @@
+<div class="list-item post-preview">
+  <div class="post-preview-img" style="background-image: url(<%=post_image(post)%>)">
+  </div>
+  <div class="content">
+    <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header" %>
+    <div class="blog-data">
+      <%= image_tag(author_profile_image(post), :alt => author_full_name(post)) %>
+      <span class="author">by <%= author_full_name(post) %></span>
+      <div class="date"><%= date(post) %></div>
+    </div>
+    <div class="read-more">
+        <span>
+            <%= truncate(post.summary, length: 85) %>
+        </span>
+      <%= link_to "Read more", buttercms_post_path(post.slug), class: "link" %>
+    </div>
+  </div>
+</div>

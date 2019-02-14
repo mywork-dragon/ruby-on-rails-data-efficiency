@@ -1,0 +1,30 @@
+<header class="blog_header">
+
+  <div class="header-item container_logo_homepage">
+    <%= link_to buttercms_blog_path, :class => "bloghome_link" do %>
+      <%= image_tag("buttercms/logo.svg", :class => "logo") %>
+    <% end %>
+    <%= link_to "Case-studies", buttercms_pages_path, :class => "case-study-link" %>
+  </div>
+
+  <%= form_tag buttercms_blog_path, method: "get", class: "header-item" do %>
+    <select class="categories" name="category" onchange="this.form.submit();">
+      <option value="" selected>Categories</option>
+      <% @categories.each do |category| %>
+        <% if category.slug == @current_slug %>
+          <%= options_for_select([[category.name, category.slug]], @current_slug) %>
+        <% else %>
+          <%= options_for_select([[category.name, category.slug]]) %>
+        <% end %>
+      <% end %>
+    </select>
+  <% end %>
+
+  <%= form_tag buttercms_blog_path, method: "get", class: "header-item" do %>
+    <div class="search">
+      <input class="search-field" type="search" placeholder="Search" value="<%= @current_search %>" name="search" required>
+      <input class="search-btn" type="submit" value="">
+    </div>
+  <% end %>
+
+</header>
