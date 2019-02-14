@@ -1,6 +1,5 @@
 <div class="list-item post-preview">
-  <div class="post-preview-img" style="background-image: url(<%=post_image(post)%>)">
-  </div>
+  <%= link_to '',buttercms_post_path(post.slug), class: "post-preview-img", style: "background-image: url(#{post_image(post)})"%>
   <div class="content">
     <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header" %>
     <div class="blog-data">

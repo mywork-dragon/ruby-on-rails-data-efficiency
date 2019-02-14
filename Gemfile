@@ -215,5 +215,5 @@ gem 'pg', '~> 0.21'
 
 gem 'healthy_pools', '2.2.5'
 
-# blog CMS
+# Butter is a blogging platform. See https://buttercms.com for details.
 gem 'buttercms-rails'
