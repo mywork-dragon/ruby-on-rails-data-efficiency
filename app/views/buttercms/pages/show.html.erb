@@ -1,0 +1,41 @@
+<article>
+  <div class="case-study-page">
+
+    <div class="title-body">
+      <h1 class="title">
+        <%= @case_study_page.fields.maintitle %>
+      </h1>
+      <h2 class="sub-title">
+        <%= @case_study_page.fields.interviewedpersontitle %>
+      </h2>
+      <p class="company">
+        Company:
+        <%= @case_study_page.fields.companyname %>
+      </p>
+      <p class="interviewed-person">
+        Interviewed person:
+        <%= @case_study_page.fields.interviewedpersonname %>
+      </p>
+    </div>
+
+    <div class="body">
+      <% unless @case_study_page.fields.casestudyquote.blank? %>
+        <p class="quote">
+          <%= @case_study_page.fields.casestudyquote %>
+        </p>
+      <% end %>
+      <div class="main-column">
+
+        <%= @case_study_page.fields.casestudybody.gsub(/\n/, '<br />').html_safe %>
+
+        <%= link_to "Download PDF", @case_study_page.fields.pdfdoc, :class => "download-btn" %>
+
+        <div class="wide-wrapper">
+          <%= render 'buttercms/newsletter' %>
+          <%= render 'buttercms/request_demo' %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</article>

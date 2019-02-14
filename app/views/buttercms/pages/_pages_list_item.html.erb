@@ -1,0 +1,16 @@
+<div class="list-item page-preview">
+
+  <h3>
+    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_page_path(page.data.slug) %>
+  </h3>
+
+  <div class="interviewed-person">
+    <span> Interviewed person: <%= page.fields.interviewedpersonname %></span>
+  </div>
+
+  <div class="read-more">
+    <span><%= truncate(page.fields.casestudybody, length: 180) %></span>
+    <%= link_to "Read more", buttercms_page_path(page.data.slug), class: "link" %>
+  </div>
+
+</div>

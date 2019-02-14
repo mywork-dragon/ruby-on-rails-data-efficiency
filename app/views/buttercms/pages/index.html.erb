@@ -1,0 +1,15 @@
+<div class="index-template">
+
+  <div class="list pages-container">
+    <% @pages.each do |page| %>
+      <%= render :partial => 'pages_list_item', :locals => {:page => page} %>
+    <% end %>
+  </div>
+
+  <div class="sidebar">
+    <%= render 'buttercms/newsletter' %>
+    <%= render 'buttercms/request_demo' %>
+  </div>
+</div>
+
+<%= paginate @paginatable_array, window: 2, outer_window: 1 %>
