@@ -42,7 +42,7 @@ Rails.application.routes.draw do
 
     get 'lead-generation' => 'welcome#lead_generation', as: 'lead-generation'
     get 'abm' => 'welcome#abm', as: 'abm'
-    get 'business-intelligence' => 'welcome#business_intelligence', as: 'business-intelligence'
+    get 'sdk-intelligence' => 'welcome#sdk_intelligence', as: 'sdk-intelligence'
     get 'user-acquisition' => 'welcome#user_acquisition', as: 'user-acquisition'
     get 'lead-generation-ad-affiliate-networks' => 'welcome#lead_generation_ad_affiliate_networks', as: 'lead-generation-ad-affiliate-networks'
 

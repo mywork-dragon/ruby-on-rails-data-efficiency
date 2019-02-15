@@ -4,14 +4,14 @@
     canvas#demo-canvas
     #engineer_message.domain
       #heading
-        h1 The most accurate data on every mobile app.<br/>Right at your fingertips.
+        h1 The most mobile SDK data in the world.<br/>Right at your fingertips.
         select#app-select
           - @apps.each do |app|
             option data-imagesrc=app.icon_url('350x350') value=app.app_identifier
               = app.name
-        a href='#' class='btn btn-lg btn-primary livescan' Live Scan
+        a href='#' class='btn btn-lg btn-primary livescan' Try It
   #logos
-    p MightySignal is trusted by the best
+    p MightySignal is used by SDK vendors, ad networks, and financial orgs
     - @logos.each do |logo|
       img src=logo[:image] width=logo[:width]
 
@@ -21,7 +21,7 @@
     /! ============== Other Features ==============
     .row.PageHead
       .col-md-12
-        h1#solutions Fresh Content!
+        h2#solutions Fresh Content!
         h3
           | Read the new blog post about
           br
@@ -52,9 +52,9 @@
       a#solutions_anchor.anchor
     .row.PageHead
       .col-md-12
-        h1#solutions Solutions
+        h2#solutions Solutions
         h3
-          | Our solutions help companies succeed in the world of mobile.
+          | Our solutions help companies make better decisions.
         .row
           p
 
@@ -97,12 +97,12 @@
               | Integrate your entire target market into Salesforce and power all GTM teams.
           .row
             p
-      a href=business_intelligence_path
+      a href=sdk_intelligence_path
         .column.medium-2.medium-offset-1.solution.end
           .row
             p
           .row.title
-            | Business
+            | SDK
             br Intelligence
           .row
             p
@@ -128,7 +128,7 @@
     #contact.container
       .row.PageHead
         .col-md-12
-          h1 Contact Us
+          h2 Contact Us
           h3 Fill this out and we'll be in touch.
           .row
             p
@@ -160,6 +160,3 @@
             span.loading
       .col-md-3
 /! Container Closed
-
-- content_for :repuso_g2crowd_widget
-  = render 'shared/repuso_g2crowd_widget_tag'

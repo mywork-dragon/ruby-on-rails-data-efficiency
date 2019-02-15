@@ -1,14 +1,13 @@
+- provide :title, "Mobile SDK Data and Salesforce"
+- provide :meta_description, "Enable ABM4M (Account Based Marketing for Mobile) with MightySignal's powerful integration of our SDK intelligence and data into Salesforce."
+
 .solution-page
-  - 4.times
-    .row
-      p
-  #title
-    | Salesforce Integration
-  #subtitle
-    | Enable ABM4M (Account Based Marketing for Mobile)
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      h1#title.solution-page
+        | SDK Data + Salesforce
+      h2#subtitle.solution-page
+        | Enable ABM4M (Account Based Marketing for Mobile)
 
   .row
     .column.medium-5.medium-offset-1.graphic
@@ -93,6 +92,3 @@
 
 
   = render 'web_form_modal' 
-
-- content_for :repuso_g2crowd_widget
-  = render 'shared/repuso_g2crowd_widget_tag'
