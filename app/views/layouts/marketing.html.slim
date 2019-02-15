@@ -4,6 +4,8 @@ html lang="en"
     meta content="width=device-width, initial-scale=1.0" name="viewport" /
     title = full_title(yield(:title))
     meta property="og:image" content="#{og_image_url(yield(:og_image))}"
+    meta name="description" content="#{meta_description(yield :meta_description)}"
+    meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon" /
     link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" /
     link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet" /
@@ -92,15 +94,15 @@ html lang="en"
               li
                   = link_to 'Account Based Marketing', abm_path
               li
-                  = link_to 'Business Intelligence', business_intelligence_path
+                  = link_to 'SDK Intelligence', sdk_intelligence_path
             - else
               li.custom-menu-item
                 .dropdown.show
                   a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Solutions
                   .dropdown-menu aria-labelledby="dropdownMenuLink"
                     a class="dropdown-item" href=lead_generation_path Lead Generation
-                    a class="dropdown-item" href=abm_path Account Based Marketing
-                    a class="dropdown-item" href=business_intelligence_path Business Intelligence
+                    a class="dropdown-item" href=abm_path Account-Based Marketing
+                    a class="dropdown-item" href=sdk_intelligence_path SDK Intelligence
             li
               = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
             li

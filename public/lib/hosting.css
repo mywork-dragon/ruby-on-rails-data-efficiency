@@ -1227,10 +1227,13 @@ a.anchor{
 }
 
 .solution-page #title {
+  color: #fff !important;
 	font-size: 5.0rem;
+  margin-bottom: 0px;
 }
 
 .solution-page #subtitle {
+  color: #fff !important;
 	font-size: 2.0rem;
 }
 

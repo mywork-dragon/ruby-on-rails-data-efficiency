@@ -1,23 +1,23 @@
+- provide :title, "Account-Based Marketing For Mobile"
+- provide :meta_description, "Learn about how to use MightySignal as part of your account-based marketing strategy"
+
 .solution-page
-  - if @creative.present?
-    img src=@creative style="display: none;"
-  - 4.times
-    .row
-      p
-  #title
-    | ABM4M
-  #subtitle
-    | Account Based Marketing for Mobile
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      - if @creative.present?
+        img src=@creative style="display: none;"
+      h1#title.solution-page
+        | ABM For Mobile
+      h2#subtitle.solution-page
+        | Use MightySignal in your mobile account-based marketing strategy
+
 
   .row
     .column.medium-5.medium-offset-1.graphic
       img src=@sfdc_graphic width=1500
     .column.medium-5.end.about-graphic
       .name
-        | It Starts with Salesforce
+        | It Starts With Salesforce
       .description
         | The key to unlocking the power of ABM4M is 
         a href=salesforce_integration_path target="_blank" MightySignal's Salesforce Integration
@@ -26,7 +26,7 @@
       row
         p
       row
-        = render 'contact_us_button', title: 'Integrate with Salesforce', button_id: 'abm-salesforce'
+        = render 'contact_us_button', title: 'Integrate With Salesforce', button_id: 'abm-salesforce'
   - 4.times do
     .row 
       p
@@ -39,7 +39,7 @@
       row
         p
       row
-        = render 'contact_us_button', title: 'Sell with Precision', button_id: 'abm-sales'
+        = render 'contact_us_button', title: 'Sell With Precision', button_id: 'abm-sales'
     .column.medium-5.end.graphic
       img src=@sales_graphic width=200
   - 4.times do
@@ -56,7 +56,7 @@
       row
         p
       row
-        = render 'contact_us_button', title: 'Fish in the Right Pond', button_id: 'abm-marketing'
+        = render 'contact_us_button', title: 'Fish In The Right Pond', button_id: 'abm-marketing'
   - 4.times do 
     .row
       p
@@ -87,9 +87,7 @@
         | and read our series of detailed blog posts:
         br
         br
-        ul
-          li 
-            a href=@abm4m_post_0 target="_blank" Introducing ABM4M
+        a.btn.btn-primary.btn-lg href=@abm4m_post_0 target="_blank" Introducing ABM4M
   - 4.times do
     .row 
       p

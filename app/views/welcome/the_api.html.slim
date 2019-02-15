@@ -1,14 +1,13 @@
+- provide :title, "SDK Intelligence API"
+- provide :meta_description, "Access MightySignal data programmatically to import directly into your business intelligence tools, CRMs, or any internal tooling."
+
 .solution-page
-  - 4.times
-    .row
-      p
-  #title
-    | API
-  #subtitle
-    | Access MightySignal data programatically
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      h1#title.solution-page
+        | The SDK Intelligence API
+      h2#subtitle.solution-page
+        | Access MightySignal data programmatically
 
   .row
     .column.medium-5.medium-offset-1.graphic
@@ -23,7 +22,7 @@
       row
         p
       row
-        = render 'contact_us_button', title: 'Get an API Key', button_id: 'api-key'
+        = render 'contact_us_button', title: 'Get An API Key', button_id: 'api-key'
   
   - 4.times do
     .row 
