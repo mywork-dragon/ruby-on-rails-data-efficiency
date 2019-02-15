@@ -26,8 +26,12 @@ module ApplicationHelper
     if url.present?
       url
     else
-      'http://www.mightysignal.com/app/app/images/mighty_signal_logo.png'
+      'https://mightysignal.com/app/app/images/mighty_signal_logo.png'
     end
+  end
+  
+  def meta_description(meta_description)
+    meta_description.present? ? "#{meta_description}" : "MightySignal is the leader in SDK intelligence and provides access to the largest database of relationships between mobile apps and the software development kits (SDKs) they install and uninstall"
   end
 
   def week_formatter(week)

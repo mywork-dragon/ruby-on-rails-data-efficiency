@@ -253,7 +253,7 @@ class WelcomeController < ApplicationController
     @abm4m_post_0 = 'https://blog.mightysignal.com/introducing-abm4m-account-based-marketing-for-mobile-fcc02a5f6097'
   end
 
-  def business_intelligence
+  def sdk_intelligence
     get_logos
 
     @competitor_graphic = graphics_folder + 'track_competitor.svg'

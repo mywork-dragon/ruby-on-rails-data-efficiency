@@ -1,27 +1,26 @@
+- provide :title, "Mobile SDK Data Web Portal"
+- provide :meta_description, "Interact with MightySignal's state-of-the-art database through an intuitive and powerful web interface."
+
 .solution-page
-  - 4.times
-    .row
-      p
-  #title
-    | Web Portal
-  #subtitle
-    | Interact with MightySignal data through an easy-to-use web interface
-  - 2.times
-    .row
-      p
+  .jumbotron
+    .container
+      h1#title.solution-page
+        | Mobile SDK Data Web Portal
+      h2#subtitle.solution-page
+        | Interact with MightySignal data through an easy-to-use web interface
 
   .row
     .column.medium-5.medium-offset-1.graphic
       img src=@timeline_graphic width=600
     .column.medium-5.end.about-graphic 
       .name
-        | Timeline
+        | SDK Install and Uninstall Timeline
       .description
-        | Timeline is like your Facebook newsfeed, but instead of seeing what your friends are doing, you can see real-time updates of the mobile market.
+        | Timeline is like your Facebook newsfeed, but instead of seeing what your friends are doing, you can see real-time updates of the mobile SDK market.
       row
         p
       row
-        = render 'contact_us_button', title: 'Start Following the Market', button_id: 'web-portal-timeline'
+        = render 'contact_us_button', title: 'Start Following The Market', button_id: 'web-portal-timeline'
   - 4.times do
     .row 
       p
@@ -92,6 +91,3 @@
 
 
   = render 'web_form_modal' 
-
-- content_for :repuso_g2crowd_widget
-  = render 'shared/repuso_g2crowd_widget_tag'
