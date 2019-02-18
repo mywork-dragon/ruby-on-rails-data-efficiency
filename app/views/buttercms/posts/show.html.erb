@@ -18,17 +18,10 @@
       <%= image_tag(author_profile_image(@post)) %>
         <%= "by " + @post.author.first_name + " " + @post.author.last_name + " on " + Time.parse(@post.published).strftime('%B %d, %Y') %>
       </span>
-      <div class="social_networks_links">
-        <a href="#">
-          <%= image_tag("/lib/images/buttercms/icon_LinkedIn.svg") %>
-        </a>
-        <a href="#">
-          <%= image_tag("/lib/images/buttercms/icon_twitter.svg") %>
-        </a>
-        <a href="#">
-          <%= image_tag("/lib/images/buttercms/icon_facebook.svg") %>
-        </a>
-      </div>
+
+      <!-- Go to www.addthis.com/dashboard to customize your tools -->
+      <div class="addthis_inline_share_toolbox" style="border: "></div>
+
     </div>
   </header>
 
