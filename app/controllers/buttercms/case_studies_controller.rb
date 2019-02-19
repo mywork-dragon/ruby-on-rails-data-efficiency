@@ -1,4 +1,4 @@
-class Buttercms::PagesController < Buttercms::BaseController
+class Buttercms::CaseStudiesController < Buttercms::BaseController
 
   def index
     @pages = ButterCMS::Page.list('casestudy', :page => params[:page], :page_size => 4)

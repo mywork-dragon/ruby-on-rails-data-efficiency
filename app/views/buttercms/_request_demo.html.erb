@@ -1,5 +1,5 @@
 <div class="request-demo">
   <h3>The Most Accurate and Real-Time Mobile App Data</h3>
-  <%# TODO: Replace the buttercms_blog_path with the required one %>
-  <%= button_to 'Request a Demo', buttercms_blog_path, method: "get", class: "button" %>
+  <button class="button", id="contact-us-button-request_demo" data-toggle="modal" data-target="#webFormModal" type='submit'>Request a Demo</button>
+  <%= render 'welcome/web_form_modal'  %>
 </div>

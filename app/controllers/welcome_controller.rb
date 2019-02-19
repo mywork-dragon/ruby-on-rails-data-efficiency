@@ -34,7 +34,7 @@ class WelcomeController < ApplicationController
     @team_icon = icons_folder + 'team.svg'
     @target_icon = icons_folder + 'target.svg'
 
-    @abm4m_post_0 = 'https://blog.mightysignal.com/introducing-abm4m-account-based-marketing-for-mobile-fcc02a5f6097'
+    @abm4m_post_0 = buttercms_post_path('introducing-abm4m-account-based-marketing-for-mobile')
     @abm_blog_icon = graphics_folder + 'mightysignal_plus_salesforce_equals.png'
   end
 
@@ -250,7 +250,7 @@ class WelcomeController < ApplicationController
     @customer_success_graphic = graphics_folder + 'thumbs_up.svg'
     @learning_graphic = graphics_folder + 'learning.svg'
 
-    @abm4m_post_0 = 'https://blog.mightysignal.com/introducing-abm4m-account-based-marketing-for-mobile-fcc02a5f6097'
+    @abm4m_post_0 = buttercms_post_path('introducing-abm4m-account-based-marketing-for-mobile')
   end
 
   def sdk_intelligence

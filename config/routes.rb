@@ -6,11 +6,12 @@ Rails.application.routes.draw do
     get '/blog/atom' => 'feeds#atom', :format => 'atom', :as => :buttercms_blog_atom
     get '/blog/sitemap.xml' => 'feeds#sitemap', :format => 'xml', :as => :buttercms_blog_sitemap
 
+    get '/blog/case-studies(/page/:page)' => 'case_studies#index', :defaults => {:page => 1}, :as => :buttercms_case_studies
+    get '/blog/case-studies/:slug' => 'case_studies#show', :as => :buttercms_case_study
+
     get '/blog(/page/:page)' => 'posts#index', :defaults => {:page => 1}, :as => :buttercms_blog
     get '/blog/:slug' => 'posts#show', :as => :buttercms_post
 
-    get '/pages(/page/:page)' => 'pages#index', :defaults => {:page => 1}, :as => :buttercms_pages
-    get '/pages/:slug' => 'pages#show', :as => :buttercms_page
   end
 
   get 'ping' => 'application#ping'
