@@ -1,5 +1,6 @@
 <div class="index-template">
-
+  <%= render 'buttercms/blog_categories', style_class: 'mobile-search-widget' %>
+  <%= render 'buttercms/blog_search', style_class: 'mobile-search-widget' %>
   <div class="list pages-container">
     <% @pages.each do |page| %>
       <%= render :partial => 'pages_list_item', :locals => {:page => page} %>
@@ -7,6 +8,8 @@
   </div>
 
   <div class="sidebar">
+    <%= render 'buttercms/blog_categories', style_class: 'search-widget' %>
+    <%= render 'buttercms/blog_search', style_class: 'search-widget' %>
     <%= render 'buttercms/newsletter' %>
     <%= render 'buttercms/request_demo' %>
   </div>

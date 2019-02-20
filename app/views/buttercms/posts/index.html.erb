@@ -1,5 +1,7 @@
 <!-- List of posts -->
 <div class="index-template">
+  <%= render 'buttercms/blog_categories', style_class: 'mobile-search-widget' %>
+  <%= render 'buttercms/blog_search', style_class: 'mobile-search-widget' %>
   <% if @posts.count > 0 %>
     <div class="list posts-container">
       <% @posts.each do |post| %>
@@ -12,6 +14,8 @@
     </div>
   <% end %>
   <div class="sidebar">
+    <%= render 'buttercms/blog_categories', style_class: 'search-widget' %>
+    <%= render 'buttercms/blog_search', style_class: 'search-widget' %>
     <%= render 'buttercms/newsletter' %>
     <%= render 'buttercms/request_demo' %>
   </div>

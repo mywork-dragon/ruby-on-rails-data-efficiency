@@ -4,5 +4,7 @@ require 'buttercms-ruby'
 # Otherwise, grab your token at https://buttercms.com/profile/ and set it below
 ButterCMS::api_token = ENV['BUTTER_TOKEN']
 
-# Test mode can be used to setup a staging website for previewing content or for testing content during local development.
-ButterCMS::test_mode = ENV['BUTTER_TEST']
+# Fallback Data Store in redis
+# When a data store is set, on every successful API request the response is written to the data store.
+# When a subsequent API request fails, the client attempts to fallback to the value in the data store.
+ButterCMS::data_store = :redis, "redis://#{ENV['VARYS_REDIS_URL']}:#{ENV['VARYS_REDIS_PORT']}"
