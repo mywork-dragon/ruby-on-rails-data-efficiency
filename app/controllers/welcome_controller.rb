@@ -40,39 +40,112 @@ class WelcomeController < ApplicationController
   end
 
   def search_apps
-    query = params['query']
+    # query = params['query']
+    #
+    # result_ids = AppsIndex.query(
+    #   multi_match: {
+    #     query: query,
+    #     fields: ['name.title^2', 'seller_url', 'seller'],
+    #     type: 'phrase_prefix',
+    #     max_expansions: 50,
+    #   }
+    # ).boost_factor(
+    #   3,
+    #   filter: { term: { user_base: 'elite' } }
+    # ).boost_factor(
+    #   2,
+    #   filter: { term: { user_base: 'strong' } }
+    # ).boost_factor(
+    #   1,
+    #   filter: { term: { user_base: 'moderate' } }
+    # )
+    # result_ids = result_ids.limit(10)
+    #
+    # apps = result_ids.map do |result|
+    #   id = result.attributes["id"]
+    #   type = result._data["_type"]
+    #   app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+    #   {
+    #     name: app.name,
+    #     icon: app.icon_url,
+    #     platform: app.platform,
+    #     app_identifier: app.app_identifier,
+    #     publisher: app.publisher.try(:name),
+    #   }
+    # end
 
-    result_ids = AppsIndex.query(
-      multi_match: {
-        query: query,
-        fields: ['name.title^2', 'seller_url', 'seller'],
-        type: 'phrase_prefix',
-        max_expansions: 50,
-      }
-    ).boost_factor(
-      3,
-      filter: { term: { user_base: 'elite' } }
-    ).boost_factor(
-      2,
-      filter: { term: { user_base: 'strong' } }
-    ).boost_factor(
-      1,
-      filter: { term: { user_base: 'moderate' } }
-    )
-    result_ids = result_ids.limit(10)
-
-    apps = result_ids.map do |result|
-      id = result.attributes["id"]
-      type = result._data["_type"]
-      app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
-      {
-        name: app.name,
-        icon: app.icon_url,
-        platform: app.platform,
-        app_identifier: app.app_identifier,
-        publisher: app.publisher.try(:name),
-      }
-    end
+    apps = [
+        {
+            "name": "UberFacts",
+            "icon": "//lh5.ggpht.com/QbU-o9B3OJ_-uF8tsY5GNv2sZ-asvhkbWAXe-q-mgAiNQaUu3e7L6zOFgM_C6im8Fg=w300",
+            "platform": "android",
+            "app_identifier": "com.uberfacts.uf",
+            "publisher": "Uber Unlimited LLC"
+        },
+        {
+            "name": "Uber",
+            "icon": "https://lh3.googleusercontent.com/nTcQY6kRL6TgNQu4NSG0eBLQGDTTVj2-YOVyA71LFOuePtx057oSmt_xiObOrKdXMlg=s180",
+            "platform": "android",
+            "app_identifier": "com.ubercab",
+            "publisher": "Uber Technologies, Inc."
+        },
+        {
+            "name": "Uber",
+            "icon": "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/03/97/45/03974578-2604-85a9-96ea-7e8b3b208c67/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 368677368,
+            "publisher": "Uber Technologies, Inc."
+        },
+        {
+            "name": "UberConference - Conferencing",
+            "icon": "https://lh3.googleusercontent.com/7Yo2ViA3Okh3Ob-BDQYr5deb4nKv7yMbzYLHjZEME9fQT0sS2TbHU-QJy50iOO5s6A=s180",
+            "platform": "android",
+            "app_identifier": "com.uberconference",
+            "publisher": "Switch Communications, Inc"
+        },
+        {
+            "name": "UberGenPass",
+            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple3/v4/91/8f/c6/918fc674-18e0-912f-8dd5-e58489116126/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 588224057,
+            "publisher": "Camazotz Limited"
+        },
+        {
+            "name": "UberFocus",
+            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple5/v4/d5/b1/e3/d5b1e31e-bbc8-c933-c455-c96453d0d67b/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 830514912,
+            "publisher": "mobix e.K."
+        },
+        {
+            "name": "UberDate",
+            "icon": "https://is4-ssl.mzstatic.com/image/thumb/Purple3/v4/1d/e2/26/1de22674-bb45-6110-7aa4-850ec3856f02/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 979662286,
+            "publisher": "heidi hughes"
+        },
+        {
+            "name": "UberConference",
+            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple124/v4/1b/45/21/1b4521e9-475e-2f64-003f-2daf640fc4a5/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 579106114,
+            "publisher": "Dialpad, Inc."
+        },
+        {
+            "name": "UberDate",
+            "icon": "https://lh3.ggpht.com/G6XsR1XHF4y1EIOqj67o7KUXb5nN8eOpArsm0n_n3k8LKK_uF9t2eUFyrK7_ODCnQ94=s180",
+            "platform": "android",
+            "app_identifier": "com.jingged.uberdate",
+            "publisher": "Uberdate"
+        },
+        {
+            "name": "UberMarche",
+            "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple128/v4/20/ba/4a/20ba4a84-97f2-6118-1038-c9d593c7e6a5/source/100x100bb.jpg",
+            "platform": "ios",
+            "app_identifier": 1436036010,
+            "publisher": "Bjorn Ivesdal"
+        }
+    ]
 
     render json: apps
   end
