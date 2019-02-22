@@ -16,8 +16,6 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'slim', '3.0.6'
 gem 'slim-rails', '3.0.1'
 
-gem 'foundation-rails', '5.4.3.1'
-
 # required for asset pipeline
 # for middleman/turbolinks
 # http://guides.rubyonrails.org/asset_pipeline.html
