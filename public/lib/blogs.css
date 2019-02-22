@@ -10,6 +10,7 @@
     position: relative;
     min-height: calc(100vh - 88px);
     padding-bottom: 88px;
+    height: unset !important;
 }
 
 a, a:visited {
@@ -65,6 +66,7 @@ a, a:visited {
 }
 
 .copyright-container {
+    position: absolute;
     background: #232a31;
     height: 88px;
     width: 100%;

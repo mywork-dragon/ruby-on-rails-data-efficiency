@@ -5,34 +5,47 @@
   <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Blog | MightySignal" %>">
   <link rel="alternate" type="application/atom+xml" title="My Blog - Atom" href="<%= buttercms_blog_atom_path %>">
   <link rel="alternate" type="application/rss+xml" title="My Blog - RSS" href="<%= buttercms_blog_rss_path %>">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <link href="/lib/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
-  <%= stylesheet_link_tag '/lib/blogs.css', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '/lib/codrops_demo.css?body=1', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '/lib/foundation_and_overrides.css?body=1', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '/lib/hosting.css?body=1', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '/lib/normalize.css?body=1', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag '/lib/main.css', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Open+Sans', media: 'all' %>
-  <%= stylesheet_link_tag '/lib/not_found.css', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', media: 'all' %>
-  <%= stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Montserrat:400,700', media: 'all' %>
-  <%= javascript_include_tag '/lib/jquery-2.1.3.min.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/featherlight.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/jquery.easing.1.3.js', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/EasePack.min.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/appSearch.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/jquery.easy-autocomplete.min.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/jquery.ddslick.min.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/TweenLite.min.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/demo-1.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/web_form_modal.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/ahoy.js?body=1', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag '/lib/script.js' %>
-  <%= javascript_include_tag '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js' %>
-  <%= javascript_include_tag '/lib/jquery.bxslider.min.js' %>
+  <link href="/lib/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon"/>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/flexslider.css?body=1" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/foundation_and_overrides.css?body=1" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/hosting.css?body=1" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/normalize.css?body=1" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/easy-autocomplete.min.css" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/easy-autocomplete.themes.min.css" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/main.css" media="all" rel="stylesheet"/>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"/>
+  <link href="/lib/jquery.bxslider.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" media="all" rel="stylesheet"/>
+  <link data-turbolinks-track="true" href="/lib/not_found.css" media="all" rel="stylesheet"/>
+  <script data-turbolinks-track="true" src="/lib/jquery-2.1.3.min.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/jquery.easing.1.3.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/lib/jquery.bxslider.min.js"></script>
+  <script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/appSearch.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/jquery.easy-autocomplete.min.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/jquery.ddslick.min.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"></script>
+  <script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"></script>
+  <script src="/lib/script.js"></script>
+  <meta content="authenticity_token" name="csrf-param"/>
+  <meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"/>
+  <meta content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo" name="google-site-verification"/>
+  <script async="true"
+          src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"></script>
+  <!--  blog only style-->
+  <link data-turbolinks-track="true" href="/lib/blogs.css" media="all" rel="stylesheet"/>
 </head>
 <body class="blog-container">
 
