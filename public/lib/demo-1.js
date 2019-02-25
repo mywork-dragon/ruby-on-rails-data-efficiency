@@ -15,8 +15,15 @@ window.onload = function() {
 				
         //largeHeader = document.getElementById('large-header');
         //largeHeader.style.height = height+'px';
-				
-        canvas = document.getElementById('demo-canvas');
+
+        if (document.getElementById('demo-canvas') !== null) {
+            canvas = document.getElementById('demo-canvas');
+        } else if (document.getElementById('demo-canvas-blog') !== null) {
+            canvas = document.getElementById('demo-canvas-blog');
+            height = 445;
+        }
+
+        // canvas = document.getElementById('demo-canvas');
         canvas.width = width;
         canvas.height = height;
         ctx = canvas.getContext('2d');

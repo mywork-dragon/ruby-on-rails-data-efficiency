@@ -290,32 +290,33 @@ class WelcomeController < ApplicationController
 
   def subscribe
     # TODO: we are no longer using Salesforce so this should be removed
-    # message = params[:message]
-    # if message == 'Timeline'
-    #   destination = timeline_path(form: 'timeline')
-    # else
-    #   destination = top_ios_sdks_path(form: 'top-ios-sdks')
-    # end
-    #
-    # if params[:email].present?
-    #   lead_data = {email: params[:email], message: message, lead_source: message}
-    #
-    #   ad_source = params['ad_source']
-    #   lead_data.merge!(lead_source: ad_source) if ad_source.present?
-    #
-    #   lead_data[:utm_source] = current_visit.utm_source
-    #   lead_data[:utm_medium] = current_visit.utm_source
-    #   lead_data[:utm_campaign] = current_visit.utm_campaign
-    #   lead_data[:referrer] = current_visit.referrer
-    #   lead_data[:referring_domain] = current_visit.referring_domain
-    #
-    #   Lead.create_lead(lead_data)
-    #   ahoy.track "Submitted subscribe", request.path_parameters
-    #   flash[:success] = "We will be in touch soon!"
-    # else
-    #   flash[:error] = "Please enter your email"
-    # end
-    # redirect_to destination
+    message = params[:message]
+    if message == 'Timeline'
+      destination = timeline_path(form: 'timeline')
+    else
+      destination = top_ios_sdks_path(form: 'top-ios-sdks')
+    end
+
+    if params[:email].present?
+      lead_data = {email: params[:email], message: message, lead_source: message}
+
+      ad_source = params['ad_source']
+      lead_data.merge!(lead_source: ad_source) if ad_source.present?
+
+      lead_data[:utm_source] = current_visit.utm_source
+      lead_data[:utm_medium] = current_visit.utm_source
+      lead_data[:utm_campaign] = current_visit.utm_campaign
+      lead_data[:referrer] = current_visit.referrer
+      lead_data[:referring_domain] = current_visit.referring_domain
+
+      Lead.create_lead(lead_data)
+      ahoy.track "Submitted subscribe", request.path_parameters
+      flash[:success] = "We will be in touch soon!"
+    else
+      flash[:error] = "Please enter your email"
+    end
+    redirect_to destination
+    # redirect_to(:back)
   end
 
   def contact_us

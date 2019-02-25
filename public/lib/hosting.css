@@ -39,7 +39,9 @@ If you having trouble in editing css. please send a mail to support@surjithctly.
 body {
 	font-family:"Montserrat", Arial, Helvetica, sans-serif;
 	background: #f3f3f3;
-	position:relative; 
+	position:relative;
+	min-height: calc(100vh - 88px);
+	height: unset !important;
 }
 /*a {
   color:#2cc76a;
@@ -1135,7 +1137,7 @@ a.anchor{
 	background-position-y: 0px;
 	background-size:auto;
 	border-bottom-color:rgba(0, 0, 0, 0);
-	border-width: 0px
+	border-width: 0px;
 	box-sizing: border-box;
 	color: rgb(255, 255, 255);
 	cursor: pointer;
@@ -1383,4 +1385,61 @@ a.anchor{
 .mighty-report .logo {
 	margin-top: 15px;
 	margin-bottom: 15px;
+}
+
+/* Footer styles*/
+.copyright-container {
+	margin-top: 100px;
+	position: absolute;
+	background: #232a31;
+	height: 88px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	bottom: 0;
+}
+
+.copyright-container span {
+	color: #68737b;
+	font-family: Montserrat, sans-serif;
+	font-size: 15px;
+	font-weight: 600;
+	text-transform: uppercase;
+	width: 100%;
+	max-width: 1024px;
+	margin: 0 auto;
+}
+
+.copyright-container .phone-number {
+	margin-left: 10px;
+	text-transform: none;
+	font-weight: 400;
+}
+
+.copyright-container .phone-number a {
+	text-decoration: none;
+}
+
+@media only screen and (max-width: 1200px) {
+	.copyright-container span {
+		padding: 0 10px;
+		box-sizing: border-box;
+	}
+}
+
+@media only screen and (max-width: 960px) {
+	.copyright-container span {
+		max-width: 620px;
+		padding: 0;
+	}
+}
+
+@media only screen and (max-width: 654px) {
+	.copyright-container span {
+		width: 95vw;
+		display: block;
+	}
+	.copyright-container .phone-number{
+		margin-left: 0;
+	}
 }

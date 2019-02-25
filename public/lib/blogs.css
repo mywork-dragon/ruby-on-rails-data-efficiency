@@ -38,6 +38,17 @@ a, a:visited {
     color: #c20700;
 }
 
+#large-header {
+    margin-top: -20px;
+}
+
+
+#engineer_message h1 {
+    font-weight: 600;
+    font-size: 80px;
+    margin: 100px 0;
+}
+
 .related-reads {
     background: #2db6d8;
     padding: 49px 0 73px 0;
@@ -65,26 +76,6 @@ a, a:visited {
     margin: 0;
 }
 
-.copyright-container {
-    position: absolute;
-    background: #232a31;
-    height: 88px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    bottom: 0;
-}
-
-.copyright-container span {
-    color: #68737b;
-    font-family: Montserrat, sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    text-transform: uppercase;
-    width: 100%;
-    max-width: 1024px;
-    margin: 0 auto;
-}
 
 .case-study-page {
     font-family: Montserrat, sans-serif;
@@ -777,11 +768,6 @@ a, a:visited {
         margin: 0 10px;
     }
 
-    .copyright-container span {
-        padding: 0 10px;
-        box-sizing: border-box;
-    }
-
     .post {
         padding: 0 10px;
         box-sizing: border-box;
@@ -874,11 +860,6 @@ a, a:visited {
         margin: 0 10px;
     }
 
-    .copyright-container span {
-        max-width: 620px;
-        padding: 0;
-    }
-
     .post header {
         flex-direction: column;
         max-width: 620px;
@@ -916,6 +897,11 @@ a, a:visited {
     .alert-wrapper {
         max-width: 95vw;
         margin-bottom: 10px;
+    }
+
+    #engineer_message h1 {
+        font-weight: 600;
+        font-size: 54px;
     }
 
     .index-template .list {
@@ -1010,10 +996,6 @@ a, a:visited {
 
     .related-reads .posts-container .post-preview:nth-child(3) {
         display: block;
-    }
-
-    .copyright-container span {
-        width: 95vw;
     }
 
     .post {

@@ -4,6 +4,7 @@ h1, h2, h3, h4, h5, h6, body {
 /* line 9, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
 .container#contact {
     position: relative;
+    margin-bottom: 100px;
 }
 /* line 12, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
 .container#contact img#techstars_logo {
@@ -20,7 +21,8 @@ h1, h2, h3, h4, h5, h6, body {
 }
 
 /* line 27, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
-#demo-canvas {
+#demo-canvas,
+#demo-canvas-blog {
     position: absolute;
     top: 0px;
     left: 0px;

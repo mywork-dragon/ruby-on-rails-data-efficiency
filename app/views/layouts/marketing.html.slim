@@ -65,11 +65,10 @@ html lang="en"
     = render 'layouts/header'
 
     = yield
+
     /! ============== Footer ==============
-    .footer
-      .container
-        .row.footerlinks
-          p © #{Time.new.year} MightySignal
+    = render 'layouts/footer'
+
     /! ==========ONE PAGE SCROLLING SCRIPTS STARTS===============
     /! =============ONE PAGE SCROLLING SCRIPTS ENDS============
     /! =============BACK TO TOP STARTS============
