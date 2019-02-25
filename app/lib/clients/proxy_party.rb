@@ -26,7 +26,7 @@ module ProxyParty
       end
 
       res
-      
+
     end
 
     # For modifying the default options on the client
@@ -64,6 +64,7 @@ module ProxyParty
         begin
           return yield region
         rescue ProxyParty::UnsupportedRegion
+        rescue Net::OpenTimeout
         rescue Errno::ECONNREFUSED
           Slackiq.message("Connection to proxy in #{region} failed.", webhook_name: :automated_alerts)
         end
@@ -81,4 +82,3 @@ module ProxyParty
 
   end
 end
-
