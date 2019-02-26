@@ -68,7 +68,7 @@ a, a:visited {
     flex-flow: row wrap;
     justify-content: space-between;
     width: 100%;
-    max-width: 1024px;
+    max-width: 1190px;
     margin: 33px auto 0 auto;
 }
 
@@ -162,7 +162,7 @@ a, a:visited {
 
 .index-template {
     width: 100%;
-    max-width: 1024px;
+    max-width: 1190px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: auto 300px;
@@ -402,8 +402,8 @@ a, a:visited {
 }
 
 .post-preview {
-    width: 300px;
-    height: 395px;
+    width: 380px;
+    height: 425px;
     border-radius: 5px;
     border: 1px solid #9aa5aa;
     background-color: #ffffff;
@@ -424,13 +424,16 @@ a, a:visited {
     border-top: 1px solid #9aa5aa;
     background-color: #ffffff;
     padding: 15px 23px 23px 23px;
+    display: grid;
+    grid-template-rows: 70px 50px auto;
 }
 
 .post-preview .content .header {
     display: block;
     color: #2db6d8;
-    font-size: 16px;
-    font-weight: 800;
+    font-size: 1.5em;
+    line-height: 1.3em;
+    font-weight: 700;
 }
 
 .post-preview .content .blog-data {
@@ -451,16 +454,17 @@ a, a:visited {
 
 .post-preview .content .blog-data .author {
     color: #222222;
-    font-size: 12px;
+    font-size: 1em;
     font-weight: 400;
-    line-height: 24.01px;
+    line-height: 1.5em;
+    margin-right: 15px;
 }
 
 .post-preview .content .blog-data .date {
     color: #222222;
-    font-size: 12px;
+    font-size: 1em;
     font-weight: 400;
-    line-height: 24px;
+    line-height: 1.5em;
 }
 
 .post-preview .content .read-more {
@@ -469,7 +473,7 @@ a, a:visited {
 
 .post-preview .content .read-more span {
     color: #222222;
-    font-size: 12px;
+    font-size: 0.75em;
     line-height: 22px;
     font-weight: 400;
 }
@@ -477,13 +481,13 @@ a, a:visited {
 .post-preview .content .read-more .link {
     color: #2db6d8;
     font-weight: 700;
-    font-size: 11px;
+    font-size: 0.75em;
     display: inline;
 }
 
 .page-preview {
-    width: 300px;
-    height: 240px;
+    width: 380px;
+    height: 425px;
     border-radius: 5px;
     border: 1px solid #9aa5aa;
     background-color: #ffffff;
@@ -491,22 +495,22 @@ a, a:visited {
     box-sizing: border-box;
     overflow: hidden;
     padding: 15px 23px 23px;
+    display: grid;
+    grid-template-rows: 70px 30px auto;
 }
 
-.page-preview h3 {
+.page-preview .header {
+    display: block;
+    color: #2db6d8;
+    font-size: 1.5em;
+    line-height: 1.3em;
+    font-weight: 700;
     margin: 0;
 }
 
-.page-preview h3 a {
-    display: block;
-    color: #2db6d8;
-    font-size: 16px;
-    font-weight: 800;
-}
-
-.page-preview .interviewed-person {
+.page-preview .interviewed-person span {
     color: #222222;
-    font-size: 12px;
+    font-size: 0.75em;
     font-weight: 400;
     line-height: 22px;
     margin: 14px 0 12px;
@@ -518,7 +522,7 @@ a, a:visited {
 
 .page-preview .read-more span {
     color: #222222;
-    font-size: 12px;
+    font-size: 0.75em;
     line-height: 22px;
     font-weight: 400;
 }
@@ -526,7 +530,7 @@ a, a:visited {
 .page-preview .read-more .link {
     color: #2db6d8;
     font-weight: 700;
-    font-size: 11px;
+    font-size: 0.75rem;
     display: inline;
 }
 
@@ -579,7 +583,7 @@ a, a:visited {
     align-items: center;
     color: #222222;
     font-family: Montserrat, sans-serif;
-    font-size: 12px;
+    font-size: 0.75em;
     font-weight: 600;
     margin-bottom: 9px;
 }
@@ -772,6 +776,45 @@ a, a:visited {
         padding: 0 10px;
         box-sizing: border-box;
     }
+}
+
+@media only screen and (max-width: 1024px) {
+    .post-preview {
+        width: 300px;
+        height: 395px;
+    }
+
+    .post-preview .content {
+        grid-template-rows: 35px 35px auto;
+    }
+
+    .post-preview .content .header {
+        font-size: 1em;
+        line-height: 1em;
+        font-weight: 800;
+    }
+
+    .post-preview .content .blog-data .author {
+        font-size: 0.75em;
+        line-height: 0.75em;
+    }
+
+    .post-preview .content .blog-data .date {
+        font-size: 0.75em;
+        line-height: 0.75em;
+    }
+
+    .page-preview {
+        width: 300px;
+        height: 480px;
+        grid-template-rows: 40px 50px auto;
+    }
+
+    .page-preview .header {
+        font-size: 1em;
+        line-height: 1em;
+    }
+
 }
 
 @media only screen and (max-width: 960px) {
@@ -979,6 +1022,7 @@ a, a:visited {
 
     .page-preview {
         width: 95vw;
+        height: 400px;
     }
 
     .related-reads {
@@ -1051,6 +1095,12 @@ a, a:visited {
     .mobile-search-widget {
         width: 95vw;
         margin: 0 auto 10px auto;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    .page-preview {
+        height: 460px;
     }
 }
 

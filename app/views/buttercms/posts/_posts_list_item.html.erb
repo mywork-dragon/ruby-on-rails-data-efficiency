@@ -9,7 +9,7 @@
     </div>
     <div class="read-more">
         <span>
-            <%= truncate(post.summary, length: 85) %>
+            <%= truncate(post.summary, length: 130) %>
         </span>
       <%= link_to "Read more", buttercms_post_path(post.slug), class: "link" %>
     </div>
