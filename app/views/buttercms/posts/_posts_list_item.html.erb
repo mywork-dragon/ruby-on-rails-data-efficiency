@@ -1,17 +1,16 @@
-<div class="list-item post-preview">
-  <%= link_to '',buttercms_post_path(post.slug), class: "post-preview-img", style: "background-image: url(#{post_image(post)})"%>
-  <div class="content">
-    <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header" %>
-    <div class="blog-data">
-      <%= image_tag(author_profile_image(post), :alt => author_full_name(post)) %>
-      <span class="author">by <%= author_full_name(post) %></span>
-      <div class="date"><%= date(post) %></div>
-    </div>
-    <div class="read-more">
-        <span>
-            <%= truncate(post.summary, length: 130) %>
-        </span>
-      <%= link_to "Read more", buttercms_post_path(post.slug), class: "link" %>
-    </div>
+<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp" >
+  <figure class="mdl-card__media">
+    <%= link_to '',buttercms_post_path(post.slug), html_options = {:style => "background-image: url(#{asset_url(post_image(post))}); background-size: contain; background-repeat: no-repeat; background-position: center; "} %>
+  </figure>
+  <div class="mdl-card__title">
+    <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header"%>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <%= truncate(post.summary, length: 140) %>
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <%= link_to "Read more", buttercms_post_path(post.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect" %>
+    <div class="mdl-layout-spacer"></div>
+    <div class="addthis_inline_share_toolbox" data-title="<%= post.title + ' | MightySignal' %>" data-url="<%= buttercms_post_path(post.slug) %>" data-media="<%= post_image(post) %>"></div>
   </div>
 </div>

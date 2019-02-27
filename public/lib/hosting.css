@@ -1418,6 +1418,7 @@ a.anchor{
 
 .copyright-container .phone-number a {
 	text-decoration: none;
+	color: #68737b;
 }
 
 @media only screen and (max-width: 1200px) {

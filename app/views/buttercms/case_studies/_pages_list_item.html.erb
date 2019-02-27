@@ -1,14 +1,13 @@
-<div class="list-item page-preview">
-
-    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_case_study_path(page.data.slug), class: "header" %>
-
-  <div class="interviewed-person">
-    <span> Interviewed person: <%= page.fields.interviewedpersonname %></span>
+<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp" >
+  <div class="mdl-card__title">
+    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_case_study_path(page.data.slug), class: "header"%>
   </div>
-
-  <div class="read-more">
-    <span><%= truncate(strip_tags(page.fields.casestudybody), length: 510) %></span>
-    <%= link_to "Read more", buttercms_case_study_path(page.data.slug), class: "link" %>
+  <div class="mdl-card__supporting-text">
+    <%= truncate(strip_tags(page.fields.casestudybody), length: 660) %>
   </div>
-
+  <div class="mdl-card__actions mdl-card--border">
+    <%= link_to "Read more", buttercms_case_study_path(page.data.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect" %>
+    <div class="mdl-layout-spacer"></div>
+    <div class="addthis_inline_share_toolbox" data-title="<%= page.fields.maintitle + ' | MightySignal' %>" data-url="<%= buttercms_case_study_path(page.data.slug) %>"></div>
+  </div>
 </div>

@@ -49,34 +49,6 @@ a, a:visited {
     margin: 100px 0;
 }
 
-.related-reads {
-    background: #2db6d8;
-    padding: 49px 0 73px 0;
-}
-
-.related-reads h3 {
-    color: #ffffff;
-    font-family: Montserrat, sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    text-align: center;
-    margin: 0;
-}
-
-.related-reads .posts-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1190px;
-    margin: 33px auto 0 auto;
-}
-
-.related-reads .posts-container .post-preview:nth-child(2) {
-    margin: 0;
-}
-
-
 .case-study-page {
     font-family: Montserrat, sans-serif;
 }
@@ -368,8 +340,8 @@ a, a:visited {
 .blog-container .pagination {
     display: block;
     width: 100%;
-    max-width: 1024px;
-    margin: 0 auto 54px auto;
+    max-width: 1190px;
+    margin: 10px auto 54px auto;
 }
 
 .pagination .page {
@@ -399,139 +371,6 @@ a, a:visited {
     justify-content: center;
     align-items: center;
     color: #ffffff;
-}
-
-.post-preview {
-    width: 380px;
-    height: 425px;
-    border-radius: 5px;
-    border: 1px solid #9aa5aa;
-    background-color: #ffffff;
-    font-family: Montserrat, sans-serif;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.post-preview .post-preview-img {
-    display: block;
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-}
-
-.post-preview .content {
-    box-sizing: border-box;
-    border-top: 1px solid #9aa5aa;
-    background-color: #ffffff;
-    padding: 15px 23px 23px 23px;
-    display: grid;
-    grid-template-rows: 70px 50px auto;
-}
-
-.post-preview .content .header {
-    display: block;
-    color: #2db6d8;
-    font-size: 1.5em;
-    line-height: 1.3em;
-    font-weight: 700;
-}
-
-.post-preview .content .blog-data {
-    display: flex;
-    align-items: center;
-    margin: 14px 0 12px 0;
-}
-
-.post-preview .content .blog-data > * {
-    margin-right: 8px;
-}
-
-.post-preview .content .blog-data img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-}
-
-.post-preview .content .blog-data .author {
-    color: #222222;
-    font-size: 1em;
-    font-weight: 400;
-    line-height: 1.5em;
-    margin-right: 15px;
-}
-
-.post-preview .content .blog-data .date {
-    color: #222222;
-    font-size: 1em;
-    font-weight: 400;
-    line-height: 1.5em;
-}
-
-.post-preview .content .read-more {
-    text-align: justify;
-}
-
-.post-preview .content .read-more span {
-    color: #222222;
-    font-size: 0.75em;
-    line-height: 22px;
-    font-weight: 400;
-}
-
-.post-preview .content .read-more .link {
-    color: #2db6d8;
-    font-weight: 700;
-    font-size: 0.75em;
-    display: inline;
-}
-
-.page-preview {
-    width: 380px;
-    height: 425px;
-    border-radius: 5px;
-    border: 1px solid #9aa5aa;
-    background-color: #ffffff;
-    font-family: Montserrat, sans-serif;
-    box-sizing: border-box;
-    overflow: hidden;
-    padding: 15px 23px 23px;
-    display: grid;
-    grid-template-rows: 70px 30px auto;
-}
-
-.page-preview .header {
-    display: block;
-    color: #2db6d8;
-    font-size: 1.5em;
-    line-height: 1.3em;
-    font-weight: 700;
-    margin: 0;
-}
-
-.page-preview .interviewed-person span {
-    color: #222222;
-    font-size: 0.75em;
-    font-weight: 400;
-    line-height: 22px;
-    margin: 14px 0 12px;
-}
-
-.page-preview .read-more {
-    text-align: justify;
-}
-
-.page-preview .read-more span {
-    color: #222222;
-    font-size: 0.75em;
-    line-height: 22px;
-    font-weight: 400;
-}
-
-.page-preview .read-more .link {
-    color: #2db6d8;
-    font-weight: 700;
-    font-size: 0.75rem;
-    display: inline;
 }
 
 .post {
@@ -573,7 +412,7 @@ a, a:visited {
     color: #2db6d8;
     font-family: Montserrat, sans-serif;
     margin-top: auto;
-    font-size: 32.5px;
+    font-size: 32px;
     line-height: 40px;
     margin-bottom: 9px;
 }
@@ -705,6 +544,103 @@ a, a:visited {
     max-width: 259px;
 }
 
+.related-reads {
+    background: #2db6d8;
+    padding: 49px 0 73px 0;
+}
+
+.related-reads h3 {
+    color: #ffffff;
+    font-family: Montserrat, sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+}
+
+.related-reads .posts-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    width: 95vw;
+    max-width: 1190px;
+    margin: 33px auto 0 auto;
+}
+
+/* posts and case studies card item styles */
+.mdl-grid {
+    width: 100%;
+    position: relative;
+    padding: unset;
+    margin: 0 auto;
+}
+
+.mdl-card {
+    display: grid;
+    grid-template-rows: 200px 70px auto 53px;
+    width: calc(50% - 24px) !important;
+    font-family: Montserrat, sans-serif;
+}
+
+.related-reads .posts-container .mdl-card {
+    width: calc(33% - 16px) !important;
+}
+
+.mdl-cell {
+    margin: 0 8px 16px 8px;
+}
+
+.pages-container .mdl-card {
+    grid-template-rows: 70px auto 53px;
+}
+
+.index-template .mdl-grid .mdl-card:nth-child(2),
+.index-template .mdl-grid .mdl-card:nth-child(4) {
+    margin-right: 16px;
+}
+
+.mdl-card__media {
+    background-color: unset;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.mdl-card__media a {
+    width: 100%;
+}
+
+.mdl-card__supporting-text {
+    color: rgba(0, 0, 0, .7);
+    width: 100%;
+}
+
+.mdl-card__title .header {
+    display: block;
+    color: #2db6d8;
+    font-size: 1.25em;
+    line-height: 1.3em;
+    font-weight: 700;
+}
+
+.mdl-card__actions {
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.mdl-card__actions > .mdl-button--icon {
+    margin-right: 3px;
+    margin-left: 3px;
+}
+
+.mdl-button {
+    color: #2db6d8;
+    font-weight: 800;
+    font-size: 1rem;
+    display: inline;
+}
+
 @media only screen and (max-width: 1300px) {
     .case-study-page .body {
         display: block;
@@ -760,61 +696,13 @@ a, a:visited {
     }
 
     .related-reads .posts-container {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        width: 100%;
         max-width: 1024px;
-        margin: 33px auto 0 auto;
-    }
-
-    .related-reads .posts-container .post-preview {
-        margin: 0 10px;
     }
 
     .post {
         padding: 0 10px;
         box-sizing: border-box;
     }
-}
-
-@media only screen and (max-width: 1024px) {
-    .post-preview {
-        width: 300px;
-        height: 395px;
-    }
-
-    .post-preview .content {
-        grid-template-rows: 35px 35px auto;
-    }
-
-    .post-preview .content .header {
-        font-size: 1em;
-        line-height: 1em;
-        font-weight: 800;
-    }
-
-    .post-preview .content .blog-data .author {
-        font-size: 0.75em;
-        line-height: 0.75em;
-    }
-
-    .post-preview .content .blog-data .date {
-        font-size: 0.75em;
-        line-height: 0.75em;
-    }
-
-    .page-preview {
-        width: 300px;
-        height: 480px;
-        grid-template-rows: 40px 50px auto;
-    }
-
-    .page-preview .header {
-        font-size: 1em;
-        line-height: 1em;
-    }
-
 }
 
 @media only screen and (max-width: 960px) {
@@ -868,9 +756,10 @@ a, a:visited {
         justify-content: center;
     }
 
-    .index-template .sidebar .request-demo, .index-template .sidebar .subscribe {
+    .index-template .sidebar .request-demo,
+    .index-template .sidebar .subscribe {
         width: 300px;
-        margin: 0 10px 37px 10px;
+        margin: 0 8px 37px 8px;
         box-sizing: border-box;
     }
 
@@ -889,18 +778,6 @@ a, a:visited {
 
     .related-reads .posts-container {
         justify-content: center;
-    }
-
-    .related-reads .posts-container .post-preview {
-        margin-bottom: 33px;
-    }
-
-    .related-reads .posts-container .post-preview:nth-child(3) {
-        display: none;
-    }
-
-    .related-reads .posts-container .post-preview:nth-child(2) {
-        margin: 0 10px;
     }
 
     .post header {
@@ -928,6 +805,28 @@ a, a:visited {
         width: 620px;
         margin: 0 auto 20px auto;
     }
+
+    .mdl-grid {
+        width: 630px;
+    }
+
+    .index-template .mdl-grid .mdl-card:nth-child(2),
+    .index-template .mdl-grid .mdl-card:nth-child(4) {
+        margin-right: 8px;
+    }
+
+    .mdl-card {
+        width: calc(50% - 16px) !important;
+    }
+
+    .related-reads .posts-container .mdl-card {
+        width: calc(50% - 16px) !important;
+    }
+
+    .related-reads .posts-container .mdl-card:nth-child(3) {
+        display: none;
+    }
+
 }
 
 @media only screen and (max-width: 654px) {
@@ -965,9 +864,10 @@ a, a:visited {
         align-items: center;
     }
 
-    .index-template .sidebar .request-demo, .index-template .sidebar .subscribe {
+    .index-template .sidebar .request-demo,
+    .index-template .sidebar .subscribe {
         width: 95vw;
-        margin: 10px 0;
+        margin: 8px 0;
     }
 
     .index-template .sidebar .request-demo {
@@ -991,40 +891,6 @@ a, a:visited {
         margin: 15px 0 15px;
     }
 
-    .post-preview {
-        width: 95vw;
-    }
-
-    .post-preview div,
-    .post-preview .header {
-        box-sizing: border-box;
-    }
-
-    .post-preview .post-preview-img {
-        width: 95vw;
-    }
-
-    .post-preview .post-preview-img img {
-        width: 95vw;
-    }
-
-    .post-preview .content {
-        width: 95vw;
-    }
-
-    .post-preview .content .header {
-        width: unset;
-    }
-
-    .post-preview .content .read-more {
-        width: unset;
-    }
-
-    .page-preview {
-        width: 95vw;
-        height: 400px;
-    }
-
     .related-reads {
         padding-bottom: 40px;
     }
@@ -1032,14 +898,6 @@ a, a:visited {
     .related-reads .posts-container {
         flex-flow: column nowrap;
         align-items: center;
-    }
-
-    .related-reads .posts-container .post-preview {
-        margin: 10px;
-    }
-
-    .related-reads .posts-container .post-preview:nth-child(3) {
-        display: block;
     }
 
     .post {
@@ -1096,11 +954,30 @@ a, a:visited {
         width: 95vw;
         margin: 0 auto 10px auto;
     }
+
+    .mdl-grid {
+        width: 95vw;
+    }
+
+    .index-template .mdl-grid .mdl-card:nth-child(2),
+    .index-template .mdl-grid .mdl-card:nth-child(4) {
+        margin-right: 0;
+    }
+
+    .mdl-card,
+    .related-reads .posts-container .mdl-card {
+        width: 100% !important;
+        margin: 8px 0;
+    }
+
+    .related-reads .posts-container .mdl-card:nth-child(3) {
+        display: grid;
+    }
 }
 
 @media only screen and (max-width: 320px) {
-    .page-preview {
-        height: 460px;
+    .mdl-card {
+        grid-template-rows: 150px 70px auto 53px;
     }
 }
 

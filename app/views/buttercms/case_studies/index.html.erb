@@ -2,9 +2,11 @@
   <%= render 'buttercms/blog_categories', style_class: 'mobile-search-widget' %>
   <%= render 'buttercms/blog_search', style_class: 'mobile-search-widget' %>
   <div class="list pages-container">
-    <% @pages.each do |page| %>
-      <%= render :partial => 'pages_list_item', :locals => {:page => page} %>
-    <% end %>
+    <div class="mdl-grid">
+      <% @pages.each do |page| %>
+          <%= render :partial => 'pages_list_item', :locals => {:page => page} %>
+        <% end %>
+    </div>
   </div>
 
   <div class="sidebar">
