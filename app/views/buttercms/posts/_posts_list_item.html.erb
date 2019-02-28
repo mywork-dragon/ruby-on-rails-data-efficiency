@@ -11,6 +11,6 @@
   <div class="mdl-card__actions mdl-card--border">
     <%= link_to "Read more", buttercms_post_path(post.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect" %>
     <div class="mdl-layout-spacer"></div>
-    <div class="addthis_inline_share_toolbox" data-title="<%= post.title + ' | MightySignal' %>" data-url="<%= buttercms_post_path(post.slug) %>" data-media="<%= post_image(post) %>"></div>
+    <div class="addthis_inline_share_toolbox" data-title="<%= post.title + ' | MightySignal' %>" data-url="<%= buttercms_post_url(post.slug) %>" data-media="<%= post_image(post) %>"></div>
   </div>
 </div>
