@@ -582,6 +582,14 @@ a, a:visited {
     font-family: Montserrat, sans-serif;
 }
 
+.pages-container .mdl-grid .mdl-card {
+    max-height: 425px;
+}
+
+.posts-container .mdl-card {
+    max-height: 430px;
+}
+
 .related-reads .posts-container .mdl-card {
     width: calc(33% - 16px) !important;
 }
@@ -648,9 +656,9 @@ a, a:visited {
     background-position: center;
     margin: -20px 0 20px 0 !important;
     height: 598px;
-    /*max-width: 1440px;*/
     overflow: hidden;
 }
+
 .blog-subheader a {
     display: block;
     height: 100%;
@@ -718,6 +726,20 @@ a, a:visited {
     .post {
         padding: 0 10px;
         box-sizing: border-box;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .blog-subheader {
+        height: 360px;
+    }
+
+    .pages-container .mdl-grid .mdl-card {
+        max-height: 515px;
+    }
+
+    .posts-container .mdl-card {
+        max-height: 445px;
     }
 }
 
@@ -843,11 +865,20 @@ a, a:visited {
         display: none;
     }
 
-}
+    .pages-container .mdl-grid .mdl-card {
+        max-height: 500px;
+    }
 
-@media only screen and (max-width: 1024px) {
-    .blog-subheader {
-        height: 360px;
+    .posts-container .mdl-card {
+        max-height: 440px;
+    }
+
+    .pages-container .mdl-grid .mdl-card {
+        max-height: 551px;
+    }
+
+    .posts-container .mdl-card {
+        max-height: 445px;
     }
 }
 

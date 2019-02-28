@@ -1,9 +1,9 @@
-<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp" >
+<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp">
   <figure class="mdl-card__media">
-    <%= link_to '',buttercms_post_path(post.slug), html_options = {:style => "background-image: url(#{asset_url(post_image(post))}); background-size: contain; background-repeat: no-repeat; background-position: center; "} %>
+    <%= link_to '', buttercms_post_path(post.slug), html_options = {:style => "background-image: url(#{asset_url(post_image(post))}); background-size: contain; background-repeat: no-repeat; background-position: center; "} %>
   </figure>
   <div class="mdl-card__title">
-    <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header"%>
+    <%= link_to truncate(post.title, length: 40), buttercms_post_path(post.slug), class: "header" %>
   </div>
   <div class="mdl-card__supporting-text">
     <%= truncate(post.summary, length: 140) %>

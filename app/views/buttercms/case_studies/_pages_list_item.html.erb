@@ -1,9 +1,9 @@
-<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp" >
+<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_case_study_path(page.data.slug), class: "header"%>
+    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_case_study_path(page.data.slug), class: "header" %>
   </div>
   <div class="mdl-card__supporting-text">
-    <%= truncate(strip_tags(page.fields.casestudybody), length: 660) %>
+    <%= truncate(strip_tags(page.fields.casestudybody), length: 640) %>
   </div>
   <div class="mdl-card__actions mdl-card--border">
     <%= link_to "Read more", buttercms_case_study_path(page.data.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect" %>
