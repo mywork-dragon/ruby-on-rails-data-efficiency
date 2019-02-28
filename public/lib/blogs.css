@@ -641,6 +641,22 @@ a, a:visited {
     display: inline;
 }
 
+.blog-subheader {
+    background-image: url('/lib/images/buttercms/mighty_signal_blog_subheader.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: -20px 0 20px 0 !important;
+    height: 598px;
+    /*max-width: 1440px;*/
+    overflow: hidden;
+}
+.blog-subheader a {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
 @media only screen and (max-width: 1300px) {
     .case-study-page .body {
         display: block;
@@ -829,6 +845,12 @@ a, a:visited {
 
 }
 
+@media only screen and (max-width: 1024px) {
+    .blog-subheader {
+        height: 360px;
+    }
+}
+
 @media only screen and (max-width: 654px) {
     .blog_header {
         width: 95vw;
@@ -972,6 +994,10 @@ a, a:visited {
 
     .related-reads .posts-container .mdl-card:nth-child(3) {
         display: grid;
+    }
+
+    .blog-subheader {
+        height: 270px;
     }
 }
 
