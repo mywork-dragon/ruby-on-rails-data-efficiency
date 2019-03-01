@@ -21,8 +21,7 @@ h1, h2, h3, h4, h5, h6, body {
 }
 
 /* line 27, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
-#demo-canvas,
-#demo-canvas-blog {
+#demo-canvas {
     position: absolute;
     top: 0px;
     left: 0px;

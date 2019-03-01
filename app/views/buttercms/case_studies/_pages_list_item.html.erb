@@ -1,9 +1,19 @@
 <div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp">
+  <figure class="mdl-card__media">
+    <%= link_to(buttercms_case_study_path(page.data.slug)) do %>
+      <img class="interviewed-person-image" src="<%= asset_url(page_image(page)) %>" alt="<%= page_card_title(page) %>">
+    <% end %>
+  </figure>
   <div class="mdl-card__title">
-    <%= link_to truncate(page.fields.maintitle, length: 40), buttercms_case_study_path(page.data.slug), class: "header" %>
+    <h2>
+      <a class="header" href="<%= buttercms_case_study_path(page.data.slug) %>">
+        <div class="header-interviewed-person"><%= page.fields.interviewedpersonname %></div>
+        <div class="header-company"><%= page.fields.companyname %></div>
+      </a>
+    </h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <%= truncate(strip_tags(page.fields.casestudybody), length: 640) %>
+    <%= truncate(strip_tags(page.fields.casestudybody), length: 320, separator: " ") %>
   </div>
   <div class="mdl-card__actions mdl-card--border">
     <%= link_to "Read more", buttercms_case_study_path(page.data.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect" %>

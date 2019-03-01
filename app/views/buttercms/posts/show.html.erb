@@ -30,8 +30,9 @@
   <div class="content">
 
     <!-- Post body -->
-    <%= @post.body.html_safe %>
-
+    <div class="content-body">
+      <%= @post.body.html_safe %>
+    </div>
     <!-- Subscribe-->
     <%= render 'buttercms/newsletter' %>
 

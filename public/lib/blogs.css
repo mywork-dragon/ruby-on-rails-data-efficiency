@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
-
 @font-face {
     font-family: "Proxima Nova Semibold";
     src: url("./fonts/proxima_nova/ProximaNovaSemibold.otf");
@@ -18,35 +16,29 @@ a, a:visited {
 }
 
 .alert-wrapper {
-    max-width: 1024px;
+    position: absolute;
     width: 100%;
-    display: block;
+    display: flex;
+    justify-content: center;
     text-align: center;
     box-sizing: border-box;
     margin: 0 auto 60px;
 }
 
 .alert-wrapper .alert {
+    margin: 0;
+    max-width: 1024px;
+    width: 50%;
     display: block;
     border: 1px solid #c20700;
     border-radius: 5px;
     font-family: Proxima Nova Semibold, sans-serif;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 18px;
     padding: 16px;
     box-sizing: border-box;
     color: #c20700;
-}
-
-#large-header {
-    margin-top: -20px;
-}
-
-
-#engineer_message h1 {
-    font-weight: 600;
-    font-size: 80px;
-    margin: 100px 0;
+    background-color: #fff;
 }
 
 .case-study-page {
@@ -111,7 +103,7 @@ a, a:visited {
     text-align: justify;
     background-color: #232931;
     color: #ffffff;
-    align-self: start;
+    align-self: flex-start;
     grid-column: 3;
     grid-row: 1;
     font-weight: 600;
@@ -285,6 +277,7 @@ a, a:visited {
     font-size: 18px;
     font-weight: 400;
     line-height: 32px;
+    height: ;
 }
 
 .subscribe {
@@ -454,6 +447,10 @@ a, a:visited {
     margin: 60px 0 53px 0;
 }
 
+.content-body {
+    margin-bottom: 24px;
+}
+
 .post .content {
     width: 100%;
     max-width: 694px;
@@ -573,21 +570,21 @@ a, a:visited {
     position: relative;
     padding: unset;
     margin: 0 auto;
+    display: flex;
 }
 
 .mdl-card {
     display: grid;
-    grid-template-rows: 200px 70px auto 53px;
+    grid-template-rows: 200px auto auto 53px;
     width: calc(50% - 24px) !important;
     font-family: Montserrat, sans-serif;
+    height: max-content;         /* Chrome */
+    height: intrinsic;           /* Safari/WebKit uses a non-standard name */
+    height: -moz-max-content;    /* Firefox/Gecko */
 }
 
-.pages-container .mdl-grid .mdl-card {
-    max-height: 425px;
-}
-
-.posts-container .mdl-card {
-    max-height: 430px;
+.pages-container .mdl-card {
+    grid-template-rows: 270px auto auto 53px;
 }
 
 .related-reads .posts-container .mdl-card {
@@ -596,10 +593,6 @@ a, a:visited {
 
 .mdl-cell {
     margin: 0 8px 16px 8px;
-}
-
-.pages-container .mdl-card {
-    grid-template-rows: 70px auto 53px;
 }
 
 .index-template .mdl-grid .mdl-card:nth-child(2),
@@ -614,21 +607,51 @@ a, a:visited {
     justify-content: center;
 }
 
-.mdl-card__media a {
+.mdl-card__media .post-image {
     width: 100%;
 }
 
+.mdl-card__media a {
+    display: flex;
+    align-items: center;
+}
+
+.mdl-card__media a .interviewed-person-image {
+    border-radius: 50%;
+    margin: auto;
+    height: 200px;
+    width: 200px;
+}
+
 .mdl-card__supporting-text {
+    line-height: 1.5rem;
     color: rgba(0, 0, 0, .7);
     width: 100%;
+}
+
+.mdl-card__title {
+    display: flex;
+    justify-content: center;
 }
 
 .mdl-card__title .header {
     display: block;
     color: #2db6d8;
-    font-size: 1.25em;
-    line-height: 1.3em;
+    font-size: 1.25rem;
+    line-height: 1.5rem;
     font-weight: 700;
+    text-align: center;
+}
+
+.header-interviewed-person {
+    font-size: 2rem;
+    line-height: 2.25rem;
+    margin-bottom: 15px;
+}
+
+.header-company {
+    font-size: 1.5rem;
+    color: #9aa5aa;
 }
 
 .mdl-card__actions {
@@ -732,14 +755,6 @@ a, a:visited {
 @media only screen and (max-width: 1024px) {
     .blog-subheader {
         height: 360px;
-    }
-
-    .pages-container .mdl-grid .mdl-card {
-        max-height: 515px;
-    }
-
-    .posts-container .mdl-card {
-        max-height: 445px;
     }
 }
 
@@ -865,20 +880,8 @@ a, a:visited {
         display: none;
     }
 
-    .pages-container .mdl-grid .mdl-card {
-        max-height: 500px;
-    }
-
-    .posts-container .mdl-card {
-        max-height: 440px;
-    }
-
-    .pages-container .mdl-grid .mdl-card {
-        max-height: 551px;
-    }
-
-    .posts-container .mdl-card {
-        max-height: 445px;
+    .mdl-card {
+        grid-template-rows: 150px auto auto 53px;
     }
 }
 
@@ -1030,11 +1033,9 @@ a, a:visited {
     .blog-subheader {
         height: 270px;
     }
-}
 
-@media only screen and (max-width: 320px) {
-    .mdl-card {
-        grid-template-rows: 150px 70px auto 53px;
+    .related-reads .posts-container .mdl-card {
+        grid-template-rows: 150px auto auto 53px;
     }
 }
 
