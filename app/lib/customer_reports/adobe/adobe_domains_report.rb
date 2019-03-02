@@ -12,15 +12,18 @@ class AdobeDomainsReport
   # $ awslogin
   # $ aws s3 cp local_folder/file.csv  s3://mightysignal-customer-reports/adobe/input/
 
-  # Make sure the file matches the pattern for the parser version, ex:
-  # v1 input file format is a csv with data formatted like this:
-  # 1299,"HASBRO, INC.",Y
-  # 6219,CAMPBELL SOUP COMPANY,Y
-  # 12270,NAVY FEDERAL CREDIT UNION,Y
-  # For this we will use parser v1 too.
+  # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
+  # 64, AliPaySDK
+  # 46, Mixpanel
+  # 
+  # Note the IDs are different for iOS and Android!!
+  #
+  # adobe_domains.csv is a csv file with the domains names, example:
+  # fr.as24.com
+  # AS24.COM
 
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "AdobeReport.generate('2018_Adobe_Mobile_SDK_Customers.csv.gz', 'v1')"
+  # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
 
   # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
   # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/adobe/output/
@@ -52,14 +55,7 @@ class AdobeDomainsReport
 
     private :output_file_ios, :output_file_android, :publisher_hot_store
 
-    def generate(domains_file, sdks_file, platform)
-      # sdks_file is a csv file with the sdk ids, example:
-      # 64, AliPaySDK
-      # 46, Mixpanel
-      # 
-      # domains is a csv file with the domains names, example:
-      # fr.as24.com
-      # AS24.COM
+    def generate(domains_file, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       domains = CSV.read("adobe_domains.csv")
 
