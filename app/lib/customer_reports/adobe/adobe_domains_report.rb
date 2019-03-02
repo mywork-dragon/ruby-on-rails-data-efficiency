@@ -52,6 +52,10 @@ class AdobeDomainsReport
     def sdks_to_track
       @sdks_to_track ||= []
     end
+    
+    def app_ids
+      @app_ids ||= []
+    end
 
     private :output_file_ios, :output_file_android, :publisher_hot_store
 
@@ -61,18 +65,21 @@ class AdobeDomainsReport
 
       get_sdk_list(sdks_data)
       
+      i = 0
       CSV.open("output_file_#{platform}.csv", "w") do |csv|  
         csv << headers_row()  
         domains.each do |row|
+          i += 1
           domain = row[0]
-          p "Processing #{domain}"
+          p "Processing row #{i} #{domain}"
           publishers_by_domain = domain_link.domain_to_publisher(domain)
           p "Publishers found #{publishers_by_domain.length}"
           publishers_by_domain.each do |publisher|
             p "Apps found #{publisher.apps.length}"
             publisher.apps.each do |app_data|
               app = apps_hot_store.read(platform, app_data.id)
-              next if (app.nil? || app.empty?) 
+              next if (app.nil? || app.empty? || app_ids.include?(app_data.id.to_i)) 
+              app_ids << app_data.id.to_i
               skds_used = get_used_sdks(app)
               csv << produce_csv_line(domain, publisher, app, skds_used, platform)
             end
