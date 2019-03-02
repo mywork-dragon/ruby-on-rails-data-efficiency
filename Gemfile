@@ -156,7 +156,6 @@ gem 'seed_dump'
 # for browser detection
 gem 'browser', '2.5.2'
 
-gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
 
 # for mass inserts
@@ -186,6 +185,7 @@ group :development, :test do
   # for non-Docker local development
   gem 'dotenv-rails', '~>2.1.1'
   gem 'rubocop'
+  gem 'byebug'
 end
 
 group :test do

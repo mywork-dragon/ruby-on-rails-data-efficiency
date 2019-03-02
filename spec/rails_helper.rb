@@ -33,8 +33,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
 
-  # Include create and build methods instead of FactoryBot.create
-  config.include FactoryBot::Syntax::Methods
+  # Include create and build methods instead of FactoryGirl.create
+  config.include FactoryGirl::Syntax::Methods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
