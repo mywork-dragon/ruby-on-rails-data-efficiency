@@ -165,16 +165,9 @@ gem 'activerecord-import', '0.13.0'
 # for mighty bot
 gem 'twitter', '5.16.0'
 gem 'googl', '0.7.1'
-# gem 'daemons', '1.2.3'
-
-# for syntax checks
-gem 'rubocop', group: [:development, :test]
 
 # for mightyapk's protocol buffer
 gem 'ruby-protocol-buffers', '~>1.6.1'
-
-# for non-Docker local development
-gem 'dotenv-rails', '~>2.1.1', group: [:development, :test]
 
 # for JSON logs
 gem 'lograge', '~> 0.4.1'
@@ -189,9 +182,20 @@ gem 'simplecov', '~>0.15.1', :require => false, :group => :test
 
 
 group :development, :test do
-  gem 'rspec-mocks', '~> 3.5'
-  gem 'minitest', '~> 5.1'
   gem "mocha", '~> 1.3.0'
+  # for non-Docker local development
+  gem 'dotenv-rails', '~>2.1.1'
+  gem 'rubocop'
+end
+
+group :test do
+  gem 'rspec-rails', '~> 3.8'
+  gem 'minitest', '~> 5.1'
+  gem 'database_cleaner'
+end
+
+group :development, :staging, :test do
+  gem 'factory_girl_rails'
 end
 
 # for manipulate IPA plists
