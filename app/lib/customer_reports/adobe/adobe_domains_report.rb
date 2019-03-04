@@ -58,48 +58,51 @@ class AdobeDomainsReport
     end
 
     private :output_file_ios, :output_file_android, :publisher_hot_store
+    
+    def get_publisher_ids(domains_file_name, platform)
+      domains = CSV.read(domains_file_name).flatten
+      domain_data = DomainDatum.pluck(:domain)
+      intersect = domains & domain_data
+      intersect_website_ids = intersect.map{ |d| DomainDatum.find_by_domain(d).website_ids }.flatten.uniq
+      if platform == 'ios'
+        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).ios_developer_ids }.flatten.uniq
+      else
+        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
+      end
+      publisher_ids
+    end
 
-    def generate(domains_file, platform)
+    def generate(domains_file_name, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
-      domains = CSV.read("adobe_domains.csv")
-
       get_sdk_list(sdks_data)
+      publisher_ids = get_publisher_ids(domains_file_name, platform)
       
       i = 0
       CSV.open("output_file_#{platform}.csv", "w") do |csv|  
         csv << headers_row()  
-        domains.each do |row|
+        publisher_ids.each do |publisher_id|
           i += 1
-          domain = row[0]
-          p "Processing row #{i} #{domain}"
-          publishers_by_domain = domain_link.domain_to_publisher(domain)
-          p "Publishers found #{publishers_by_domain.length}"
-          publishers_by_domain.each do |publisher|
-            p "Apps found #{publisher.apps.length}"
-            publisher.apps.each do |app_data|
-              app = apps_hot_store.read(platform, app_data.id)
-              next if (app.nil? || app.empty? || app_ids.include?(app_data.id.to_i)) 
-              app_ids << app_data.id.to_i
-              skds_used = get_used_sdks(app)
-              csv << produce_csv_line(domain, publisher, app, skds_used, platform)
-            end
+          p "Running #{i}"
+          publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
+          p "Apps found #{publisher.apps.length}"
+          publisher.apps.each do |app_data|
+            app = apps_hot_store.read(platform, app_data.id)
+            next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 10000 || app_ids.include?(app_data.id.to_i)) 
+            app_ids << app_data.id.to_i
+            skds_used = get_used_sdks(app)
+            csv << produce_csv_line(publisher, app, skds_used, platform)
           end
         end
       end  
 
       p "Done generating file"
-      # Extract the sdk ids and names from the sdks_file
-      # Extract the domains from the domains_file
-      # Extract the publishers from each domain
-      # Extract the apps from each publisher
-      # Extract sdks data for each app using the data extracted from the sdks_file
     ensure
       output_file_ios.close     unless output_file_ios.nil?
       output_file_android.close unless output_file_android.nil?
     end
     
-    def produce_csv_line(domain, publisher, app, skds_used, platform)
-      line = [domain]
+    def produce_csv_line(publisher, app, skds_used, platform)
+      line = [publisher.website_ids.join("|")]
       line << app['id']
       line << app['name']
       line << app['all_version_ratings_count']
@@ -162,7 +165,7 @@ class AdobeDomainsReport
 
     def headers_row
       headers = [
-        'Domain',
+        'Websites',
         'App Id',
         'App Name',
         'Rating Count (All Versions)',
