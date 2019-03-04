@@ -18,4 +18,8 @@ class Buttercms::BaseController < ActionController::Base
     @categories = ButterCMS::Category.all
   end
 
+  def view_context
+    @_view_context ||= super
+  end
+
 end

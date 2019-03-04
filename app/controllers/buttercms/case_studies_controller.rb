@@ -7,6 +7,8 @@ class Buttercms::CaseStudiesController < Buttercms::BaseController
 
   def show
     @case_study_page = ButterCMS::Page.get('*', params[:slug]).data
+    view_context.content_for :html_title, @case_study_page.fields.seo_title
+    view_context.content_for :meta_description, @case_study_page.fields.meta_description
   end
 
 end

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= content_for?(:html_title) ? "#{content_for(:html_title)} | MightySignal" : "Blog | MightySignal" %></title>
+  <title><%= content_for?(:html_title) ? content_for(:html_title) : "Blog | MightySignal" %></title>
   <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Blog | MightySignal" %>">
   <link rel="alternate" type="application/atom+xml" title="My Blog - Atom" href="<%= buttercms_blog_atom_path %>">
   <link rel="alternate" type="application/rss+xml" title="My Blog - RSS" href="<%= buttercms_blog_rss_path %>">

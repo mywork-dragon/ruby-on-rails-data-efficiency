@@ -277,7 +277,6 @@ a, a:visited {
     font-size: 18px;
     font-weight: 400;
     line-height: 32px;
-    height: ;
 }
 
 .subscribe {
@@ -578,9 +577,6 @@ a, a:visited {
     grid-template-rows: 200px auto auto 53px;
     width: calc(50% - 24px) !important;
     font-family: Montserrat, sans-serif;
-    height: max-content;         /* Chrome */
-    height: intrinsic;           /* Safari/WebKit uses a non-standard name */
-    height: -moz-max-content;    /* Firefox/Gecko */
 }
 
 .pages-container .mdl-card {
@@ -678,7 +674,7 @@ a, a:visited {
     background-repeat: no-repeat;
     background-position: center;
     margin: -20px 0 20px 0 !important;
-    height: 598px;
+    height: 360px;
     overflow: hidden;
 }
 
@@ -754,7 +750,7 @@ a, a:visited {
 
 @media only screen and (max-width: 1024px) {
     .blog-subheader {
-        height: 360px;
+        height: 260px;
     }
 }
 
@@ -1031,7 +1027,7 @@ a, a:visited {
     }
 
     .blog-subheader {
-        height: 270px;
+        height: 180px;
     }
 
     .related-reads .posts-container .mdl-card {
