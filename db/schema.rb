@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190226143709) do
+ActiveRecord::Schema.define(version: 20181010221532) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -778,7 +778,6 @@ ActiveRecord::Schema.define(version: 20190226143709) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "domain_datum_id", limit: 4
-    t.integer  "quality",         limit: 4
   end
 
   add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
