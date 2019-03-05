@@ -4,7 +4,13 @@ html lang="en"
     meta content="width=device-width, initial-scale=1.0" name="viewport" /
     title = full_title(yield(:title))
     meta property="og:image" content="#{og_image_url(yield(:og_image))}"
+    meta property="og:title" content="#{og_image_url(yield(:title))}"
     meta name="description" content="#{meta_description(yield :meta_description)}"
+    meta property="og:site" content="@MightySignal"
+    meta property="twitter:site" content="@MightySignal"
+    meta property="fb:app_id" content="2070362686385472"
+    meta name="twitter:card" content="summary"
+    meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
     meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon" /
     link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" /
@@ -63,7 +69,7 @@ html lang="en"
             span.icon-bar
             span.icon-bar
           a href='/'
-            img#headerLogo.navbar-brand alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png" /
+            img#headerLogo.navbar-brand alt="MightySignal - Mobile App & SDK Intelligence for iOS / Android" href="#" src="/lib/images/mighty_signal_logo_white.png" /
         /! Collect the nav links, forms, and other content for toggling
         .collapse.navbar-collapse.navbar-ex1-collapse
           ul.nav.navbar-nav.navbar-right
@@ -120,7 +126,7 @@ html lang="en"
                 .dropdown.show
                   a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
                   .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href='https://parade.mightysignal.com' Parade (Free Ad Intelligence)
+                    a class="dropdown-item" href='https://parade.mightysignal.com' MightySignal Parade (Free Ad Intelligence)
                     a class="dropdown-item" href=fastest_growing_sdks_path Fastest Growing Android SDKs
                     a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
                     a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
