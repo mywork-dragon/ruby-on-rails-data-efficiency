@@ -60,14 +60,28 @@ class AdobeDomainsReport
     private :output_file_ios, :output_file_android, :publisher_hot_store
     
     def get_publisher_ids(domains_file_name, platform)
+      p "Reading domain file"
       domains = CSV.read(domains_file_name).flatten
+      p "Plucking domains from db"
       domain_data = DomainDatum.pluck(:domain)
+      p "Finding intersection"
       intersect = domains & domain_data
+      p "Converting domain_datum IDs to website IDs"
       intersect_website_ids = intersect.map{ |d| DomainDatum.find_by_domain(d).website_ids }.flatten.uniq
       if platform == 'ios'
         publisher_ids = intersect_website_ids.map{ |id| Website.find(id).ios_developer_ids }.flatten.uniq
       else
         publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
+      end
+      p "Making domain mapping file"
+      CSV.open("domain_id_mapping.csv", "w") do |csv| 
+        csv << ['id', 'domain']
+        intersect.each do |d|
+          intersect_website_ids = DomainDatum.find_by_domain(d).website_ids
+          intersect_website_ids.each do |id|
+            csv << [id, d]
+          end
+        end
       end
       publisher_ids
     end
