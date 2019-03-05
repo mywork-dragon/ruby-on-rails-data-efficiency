@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= content_for?(:html_title) ? content_for(:html_title) : "Blog | MightySignal" %></title>
-  <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Blog | MightySignal" %>">
+  <title><%= yield_meta_tag('html_title', " | MightySignal", "Blog | MightySignal") %></title>
+  <meta property=”og:title” content="<%= yield_meta_tag('html_title', " | MightySignal", "Blog | MightySignal" ) %>"/>
+  <meta property=”og:image” content="<%= yield_meta_tag('path_to_interviewed_person_image') %>"/>
+  <meta property=”twitter:image:alt” content="<%= yield_meta_tag('interviewed_person_name') %>"/>
+  <meta property=”og:description” content="<%= yield_meta_tag('meta_description', "", "Blog | MightySignal" ) %>"/>
+  <meta name="description" content="<%= yield_meta_tag('meta_description', "", "Blog | MightySignal" ) %>"/>
+  <meta property=”og:site” content=”@MightySignal”/>
+  <meta name=”twitter:card” content=”summary”/>
+  <meta property=”twitter:site” content=”@MightySignal”/>
+  <meta property=”fb:app_id” content=”2070362686385472”/>
   <link rel="alternate" type="application/atom+xml" title="My Blog - Atom" href="<%= buttercms_blog_atom_path %>">
   <link rel="alternate" type="application/rss+xml" title="My Blog - RSS" href="<%= buttercms_blog_rss_path %>">
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="authenticity_token" name="csrf-param"/>
+  <meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"/>
+  <meta content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo" name="google-site-verification"/>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -14,7 +25,6 @@
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-NNPFN7W');</script>
   <!-- End Google Tag Manager -->
-
   <!-- Autopilot -->
   <script type="text/javascript">(function(o){var b="https://apeagle.io/anywhere/",t="fc4d7b4183bb4c5681abb336c2ac92cf8efb933a2db049b58dcb382bdcfb5006",a=window.AutopilotAnywhere={_runQueue:[],run:function(){this._runQueue.push(arguments);}},c=encodeURIComponent,s="SCRIPT",d=document,l=d.getElementsByTagName(s)[0],p="t="+c(d.title||"")+"&u="+c(d.location.href||"")+"&r="+c(d.referrer||""),j="text/javascript",z,y;if(!window.Autopilot) window.Autopilot=a;if(o.app) p="devmode=true&"+p;z=function(src,asy){var e=d.createElement(s);e.src=src;e.type=j;e.async=asy;l.parentNode.insertBefore(e,l);};y=function(){z(b+t+'?'+p,true);};if(window.attachEvent){window.attachEvent("onload",y);}else{window.addEventListener("load",y,false);}})({});</script>
   <!-- End Autopilot -->
@@ -53,9 +63,6 @@
   <script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"></script>
   <script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"></script>
   <script src="/lib/script.js"></script>
-  <meta content="authenticity_token" name="csrf-param"/>
-  <meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"/>
-  <meta content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo" name="google-site-verification"/>
   <script async="true"
           src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"></script>
   <!--  blog only style-->

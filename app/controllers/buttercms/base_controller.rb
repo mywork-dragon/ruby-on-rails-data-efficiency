@@ -1,4 +1,5 @@
 class Buttercms::BaseController < ActionController::Base
+  include BlogsHelper
 
   layout 'buttercms/default'
   before_action :categories

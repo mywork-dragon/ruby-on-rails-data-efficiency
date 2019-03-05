@@ -7,8 +7,10 @@ class Buttercms::CaseStudiesController < Buttercms::BaseController
 
   def show
     @case_study_page = ButterCMS::Page.get('*', params[:slug]).data
-    view_context.content_for :html_title, @case_study_page.fields.seo_title
-    view_context.content_for :meta_description, @case_study_page.fields.meta_description
+    meta_tag('html_title', @case_study_page.fields.seo_title)
+    meta_tag('meta_description', @case_study_page.fields.meta_description)
+    meta_tag('path_to_interviewed_person_image', @case_study_page.fields.interviewed_person_image)
+    meta_tag('interviewed_person_name', @case_study_page.fields.interviewed_person_name)
   end
 
 end

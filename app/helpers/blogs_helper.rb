@@ -21,4 +21,21 @@ module BlogsHelper
     raw_date = Date.parse(post.published)
     raw_date.strftime("%b") + ', ' + raw_date.strftime("%d") + ' ' + raw_date.strftime("%Y")
   end
+
+  def meta_tag(tag, text)
+    view_context.content_for :"#{tag}", text
+  end
+
+  def yield_meta_tag(tag, additional_text = '', default_text = '')
+    content_for?(:"#{tag}") ? content_for(:"#{tag}").concat(additional_text) : default_text
+  end
+
+  def view_context
+    super.tap do |view|
+      (@_content_for || {}).each do |name, content|
+        view.content_for name, content
+      end
+    end
+  end
+
 end
