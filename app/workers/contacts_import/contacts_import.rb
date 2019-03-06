@@ -9,10 +9,6 @@ class ContactsImport
 
   include Sidekiq::Worker
 
-  class << self
-
-  end
-
   def perform(file_content)
 
     contacts_data = CSV.parse(file_content, :headers => true)
@@ -33,11 +29,11 @@ class ContactsImport
   end
 
   def get_clearbit_contact(contact)
-    linkedin = get_linkedin_data(contact)
+    linkedin = get_linkedin_data(contact["employee_li"]) if contact["employee_li"].present?
 
     query_where = "email = :email"
     query_where_params = {:email => contact["employee_email"]}
-    unless linkedin.nil?
+    if linkedin
       query_where = query_where + " or linkedin = :linkedin"
       query_where_params[:linkedin] =  linkedin
     end
@@ -51,11 +47,11 @@ class ContactsImport
       }
       if contact[:employee_first_name].present?
         query_where += 'AND lower(clearbit_contacts.given_name) = :given_name '
-        where_params[:given_name] = ontact[:employee_first_name].downcase
+        where_params[:given_name] = contact[:employee_first_name].downcase
       end
       if contact[:employee_last_name].present?
         query_where += 'AND lower(clearbit_contacts.family_name) = :family_name'
-        where_params[:family_name] = ontact[:employee_last_name].downcase
+        where_params[:family_name] = contact[:employee_last_name].downcase
       end
 
       contact_match = ClearbitContact.joins(:domain_datum).where(query_where, where_params).first
@@ -64,30 +60,18 @@ class ContactsImport
   end
 
   def update_clearbit_contact(cb_contact, new_data)
-    unless cb_contact.given_name.present?
-      cb_contact.given_name = new_data["employee_first_name"]
-    end
-    unless cb_contact.family_name.present?
-      cb_contact.family_name = new_data["employee_last_name"]
-    end
-    unless cb_contact.linkedin.present?
-      cb_contact.linkedin = new_data["employee_li"]
-    end
-    unless cb_contact.email.present?
-      cb_contact.email = new_data["employee_email"]
-    end
-    unless cb_contact.title.present?
-      cb_contact.title = new_data["employee_title"].andand.truncate(190)
-    end
-    unless cb_contact.domain_datum_id.present?
-      cb_contact.domain_datum_id = DomainDatum.find_or_create_by(:domain => new_data["domain"]).andand.id
-    end
+    cb_contact.given_name = new_data["employee_first_name"] unless cb_contact.given_name.present?
+    cb_contact.family_name = new_data["employee_last_name"] unless cb_contact.family_name.present?
+    cb_contact.linkedin = new_data["employee_li"] unless cb_contact.linkedin.present?
+    cb_contact.email = new_data["employee_email"] unless cb_contact.email.present?
+    cb_contact.title = new_data["employee_title"].andand.truncate(190) unless cb_contact.title.present?
+    cb_contact.domain_datum_id = DomainDatum.find_or_create_by(:domain => new_data["domain"]).andand.id unless cb_contact.domain_datum_id.present?
     
     cb_contact.quality = new_data["employee_email_confidence"]
 
-    cb_contact.save()
-  rescue ActiveRecord::StatementInvalid
-    p "Error updating contact #{cb_contact.email}"
+    if cb_contact.changed?
+      p "Contact not updated: #{cb_contact.id}" unless cb_contact.save()
+    end
   end
 
   def create_new_clearbit_contact(contact)
@@ -100,16 +84,12 @@ class ContactsImport
     new_contact.quality = contact["employee_email_confidence"]
     new_contact.domain_datum_id = DomainDatum.find_or_create_by(:domain => contact["domain"]).andand.id
 
-    new_contact.save()
-  rescue ActiveRecord::StatementInvalid
-    p "Error creating contact #{contact["employee_email"]}"
+    p "Contact not saved: #{contact['employee_email']}" unless new_contact.save()
   end
 
-  def get_linkedin_data(contact)
-    if contact["employee_li"].present?
-      linkedin = contact["employee_li"].split("/").last
-      linkedin.present? ? "in/#{linkedin}" : nil
-    end
+  def get_linkedin_data(contact_linkedin)
+    linkedin = contact_linkedin.split("/").last
+    linkedin.present? ? "in/#{linkedin}" : nil
   end
 end
   
