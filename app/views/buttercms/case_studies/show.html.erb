@@ -28,7 +28,7 @@
 
         <%= @case_study_page.fields.case_study_body.gsub(/\n/, '<br />').html_safe %>
 
-        <%= link_to "Download PDF", @case_study_page.fields.pd_fdoc, :class => "download-btn" %>
+        <%= link_to "Download PDF", @case_study_page.fields.pdf_doc, :class => "download-btn" %>
 
         <div class="wide-wrapper">
           <%= render 'buttercms/newsletter' %>
