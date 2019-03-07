@@ -22,7 +22,7 @@ gem 'slim-rails', '3.0.1'
 gem 'sass-rails'
 
 # The most popular HTML, CSS, and JavaScript framework for developing responsive, mobile first projects on the web. http://getbootstrap.com
-gem 'bootstrap', '4.3.0'
+# gem 'bootstrap', '4.3.0'
 gem 'autoprefixer-rails', '9.4.8'
 
 # Use jquery as the JavaScript library

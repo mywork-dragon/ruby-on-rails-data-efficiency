@@ -1,0 +1,80 @@
+.row img {
+    -webkit-align-self: center; /* Safari 7.0+ */
+    align-self: center;
+    margin: auto;
+}
+
+.landing-page .solution .title {
+    justify-content: center;
+}
+
+.graphic img {
+    justify-content: center;
+}
+
+.login-button {
+    width: 80px !important;
+    margin-top: 0 !important;
+}
+
+.app-search-container {
+    margin-top: 0 !important;
+}
+
+@media only screen and (max-width: 1200px) {
+    #app-search {
+        min-width: 200px;
+    }
+
+    .easy-autocomplete.eac-round ul {
+        min-width: 200px !important;
+    }
+
+    .header-font-normalize {
+        letter-spacing: -1px !important;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    #app-search {
+        min-width: 150px;
+    }
+
+    .easy-autocomplete.eac-round ul {
+        min-width: 150px !important;
+    }
+
+    .header-font-normalize {
+        word-spacing: -2px;
+    }
+
+    .nav-item a {
+        padding: 10px 15px !important;
+    }
+
+    .heading-font-normalize {
+        font-size: 3rem !important;
+        margin-top: 80px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .dropdown-normalize {
+        text-align: left !important;
+        padding: 8px 0 !important;
+        height: 36px !important;
+    }
+
+    .scrollable-menu {
+        height: auto;
+        max-height: 370px;
+        overflow-x: hidden;
+    }
+    .g-recaptcha {
+        transform:scale(0.9);
+        transform-origin:0 0;
+    }
+}
+
+@media only screen and (max-width: 579px) {
+}

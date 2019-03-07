@@ -48,10 +48,10 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
       p
 
   .row
-    .column
-    .column.medium-3.medium-offset-3
+    / .col
+    .col-md-3.offset-md-3
       button.btn.btn-primary.btn-lg id="blog-post-button" onclick="window.open('#{@blog_post}','_blank');" type='button' Read The 2017 Recap
-    .column.medium-3.end
+    .col-md-3.end
       = render 'contact_us_button', title: 'Get The Latest Data', button_id: 'fastest-growing-android-sdks'
 
   - 2.times
@@ -60,17 +60,17 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
 
   #explanations
     .row
-      .column.medium-4
+      .col-md-4
         .title 
           h3 About This Chart
         .text
           | Here you can view the top 100 Android SDKs ordered by their maximum monthly growth rates during the last 12 months. We allow you to sort them by their absolute growth rate as well as their relative growth rate.
-      .column.medium-4
+      .col-md-4
         .title 
           h3 Absolute vs. Relative?
         .text
           | Absolute growth rate is in terms of total installs, while relative growth rate surfaces smaller SDKs which are growing quickly (relative to the size of their install base).
-      .column.medium-4
+      .col-md-4
         .title 
           h3 What interesting trends are there?
         .text
@@ -82,17 +82,17 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
     .row
       p
   .row
-    .column.medium-4
+    .col-md-4
       .title 
         h3 Who can use this data?
       .text
         | If you're a mobile developer, this data gives an understanding of how other mobile developers are changing their approach to building their apps. Our hope is that it will spur new app ideas and innovations.
-    .column.medium-4
+    .col-md-4
       .title 
         h3 What does MightySignal do?
       .text
         ' MightySignal makes sense of the nebulous mobile app ecosystem by providing the most accurate data on every mobile app. This data includes the SDKs inside every app, which apps are shooting up the charts, and intelligence on how apps are advertising.
-    .column.medium-4
+    .col-md-4
       .title 
         h3 What other resources are there?
       .text
@@ -109,8 +109,8 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
     .row 
       p
 
-  .row
-    div class="addthis_sharing_toolbox" data-title="100 Fastest Growing Android SDKs @MightySignal"
+  .row.d-flex.justify-content-center
+    .addthis_sharing_toolbox data-title="100 Fastest Growing Android SDKs @MightySignal"
 
 
 = render 'web_form_modal'

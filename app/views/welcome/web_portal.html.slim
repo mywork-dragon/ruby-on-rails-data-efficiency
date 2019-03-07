@@ -4,90 +4,90 @@
 .solution-page
   .jumbotron
     .container
-      h1#title.solution-page
+      h1#title.solution-page.heading-font-normalize
         | Mobile SDK Data Web Portal
       h2#subtitle.solution-page
         | Interact with MightySignal data through an easy-to-use web interface
-
-  .row
-    .column.medium-5.medium-offset-1.graphic
-      img src=@timeline_graphic width=600
-    .column.medium-5.end.about-graphic 
-      .name
-        | SDK Install and Uninstall Timeline
-      .description
-        | Timeline is like your Facebook newsfeed, but instead of seeing what your friends are doing, you can see real-time updates of the mobile SDK market.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'Start Following The Market', button_id: 'web-portal-timeline'
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | Explore
-      .description
-        | Explore is the most advanced SDK reporting system ever created. Slice data any what you want, and get your results returned instantly.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'Slice Data How You Want It', button_id: 'lead-generation-explore'
-    .column.medium-5.end.graphic
-      img src=@explore_graphic width=600
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.graphic
-        img src=@live_scan_graphic width=600
-    .column.medium-5.end.about-graphic
-      .name
-        | Live Scan
-      .description
-        | Scan any iOS or Android app on the spot to instantly find out which SDKs are inside.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'Live Scan Any App', button_id: 'web-portal-live-scan'
-  - 4.times do 
+  .container
     .row
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | Ad Intelligence
-      .description
-        | You'll be able to see who's 
-        a href= buttercms_post_path('introducing-mightysignal-advanced-ad-intelligence') target="_blank" actively acquiring users through mobile advertising
-        |  a leading indicator that they have budget for more advertising as well as for other services.
-      row
+      .col-md-5.offset-md-1.graphic
+        img.img-fluid src=@timeline_graphic width=600
+      .col-md-5.end.about-graphic
+        .name
+          | SDK Install and Uninstall Timeline
+        .description
+          | Timeline is like your Facebook newsfeed, but instead of seeing what your friends are doing, you can see real-time updates of the mobile SDK market.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Start Following The Market', button_id: 'web-portal-timeline'
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: "See Who's Spending", button_id: 'web-portal-ad-intel'
-    .column.medium-5.end.graphic
-      img src=@ad_intelligence_graphic width=600
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.graphic
-        img src=@popular_apps_graphic width=600
-    .column.medium-5.end.about-graphic
-      .name
-        | Popular Apps
-      .description
-        | We show you apps that are taking off or about to take off in the rankings. You can slice this data by country, app category, and more. The ability to identify new entrants, big movers, and market leaders is at your fingertips. 
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'View 🔥 Apps', button_id: 'web-portal-popular-apps'
-  - 4.times do 
     .row
-      p
-  .row
-    = render 'logos'
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | Explore
+        .description
+          | Explore is the most advanced SDK reporting system ever created. Slice data any what you want, and get your results returned instantly.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Slice Data How You Want It', button_id: 'lead-generation-explore'
+      .col-md-5.order-md-12.order-1.end.graphic
+        img.img-fluid src=@explore_graphic width=600
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.graphic
+          img.img-fluid src=@live_scan_graphic width=600
+      .col-md-5.end.about-graphic
+        .name
+          | Live Scan
+        .description
+          | Scan any iOS or Android app on the spot to instantly find out which SDKs are inside.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Live Scan Any App', button_id: 'web-portal-live-scan'
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | Ad Intelligence
+        .description
+          | You'll be able to see who's
+          a href='https://blog.mightysignal.com/introducing-mightysignal-advanced-ad-intelligence-595a993dab4c' target="_blank" actively acquiring users through mobile advertising
+          | --a leading indicator that they have budget for more advertising as well as for other services.
+        row
+          p
+        row
+          = render 'contact_us_button', title: "See Who's Spending", button_id: 'web-portal-ad-intel'
+      .col-md-5.order-md-12.order-1.end.graphic
+        img.img-fluid src=@ad_intelligence_graphic width=600
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.graphic
+          img.img-fluid src=@popular_apps_graphic width=600
+      .col-md-5.end.about-graphic
+        .name
+          | Popular Apps
+        .description
+          | We show you apps that are taking off or about to take off in the rankings. You can slice this data by country, app category, and more. The ability to identify new entrants, big movers, and market leaders is at your fingertips.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'View 🔥 Apps', button_id: 'web-portal-popular-apps'
+    - 4.times do
+      .row
+        p
+    .row
+      = render 'logos'
 
 
   = render 'web_form_modal' 

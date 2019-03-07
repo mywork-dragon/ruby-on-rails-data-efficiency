@@ -5,78 +5,79 @@
   .jumbotron
     .container
       - if @creative.present?
-        img src=@creative style="display: none;"
-      h1#title.solution-page
+        img.img-fluid src=@creative style="display: none;"
+      h1#title.solution-page.heading-font-normalize
         | Lead Generation
       h2#subtitle.solution-page
         | Use real-time SDK and ad intelligence to find new customers.
 
-  .row
-    .column.medium-5.medium-offset-1.graphic
-      img src=@live_scan_graphic width=1500
-    .column.medium-5.end.about-graphic
-      .name
-        | Accurate, Real-Time Mobile SDK Data
-      .description
-        | MightySignal's unique Live Scan technology can instantly scan the SDKs inside an app, ensuring that our customers always have the most up-to-date and accurate SDK data. The Live Scan is the core unit of technology that powers all of MightySignal's 
-        a href=top_ios_sdks_path target="_blank" best-in-class SDK intelligence. 
-        | Whether you want to track competitive SDKs or see who's using your partners, our accurate SDK data will help you generate more leads and close more revenue.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'Live Scan Any App', button_id: 'lead-generation-data'
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | Discover Mobile Budget
-      .description
-        | You'll be able to see who's 
-        a href= buttercms_post_path('introducing-mightysignal-advanced-ad-intelligence') target="_blank" actively acquiring users through mobile advertising
-        | --a leading indicator that they have budget for more advertising as well as for other services. This data is available in real-time and with high accuracy.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'See Who Has $', button_id: 'lead-generation-mobile-budget'
-    .column.medium-5.end.graphic
-      img src=@new_advertisers_graphic width=1500
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.graphic
-        img src=@newcomers_graphic width=1500
-    .column.medium-5.end.about-graphic
-      .name
-        | Track the Hottest Apps
-      .description
-        | We show you apps that are taking off or about to take off in the rankings. You can slice this data by country, app category, and more. The ability to identify new entrants, big movers, and market leaders is at your fingertips. 
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'View 🔥 Apps', button_id: 'lead-generation-popular-apps'
-  - 4.times do 
+  .container
     .row
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | Sales-Centric Interface
-      .description
-        | Our platform was made with salespeople in mind. You can easily run reports to find leads based on criteria of your choosing. The data is always returned instantly, streamlining your sales workflow.
-      row
+      .col-md-5.offset-md-1.graphic
+        img.img-fluid src=@live_scan_graphic width=1500
+      .col-md-5.end.about-graphic
+        .name
+          | Accurate, Real-Time Mobile SDK Data
+        .description
+          | MightySignal's unique Live Scan technology can instantly scan the SDKs inside an app, ensuring that our customers always have the most up-to-date and accurate SDK data. The Live Scan is the core unit of technology that powers all of MightySignal's
+          a href=top_ios_sdks_path target="_blank" best-in-class SDK intelligence.
+          | Whether you want to track competitive SDKs or see who's using your partners, our accurate SDK data will help you generate more leads and close more revenue.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Live Scan Any App', button_id: 'lead-generation-data'
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'Explore Mighty Data', button_id: 'lead-generation-interface'
-    .column.medium-5.end.graphic
-      img src=@explore_graphic width=1500
-  - 4.times do
-    .row 
-      p
-  .row
-    = render 'logos'
+    .row
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | Discover Mobile Budget
+        .description
+          | You'll be able to see who's
+          a href='https://blog.mightysignal.com/introducing-mightysignal-advanced-ad-intelligence-595a993dab4c' target="_blank" actively acquiring users through mobile advertising
+          | --a leading indicator that they have budget for more advertising as well as for other services. This data is available in real-time and with high accuracy.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'See Who Has $', button_id: 'lead-generation-mobile-budget'
+      .col-md-5.order-md-12.order-1.end.graphic
+        img.img-fluid src=@new_advertisers_graphic width=1500
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.graphic
+          img.img-fluid src=@newcomers_graphic width=1500
+      .col-md-5.end.about-graphic
+        .name
+          | Track the Hottest Apps
+        .description
+          | We show you apps that are taking off or about to take off in the rankings. You can slice this data by country, app category, and more. The ability to identify new entrants, big movers, and market leaders is at your fingertips.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'View 🔥 Apps', button_id: 'lead-generation-popular-apps'
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | Sales-Centric Interface
+        .description
+          | Our platform was made with salespeople in mind. You can easily run reports to find leads based on criteria of your choosing. The data is always returned instantly, streamlining your sales workflow.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Explore Mighty Data', button_id: 'lead-generation-interface'
+      .col-md-5.order-md-12.order-1.end.graphic
+        img.img-fluid src=@explore_graphic width=1500
+    - 4.times do
+      .row
+        p
+    .row
+      = render 'logos'
 
 
   = render 'web_form_modal' 

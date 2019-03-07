@@ -4,29 +4,29 @@
 .solution-page
   .jumbotron
     .container
-      h1#title.solution-page
+      h1#title.solution-page.heading-font-normalize
         | Mobile SDK Data Feed
       h2#subtitle.solution-page
         | This is our API on steroids
+  .container
+    .row
+      .col-md-5.offset-md-1.graphic
+        img.img-fluid src=@feeds_graphic width=1500
+      .col-md-5.end.about-graphic
+        .name
+          | About the Mobile SDK Data Feed
+        .description
+          | Our Data Feed is like an API on steroids. It's the solution for your needs when you need to work with our data at massive scale.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Feed Me', button_id: 'data-feed-about'
 
-  .row
-    .column.medium-5.medium-offset-1.graphic
-      img src=@feeds_graphic width=1500
-    .column.medium-5.end.about-graphic
-      .name
-        | About the Mobile SDK Data Feed
-      .description
-        | Our Data Feed is like an API on steroids. It's the solution for your needs when you need to work with our data at massive scale. 
-      row
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'Feed Me', button_id: 'data-feed-about'
-  
-  - 4.times do
-    .row 
-      p
-  .row
-    = render 'logos'
+    .row
+      = render 'logos'
 
 
   = render 'web_form_modal' 

@@ -1,6 +1,8 @@
 class WelcomeController < ApplicationController
   include AppsHelper
 
+  include MockMobileDataHelper
+
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
 
@@ -216,10 +218,29 @@ class WelcomeController < ApplicationController
   end
 
   def timeline
-    top_200_ids = IosAppRankingSnapshot.top_200_app_ids
+    # top_200_ids = IosAppRankingSnapshot.top_200_app_ids
+    # batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+    #                              owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+    # top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
+    # batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+    #                              owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
+    #
+    # batches_by_week = {}
+    # (batches_i + batches_a).each do |batch|
+    #   if batches_by_week[batch.week]
+    #     batches_by_week[batch.week] << batch
+    #   else
+    #     batches_by_week[batch.week] = [batch]
+    #   end
+    # end
+    #
+    # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
+    # @batches_by_week = batches_by_week
+
+    top_200_ids = mock_android_apps_ids
     batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
                                  owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
-    top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
+    top_200_ids_a = mock_android_apps_ids
     batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
                                  owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
 
@@ -237,54 +258,67 @@ class WelcomeController < ApplicationController
   end
 
   def top_ios_sdks
-    @last_updated = IosAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
-    @tag_label = "All"
-    @sdks = IosSdk.sdks_installed_in_top_n_apps(200)
-    @tags = IosSdk.top_200_tags
+    # @last_updated = IosAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
+    # @tag_label = "All"
+    # @sdks = IosSdk.sdks_installed_in_top_n_apps(200)
+    # @tags = IosSdk.top_200_tags
+    #
+    # if params[:tag]
+    #   @tag = Tag.find(params[:tag])
+    #   @tag_label = @tag.name
+    #   @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
+    # end
 
-    if params[:tag]
-      @tag = Tag.find(params[:tag])
-      @tag_label = @tag.name
-      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
-    end
+    @tags = mock_tags
+    @tag_label
+    @last_updated = mock_last_updated
+    @sdks = mock_sdks
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
-
   def top_ios_apps
-    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    @last_updated = newest_snapshot.try(:created_at) || Time.now
-    @apps = if newest_snapshot
-              IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
-            else
-              []
-            end
+    # newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    # @last_updated = newest_snapshot.try(:created_at) || Time.now
+    # @apps = if newest_snapshot
+    #           IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
+    #         else
+    #           []
+    #         end
+    @last_updated = mock_last_updated
+    @apps = mock_apps
   end
 
   def top_android_sdks
-    @last_updated = AndroidAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
-    @tag_label = "All"
-    @sdks = AndroidSdk.sdks_installed_in_top_n_apps(200)
-    @tags = AndroidSdk.top_200_tags
+    # @last_updated = AndroidAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
+    # @tag_label = "All"
+    # @sdks = AndroidSdk.sdks_installed_in_top_n_apps(200)
+    # @tags = AndroidSdk.top_200_tags
+    #
+    # if params[:tag]
+    #   @tag = Tag.find(params[:tag])
+    #   @tag_label = @tag.name
+    #   @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
+    # end
 
-    if params[:tag]
-      @tag = Tag.find(params[:tag])
-      @tag_label = @tag.name
-      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
-    end
+    @tags = mock_tags
+    @tag_label
+    @last_updated = mock_last_updated
+    @sdks = mock_sdks
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
 
   def top_android_apps
-    newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
-    @last_updated = newest_snapshot.try(:created_at) || Time.now
-    @apps = if newest_snapshot
-              AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
-                        select(:rank, 'android_apps.*').order('rank ASC').limit(200)
-            else
-              []
-            end
+    # newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    # @last_updated = newest_snapshot.try(:created_at) || Time.now
+    # @apps = if newest_snapshot
+    #           AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
+    #                     select(:rank, 'android_apps.*').order('rank ASC').limit(200)
+    #         else
+    #           []
+    #         end
+    @last_updated = mock_last_updated
+    @apps = mock_apps
   end
 
   def fastest_growing_sdks
