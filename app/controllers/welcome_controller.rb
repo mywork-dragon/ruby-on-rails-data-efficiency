@@ -198,6 +198,15 @@ class WelcomeController < ApplicationController
     @live_graphic = graphics_folder + 'live.svg'
     @legos_graphic = graphics_folder + 'legos.svg'
   end
+  
+  def publisher_contacts
+    get_logos
+
+    @abm_graphic = graphics_folder + 'app_publisher_contact_info.jpg'
+    @sfdc_graphic = graphics_folder + 'mightysignal_plus_salesforce.png'
+    @contact_box = graphics_folder + 'contacts_box.png'
+    @publishers_graphic = graphics_folder + 'publishers_results.jpg'
+  end
 
   def web_portal
     get_logos

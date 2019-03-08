@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     get 'fastest-growing-sdks' => 'welcome#fastest_growing_sdks', as: 'fastest-growing-sdks'
 
     get 'data' => 'welcome#data'
+    get 'publisher-contacts' => 'welcome#publisher_contacts'
     get 'web-portal' => 'welcome#web_portal'
     get 'the-api' => 'welcome#the_api', as: 'the-api'
     get 'data-feed' => 'welcome#data_feed', as: 'data-feed'
