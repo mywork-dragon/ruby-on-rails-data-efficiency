@@ -19,7 +19,7 @@ class ContactsImportWorker
       file_size = MightyAws::S3.new.content_length(bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name)
       if file_size <= MAX_FILE_SIZE
         file_content = MightyAws::S3.new.retrieve( bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name, ungzip: false )
-        ContactsImport.perform_async(file_content) unless file_content.nil?
+        ContactsImport.perform_async(file_content) if file_content
       else
         p "Couldn't download files bigger than #{MAX_FILE_SIZE}, current size file #{file_size}"
       end
