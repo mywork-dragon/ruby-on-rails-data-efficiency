@@ -19,10 +19,7 @@ class ContactsImport
 
     contacts_data = CSV.parse(file_content, :headers => true)
 
-    p "contacts: #{contacts_data.length}"
-
     contacts_data.each do |row|
-      MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: row["employee_email"])
       contact_match = get_clearbit_contact(row)
       contact_match.present? ? update_clearbit_contact(contact_match, row) : create_new_clearbit_contact(row)
     end
