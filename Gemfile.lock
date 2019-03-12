@@ -45,8 +45,8 @@ GIT
 
 GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git
-  revision: dcb023937e6a5bac5ff55085fe7f8a0fa2f846e1
-  tag: 0.9.0
+  revision: 8f56b7a39904b01705f5595589b2248d10977274
+  tag: 0.9.1
   specs:
     mighty_aws (0.8.13)
       aws-sdk (~> 2.3, >= 2.3.7)
