@@ -721,6 +721,21 @@ class ApiController < ApplicationController
     render json: tags
   end
 
+  def export_contacts_to_csv_by_publishers
+    platform = params['platform']
+    publisher_ids = params['publisherIds']
+    filter = params['filter']
+
+    job_id = ContactsExportService.start_export(publisher_ids, platform, filter)
+    render json: {job_id: job_id}.to_json
+  end
+
+  def export_contacts_status
+    jobs_count = params['jobs_count']
+    status_h = AndroidLiveScanService.check_status
+    render json: {status: status_h}
+  end
+
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
   def export_newest_apps_chart_to_csv
 
