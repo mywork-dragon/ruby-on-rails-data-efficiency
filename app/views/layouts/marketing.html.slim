@@ -4,7 +4,13 @@ html lang="en"
     meta content="width=device-width, initial-scale=1.0" name="viewport" /
     title = full_title(yield(:title))
     meta property="og:image" content="#{og_image_url(yield(:og_image))}"
+    meta property="og:title" content="#{og_image_url(yield(:title))}"
     meta name="description" content="#{meta_description(yield :meta_description)}"
+    meta property="og:site" content="@MightySignal"
+    meta property="twitter:site" content="@MightySignal"
+    meta property="fb:app_id" content="2070362686385472"
+    meta name="twitter:card" content="summary"
+    meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
     meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon" /
     link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" /
@@ -23,11 +29,13 @@ html lang="en"
     link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'
     link href="https://fonts.googleapis.com/css?family=Open+Sans" media="all" rel="stylesheet" /
     link data-turbolinks-track="true" href="/lib/not_found.css" media="all" rel="stylesheet" /
+    link data-turbolinks-track="true" href="/lib/cookies_eu.css" media="all" rel="stylesheet" /
     script data-turbolinks-track="true" src="/lib/jquery-2.1.3.min.js?body=1"
     script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
     script data-turbolinks-track="true" src="/lib/jquery.easing.1.3.js"
     script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"
     script src="/lib/jquery.bxslider.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js"
     script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"
     script data-turbolinks-track="true" src="/lib/appSearch.js?body=1"
     script data-turbolinks-track="true" src="/lib/jquery.easy-autocomplete.min.js?body=1"
@@ -36,6 +44,7 @@ html lang="en"
     script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
     script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"
     script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"
+    script data-turbolinks-track="true" src="/lib/cookies_eu.js?body=1"
     script src="/lib/script.js"
     meta content="authenticity_token" name="csrf-param" /
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
@@ -47,6 +56,7 @@ html lang="en"
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
       iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
+    = render 'shared/consent'
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
@@ -63,7 +73,7 @@ html lang="en"
             span.icon-bar
             span.icon-bar
           a href='/'
-            img#headerLogo.navbar-brand alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png" /
+            img#headerLogo.navbar-brand alt="MightySignal - Mobile App & SDK Intelligence for iOS / Android" href="#" src="/lib/images/mighty_signal_logo_white.png" /
         /! Collect the nav links, forms, and other content for toggling
         .collapse.navbar-collapse.navbar-ex1-collapse
           ul.nav.navbar-nav.navbar-right
@@ -120,7 +130,7 @@ html lang="en"
                 .dropdown.show
                   a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
                   .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href='https://parade.mightysignal.com' Parade (Free Ad Intelligence)
+                    a class="dropdown-item" href='https://parade.mightysignal.com' MightySignal Parade (Free Ad Intelligence)
                     a class="dropdown-item" href=fastest_growing_sdks_path Fastest Growing Android SDKs
                     a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
                     a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
