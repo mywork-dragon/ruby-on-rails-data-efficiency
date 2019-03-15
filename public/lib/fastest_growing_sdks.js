@@ -133,14 +133,14 @@ function create_tag_selector() {
   // Create sdk tag selector elements
 
   //ALL TAG
-  var button = $('<button data-sdk-tag="All" class="btn btn-default sdk-tag-button">All</button>');
+  var button = $('<button data-sdk-tag="All" class="btn btn-default btn-block sdk-tag-button">All</button>');
   tag_group.append(button);
   window.fastest_growing_sdk_data_tag_to_element['All'] = button;
   window.fastest_growing_sdk_data_tag_filters['All'] = false;
 
   // Other tags
   tags.forEach(function(tag) {
-    var button = $('<button data-sdk-tag="'+tag+'" class="btn btn-default sdk-tag-button"></button>');
+    var button = $('<button data-sdk-tag="'+tag+'" class="btn btn-default btn-block sdk-tag-button"></button>');
     button.html(tag);
     tag_group.append(button);
     window.fastest_growing_sdk_data_tag_to_element[tag] = button;

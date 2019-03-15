@@ -7,110 +7,111 @@ script data-turbolinks-track="true" src="//cdn.datatables.net/1.10.16/js/jquery.
 
 - provide(:title, '100 Fastest Growing Android SDKs')
 
-.fastest-growing-sdks-page
-  - 6.times
-    .row
-      p
-  #title
-    | 💯 Fastest Growing Android SDKs
+.fastest-growing-sdks-page.chart-full-width
+  .container-fluid
+    - 6.times
+      .row
+        p
+    #title
+      | 💯 Fastest Growing Android SDKs
 
-  .row 
-    p
-
-  .row
-    #container style="min-width: 1380px"
-      #inner
-        span
-          | Top 100 SDKS by 
-        span class="btn-group" style="margin-right: 7px"
-          button type="button" id="fastest-growing-sdk-chart-abs" class="btn btn-default btn-primary" aria-pressed="true"
-            | Absolute
-          button type="button" id="fastest-growing-sdk-chart-relative" class="btn btn-default" aria-pressed="true"
-            | Relative
-        | growth.
-        span class="btn-group" style="float:right; margin-right: 7px"
-         button type="button" id="fastest-growing-sdk-chart-switch" class="btn btn-default btn-primary" aria-pressed="true"
-           | Chart
-         button type="button" id="fastest-growing-sdk-table-switch" class="btn btn-default" aria-pressed="true"
-           | Table
-      hr style=""
-      #fastest-growing-sdk-chart-container
-        div style="display: inline-block; width: 18%; text-align: center; vertical-align: top;"
-          div
-            | View by common SDK categories:
-          span id="sdk-tag-button-group" class=""
-        #fastest-growing-sdk-chart
-      #fastest-growing-sdk-table-container style="display:none;"
-        table id="fastest-growing-sdk-table" class="stripe" cellspacing="0"style="display: table; width: 100%;"
-
-  - 2.times
     .row
       p
 
-  .row
-    / .col
-    .col-md-3.offset-md-3
-      button.btn.btn-primary.btn-lg id="blog-post-button" onclick="window.open('#{@blog_post}','_blank');" type='button' Read The 2017 Recap
-    .col-md-3.end
-      = render 'contact_us_button', title: 'Get The Latest Data', button_id: 'fastest-growing-android-sdks'
+    .row.d-none.d-lg-flex
+      .mx-auto.chart-container#container style="min-width: 1010px"
+        #inner
+          span
+            | Top 100 SDKS by
+          span class="btn-group" style="margin-right: 7px"
+            button.btn-light.ml-2 type="button" id="fastest-growing-sdk-chart-abs" class="btn btn-default btn-primary" aria-pressed="true"
+              | Absolute
+            button.btn-light type="button" id="fastest-growing-sdk-chart-relative" class="btn btn-default" aria-pressed="true"
+              | Relative
+          | growth.
+          span class="btn-group" style="float:right; margin-right: 7px"
+           button.btn-light type="button" id="fastest-growing-sdk-chart-switch" class="btn btn-default btn-primary" aria-pressed="true"
+             | Chart
+           button.btn-light type="button" id="fastest-growing-sdk-table-switch" class="btn btn-default" aria-pressed="true"
+             | Table
+        hr style=""
+        #fastest-growing-sdk-chart-container
+          div style="display: inline-block; width: 18%; text-align: center; vertical-align: top;"
+            div
+              | View by common SDK categories:
+            span id="sdk-tag-button-group" class=""
+          #fastest-growing-sdk-chart
+        #fastest-growing-sdk-table-container style="display:none;"
+          table id="fastest-growing-sdk-table" class="stripe" cellspacing="0"style="display: table; width: 100%;"
 
-  - 2.times
+    - 2.times
+      .row
+        p
+
     .row
-      p
+      / .col
+      .col-md-5.col-lg-3.offset-md-1.offset-lg-3
+        button.btn.btn-primary.btn-lg id="blog-post-button" onclick="window.open('#{@blog_post}','_blank');" type='button' Read The 2017 Recap
+      .col-md-5.col-lg-3.end
+        = render 'contact_us_button', title: 'Get The Latest Data', button_id: 'fastest-growing-android-sdks'
 
-  #explanations
+    - 2.times
+      .row
+        p
+
+  .container#explanations
     .row
       .col-md-4
-        .title 
+        .title.mt-3
           h3 About This Chart
         .text
           | Here you can view the top 100 Android SDKs ordered by their maximum monthly growth rates during the last 12 months. We allow you to sort them by their absolute growth rate as well as their relative growth rate.
       .col-md-4
-        .title 
+        .title.mt-3
           h3 Absolute vs. Relative?
         .text
           | Absolute growth rate is in terms of total installs, while relative growth rate surfaces smaller SDKs which are growing quickly (relative to the size of their install base).
       .col-md-4
-        .title 
+        .title.mt-3
           h3 What interesting trends are there?
         .text
           ' Check out
           a href=@blog_post target="_blank" our 2017 recap
           '
           | for an analysis of the trends from this chart that we found most interesting!
-  - 2.times
+    - 2.times
+      .row
+        p
     .row
-      p
-  .row
-    .col-md-4
-      .title 
-        h3 Who can use this data?
-      .text
-        | If you're a mobile developer, this data gives an understanding of how other mobile developers are changing their approach to building their apps. Our hope is that it will spur new app ideas and innovations.
-    .col-md-4
-      .title 
-        h3 What does MightySignal do?
-      .text
-        ' MightySignal makes sense of the nebulous mobile app ecosystem by providing the most accurate data on every mobile app. This data includes the SDKs inside every app, which apps are shooting up the charts, and intelligence on how apps are advertising.
-    .col-md-4
-      .title 
-        h3 What other resources are there?
-      .text
-        | Developers can use our 
-        a href=top_ios_sdks_path target="_blank" free mobile SDK data
-        '
-        | to see how other apps are built. Sales, marketing, and business development people can use our
-        '
-        a href=root_path(anchor: 'solutions_anchor') target="_blank" advanced solutions
-        '
-        | for lead generation and business intelligence.
+      .col-md-4
+        .title.mt-3
+          h3 Who can use this data?
+        .text
+          | If you're a mobile developer, this data gives an understanding of how other mobile developers are changing their approach to building their apps. Our hope is that it will spur new app ideas and innovations.
+      .col-md-4
+        .title.mt-3
+          h3 What does MightySignal do?
+        .text
+          ' MightySignal makes sense of the nebulous mobile app ecosystem by providing the most accurate data on every mobile app. This data includes the SDKs inside every app, which apps are shooting up the charts, and intelligence on how apps are advertising.
+      .col-md-4
+        .title.mt-3
+          h3 What other resources are there?
+        .text
+          | Developers can use our
+          a href=top_ios_sdks_path target="_blank"  free mobile SDK data
+          '
+          | to see how other apps are built. Sales, marketing, and business development people can use our
+          '
+          a href=root_path(anchor: 'solutions_anchor') target="_blank" advanced solutions
+          '
+          | for lead generation and business intelligence.
 
-  - 2.times 
-    .row 
-      p
+    - 2.times
+      .row
+        p
 
-  .row.d-flex.justify-content-center
-    .addthis_sharing_toolbox data-title="100 Fastest Growing Android SDKs @MightySignal"
+    .row.d-flex.justify-content-center
+      .addthis_sharing_toolbox data-title="100 Fastest Growing Android SDKs @MightySignal"
 
 
 = render 'web_form_modal'

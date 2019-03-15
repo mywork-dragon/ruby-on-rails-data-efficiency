@@ -31,6 +31,7 @@
       h4.week= week_formatter(week)
       - batches.each do |batch|
         - app = batch.owner
+
         - if batch.activity_type == 'install'
           .panel.panel-default class="batch-#{batch.id}"
             .panel-heading
@@ -63,4 +64,20 @@
                 |App Store Link
             h3 class="modal-title" id="myModalLabel"
           div class="modal-body"
-              
+
+/ = debug '@top_200_ids'
+/ = debug @top_200_ids
+/ = debug @top_200_ids.inspect
+/ = debug '@top_200_ids_a'
+/ = debug @top_200_ids_a
+/ = debug @top_200_ids_a.inspect
+/ = debug '@batches_i'
+/ = debug @batches_i.includes(:owner, :activities, :weekly_batches_activities)
+/ = debug @batches_i.includes(:owner, :activities, :weekly_batches_activities).inspect
+/ = debug '@batches_a'
+/ = debug @batches_a.includes(:owner, :activities, :weekly_batches_activities)
+/ = debug @batches_a..inspect
+/ = debug '@batches_by_week'
+/ = debug @batches_by_week
+/ = debug @batches_by_week.inspect
+

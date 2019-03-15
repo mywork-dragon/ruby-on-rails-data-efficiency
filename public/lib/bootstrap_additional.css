@@ -21,6 +21,35 @@
     margin-top: 0 !important;
 }
 
+.nav-pills .nav-link.active {
+    color: #fff !important;
+    background-color: #428bca !important;
+}
+
+.nav-pills .nav-link {
+    color: #008cba !important;
+}
+
+.media-heading a,
+.text a {
+    color: #008cba;
+}
+
+.info.alert.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.see-sdks {
+    font-size: 0.875rem !important;
+    line-height: 0.875rem !important;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search {
         min-width: 200px;
@@ -33,6 +62,21 @@
     .header-font-normalize {
         letter-spacing: -1px !important;
     }
+
+}
+
+@media only screen and (max-width: 1024px) {
+    /*.chart-full-width {*/
+    /*min-width: 1380px;*/
+    /*}*/
+    /*.row.header .nav-tabs li {*/
+    /*width: 50%;*/
+    /*margin: 0 !important;*/
+    /*text-align: center;*/
+    /*}*/
+    /*.row.header .nav-tabs li:nth-child(5) {*/
+    /*width: 100%;*/
+    /*}*/
 }
 
 @media only screen and (max-width: 992px) {
@@ -56,6 +100,7 @@
         font-size: 3rem !important;
         margin-top: 80px;
     }
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -70,11 +115,205 @@
         max-height: 370px;
         overflow-x: hidden;
     }
+
     .g-recaptcha {
-        transform:scale(0.9);
-        transform-origin:0 0;
+        transform: scale(0.9);
+        transform-origin: 0 0;
+    }
+
+    .row.header .nav-tabs li {
+        margin: 0 !important;
+    }
+
+}
+
+@media only screen and (max-width: 576px) {
+    .full-width-xs {
+        width: 100%;
     }
 }
 
-@media only screen and (max-width: 579px) {
+/* APP PAGE STYLES */
+
+.app-page-font {
+
 }
+
+.rankings-panel .sdk-total {
+    max-width: 275px;
+}
+
+.max-rank-container {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.trend-column {
+
+}
+
+.rank-trend:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.rank-trend .sdk-total .total {
+    font-size: 90px;
+}
+
+.chart-num-ctnr {
+    margin-top: -20px;
+    margin-left: 10px;
+}
+
+.sdk-total:last-of-type {
+    margin-bottom: 15px;
+}
+
+.rankings-panel .sdk-total {
+    max-width: 275px;
+}
+
+.sdk-total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    text-align: center;
+}
+
+.small-charts-text {
+    font-size: 30px;
+    margin-top: -25px;
+}
+
+.newcomers {
+    font-size: 20px;
+    font-weight: bold;
+    align-items: center;
+}
+
+.rankings-button {
+    margin-top: 20px;
+}
+
+.no-rankings-data {
+    font-size: 25px;
+    font-weight: bold;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+header-info h1,
+.header-info h3 {
+    padding: 0 15px;
+}
+
+.creatives-panel .no-rankings-data {
+    font-size: 20px;
+}
+
+.no-rankings-data {
+    font-size: 25px;
+    font-weight: bold;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.newcomers {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.newcomers-count {
+    color: #40c677;
+}
+
+.newcomers .fire {
+    color: #f6993f;
+    margin-right: 5px;
+    font-size: 45px;
+}
+
+.creatives-panel .no-rankings-data {
+    font-size: 20px;
+}
+
+.no-rankings-data {
+    font-size: 25px;
+    font-weight: bold;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.detail-item button {
+    background: none;
+}
+
+.down-arrow-img {
+    width: 146px;
+    height: 97.5px;
+    padding-right: 0.25em;
+}
+
+.up-arrow {
+    color: rgb(64, 198, 119);
+}
+
+.trophy {
+    color: rgb(229, 160, 62);
+}
+
+.circle {
+    color: rgb(253, 215, 96);
+}
+
+.max-rank-container .max-flag {
+    height: 20px;
+    width: 30px;
+    margin: 0 5px 5px 5px;
+}
+
+@media (min-width: 1300px) {
+
+}
+
+@media (min-width: 992px) {
+
+}
+
+@media (min-width: 768px) {
+    .creatives-panel .no-rankings-data {
+        font-size: 50px;
+    }
+
+    .chart-tooltip {
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        color: inherit;
+    }
+
+    .creatives-panel .no-rankings-data {
+        font-size: 50px;
+    }
+
+    .newcomers {
+        font-size: 30px;
+    }
+
+    .newcomers .fire {
+        font-size: 30px;
+    }
+
+    .creatives-panel .no-rankings-data {
+        font-size: 50px;
+    }
+
+    .no-rankings-data, .no-rankings-data .fa-chart-line {
+        font-size: 50px;
+    }
+}
+
+

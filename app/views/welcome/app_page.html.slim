@@ -1,22 +1,20 @@
-#large-header
+#large-header.mt-5
   .container.app-header
-    canvas#demo-canvas
+    canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       img.app-logo.lg-logo.hidden-xs src = @json_app['icon_url']
       .header-info
         h1#app-name
-          .app-logo.sm-logo.visible-xs-inline
-            img src = @json_app['icon_url']
           h1 = @json_app['name']
         h3 = @json_app['publisher']['name']
         .app-header-details
-          .col-xs-12
+          .col-12
             | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
-          .col-xs-12
+          .col-12
             | App ID: #{@app.app_identifier}
-          .col-xs-12
+          .col-12
             | Price: #{@json_app['price'] > 0 ? @json_app['price'] : 'Free' }
-          .col-xs-12
+          .col-12
             | Category: #{@categories.andand.join(', ')}
           - if @json_app['taken_down']
             .col-xs-12.taken-down-label
@@ -29,73 +27,75 @@
 
 .white-panel
   .container.sdk-panel
-    .sdk-total-container.col-md-5
-      - if @sdks.present?
-        .sdk-total
-          .total.installed
-            i.fas.fa-cubes
-            = @sdk_installed
-          | SDKs Installed
-
-        .sdk-total
-          .total.uninstalled
-            i.fas.fa-cubes
-            = @sdk_uninstalled
-          | SDKs Uninstalled
-        .sdk-total.last-scanned
-          | Last Scanned: #{ time_ago_in_words(@json_app['last_scanned_date']) } ago
-      - else
-        .sdk-total.no-data
-          .total.installed
-            i.fas.fa-cubes
-            | No SDK Data
-      button.btn.btn-primary.btn-lg.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
-        i.fas.fa-lock
-        | Live Scan This App
-    .col-md-7
-      - if @installed_sdk_categories.present?
-        .col-md-6.col-xs-12
-          h4 Installed SDKs
-          - @installed_sdk_categories.each do |category, val|
-            li.sdk-li
-              i.far.fa-check-circle
-              = "#{category} (#{val})"
-      - if @uninstalled_sdk_categories.present?
-        .col-md-6.col-xs-12
-          - if @uninstalled_sdk_categories
-            h4 Uninstalled SDKs
-            - @uninstalled_sdk_categories.each do |category, val|
+    .row
+      .sdk-total-container.col-md-5
+        - if @sdks.present?
+          .sdk-total
+            .total.d-flex.align-items-center.installed
+              i.fas.fa-cubes
+              = @sdk_installed
+            | SDKs Installed
+          .sdk-total
+            .total.d-flex.align-items-center.uninstalled
+              i.fas.fa-cubes
+              = @sdk_uninstalled
+            | SDKs Uninstalled
+          .sdk-total.last-scanned
+            | Last Scanned: #{ time_ago_in_words(@json_app['last_scanned_date']) } ago
+        - else
+          .sdk-total.no-data
+            .total.d-flex.align-items-center.installed
+              i.fas.fa-cubes
+              | No SDK Data
+        button.btn.btn-primary.btn-lg.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
+          i.fas.fa-lock
+          | Live Scan This App
+      .col-md-7.row
+        - if @installed_sdk_categories.present?
+          .col-md-6.col-xs-12
+            h4 Installed SDKs
+            - @installed_sdk_categories.each do |category, val|
               li.sdk-li
-                i.far.fa-times-circle
+                i.far.fa-check-circle
                 = "#{category} (#{val})"
-          .see-sdks-container
-            button.btn.btn-primary.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
-              i.fas.fa-lock
-              | See More SDKs
+        - if @uninstalled_sdk_categories.present?
+          .col-md-6.col-xs-12
+            - if @uninstalled_sdk_categories
+              h4 Uninstalled SDKs
+              - @uninstalled_sdk_categories.each do |category, val|
+                li.sdk-li
+                  i.far.fa-times-circle
+                  = "#{category} (#{val})"
+            .see-sdks-container
+              button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
+                i.fas.fa-lock
+                | See Individual SDKs
+
 .gray-panel
   .container.app-description
-    .description-container.col-md-6.col-xs-12
-      h3 Description
-      .description-body
-        = @json_app['description']
-    - if @json_app['publisher'].present?
-      .col-md-6.col-xs-12
-      .publisher-panel
-        h4 Publisher: #{@json_app['publisher']['name']}
-        .pub-app.s-title
-          | Number of Apps: #{@json_publisher['apps'].size}, including
-        .pub-apps
-          - @top_apps.each do |app|
-            a class="app-logo-link" href="#{ app['public_link'] }"
-              img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }"
-        | Latest Update/Release: #{ @latest_update } days ago
+    .row
+      .description-container.col-md-6.col-xs-12
+        h3 Description
+        .description-body
+          = @json_app['description']
+      - if @json_app['publisher'].present?
+        .col-md-6.col-xs-12
+          .publisher-panel
+            h4 Publisher: #{@json_app['publisher']['name']}
+            .pub-app.s-title
+              | Number of Apps: #{@json_publisher['apps'].size}, including
+            .pub-apps
+              - @top_apps.each do |app|
+                a class="app-logo-link" href="#{ app['public_link'] }"
+                  img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }"
+            | Latest Update/Release: #{ @latest_update } days ago
 
 .white-panel
   .container.app-details
     .col-md-12
       .details-row
         - if @json_app['all_version_rating'] > 0
-          .detail-item.
+          .detail-item
             h4 Rating:
             .big-num
               i.fas.fa-star
@@ -114,7 +114,10 @@
             .big-num
               i.fas.fa-mobile-alt
               = @json_app['permissions'].size
-            = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data'
+            / = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data'
+            button.btn.modal-button id="contact-us-button-app-page-permissions-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-permissions-data' type='submit'
+              i.fas.fa-lock
+              | See which permissions
           - else
             .big-num
               | No data
@@ -123,11 +126,121 @@
           h4 User Base
           .solo-icon
             i.fas.fa-users
-          = render 'contact_us_button', title: 'See user bases by country', button_id: 'app-page-userbase-data'
+          / = render 'contact_us_button', title: 'See user bases by country', button_id: 'app-page-userbase-data'
+          button.btn.modal-button id="contact-us-button-app-page-userbase-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-userbase-data' type='submit'
+            i.fas.fa-lock
+            | See user bases by country
         .detail-item.no-border
           h4 Firmographic Data
           .solo-icon
             i.fas.fa-globe
-          = render 'contact_us_button', title: 'See location, contacts, and more', button_id: 'app-page-firmographic-data'
+          / = render 'contact_us_button', title: 'See location, contacts, and more', button_id: 'app-page-firmographic-data'
+          button.btn.modal-button id="contact-us-button-app-page-firmographic-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-firmographic-data' type='submit'
+            i.fas.fa-lock
+            | See location, contacts, and more
+
+.gray-panel
+  .container.rankings-panel.px-3.py-4
+    .row.max-rank-container
+      .col-12.justify-content-center
+        span.fa-stack.fa-xs.mb-2
+          i.fas.fa-circle.fa-stack-2x.circle
+          i.fas.fa-trophy.fa-stack-1x.trophy
+      .col-12.justify-content-center
+        div
+          | Ranked ##{@app_rank} in
+          img.max-flag alt="" src="/lib/images/flags/#{@app_country}.png" /
+          | US Top Free Finance
+    .row
+      .col-md-6.trend-column
+        h4.text-center Week Trend
+        .rank-trend.d-flex.flex-column.align-items-center
+          .sdk-total
+            .total.d-flex.align-items-center.installed
+              / TODO: set correct SVG
+              i.fas.fa-chart-line.fa-lg.up-arrow
+              .chart-num-ctnr
+                | #{@chart_week_installed}
+                .small-charts-text.align-items-center
+                  | charts
+            | Moved up in #{@chart_week_installed} charts in the last week
+        .rank-trend.d-flex.flex-column.align-items-center
+          .sdk-total
+            .total.d-flex.align-items-center.uninstalled
+              img.down-arrow-img alt="" src="/lib/images/down_arrow.png"
+              .chart-num-ctnr
+                | #{@chart_week_uninstalled}
+                .small-charts-text.align-items-center
+                  | charts
+            | Moved down in #{@chart_week_uninstalled} charts in the last week
+      .col-md-6.trend-column
+        h4.text-center Month Trend
+        .rank-trend.d-flex.flex-column.align-items-center
+          .sdk-total
+            .total.d-flex.align-items-center.installed
+              i.fas.fa-chart-line.fa-lg.up-arrow
+              .chart-num-ctnr
+                | #{@chart_month_installed}
+                .small-charts-text.align-items-center
+                  | charts
+            | Moved up in #{@chart_month_installed} charts in the last month
+        .rank-trend.d-flex.flex-column.align-items-center
+          .sdk-total
+            .total.d-flex.align-items-center.uninstalled
+              img.down-arrow-img alt="" src="/lib/images/down_arrow.png"
+              .chart-num-ctnr
+                | #{@chart_month_uninstalled}
+                .small-charts-text.align-items-center
+                  | charts
+            | Moved down in #{@chart_month_uninstalled} charts in the last month
+    .row
+      .col-md-12.d-flex.justify-content-center.rankings-button.newcomers
+        i.fas.fa-fire.fire
+        span
+          | Entered
+          span.newcomers-count>  #{@entered_last_month}
+          | charts for the first time in the last month
+    .row
+      .col-md-12.d-flex.justify-content-center.rankings-button
+        button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" data-value="app-page-rankings-data" type='submit'
+          i.fas.fa-lock
+          | See Detailed Rankings Data
+    .row
+      .col-md-12.d-flex.justify-content-center.rankings-button.chart-hint
+        / .chart-tooltip#popover data-toggle="popover" data-trigger="hover" data-content="<div>Each official iTunes or Google Play chart contains the top free, paid, or grossing apps for a single category in a single country.</div><br><div>E.g. 'Top Paid Productivity in France'</div>" data-title="What is a chart?"  data-html="true" data-placement="auto right" data-original-title="" title=""
+        /   | What is a chart?
+        .chart-tooltip data-content="<div>Each official iTunes or Google Play chart contains the top free, paid, or grossing apps for a single category in a single country.</div><br><div>E.g. &quot;Top Paid Productivity in France&quot;</div>" data-html="true" data-original-title="" data-placement="auto right" data-title="What is a chart?" data-toggle="popover" data-trigger="hover" title = ""
+          | What is a chart?
+
+.white-panel.pt-2
+  - if @advertising_creatives.present?
+    .container.creatives-panel
+      .creatives-title.my-2
+        span.fa-stack.fa-xs.my-2
+          i.fas.fa-certificate.fa-stack-2x.circle
+          i.fas.fa-bullhorn.fa-stack-1x.trophy
+        h2 Advertising Creatives
+        .row
+          .creatives-gallery.col-md-12
+            - @advertising_creatives.last(3).each do |ad|
+              .creative-container.col-xs-12.col-md-4
+                .video-wrapper.creative-wrapper
+                  video.creative.creative-video src="#{ad.ad_url}"
+                  svg.video-overlay-play-button alt=("Play video") viewbox=("0 0 200 200")
+                    polygon fill="#fff" points="70, 55 70, 145 145, 100"
+                  svg.video-overlay-pause-button.is-hidden alt=("Pause video") viewbox=("0 0 200 200")
+                    rect fill="#fff" height="85" width="20" x="70" y="50"
+                    rect fill="#fff" height="85" width="20" x="105" y="50"
+                .creative-first-seen-date
+                  | First Seen: #{ad.ad_date}
+      .rankings-button.col-md-12.d-flex.justify-content-center.py-3
+        button.btn.btn-primary.modal-button data-target="#webFormModal" data-toggle="modal" data-value="app-page-ad-data" type='submit'
+          i.fas.fa-lock
+          | See More Facebook Ad Data
+  -else
+    .container.creatives-panel.px-3.py-4.my-auto
+      .container.no-rankings-data.d-flex.justify-content-center.align-items-center.px-4.py-3
+        i.fas.fa-search
+        | No Ad Intelligence Data
 
 = render 'welcome/web_form_modal'

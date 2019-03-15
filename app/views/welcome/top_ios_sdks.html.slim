@@ -2,53 +2,41 @@
 - provide(:og_image, '/lib/images/apple-app-store-icon_2x.png')
 .container-fluid
   .row.header
-    .col-lg-2
-    .col-lg-10
+    .col-xl-2
+    .col-xl-10
       = render 'shared/top_list_nav'
   .row.top-200.marketing-row
-    .col-lg-2
-      .addthis_sharing_toolbox data-title="Most Used SDKs in Top 200 Free iOS Apps @MightySignal"
+    .col-xl-2.mb-2
+      .addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="Most Used SDKs in Top 200 Free iOS Apps @MightySignal"
       h3 Categories
       nav.nav.nav-pills.flex-column.flex-row
-        / li.nav-item class="#{params[:tag].blank? ? 'active' : ''}"
         = link_to 'All', top_ios_sdks_path, class: "flex-fill text-left nav-link #{params[:tag].blank? ? 'active' : ''}"
         - @tags.each do |tag|
-          / li.nav-item class="#{params[:tag].to_i == tag.id ? 'active' : ''}"
           = link_to tag.name, top_ios_sdks_path(tag: tag.id), class: "flex-fill text-left nav-link #{params[:tag].to_i == tag.id ? 'active' : ''}"
 
-    .col-lg-10.block
+    .col-xl-10.block
       = image_tag '/lib/images/apple-app-store-icon.png', class: 'app-store-icon'
-      h1="#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free iOS Apps"
-      .info.alert.alert-warning.d-flex.justify-content-between.align-items-center
-        p.order-1
-          |Report last updated
-          strong>  #{time_ago_in_words(@last_updated)} ago.
-        div.order-2.d-flex.justify-content-between.align-items-center
-          = form_tag subscribe_path, method: 'post', class: 'form-inline d-flex align-items-center order-2 mb-2', data: {form: 'top-ios-sdks'} do |f|
-            .form-group
-              input type="hidden" name="message" value="Top iOS SDKS page"
-              input#email.form-control name="email" placeholder="Email" type="email" /
-            .form-group
-              p.m-0
-                input.btn.btn-primary.lead-form-btn.m-0 name="commit" type="submit" value="Alright!" /
-          p.email-form.order-1
-            | Sign up to get more SDK data
+      h1= "#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free iOS Apps"
+      = render "welcome/subscribe_free_data", last_updated: @last_updated, form: 'top-ios-sdks', message: "Top iOS SDKS page"
+
       - @sdks.each.with_index do |sdk, index|
         .row.sdk
-          .col-lg-6
-            div class="media"
-              div class="pull-left media-middle"
+          .col-xl-6.media
+              .pull-left.media-middle
                 span.sdk-rank= "#{index + 1 + (([params[:page].to_i, 1].max - 1) * 20)}."
                 a href=sdk.website
                   = image_tag sdk.favicon, size: '16', class: 'media-object'
-              div class="media-body"
-                h4 class="media-heading"
+              .media-body.overflow-auto
+                h4.media-heading
                   => link_to sdk.name.titleize, sdk.website, target: '_blank'
-                  span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'})
-                = sdk.summary
-          .col-lg-6
+                  span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'})
+                p.text-truncate = sdk.summary
+          .col-xl-6
             - sdk.top_200_apps.first(8).each do |app|
-              a href='#{app.mightysignal_public_page_link}' target="_blank" class="app-sdks"
+              a.app-sdks href='#{app.mightysignal_public_page_link}' target="_blank"
                 = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon'
-      = paginate @sdks
+      - if browser.device.mobile?
+        = paginate @sdks, :theme => "next_prev"
+      - else
+        = paginate @sdks
 

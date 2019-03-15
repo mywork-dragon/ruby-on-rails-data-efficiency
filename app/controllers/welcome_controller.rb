@@ -42,112 +42,41 @@ class WelcomeController < ApplicationController
   end
 
   def search_apps
-    # query = params['query']
-    #
-    # result_ids = AppsIndex.query(
-    #   multi_match: {
-    #     query: query,
-    #     fields: ['name.title^2', 'seller_url', 'seller'],
-    #     type: 'phrase_prefix',
-    #     max_expansions: 50,
-    #   }
-    # ).boost_factor(
-    #   3,
-    #   filter: { term: { user_base: 'elite' } }
-    # ).boost_factor(
-    #   2,
-    #   filter: { term: { user_base: 'strong' } }
-    # ).boost_factor(
-    #   1,
-    #   filter: { term: { user_base: 'moderate' } }
-    # )
-    # result_ids = result_ids.limit(10)
-    #
-    # apps = result_ids.map do |result|
-    #   id = result.attributes["id"]
-    #   type = result._data["_type"]
-    #   app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
-    #   {
-    #     name: app.name,
-    #     icon: app.icon_url,
-    #     platform: app.platform,
-    #     app_identifier: app.app_identifier,
-    #     publisher: app.publisher.try(:name),
-    #   }
-    # end
+    query = params['query']
 
-    apps = [
-        {
-            "name": "UberFacts",
-            "icon": "//lh5.ggpht.com/QbU-o9B3OJ_-uF8tsY5GNv2sZ-asvhkbWAXe-q-mgAiNQaUu3e7L6zOFgM_C6im8Fg=w300",
-            "platform": "android",
-            "app_identifier": "com.uberfacts.uf",
-            "publisher": "Uber Unlimited LLC"
-        },
-        {
-            "name": "Uber",
-            "icon": "https://lh3.googleusercontent.com/nTcQY6kRL6TgNQu4NSG0eBLQGDTTVj2-YOVyA71LFOuePtx057oSmt_xiObOrKdXMlg=s180",
-            "platform": "android",
-            "app_identifier": "com.ubercab",
-            "publisher": "Uber Technologies, Inc."
-        },
-        {
-            "name": "Uber",
-            "icon": "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/03/97/45/03974578-2604-85a9-96ea-7e8b3b208c67/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 368677368,
-            "publisher": "Uber Technologies, Inc."
-        },
-        {
-            "name": "UberConference - Conferencing",
-            "icon": "https://lh3.googleusercontent.com/7Yo2ViA3Okh3Ob-BDQYr5deb4nKv7yMbzYLHjZEME9fQT0sS2TbHU-QJy50iOO5s6A=s180",
-            "platform": "android",
-            "app_identifier": "com.uberconference",
-            "publisher": "Switch Communications, Inc"
-        },
-        {
-            "name": "UberGenPass",
-            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple3/v4/91/8f/c6/918fc674-18e0-912f-8dd5-e58489116126/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 588224057,
-            "publisher": "Camazotz Limited"
-        },
-        {
-            "name": "UberFocus",
-            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple5/v4/d5/b1/e3/d5b1e31e-bbc8-c933-c455-c96453d0d67b/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 830514912,
-            "publisher": "mobix e.K."
-        },
-        {
-            "name": "UberDate",
-            "icon": "https://is4-ssl.mzstatic.com/image/thumb/Purple3/v4/1d/e2/26/1de22674-bb45-6110-7aa4-850ec3856f02/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 979662286,
-            "publisher": "heidi hughes"
-        },
-        {
-            "name": "UberConference",
-            "icon": "https://is2-ssl.mzstatic.com/image/thumb/Purple124/v4/1b/45/21/1b4521e9-475e-2f64-003f-2daf640fc4a5/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 579106114,
-            "publisher": "Dialpad, Inc."
-        },
-        {
-            "name": "UberDate",
-            "icon": "https://lh3.ggpht.com/G6XsR1XHF4y1EIOqj67o7KUXb5nN8eOpArsm0n_n3k8LKK_uF9t2eUFyrK7_ODCnQ94=s180",
-            "platform": "android",
-            "app_identifier": "com.jingged.uberdate",
-            "publisher": "Uberdate"
-        },
-        {
-            "name": "UberMarche",
-            "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple128/v4/20/ba/4a/20ba4a84-97f2-6118-1038-c9d593c7e6a5/source/100x100bb.jpg",
-            "platform": "ios",
-            "app_identifier": 1436036010,
-            "publisher": "Bjorn Ivesdal"
-        }
-    ]
+    result_ids = AppsIndex.query(
+      multi_match: {
+        query: query,
+        fields: ['name.title^2', 'seller_url', 'seller'],
+        type: 'phrase_prefix',
+        max_expansions: 50,
+      }
+    ).boost_factor(
+      3,
+      filter: { term: { user_base: 'elite' } }
+    ).boost_factor(
+      2,
+      filter: { term: { user_base: 'strong' } }
+    ).boost_factor(
+      1,
+      filter: { term: { user_base: 'moderate' } }
+    )
+    result_ids = result_ids.limit(10)
+
+    apps = result_ids.map do |result|
+      id = result.attributes["id"]
+      type = result._data["_type"]
+      app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
+      {
+        name: app.name,
+        icon: app.icon_url,
+        platform: app.platform,
+        app_identifier: app.app_identifier,
+        publisher: app.publisher.try(:name),
+      }
+    end
+
+    # apps = mock_search_apps
 
     render json: apps
   end
@@ -178,30 +107,54 @@ class WelcomeController < ApplicationController
   end
 
   def app_page
-    platform = params[:platform] == 'ios' ? 'ios' : 'android'
-    app_identifier =  params[:app_identifier]
-    @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
-    @json_app = apps_hot_store.read(platform, @app.id)
-    @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
-    @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
-    most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
-    @last_update_date = latest_release_of(most_recent_app).to_date
-    @latest_update = (Date.current - @last_update_date).to_i
-    @sdks = @json_app['sdk_activity']
-    @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
-    @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
-    @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-      next memo unless sdk['installed'] && sdk['categories']
-      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
-      memo
-    end
-    @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-      next memo unless !sdk['installed'] && sdk['categories']
-      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
-      memo
-    end
-    @categories = @json_app['categories'].andand.map{|cat| cat['name']}
-    ap @json_app.except('sdk_activity').except('ratings_history')
+    # platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    # app_identifier =  params[:app_identifier]
+    # @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
+    # @json_app = apps_hot_store.read(platform, @app.id)
+    # @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
+    # @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
+    # most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
+    # @last_update_date = latest_release_of(most_recent_app).to_date
+    # @latest_update = (Date.current - @last_update_date).to_i
+    # @sdks = @json_app['sdk_activity']
+    # @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
+    # @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
+    # @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+    #   next memo unless sdk['installed'] && sdk['categories']
+    #   sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+    #   memo
+    # end
+    # @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+    #   next memo unless !sdk['installed'] && sdk['categories']
+    #   sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+    #   memo
+    # end
+    # @categories = @json_app['categories'].andand.map{|cat| cat['name']}
+    # ap @json_app.except('sdk_activity').except('ratings_history')
+
+    @app = mock_app
+    @json_app = mock_app_json_app
+    @json_publisher = mock_app_json_publisher
+    @top_apps = mock_app_top_apps
+    @last_update_date = mock_app_last_update_date
+    @latest_update = mock_app_latest_update
+    @sdks = mock_app_sdks
+    @sdk_installed = mock_app_sdk_installed
+    @sdk_uninstalled = mock_app_sdk_uninstalled
+    @installed_sdk_categories = mock_app_installed_sdk_categories
+    @uninstalled_sdk_categories = mock_app_uninstalled_sdk_categories
+    @categories = mock_app_categories
+
+    # TODO: should be substituted with actual requests
+    @app_rank = "6"
+    @app_country = "us"
+    @chart_week_installed = "12"
+    @chart_week_uninstalled = "33"
+    @chart_month_installed = "24"
+    @chart_month_uninstalled = "54"
+    @entered_last_month = "43"
+    @advertising_creatives = mock_app_advertising_creatives
+
   end
 
   def android_app_sdks
@@ -237,24 +190,27 @@ class WelcomeController < ApplicationController
     # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
     # @batches_by_week = batches_by_week
 
-    top_200_ids = mock_android_apps_ids
-    batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-                                 owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
-    top_200_ids_a = mock_android_apps_ids
-    batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-                                 owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
 
-    batches_by_week = {}
-    (batches_i + batches_a).each do |batch|
-      if batches_by_week[batch.week]
-        batches_by_week[batch.week] << batch
-      else
-        batches_by_week[batch.week] = [batch]
-      end
-    end
+    # @top_200_ids = IosAppRankingSnapshot.top_200_app_ids
+    # @batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+    #                               owner_id: @top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+    # @top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
+    # @batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+    #                               owner_id: @top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc').includes(:owner, :activities, :weekly_batches_activities)
+    #
+    # batches_by_week = {}
+    # (@batches_i + @batches_a).each do |batch|
+    #   if batches_by_week[batch.week]
+    #     batches_by_week[batch.week] << batch
+    #   else
+    #     batches_by_week[batch.week] = [batch]
+    #   end
+    # end
+    #
+    # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
+    # @batches_by_week = batches_by_week
 
-    batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
-    @batches_by_week = batches_by_week
+    @batches_by_week = mock_batches_by_week
   end
 
   def top_ios_sdks

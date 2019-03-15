@@ -15,9 +15,9 @@ html lang="en"
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon"
 
     link data-turbolinks-track="true" href="/lib/bootstrap_additional.css" media="all" rel="stylesheet"
+    script crossorigin="anonymous" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
     link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" rel="stylesheet"
     script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    script crossorigin="anonymous" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
     script src="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js"
 
     link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet"
@@ -28,7 +28,7 @@ html lang="en"
     link data-turbolinks-track="true" href="/lib/easy-autocomplete.themes.min.css" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/main.css" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
-    link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"  integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"
+    link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet" /
     link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"
     link href="/lib/jquery.bxslider.css" rel="stylesheet"
@@ -67,7 +67,10 @@ html lang="en"
     = yield
 
     /! ============== Footer ==============
-    = render 'layouts/footer'
+    - if params[:action] == 'app_page'
+      = render 'layouts/footer' , styles: "m-0"
+    - else
+      = render 'layouts/footer'
 
     /! ==========ONE PAGE SCROLLING SCRIPTS STARTS===============
     /! =============ONE PAGE SCROLLING SCRIPTS ENDS============

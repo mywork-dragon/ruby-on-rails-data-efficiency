@@ -1,51 +1,42 @@
 - provide(:title, 'Most Used SDKs in Top 200 Free Android Apps')
 - provide(:og_image, '/lib/images/google_play.png')
-.row.header
-  .column.large-2
-  .column.large-10
-    = render 'shared/top_list_nav'
-.row.top-200.marketing-row
-  .column.large-2
-    div class="addthis_sharing_toolbox" data-title="Most Used SDKs in Top 200 Free Android Apps @MightySignal"
-    h3 Categories
-    ul.nav.nav-pills.nav-stacked
-      li class="#{params[:tag].blank? ? 'active' : ''}"
-        = link_to 'All', top_android_sdks_path
-      - @tags.each do |tag|
-        li class="#{params[:tag].to_i == tag.id ? 'active' : ''}"
-          = link_to tag.name, top_android_sdks_path(tag: tag.id)
+.container-fluid
+  .row.header
+    .col-xl-2
+    .col-xl-10
+      = render 'shared/top_list_nav'
+  .row.top-200.marketing-row
+    .col-xl-2
+      div.addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="Most Used SDKs in Top 200 Free Android Apps @MightySignal"
+      h3 Categories
+      nav.nav-pills.flex-column.flex-row
+        = link_to 'All', top_android_sdks_path, class: "flex-fill text-left nav-link #{params[:tag].blank? ? 'active' : ''}"
+        - @tags.each do |tag|
+          = link_to tag.name, top_android_sdks_path(tag: tag.id), class: "flex-fill text-left nav-link #{params[:tag].to_i == tag.id ? 'active' : ''}"
 
-  .column.large-10: .block
-    = image_tag '/lib/images/google_play.png', class: 'app-store-icon'
-    h1="#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free Android Apps"
-    .info.alert.alert-warning
-      p.pull-left
-        |Report last updated
-        strong>  #{time_ago_in_words(@last_updated)} ago.
-      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right', data: {form: 'top-android-sdks'} do |f|
-        .form-group
-          input type="hidden" name="message" value="Top Android SDKS page"
-          input#email.form-control name="email" placeholder="Email" type="email" /
-        .form-group.text-center
-          p
-            input.btn.btn-primary.lead-form-btn name="commit" type="submit" value="Alright!" /
-      p.email-form.pull-right 
-        | Sign up to get more SDK data
-    - @sdks.each.with_index do |sdk, index|
-      .row.sdk
-        .column.large-6
-          div class="media"
-            div class="pull-left media-middle"
-              span.sdk-rank= "#{index + 1 + (([params[:page].to_i, 1].max - 1) * 20)}."
-              a href=sdk.website
-                = image_tag sdk.favicon, size: '16', class: 'media-object'
-            div class="media-body"
-              h4 class="media-heading"
-                => link_to sdk.name.titleize, sdk.website, target: '_blank'
-                span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_android_apps_path, target: '_blank'})
-              = sdk.summary
-        .column.large-6
-          - sdk.top_200_apps.first(8).each do |app|
-            a href='#{app.mightysignal_public_page_link}' target="_blank" class="app-sdks"
-              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon'
-    = paginate @sdks
+    .col-xl-10.block
+      = image_tag '/lib/images/google_play.png', class: 'app-store-icon'
+      h1="#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free Android Apps"
+      = render "welcome/subscribe_free_data", last_updated: @last_updated, form: 'top-android-sdks', message: "Top Android SDKS page"
+
+      - @sdks.each.with_index do |sdk, index|
+        .row.sdk
+          .col-xl-6
+            .media
+              .pull-left.media-middle
+                span.sdk-rank= "#{index + 1 + (([params[:page].to_i, 1].max - 1) * 20)}."
+                a href=sdk.website
+                  = image_tag sdk.favicon, size: '16', class: 'media-object'
+              .media-body.overflow-auto
+                h4.media-heading
+                  => link_to sdk.name.titleize, sdk.website, target: '_blank'
+                  span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_android_apps_path, target: '_blank'})
+                p.text-truncate = sdk.summary
+          .col-xl-6
+            - sdk.top_200_apps.first(8).each do |app|
+              a.app-sdks href='#{app.mightysignal_public_page_link}' target="_blank"
+                = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon'
+      - if browser.device.mobile?
+        = paginate @sdks, :theme => "next_prev"
+      - else
+        = paginate @sdks

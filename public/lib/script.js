@@ -1,5 +1,10 @@
 $(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip()
+    // $('[data-toggle="tooltip"]').tooltip()
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="popover"]').popover()
+    })
+
     $('#app-select').ddslick({
         'width': '100%',
         onSelected: function(data){
