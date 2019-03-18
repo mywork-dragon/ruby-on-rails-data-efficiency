@@ -107,53 +107,53 @@ class WelcomeController < ApplicationController
   end
 
   def app_page
-    # platform = params[:platform] == 'ios' ? 'ios' : 'android'
-    # app_identifier =  params[:app_identifier]
-    # @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
-    # @json_app = apps_hot_store.read(platform, @app.id)
-    # @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
-    # @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
-    # most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
-    # @last_update_date = latest_release_of(most_recent_app).to_date
-    # @latest_update = (Date.current - @last_update_date).to_i
-    # @sdks = @json_app['sdk_activity']
-    # @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
-    # @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
-    # @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-    #   next memo unless sdk['installed'] && sdk['categories']
-    #   sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
-    #   memo
-    # end
-    # @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-    #   next memo unless !sdk['installed'] && sdk['categories']
-    #   sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
-    #   memo
-    # end
-    # @categories = @json_app['categories'].andand.map{|cat| cat['name']}
-    # ap @json_app.except('sdk_activity').except('ratings_history')
+    platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    app_identifier =  params[:app_identifier]
+    @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
+    @json_app = apps_hot_store.read(platform, @app.id)
+    @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
+    @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
+    most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
+    @last_update_date = latest_release_of(most_recent_app).to_date
+    @latest_update = (Date.current - @last_update_date).to_i
+    @sdks = @json_app['sdk_activity']
+    @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
+    @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
+    @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+      next memo unless sdk['installed'] && sdk['categories']
+      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      memo
+    end
+    @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+      next memo unless !sdk['installed'] && sdk['categories']
+      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      memo
+    end
+    @categories = @json_app['categories'].andand.map{|cat| cat['name']}
+    ap @json_app.except('sdk_activity').except('ratings_history')
 
-    @app = mock_app
-    @json_app = mock_app_json_app
-    @json_publisher = mock_app_json_publisher
-    @top_apps = mock_app_top_apps
-    @last_update_date = mock_app_last_update_date
-    @latest_update = mock_app_latest_update
-    @sdks = mock_app_sdks
-    @sdk_installed = mock_app_sdk_installed
-    @sdk_uninstalled = mock_app_sdk_uninstalled
-    @installed_sdk_categories = mock_app_installed_sdk_categories
-    @uninstalled_sdk_categories = mock_app_uninstalled_sdk_categories
-    @categories = mock_app_categories
-
-    # TODO: should be substituted with actual requests
-    @app_rank = "6"
-    @app_country = "us"
-    @chart_week_installed = "12"
-    @chart_week_uninstalled = "33"
-    @chart_month_installed = "24"
-    @chart_month_uninstalled = "54"
-    @entered_last_month = "43"
-    @advertising_creatives = mock_app_advertising_creatives
+    # @app = mock_app
+    # @json_app = mock_app_json_app
+    # @json_publisher = mock_app_json_publisher
+    # @top_apps = mock_app_top_apps
+    # @last_update_date = mock_app_last_update_date
+    # @latest_update = mock_app_latest_update
+    # @sdks = mock_app_sdks
+    # @sdk_installed = mock_app_sdk_installed
+    # @sdk_uninstalled = mock_app_sdk_uninstalled
+    # @installed_sdk_categories = mock_app_installed_sdk_categories
+    # @uninstalled_sdk_categories = mock_app_uninstalled_sdk_categories
+    # @categories = mock_app_categories
+    #
+    # # TODO: should be substituted with actual requests
+    # @app_rank = "6"
+    # @app_country = "us"
+    # @chart_week_installed = "12"
+    # @chart_week_uninstalled = "33"
+    # @chart_month_installed = "24"
+    # @chart_month_uninstalled = "54"
+    # @entered_last_month = "43"
+    # @advertising_creatives = mock_app_advertising_creatives
 
   end
 
@@ -171,24 +171,24 @@ class WelcomeController < ApplicationController
   end
 
   def timeline
-    # top_200_ids = IosAppRankingSnapshot.top_200_app_ids
-    # batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-    #                              owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
-    # top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
-    # batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-    #                              owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
-    #
-    # batches_by_week = {}
-    # (batches_i + batches_a).each do |batch|
-    #   if batches_by_week[batch.week]
-    #     batches_by_week[batch.week] << batch
-    #   else
-    #     batches_by_week[batch.week] = [batch]
-    #   end
-    # end
-    #
-    # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
-    # @batches_by_week = batches_by_week
+    top_200_ids = IosAppRankingSnapshot.top_200_app_ids
+    batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+                                 owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+    top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
+    batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
+                                 owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
+
+    batches_by_week = {}
+    (batches_i + batches_a).each do |batch|
+      if batches_by_week[batch.week]
+        batches_by_week[batch.week] << batch
+      else
+        batches_by_week[batch.week] = [batch]
+      end
+    end
+
+    batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
+    @batches_by_week = batches_by_week
 
 
     # @top_200_ids = IosAppRankingSnapshot.top_200_app_ids
@@ -210,71 +210,71 @@ class WelcomeController < ApplicationController
     # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
     # @batches_by_week = batches_by_week
 
-    @batches_by_week = mock_batches_by_week
+    # @batches_by_week = mock_batches_by_week
   end
 
   def top_ios_sdks
-    # @last_updated = IosAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
-    # @tag_label = "All"
-    # @sdks = IosSdk.sdks_installed_in_top_n_apps(200)
-    # @tags = IosSdk.top_200_tags
-    #
-    # if params[:tag]
-    #   @tag = Tag.find(params[:tag])
-    #   @tag_label = @tag.name
-    #   @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
-    # end
+    @last_updated = IosAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
+    @tag_label = "All"
+    @sdks = IosSdk.sdks_installed_in_top_n_apps(200)
+    @tags = IosSdk.top_200_tags
 
-    @tags = mock_tags
-    @tag_label
-    @last_updated = mock_last_updated
-    @sdks = mock_sdks
+    if params[:tag]
+      @tag = Tag.find(params[:tag])
+      @tag_label = @tag.name
+      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
+    end
+
+    # @tags = mock_tags
+    # @tag_label
+    # @last_updated = mock_last_updated
+    # @sdks = mock_sdks
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
   def top_ios_apps
-    # newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    # @last_updated = newest_snapshot.try(:created_at) || Time.now
-    # @apps = if newest_snapshot
-    #           IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
-    #         else
-    #           []
-    #         end
-    @last_updated = mock_last_updated
-    @apps = mock_apps
+    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    @last_updated = newest_snapshot.try(:created_at) || Time.now
+    @apps = if newest_snapshot
+              IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
+            else
+              []
+            end
+    # @last_updated = mock_last_updated
+    # @apps = mock_apps
   end
 
   def top_android_sdks
-    # @last_updated = AndroidAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
-    # @tag_label = "All"
-    # @sdks = AndroidSdk.sdks_installed_in_top_n_apps(200)
-    # @tags = AndroidSdk.top_200_tags
-    #
-    # if params[:tag]
-    #   @tag = Tag.find(params[:tag])
-    #   @tag_label = @tag.name
-    #   @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
-    # end
+    @last_updated = AndroidAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
+    @tag_label = "All"
+    @sdks = AndroidSdk.sdks_installed_in_top_n_apps(200)
+    @tags = AndroidSdk.top_200_tags
 
-    @tags = mock_tags
-    @tag_label
-    @last_updated = mock_last_updated
-    @sdks = mock_sdks
+    if params[:tag]
+      @tag = Tag.find(params[:tag])
+      @tag_label = @tag.name
+      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
+    end
+
+    # @tags = mock_tags
+    # @tag_label
+    # @last_updated = mock_last_updated
+    # @sdks = mock_sdks
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
 
   def top_android_apps
-    # newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
-    # @last_updated = newest_snapshot.try(:created_at) || Time.now
-    # @apps = if newest_snapshot
-    #           AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
-    #                     select(:rank, 'android_apps.*').order('rank ASC').limit(200)
-    #         else
-    #           []
-    #         end
-    @last_updated = mock_last_updated
-    @apps = mock_apps
+    newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    @last_updated = newest_snapshot.try(:created_at) || Time.now
+    @apps = if newest_snapshot
+              AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
+                        select(:rank, 'android_apps.*').order('rank ASC').limit(200)
+            else
+              []
+            end
+    # @last_updated = mock_last_updated
+    # @apps = mock_apps
   end
 
   def fastest_growing_sdks

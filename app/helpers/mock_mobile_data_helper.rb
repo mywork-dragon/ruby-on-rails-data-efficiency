@@ -160,12 +160,12 @@ module MockMobileDataHelper
   def mock_batches_by_week
     week1 = [
         {id: 8504586, owner_id: 2284350, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:46", updated_at: "2019-03-06 18:30:46"},
-        {id: 8492542, owner_id: 1054733, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-04 18:30:36", updated_at: "2019-03-04 18:30:36"},
-        {id: 8504602, owner_id: 4193069, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:48", updated_at: "2019-03-06 18:30:48"},
-        {id: 8504596, owner_id: 843021, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:47", updated_at: "2019-03-06 18:30:47"},
-        {id: 8504592, owner_id: 1098019, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:47", updated_at: "2019-03-06 18:30:47"},
-        {id: 8504582, owner_id: 4193530, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:46", updated_at: "2019-03-06 18:30:46"},
-        {id: 8504598, owner_id: 3914489, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:48", updated_at: "2019-03-06 18:30:48"},
+        {id: 8492542, owner_id: 1054733, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-03-04", created_at: "2019-03-04 18:30:36", updated_at: "2019-03-04 18:30:36"},
+        {id: 8504602, owner_id: 4193069, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:48", updated_at: "2019-03-06 18:30:48"},
+        {id: 8504596, owner_id: 843021, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:47", updated_at: "2019-03-06 18:30:47"},
+        {id: 8504592, owner_id: 1098019, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:47", updated_at: "2019-03-06 18:30:47"},
+        {id: 8504582, owner_id: 4193530, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:46", updated_at: "2019-03-06 18:30:46"},
+        {id: 8504598, owner_id: 3914489, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:48", updated_at: "2019-03-06 18:30:48"},
         {id: 8496312, owner_id: 719954, owner_type: "IosApp", activity_type: 0, activities_count: 3, week: "2019-03-04", created_at: "2019-03-05 18:10:33", updated_at: "2019-03-05 18:10:33"},
         {id: 8504588, owner_id: 1041341, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:47", updated_at: "2019-03-06 18:30:47"},
         {id: 8504584, owner_id: 4217015, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 18:30:46", updated_at: "2019-03-06 18:30:46"},
@@ -187,13 +187,13 @@ module MockMobileDataHelper
         {id: 8502180, owner_id: 7076532, owner_type: "AndroidApp", activity_type: 0, activities_count: 1, week: "2019-03-04", created_at: "2019-03-06 10:32:43", updated_at: "2019-03-06 10:32:43"}
     ]
     week2 = [
-        {id: 8473414, owner_id: 3754071, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:45", updated_at: "2019-03-01 18:30:45"},
-        {id: 8492399, owner_id: 3260245, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-03 18:30:57", updated_at: "2019-03-03 18:30:57"},
-        {id: 8502239, owner_id: 3804709, owner_type: "IosApp", activity_type: 0, activities_count: 1, week: "2019-02-25", created_at: "2019-03-06 10:38:12", updated_at: "2019-03-06 10:38:12"},
-        {id: 8473410, owner_id: 3976072, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:44", updated_at: "2019-03-01 18:30:44"},
-        {id: 8508714, owner_id: 4157804, owner_type: "IosApp", activity_type: 0, activities_count: 21, week: "2019-02-25", created_at: "2019-03-06 22:59:33", updated_at: "2019-03-06 22:59:33"},
-        {id: 8483063, owner_id: 4282620, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-02 18:30:44", updated_at: "2019-03-02 18:30:44"},
-        {id: 8473404, owner_id: 4204897, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:43", updated_at: "2019-03-01 18:30:43"},
+        {id: 8473414, owner_id: 3754071, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:45", updated_at: "2019-03-01 18:30:45"},
+        {id: 8492399, owner_id: 3260245, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-25", created_at: "2019-03-03 18:30:57", updated_at: "2019-03-03 18:30:57"},
+        {id: 8502239, owner_id: 3804709, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-25", created_at: "2019-03-06 10:38:12", updated_at: "2019-03-06 10:38:12"},
+        {id: 8473410, owner_id: 3976072, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:44", updated_at: "2019-03-01 18:30:44"},
+        {id: 8508714, owner_id: 4157804, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 21, week: "2019-02-25", created_at: "2019-03-06 22:59:33", updated_at: "2019-03-06 22:59:33"},
+        {id: 8483063, owner_id: 4282620, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-25", created_at: "2019-03-02 18:30:44", updated_at: "2019-03-02 18:30:44"},
+        {id: 8473404, owner_id: 4204897, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 18:30:43", updated_at: "2019-03-01 18:30:43"},
         {id: 8468416, owner_id: 4213404, owner_type: "IosApp", activity_type: 0, activities_count: 39, week: "2019-02-25", created_at: "2019-02-28 03:37:02", updated_at: "2019-02-28 03:37:02"},
         {id: 8492298, owner_id: 4226324, owner_type: "IosApp", activity_type: 0, activities_count: 31, week: "2019-02-25", created_at: "2019-03-03 14:01:53", updated_at: "2019-03-03 14:01:53"},
         {id: 8492389, owner_id: 4264553, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-25", created_at: "2019-03-03 18:30:55", updated_at: "2019-03-03 18:30:55"},
@@ -250,12 +250,12 @@ module MockMobileDataHelper
         {id: 8469385, owner_id: 739, owner_type: "AndroidApp", activity_type: 0, activities_count: 1, week: "2019-02-25", created_at: "2019-03-01 10:19:26", updated_at: "2019-03-01 10:19:26"}
     ]
     week3 = [
-        {id: 8388706, owner_id: 3938782, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-18 18:30:29", updated_at: "2019-02-18 18:30:29"},
-        {id: 8389162, owner_id: 4249151, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:30", updated_at: "2019-02-19 18:31:30"},
-        {id: 8423922, owner_id: 3984593, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-23 18:30:52", updated_at: "2019-02-23 18:30:52"},
-        {id: 8389170, owner_id: 4157804, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:31", updated_at: "2019-02-19 18:31:31"},
-        {id: 8502821, owner_id: 719954, owner_type: "IosApp", activity_type: 0, activities_count: 3, week: "2019-02-18", created_at: "2019-03-06 11:54:46", updated_at: "2019-03-06 11:54:46"},
-        {id: 8389160, owner_id: 333106, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:30", updated_at: "2019-02-19 18:31:30"},
+        {id: 8388706, owner_id: 3938782, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-18", created_at: "2019-02-18 18:30:29", updated_at: "2019-02-18 18:30:29"},
+        {id: 8389162, owner_id: 4249151, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:30", updated_at: "2019-02-19 18:31:30"},
+        {id: 8423922, owner_id: 3984593, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-18", created_at: "2019-02-23 18:30:52", updated_at: "2019-02-23 18:30:52"},
+        {id: 8389170, owner_id: 4157804, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:31", updated_at: "2019-02-19 18:31:31"},
+        {id: 8502821, owner_id: 719954, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 3, week: "2019-02-18", created_at: "2019-03-06 11:54:46", updated_at: "2019-03-06 11:54:46"},
+        {id: 8389160, owner_id: 333106, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:30", updated_at: "2019-02-19 18:31:30"},
         {id: 8401505, owner_id: 1598976, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-20 18:30:57", updated_at: "2019-02-20 18:30:57"},
         {id: 8389156, owner_id: 1621599, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-19 18:31:29", updated_at: "2019-02-19 18:31:29"},
         {id: 8423217, owner_id: 51795, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-18", created_at: "2019-02-22 18:30:47", updated_at: "2019-02-22 18:30:47"},
@@ -309,15 +309,15 @@ module MockMobileDataHelper
         {id: 8436470, owner_id: 4280158, owner_type: "AndroidApp", activity_type: 0, activities_count: 2, week: "2019-02-18", created_at: "2019-02-24 14:05:02", updated_at: "2019-02-24 14:05:02"}
     ]
     week4 = [
-        {id: 8423231, owner_id: 4231689, owner_type: "IosApp", activity_type: 0, activities_count: 53, week: "2019-02-11", created_at: "2019-02-22 18:31:10", updated_at: "2019-02-22 18:31:10"},
-        {id: 8399462, owner_id: 477967, owner_type: "IosApp", activity_type: 0, activities_count: 1, week: "2019-02-11", created_at: "2019-02-20 15:46:09", updated_at: "2019-02-20 15:46:09"},
-        {id: 8395536, owner_id: 216548, owner_type: "IosApp", activity_type: 0, activities_count: 1, week: "2019-02-11", created_at: "2019-02-20 09:09:55", updated_at: "2019-02-20 09:09:55"},
-        {id: 8334566, owner_id: 4264556, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-11", created_at: "2019-02-11 18:36:25", updated_at: "2019-02-11 18:36:25"},
-        {id: 8334626, owner_id: 4264556, owner_type: "IosApp", activity_type: 0, activities_count: 41, week: "2019-02-11", created_at: "2019-02-11 23:14:16", updated_at: "2019-02-11 23:14:16"},
-        {id: 8361357, owner_id: 150342, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-11", created_at: "2019-02-14 18:30:40", updated_at: "2019-02-14 18:30:40"},
-        {id: 8348685, owner_id: 2760187, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-11", created_at: "2019-02-13 18:33:33", updated_at: "2019-02-13 18:33:33"},
-        {id: 8367531, owner_id: 4202307, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-11", created_at: "2019-02-15 18:30:35", updated_at: "2019-02-15 18:30:35"},
-        {id: 8403035, owner_id: 809936, owner_type: "IosApp", activity_type: 0, activities_count: 9, week: "2019-02-11", created_at: "2019-02-20 22:01:51", updated_at: "2019-02-20 22:01:51"},
+        {id: 8423231, owner_id: 4231689, owner_type: "IosApp", activity_type: 'install', activities_count: 53, week: "2019-02-11", created_at: "2019-02-22 18:31:10", updated_at: "2019-02-22 18:31:10"},
+        {id: 8399462, owner_id: 477967, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-11", created_at: "2019-02-20 15:46:09", updated_at: "2019-02-20 15:46:09"},
+        {id: 8395536, owner_id: 216548, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-11", created_at: "2019-02-20 09:09:55", updated_at: "2019-02-20 09:09:55"},
+        {id: 8334566, owner_id: 4264556, owner_type: "IosApp", activity_type: 'install', activities_count: 1, week: "2019-02-11", created_at: "2019-02-11 18:36:25", updated_at: "2019-02-11 18:36:25"},
+        {id: 8334626, owner_id: 4264556, owner_type: "IosApp", activity_type: 'install', activities_count: 41, week: "2019-02-11", created_at: "2019-02-11 23:14:16", updated_at: "2019-02-11 23:14:16"},
+        {id: 8361357, owner_id: 150342, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-11", created_at: "2019-02-14 18:30:40", updated_at: "2019-02-14 18:30:40"},
+        {id: 8348685, owner_id: 2760187, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-11", created_at: "2019-02-13 18:33:33", updated_at: "2019-02-13 18:33:33"},
+        {id: 8367531, owner_id: 4202307, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 1, week: "2019-02-11", created_at: "2019-02-15 18:30:35", updated_at: "2019-02-15 18:30:35"},
+        {id: 8403035, owner_id: 809936, owner_type: "IosApp", activity_type: 'entered_top_apps', activities_count: 9, week: "2019-02-11", created_at: "2019-02-20 22:01:51", updated_at: "2019-02-20 22:01:51"},
         {id: 8422884, owner_id: 2789262, owner_type: "IosApp", activity_type: 0, activities_count: 1, week: "2019-02-11", created_at: "2019-02-22 12:11:54", updated_at: "2019-02-22 12:11:54"},
         {id: 8388694, owner_id: 3260245, owner_type: "IosApp", activity_type: 3, activities_count: 1, week: "2019-02-11", created_at: "2019-02-17 18:30:38", updated_at: "2019-02-17 18:30:38"},
         {id: 8500936, owner_id: 3503900, owner_type: "IosApp", activity_type: 0, activities_count: 3, week: "2019-02-11", created_at: "2019-03-06 06:27:30", updated_at: "2019-03-06 06:27:30"},
@@ -378,10 +378,133 @@ module MockMobileDataHelper
           newest_ipa_snapshot_id: '',
           display_type: 0,
           ios_developer_id: 136666,
-          source: 5
+          source: 5,
+          app_name: 'test',
+          mightysignal_public_page_link: '#'
       }
-      sorted_activities = []
 
+      #  id          :integer          not null, primary key
+      #  created_at  :datetime
+      #  updated_at  :datetime
+      #  happened_at :datetime
+      #  major_app   :boolean          default(FALSE)
+      sorted_activities = Array.new
+      rand(30).times do
+        datetime = DateTime.now
+        sorted_activities.push Activity.new(
+            id: rand(1000...999999), created_at: datetime, updated_at: datetime, happened_at: datetime, major_app: false
+        )
+      end
+
+      weekly_batch[:sorted_activities] = sorted_activities
+      weekly_batch[:owner] = OpenStruct.new(owner)
+      OpenStruct.new(weekly_batch)
+    end
+    arr_week2 = week2.map do |weekly_batch|
+      owner = {
+          id: 4292150,
+          created_at: '3 2019-03-08 10:57:37.000000000 Z',
+          updated_at: '4 2019-03-08 10:57:37.000000000 Z',
+          app_identifier: 1451505313,
+          app_id: '',
+          newest_ios_app_snapshot_id: '',
+          user_base: '',
+          mobile_priority: '',
+          released: '',
+          newest_ipa_snapshot_id: '',
+          display_type: 0,
+          ios_developer_id: 136666,
+          source: 5,
+          app_name: 'test',
+          mightysignal_public_page_link: '#'
+      }
+
+      #  id          :integer          not null, primary key
+      #  created_at  :datetime
+      #  updated_at  :datetime
+      #  happened_at :datetime
+      #  major_app   :boolean          default(FALSE)
+      sorted_activities = Array.new
+      rand(30).times do
+        datetime = DateTime.now
+        sorted_activities.push Activity.new(
+            id: rand(1000...999999), created_at: datetime, updated_at: datetime, happened_at: datetime, major_app: false
+        )
+      end
+
+      weekly_batch[:sorted_activities] = sorted_activities
+      weekly_batch[:owner] = OpenStruct.new(owner)
+      OpenStruct.new(weekly_batch)
+    end
+    arr_week3 = week3.map do |weekly_batch|
+      owner = {
+          id: 4292150,
+          created_at: '3 2019-03-08 10:57:37.000000000 Z',
+          updated_at: '4 2019-03-08 10:57:37.000000000 Z',
+          app_identifier: 1451505313,
+          app_id: '',
+          newest_ios_app_snapshot_id: '',
+          user_base: '',
+          mobile_priority: '',
+          released: '',
+          newest_ipa_snapshot_id: '',
+          display_type: 0,
+          ios_developer_id: 136666,
+          source: 5,
+          app_name: 'test',
+          mightysignal_public_page_link: '#'
+      }
+
+      #  id          :integer          not null, primary key
+      #  created_at  :datetime
+      #  updated_at  :datetime
+      #  happened_at :datetime
+      #  major_app   :boolean          default(FALSE)
+      sorted_activities = Array.new
+      rand(30).times do
+        datetime = DateTime.now
+        sorted_activities.push Activity.new(
+            id: rand(1000...999999), created_at: datetime, updated_at: datetime, happened_at: datetime, major_app: false
+        )
+      end
+
+      weekly_batch[:sorted_activities] = sorted_activities
+      weekly_batch[:owner] = OpenStruct.new(owner)
+      OpenStruct.new(weekly_batch)
+    end
+    arr_week4 = week4.map do |weekly_batch|
+      owner = {
+          id: 4292150,
+          created_at: '3 2019-03-08 10:57:37.000000000 Z',
+          updated_at: '4 2019-03-08 10:57:37.000000000 Z',
+          app_identifier: 1451505313,
+          app_id: '',
+          newest_ios_app_snapshot_id: '',
+          user_base: '',
+          mobile_priority: '',
+          released: '',
+          newest_ipa_snapshot_id: '',
+          display_type: 0,
+          ios_developer_id: 136666,
+          source: 5,
+          app_name: 'test',
+          mightysignal_public_page_link: '#'
+      }
+
+      #  id          :integer          not null, primary key
+      #  created_at  :datetime
+      #  updated_at  :datetime
+      #  happened_at :datetime
+      #  major_app   :boolean          default(FALSE)
+      sorted_activities = Array.new
+      rand(30).times do
+        datetime = DateTime.now
+        sorted_activities.push Activity.new(
+            id: rand(1000...999999), created_at: datetime, updated_at: datetime, happened_at: datetime, major_app: false
+        )
+      end
+
+      weekly_batch[:sorted_activities] = sorted_activities
       weekly_batch[:owner] = OpenStruct.new(owner)
       OpenStruct.new(weekly_batch)
     end
@@ -389,15 +512,31 @@ module MockMobileDataHelper
     # arr_week3 = week3.map {|weekly_batch| OpenStruct.new(weekly_batch)}
     # arr_week4 = week4.map {|weekly_batch| OpenStruct.new(weekly_batch)}
 
-    # {
-    #     Date.strptime('2019-03-04', "%Y-%m-%d") => arr_week1,
-    #     Date.strptime('2019-02-25', "%Y-%m-%d") => arr_week2,
-    #     Date.strptime('2019-02-18', "%Y-%m-%d") => arr_week3,
-    #     Date.strptime('2019-02-11', "%Y-%m-%d") => arr_week4
-    # }
     {
         Date.strptime('2019-03-04', "%Y-%m-%d") => arr_week1,
+        Date.strptime('2019-02-25', "%Y-%m-%d") => arr_week2,
+        Date.strptime('2019-02-18', "%Y-%m-%d") => arr_week3,
+        Date.strptime('2019-02-11', "%Y-%m-%d") => arr_week4
     }
+  end
+
+  def mock_other_owner
+    OpenStruct.new({
+        id: 4292150,
+        created_at: '3 2019-03-08 10:57:37.000000000 Z',
+        updated_at: '4 2019-03-08 10:57:37.000000000 Z',
+        app_identifier: 1451505313,
+        app_id: '111',
+        newest_ios_app_snapshot_id: '111',
+        user_base: '111',
+        mobile_priority: '111',
+        released: '111',
+        newest_ipa_snapshot_id: '11',
+        display_type: 0,
+        ios_developer_id: 136666,
+        source: 5,
+        favicon: '#'
+    })
   end
 
   # =======================================================================================

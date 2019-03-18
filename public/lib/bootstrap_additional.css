@@ -50,6 +50,20 @@
     line-height: 0.875rem !important;
 }
 
+#app-select {
+    color: #4d4d4d;
+}
+
+#app-select .dd-selected-text {
+    color: #4d4d4d;
+    font-weight: normal;
+    display: block;
+}
+
+#app-select .dd-option-text {
+    display: block;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search {
         min-width: 200px;

@@ -19,38 +19,38 @@
       img src=logo[:image] width=logo[:width]
 
 /! ==============Content Area=================
-.container
-  .landing-page
-    /! ============== Other Features ==============
-    .row.PageHead
-      .col-md-12
-        h2#solutions Fresh Content!
-        h3
-          | Read the new blog post about
-          br
-          | Account Based Marketing for Mobile.
-        .row.fresh-content
-          .col-md-6.offset-md-3.solution
-            a href=@abm4m_post_0 target='_blank'
-              .row
-                p
-              .row.title
-                | Introducing ABM4M
-              .row
-                p
-              .row
-                img.img-fluid src=@abm_blog_icon width=2000
-              .row
-                p
-              .row
-                .col-md-10.offset-md-1.end
-                  | MightySignal is excited to introduce you to ABM4M: Account Based Marketing for Mobile
-                  br
-                  br
-    - 1.times
-      .row
-        p
-    div
+.container.landing-page
+  /! ============== Other Features ==============
+  .row.PageHead
+    .col
+      h2#solutions Fresh Content!
+      h3
+        | Read the new blog post about
+        br
+        | Account Based Marketing for Mobile.
+      .row.fresh-content.m-0
+        .col-md-6.offset-md-3.solution
+          a href=@abm4m_post_0 target='_blank'
+            .row
+              p
+            .row.title
+              | Introducing ABM4M
+            .row
+              p
+            .row
+              img.img-fluid src=@abm_blog_icon width=2000
+            .row
+              p
+            .row
+              .col-md-10.offset-md-1.end
+                | MightySignal is excited to introduce you to ABM4M: Account Based Marketing for Mobile
+                br
+                br
+  - 1.times
+    .row
+      p
+  .row
+    .col
       a#solutions_anchor.anchor
       .row.PageHead
         .col-md-12
@@ -59,7 +59,7 @@
             | Our solutions help companies make better decisions.
           .row
             p
-      .row
+      .row.m-0
         .col-lg-2.offset-lg-2.solution
           a href=lead_generation_path
             .row
@@ -119,49 +119,46 @@
             .row
               p
 
-    - 2.times
-      .row
-        p
+  - 2.times
+    .row
+      p
 
   /! ============== Contact us ==============
-  div
-    a#contact_anchor.anchor
-  #contact
-    .row.PageHead
-      .col-md-12
-        h2 Contact Us
-        h3 Fill this out and we'll be in touch.
-        .row
-          p
-    .col-md-3
-    .col-md-6.offset-md-3
-      form accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form"
-        div style="display:none"
-          input name="utf8" type="hidden" value="✓" /
-          input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
-          = hidden_field_tag('button_id', 'main')
-        .form-group
-          input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required="" /
-        .form-group
-          input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required="" /
-        .form-group
-          input#company.form-control name="company" placeholder="Company" type="text" /
-        .form-group
-          input#email.form-control name="email" placeholder="Email" type="email" required="" /
-        .form-group
-          input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
-        .form-group
-          textarea#message.form-control name="message" placeholder=("Your Message") required=""
-        - unless Rails.env.development?
-          = recaptcha_tags
-        br
-        .form-group.text-center
-          p
-            input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
-          span.loading
-    .col-md-3
+  .row
+    .col
+      a#contact_anchor.anchor
+      #contact
+        .row.PageHead
+          .col-md-12
+            h2 Contact Us
+            h3 Fill this out and we'll be in touch.
+            .row
+              p
+        .col-md-3
+        .col-md-6.offset-md-3
+          form accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form"
+            div style="display:none"
+              input name="utf8" type="hidden" value="✓" /
+              input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
+              = hidden_field_tag('button_id', 'main')
+            .form-group
+              input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required="" /
+            .form-group
+              input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required="" /
+            .form-group
+              input#company.form-control name="company" placeholder="Company" type="text" /
+            .form-group
+              input#email.form-control name="email" placeholder="Email" type="email" required="" /
+            .form-group
+              input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+            .form-group
+              textarea#message.form-control name="message" placeholder=("Your Message") required=""
+            - unless Rails.env.development?
+              = recaptcha_tags
+            br
+            .form-group.text-center
+              p
+                input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
+              span.loading
+        .col-md-3
 /! Container Closed
-
-= debug '@apps'
-= debug @apps
-= debug @apps.inspect
