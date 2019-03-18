@@ -22,7 +22,7 @@
                 | App is no longer available in the app store
     .col-md-3.col-xs-12
       a{href="#{@json_app['app_store_url']}" target='_blank'}
-        button.btn.btn-primary
+        button.btn.btn-primary.mt-3
           | View in App Store
 
 .white-panel
@@ -70,6 +70,11 @@
               button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
                 i.fas.fa-lock
                 | See Individual SDKs
+        - else
+          .see-sdks-container
+            button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
+              i.fas.fa-lock
+              | See Individual SDKs
 
 .gray-panel
   .container.app-description
@@ -99,7 +104,7 @@
             h4 Rating:
             .big-num
               i.fas.fa-star
-              = @json_app['all_version_rating']
+              = number_with_precision(@json_app['all_version_rating'], precision: 1)
             | Based on #{ number_to_human(@json_app['all_version_ratings_count']) } ratings
         - if @json_app['current_version'].present?
           .detail-item
@@ -138,109 +143,5 @@
           button.btn.modal-button id="contact-us-button-app-page-firmographic-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-firmographic-data' type='submit'
             i.fas.fa-lock
             | See location, contacts, and more
-
-/ .gray-panel
-/   .container.rankings-panel.px-3.py-4
-/     .row.max-rank-container
-/       .col-12.justify-content-center
-/         span.fa-stack.fa-xs.mb-2
-/           i.fas.fa-circle.fa-stack-2x.circle
-/           i.fas.fa-trophy.fa-stack-1x.trophy
-/       .col-12.justify-content-center
-/         div
-/           | Ranked ##{@app_rank} in
-/           img.max-flag alt="" src="/lib/images/flags/#{@app_country}.png" /
-/           | US Top Free Finance
-/     .row
-/       .col-md-6.trend-column
-/         h4.text-center Week Trend
-/         .rank-trend.d-flex.flex-column.align-items-center
-/           .sdk-total
-/             .total.d-flex.align-items-center.installed
-/               / TODO: set correct SVG
-/               i.fas.fa-chart-line.fa-lg.up-arrow
-/               .chart-num-ctnr
-/                 | #{@chart_week_installed}
-/                 .small-charts-text.align-items-center
-/                   | charts
-/             | Moved up in #{@chart_week_installed} charts in the last week
-/         .rank-trend.d-flex.flex-column.align-items-center
-/           .sdk-total
-/             .total.d-flex.align-items-center.uninstalled
-/               img.down-arrow-img alt="" src="/lib/images/down_arrow.png"
-/               .chart-num-ctnr
-/                 | #{@chart_week_uninstalled}
-/                 .small-charts-text.align-items-center
-/                   | charts
-/             | Moved down in #{@chart_week_uninstalled} charts in the last week
-/       .col-md-6.trend-column
-/         h4.text-center Month Trend
-/         .rank-trend.d-flex.flex-column.align-items-center
-/           .sdk-total
-/             .total.d-flex.align-items-center.installed
-/               i.fas.fa-chart-line.fa-lg.up-arrow
-/               .chart-num-ctnr
-/                 | #{@chart_month_installed}
-/                 .small-charts-text.align-items-center
-/                   | charts
-/             | Moved up in #{@chart_month_installed} charts in the last month
-/         .rank-trend.d-flex.flex-column.align-items-center
-/           .sdk-total
-/             .total.d-flex.align-items-center.uninstalled
-/               img.down-arrow-img alt="" src="/lib/images/down_arrow.png"
-/               .chart-num-ctnr
-/                 | #{@chart_month_uninstalled}
-/                 .small-charts-text.align-items-center
-/                   | charts
-/             | Moved down in #{@chart_month_uninstalled} charts in the last month
-/     .row
-/       .col-md-12.d-flex.justify-content-center.rankings-button.newcomers
-/         i.fas.fa-fire.fire
-/         span
-/           | Entered
-/           span.newcomers-count>  #{@entered_last_month}
-/           | charts for the first time in the last month
-/     .row
-/       .col-md-12.d-flex.justify-content-center.rankings-button
-/         button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" data-value="app-page-rankings-data" type='submit'
-/           i.fas.fa-lock
-/           | See Detailed Rankings Data
-/     .row
-/       .col-md-12.d-flex.justify-content-center.rankings-button.chart-hint
-/         / .chart-tooltip#popover data-toggle="popover" data-trigger="hover" data-content="<div>Each official iTunes or Google Play chart contains the top free, paid, or grossing apps for a single category in a single country.</div><br><div>E.g. 'Top Paid Productivity in France'</div>" data-title="What is a chart?"  data-html="true" data-placement="auto right" data-original-title="" title=""
-/         /   | What is a chart?
-/         .chart-tooltip data-content="<div>Each official iTunes or Google Play chart contains the top free, paid, or grossing apps for a single category in a single country.</div><br><div>E.g. &quot;Top Paid Productivity in France&quot;</div>" data-html="true" data-original-title="" data-placement="auto right" data-title="What is a chart?" data-toggle="popover" data-trigger="hover" title = ""
-/           | What is a chart?
-/
-/ .white-panel.pt-2
-/   - if @advertising_creatives.present?
-/     .container.creatives-panel
-/       .creatives-title.my-2
-/         span.fa-stack.fa-xs.my-2
-/           i.fas.fa-certificate.fa-stack-2x.circle
-/           i.fas.fa-bullhorn.fa-stack-1x.trophy
-/         h2 Advertising Creatives
-/         .row
-/           .creatives-gallery.col-md-12
-/             - @advertising_creatives.last(3).each do |ad|
-/               .creative-container.col-xs-12.col-md-4
-/                 .video-wrapper.creative-wrapper
-/                   video.creative.creative-video src="#{ad.ad_url}"
-/                   svg.video-overlay-play-button alt=("Play video") viewbox=("0 0 200 200")
-/                     polygon fill="#fff" points="70, 55 70, 145 145, 100"
-/                   svg.video-overlay-pause-button.is-hidden alt=("Pause video") viewbox=("0 0 200 200")
-/                     rect fill="#fff" height="85" width="20" x="70" y="50"
-/                     rect fill="#fff" height="85" width="20" x="105" y="50"
-/                 .creative-first-seen-date
-/                   | First Seen: #{ad.ad_date}
-/       .rankings-button.col-md-12.d-flex.justify-content-center.py-3
-/         button.btn.btn-primary.modal-button data-target="#webFormModal" data-toggle="modal" data-value="app-page-ad-data" type='submit'
-/           i.fas.fa-lock
-/           | See More Facebook Ad Data
-/   -else
-/     .container.creatives-panel.px-3.py-4.my-auto
-/       .container.no-rankings-data.d-flex.justify-content-center.align-items-center.px-4.py-3
-/         i.fas.fa-search
-/         | No Ad Intelligence Data
 
 = render 'welcome/web_form_modal'

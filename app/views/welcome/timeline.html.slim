@@ -7,28 +7,15 @@
   .row.top-200.timeline.marketing-row
     .col.block
       .row
-        .col-md-6.d-flex.align-items-center
+        .col-md-6.d-flex.align-items-center.my-2
           = image_tag '/lib/images/elephant.png', width: 50, class: 'icon'
           h1 Timeline
-        .col-md-4.d-flex.align-items-center
+        .col-md-4.d-flex.align-items-center.my-2
           span Follow our Twitter bot
                                 <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-size="large" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-        .col-md-2.d-flex.align-items-center
+        .col-md-2.d-flex.align-items-center.my-2
           div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS and Android Apps? @MightyTimeline"
       =render "welcome/subscribe_free_data", text: "What's happening in the Top 200 Apps?", last_updated: @last_updated, form: 'timeline',  message: "Timeline"
-      / .info.alert.alert-warning
-        / p.pull-left
-        /   |What's happening in the Top 200 Apps?
-        /
-        / = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right', data: {form: 'timeline'} do |f|
-        /   .form-group
-        /     input type="hidden" name="message" value="Timeline"
-        /     input#email.form-control name="email" placeholder="Email" type="email" /
-        /   .form-group.text-center
-        /     p
-        /       input.btn.btn-primary.lead-form-btn name="commit" type="submit" value="Alright!" /
-        / p.email-form.pull-right
-        /   | Sign up to get more SDK data
 
       - @batches_by_week.each do |week, batches|
         h4.week= week_formatter(week)
@@ -36,22 +23,22 @@
           - app = batch.owner
 
           - if batch.activity_type == 'install'
-            .panel.panel-default class="batch-#{batch.id}"
-              .panel-heading
-                = image_tag app.icon_url, size: '30x30'
+            .card.mb-3 class="batch-#{batch.id}"
+              .card-heading.px-3.py-2
+                = image_tag app.icon_url, size: '30x30', class: 'mr-2'
                 = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} installed ".html_safe
                 span.subtext= "#{pluralize(batch.sorted_activities.count, 'new SDK', 'new SDks')}"
               //div id="collapse-#{batch.id}" class="panel-collapse collapse"
-              .panel-body
+              .card-body
                 - batch.sorted_activities.each do |activity|
                   li class="activity-#{activity.id}"
-                    = image_tag activity.other_owner(app).favicon, size: '16x16'
+                    = image_tag activity.other_owner(app).favicon, size: '16x16', class: 'mr-1'
                     = link_to activity.other_owner(app).name, activity.other_owner(app).website, target: '_blank'
 
           - elsif batch.activity_type == 'entered_top_apps'
-            .panel.panel-default class="batch-#{batch.id}"
-              .panel-heading
-                = image_tag app.icon_url, size: '30x30'
+            .card.mb-3  class="batch-#{batch.id}"
+              .card-heading.px-3.py-2
+                = image_tag app.icon_url, size: '30x30', class: 'mr-2'
                 = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} entered the Top 200 at ".html_safe
                 span.subtext= "Rank #{batch.other_owner.try(:rank)}"
 
@@ -67,20 +54,3 @@
                   |App Store Link
               h3 class="modal-title" id="myModalLabel"
             div class="modal-body"
-
-/ = debug '@top_200_ids'
-/ = debug @top_200_ids
-/ = debug @top_200_ids.inspect
-/ = debug '@top_200_ids_a'
-/ = debug @top_200_ids_a
-/ = debug @top_200_ids_a.inspect
-/ = debug '@batches_i'
-/ = debug @batches_i.includes(:owner, :activities, :weekly_batches_activities)
-/ = debug @batches_i.includes(:owner, :activities, :weekly_batches_activities).inspect
-/ = debug '@batches_a'
-/ = debug @batches_a.includes(:owner, :activities, :weekly_batches_activities)
-/ = debug @batches_a..inspect
-/ = debug '@batches_by_week'
-/ = debug @batches_by_week
-/ = debug @batches_by_week.inspect
-
