@@ -9,7 +9,9 @@ class WelcomeController < ApplicationController
   layout "marketing"
 
   def index
-    @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
+    # @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
+
+    @apps = mock_index
 
     @logos = [
       #{image: 'ghostery.png', width: 150},
@@ -82,23 +84,27 @@ class WelcomeController < ApplicationController
   end
 
   def ios_app_sdks
-    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
-    if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
-      @app = IosApp.find_by_app_identifier(params[:app_identifier])
-      @sdks = @app.tagged_sdk_response(true)
-    elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
-      return redirect_to action: :index
-    else
-      @app = IosApp.find_by_app_identifier(params[:app_identifier])
-      sdk_response = @app.sdk_history
-      @installed_sdks = sdk_response[:installed_sdks]
-      @uninstalled_sdks = sdk_response[:uninstalled_sdks]
-      # remove pinterest from Etsy's uninstalled
-      if @app.app_identifier == 477128284
-        @uninstalled_sdks.shift
-      end
-    end
+    # newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    # app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
+    # if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
+    #   @app = IosApp.find_by_app_identifier(params[:app_identifier])
+    #   @sdks = @app.tagged_sdk_response(true)
+    # elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
+    #   return redirect_to action: :index
+    # else
+    #   @app = IosApp.find_by_app_identifier(params[:app_identifier])
+    #   sdk_response = @app.sdk_history
+    #   @installed_sdks = sdk_response[:installed_sdks]
+    #   @uninstalled_sdks = sdk_response[:uninstalled_sdks]
+    #   # remove pinterest from Etsy's uninstalled
+    #   if @app.app_identifier == 477128284
+    #     @uninstalled_sdks.shift
+    #   end
+    # end
+
+    @app = mock_ios_app_sdks_app
+    @installed_sdks = mock_ios_app_sdks_installed_sdks
+    @uninstalled_sdks = mock_ios_app_sdks_installed_sdks
 
     respond_to do |format|
       format.html

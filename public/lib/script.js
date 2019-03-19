@@ -35,6 +35,7 @@ $(document).ready(function() {
     })
 
     if ($('.app-sdks.show-modal').length) {
+        console.log('It works!')
         $('#progressModal').modal('show')
         var progress = 0;
         function moveProgress() {

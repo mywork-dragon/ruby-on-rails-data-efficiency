@@ -1409,4 +1409,33 @@ module MockMobileDataHelper
     advertising_creatives.map {|ad| OpenStruct.new(ad)}
   end
 
+
+  def mock_ios_app_sdks_app
+    app = {}
+
+    newest_ios_app_snapshot = {name: 'TestApp',
+                               by: 'Test Company',
+                               icon_url_350x350:'https://www.williams-sonoma.com/wsimgs/ab/images/dp/recipe/201851/0056/img41l.jpg',
+                               price: 'Free'
+                              }
+    ios_fb_ad_appearances = {}
+    mobile_priority = {}
+    user_base = {}
+
+    ios_developer_id = { ios_developer_id:  Website.new({url: 'https://www.google.com'}) }
+
+    app[:ios_developer_id] = IosDevelopersWebsite.new(ios_developer_id)
+    app[:newest_ios_app_snapshot] = IosAppSnapshot.new(newest_ios_app_snapshot)
+    app[:app_identifier] = '123456789'
+    IosApp.new(app)
+  end
+
+  def mock_ios_app_sdks_installed_sdks
+    mock_app_sdks
+  end
+
+  def mock_index
+    [mock_ios_app_sdks_app]
+  end
+
 end

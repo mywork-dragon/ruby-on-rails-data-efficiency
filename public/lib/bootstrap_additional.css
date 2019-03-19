@@ -64,6 +64,12 @@
     display: block;
 }
 
+.link {
+    color: #008cba;
+    text-decoration: none;
+    line-height: inherit;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search {
         min-width: 200px;
