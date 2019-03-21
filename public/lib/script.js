@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    // $('[data-toggle="tooltip"]').tooltip()
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
         $('[data-toggle="popover"]').popover()
@@ -35,7 +34,6 @@ $(document).ready(function() {
     })
 
     if ($('.app-sdks.show-modal').length) {
-        console.log('It works!')
         $('#progressModal').modal('show')
         var progress = 0;
         function moveProgress() {

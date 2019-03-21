@@ -42,6 +42,7 @@ function render_plot() {
       }
     };
     Plotly.newPlot('fastest-growing-sdk-chart', data, layout, {displayModeBar: true});
+
   } else {
     console.log("Render plot called without data");
   }

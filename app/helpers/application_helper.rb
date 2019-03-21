@@ -9,10 +9,10 @@ module ApplicationHelper
 
   # Highlight link if current page is the link destination
   def nav_link(link_text, link_path, html_options = {})
-    class_name = current_page?(link_path) ? 'active' : nil
+    class_name = current_page?(link_path) ? 'active' : ''
 
-    content_tag(:li, :class => [class_name, 'nav-item']) do
-      link_to link_text, link_path, class: html_options[:class] || 'nav-link'
+    content_tag(:li, :class => ['nav-item']) do
+      link_to link_text, link_path, class: html_options[:class] || 'nav-link ' + class_name
     end
   end
 

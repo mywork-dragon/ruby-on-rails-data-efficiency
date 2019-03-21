@@ -4,9 +4,9 @@
     .app-header-main.col-md-9.col-xs-12
       img.app-logo.lg-logo.hidden-xs src = @json_app['icon_url']
       .header-info
-        h1#app-name
-          h1 = @json_app['name']
-        h3 = @json_app['publisher']['name']
+        #app-name
+          h1.px-3.py-0 = @json_app['name']
+        h3.px-3.py-0 = @json_app['publisher']['name']
         .app-header-details
           .col-12
             | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
@@ -17,64 +17,60 @@
           .col-12
             | Category: #{@categories.andand.join(', ')}
           - if @json_app['taken_down']
-            .col-xs-12.taken-down-label
+            .col-12.taken-down-label
               span.label.label-warning
                 | App is no longer available in the app store
     .col-md-3.col-xs-12
       a{href="#{@json_app['app_store_url']}" target='_blank'}
-        button.btn.btn-primary.mt-3
+        button.btn.btn-primary.mt-3.ml-3.ml-md-0
           | View in App Store
 
 .white-panel
   .container.sdk-panel
     .row
-      .sdk-total-container.col-md-5
-        - if @sdks.present?
-          .sdk-total
+      - if @sdks.present?
+        .sdk-total-container.col-md-5
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold
             .total.d-flex.align-items-center.installed
               i.fas.fa-cubes
               = @sdk_installed
             | SDKs Installed
-          .sdk-total
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold
             .total.d-flex.align-items-center.uninstalled
               i.fas.fa-cubes
               = @sdk_uninstalled
             | SDKs Uninstalled
-          .sdk-total.last-scanned
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold.last-scanned
             | Last Scanned: #{ time_ago_in_words(@json_app['last_scanned_date']) } ago
-        - else
-          .sdk-total.no-data
+          = render 'contact_us_button', title: 'Live Scan This App', button_id: 'app-page-live-scan'
+        .col-md-7
+          .row
+            - if @installed_sdk_categories.present?
+              .col-md-6.col-xs-12
+                h4 Installed SDKs
+                - @installed_sdk_categories.each do |category, val|
+                  li.sdk-li
+                    i.far.fa-check-circle
+                    = "#{category} (#{val})"
+            - if @uninstalled_sdk_categories.present?
+              .col-md-6.col-xs-12
+                - if @uninstalled_sdk_categories
+                  h4 Uninstalled SDKs
+                  - @uninstalled_sdk_categories.each do |category, val|
+                    li.sdk-li
+                      i.far.fa-times-circle
+                      = "#{category} (#{val})"
+                .see-sdks-container
+                  = render 'contact_us_button', title: 'See Individual SDKs', button_id: 'app-page-individual-sdks', btn_styles: 'btn btn-primary see-sdks'
+            - else
+              .see-sdks-container
+                = render 'contact_us_button', title: 'See Individual SDKs', button_id: 'app-page-individual-sdks', btn_styles: 'btn btn-primary see-sdks'
+      - else
+        .col
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold.no-data
             .total.d-flex.align-items-center.installed
               i.fas.fa-cubes
               | No SDK Data
-        button.btn.btn-primary.btn-lg.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
-          i.fas.fa-lock
-          | Live Scan This App
-      .col-md-7.row
-        - if @installed_sdk_categories.present?
-          .col-md-6.col-xs-12
-            h4 Installed SDKs
-            - @installed_sdk_categories.each do |category, val|
-              li.sdk-li
-                i.far.fa-check-circle
-                = "#{category} (#{val})"
-        - if @uninstalled_sdk_categories.present?
-          .col-md-6.col-xs-12
-            - if @uninstalled_sdk_categories
-              h4 Uninstalled SDKs
-              - @uninstalled_sdk_categories.each do |category, val|
-                li.sdk-li
-                  i.far.fa-times-circle
-                  = "#{category} (#{val})"
-            .see-sdks-container
-              button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
-                i.fas.fa-lock
-                | See Individual SDKs
-        - else
-          .see-sdks-container
-            button.btn.btn-primary.see-sdks.modal-button data-toggle="modal" data-target="#webFormModal" type='submit'
-              i.fas.fa-lock
-              | See Individual SDKs
 
 .gray-panel
   .container.app-description
@@ -91,8 +87,8 @@
               | Number of Apps: #{@json_publisher['apps'].size}, including
             .pub-apps
               - @top_apps.each do |app|
-                a class="app-logo-link" href="#{ app['public_link'] }"
-                  img class="app-logo sm-logo" src="#{ app['icon_url'] }" alt="#{ app['name'] }"
+                a.app-logo-link href="#{ app['public_link'] }"
+                  img.app-logo.sm-logo src="#{ app['icon_url'] }" alt="#{ app['name'] }"
             | Latest Update/Release: #{ @latest_update } days ago
 
 .white-panel
@@ -119,10 +115,7 @@
             .big-num
               i.fas.fa-mobile-alt
               = @json_app['permissions'].size
-            / = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data'
-            button.btn.modal-button id="contact-us-button-app-page-permissions-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-permissions-data' type='submit'
-              i.fas.fa-lock
-              | See which permissions
+            = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data', btn_styles: 'btn'
           - else
             .big-num
               | No data
@@ -131,17 +124,11 @@
           h4 User Base
           .solo-icon
             i.fas.fa-users
-          / = render 'contact_us_button', title: 'See user bases by country', button_id: 'app-page-userbase-data'
-          button.btn.modal-button id="contact-us-button-app-page-userbase-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-userbase-data' type='submit'
-            i.fas.fa-lock
-            | See user bases by country
+          = render 'contact_us_button', title: 'See user bases by country', button_id: 'app-page-userbase-data', btn_styles: 'btn'
         .detail-item.no-border
           h4 Firmographic Data
           .solo-icon
             i.fas.fa-globe
-          / = render 'contact_us_button', title: 'See location, contacts, and more', button_id: 'app-page-firmographic-data'
-          button.btn.modal-button id="contact-us-button-app-page-firmographic-data" data-toggle="modal" data-target="#webFormModal" data-buttonid='app-page-firmographic-data' type='submit'
-            i.fas.fa-lock
-            | See location, contacts, and more
+          = render 'contact_us_button', title: 'See location, contacts, and more', button_id: 'app-page-firmographic-data', btn_styles: 'btn'
 
 = render 'welcome/web_form_modal'

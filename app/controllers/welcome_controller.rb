@@ -1,17 +1,15 @@
 class WelcomeController < ApplicationController
   include AppsHelper
 
-  include MockMobileDataHelper
-
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
 
   layout "marketing"
 
   def index
-    # @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
+    @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
-    @apps = mock_index
+    # @apps = mock_index
 
     @logos = [
       #{image: 'ghostery.png', width: 150},
@@ -78,33 +76,27 @@ class WelcomeController < ApplicationController
       }
     end
 
-    # apps = mock_search_apps
-
     render json: apps
   end
 
   def ios_app_sdks
-    # newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    # app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
-    # if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
-    #   @app = IosApp.find_by_app_identifier(params[:app_identifier])
-    #   @sdks = @app.tagged_sdk_response(true)
-    # elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
-    #   return redirect_to action: :index
-    # else
-    #   @app = IosApp.find_by_app_identifier(params[:app_identifier])
-    #   sdk_response = @app.sdk_history
-    #   @installed_sdks = sdk_response[:installed_sdks]
-    #   @uninstalled_sdks = sdk_response[:uninstalled_sdks]
-    #   # remove pinterest from Etsy's uninstalled
-    #   if @app.app_identifier == 477128284
-    #     @uninstalled_sdks.shift
-    #   end
-    # end
-
-    @app = mock_ios_app_sdks_app
-    @installed_sdks = mock_ios_app_sdks_installed_sdks
-    @uninstalled_sdks = mock_ios_app_sdks_installed_sdks
+    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
+    if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
+      @app = IosApp.find_by_app_identifier(params[:app_identifier])
+      @sdks = @app.tagged_sdk_response(true)
+    elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
+      return redirect_to action: :index
+    else
+      @app = IosApp.find_by_app_identifier(params[:app_identifier])
+      sdk_response = @app.sdk_history
+      @installed_sdks = sdk_response[:installed_sdks]
+      @uninstalled_sdks = sdk_response[:uninstalled_sdks]
+      # remove pinterest from Etsy's uninstalled
+      if @app.app_identifier == 477128284
+        @uninstalled_sdks.shift
+      end
+    end
 
     respond_to do |format|
       format.html
@@ -137,30 +129,6 @@ class WelcomeController < ApplicationController
     end
     @categories = @json_app['categories'].andand.map{|cat| cat['name']}
     ap @json_app.except('sdk_activity').except('ratings_history')
-
-    # @app = mock_app
-    # @json_app = mock_app_json_app
-    # @json_publisher = mock_app_json_publisher
-    # @top_apps = mock_app_top_apps
-    # @last_update_date = mock_app_last_update_date
-    # @latest_update = mock_app_latest_update
-    # @sdks = mock_app_sdks
-    # @sdk_installed = mock_app_sdk_installed
-    # @sdk_uninstalled = mock_app_sdk_uninstalled
-    # @installed_sdk_categories = mock_app_installed_sdk_categories
-    # @uninstalled_sdk_categories = mock_app_uninstalled_sdk_categories
-    # @categories = mock_app_categories
-    #
-    # # TODO: should be substituted with actual requests
-    # @app_rank = "6"
-    # @app_country = "us"
-    # @chart_week_installed = "12"
-    # @chart_week_uninstalled = "33"
-    # @chart_month_installed = "24"
-    # @chart_month_uninstalled = "54"
-    # @entered_last_month = "43"
-    # @advertising_creatives = mock_app_advertising_creatives
-
   end
 
   def android_app_sdks
@@ -195,28 +163,6 @@ class WelcomeController < ApplicationController
 
     batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
     @batches_by_week = batches_by_week
-
-
-    # @top_200_ids = IosAppRankingSnapshot.top_200_app_ids
-    # @batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-    #                               owner_id: @top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
-    # @top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
-    # @batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-    #                               owner_id: @top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc').includes(:owner, :activities, :weekly_batches_activities)
-    #
-    # batches_by_week = {}
-    # (@batches_i + @batches_a).each do |batch|
-    #   if batches_by_week[batch.week]
-    #     batches_by_week[batch.week] << batch
-    #   else
-    #     batches_by_week[batch.week] = [batch]
-    #   end
-    # end
-    #
-    # batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
-    # @batches_by_week = batches_by_week
-
-    # @batches_by_week = mock_batches_by_week
   end
 
   def top_ios_sdks
@@ -231,11 +177,6 @@ class WelcomeController < ApplicationController
       @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
     end
 
-    # @tags = mock_tags
-    # @tag_label
-    # @last_updated = mock_last_updated
-    # @sdks = mock_sdks
-
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
   def top_ios_apps
@@ -246,8 +187,6 @@ class WelcomeController < ApplicationController
             else
               []
             end
-    # @last_updated = mock_last_updated
-    # @apps = mock_apps
   end
 
   def top_android_sdks
@@ -261,12 +200,6 @@ class WelcomeController < ApplicationController
       @tag_label = @tag.name
       @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
     end
-
-    # @tags = mock_tags
-    # @tag_label
-    # @last_updated = mock_last_updated
-    # @sdks = mock_sdks
-
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
 
@@ -279,8 +212,6 @@ class WelcomeController < ApplicationController
             else
               []
             end
-    # @last_updated = mock_last_updated
-    # @apps = mock_apps
   end
 
   def fastest_growing_sdks

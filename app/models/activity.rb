@@ -10,8 +10,6 @@
 #
 
 class Activity < ActiveRecord::Base
-  include MockMobileDataHelper
-
   has_many :weekly_batches_activities, dependent: :destroy
   has_many :weekly_batches, through: :weekly_batches_activities
 
@@ -116,9 +114,6 @@ class Activity < ActiveRecord::Base
     else
       @other_owner
     end
-
-    # TODO: Uncomment data
-    # @other_owner = mock_other_owner
   end
 
   def invalidate!
