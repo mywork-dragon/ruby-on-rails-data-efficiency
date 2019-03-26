@@ -25,28 +25,12 @@ class AdobeDomainsReport
   # To generate the report, use the Rails runner from the container bash
   # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
 
-  # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
+  # Upload the produced files (adobe_apps_ios.csv, adobe_apps_android.csv, adobe_domain_mapping.csv to the S3_OUTPUT_BUCKET url (not automated yet)
   # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/adobe/output/
 
   class << self
-    def output_file_ios
-      @output_file_ios ||= File.open("adobe.ios.domains.csv", "w+")
-    end
-
-    def output_file_android
-      @output_file_android ||= File.open("adobe.android.domains.csv", "w+")
-    end
-
     def apps_hot_store
       @apps_hot_store ||= AppHotStore.new
-    end
-
-    def publisher_hot_store
-      @publisher_hot_store ||= PublisherHotStore.new
-    end
-
-    def domain_link
-      @domain_link ||= DomainLinker.new
     end
 
     def sdks_to_track
@@ -56,43 +40,14 @@ class AdobeDomainsReport
     def app_ids
       @app_ids ||= []
     end
-
-    private :output_file_ios, :output_file_android, :publisher_hot_store
     
-    def get_publisher_ids(domains_file_name, platform)
-      p "Reading domain file"
-      domains = CSV.read(domains_file_name).flatten
-      p "Plucking domains from db"
-      domain_data = DomainDatum.pluck(:domain)
-      p "Finding intersection"
-      intersect = domains & domain_data
-      p "Converting domain_datum IDs to website IDs"
-      intersect_website_ids = intersect.map{ |d| DomainDatum.find_by_domain(d).website_ids }.flatten.uniq
-      if platform == 'ios'
-        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).ios_developer_ids }.flatten.uniq
-      else
-        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
-      end
-      p "Making domain mapping file"
-      CSV.open("domain_id_mapping.csv", "w") do |csv| 
-        csv << ['id', 'domain']
-        intersect.each do |d|
-          intersect_website_ids = DomainDatum.find_by_domain(d).website_ids
-          intersect_website_ids.each do |id|
-            csv << [id, d]
-          end
-        end
-      end
-      publisher_ids
-    end
-
     def generate(domains_file_name, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
       publisher_ids = get_publisher_ids(domains_file_name, platform)
       
       i = 0
-      CSV.open("output_file_#{platform}.csv", "w") do |csv|  
+      CSV.open("adobe_apps_#{platform}.csv", "w") do |csv|  
         csv << headers_row()  
         publisher_ids.each do |publisher_id|
           i += 1
@@ -110,11 +65,35 @@ class AdobeDomainsReport
       end  
 
       p "Done generating file"
-    ensure
-      output_file_ios.close     unless output_file_ios.nil?
-      output_file_android.close unless output_file_android.nil?
     end
     
+    def get_publisher_ids(domains_file_name, platform)
+      p "Reading domain file"
+      domains = CSV.read(domains_file_name).flatten
+      p "Plucking domains from db"
+      domain_data = DomainDatum.pluck(:domain)
+      p "Finding intersection"
+      intersect = domains & domain_data
+      p "Converting domain_datum IDs to website IDs"
+      intersect_website_ids = intersect.map{ |d| DomainDatum.find_by_domain(d).website_ids }.flatten.uniq
+      if platform == 'ios'
+        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).ios_developer_ids }.flatten.uniq
+      else
+        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
+      end
+      p "Making domain mapping file"
+      CSV.open("adobe_domain_mapping.csv", "w") do |csv| 
+        csv << ['id', 'domain']
+        intersect.each do |d|
+          intersect_website_ids = DomainDatum.find_by_domain(d).website_ids
+          intersect_website_ids.each do |id|
+            csv << [id, d]
+          end
+        end
+      end
+      publisher_ids
+    end
+
     def produce_csv_line(publisher, app, skds_used, platform)
       line = [publisher.website_ids.join("|")]
       line << app['id']
