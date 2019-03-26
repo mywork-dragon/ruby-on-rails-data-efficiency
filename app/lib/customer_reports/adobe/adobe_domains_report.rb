@@ -41,6 +41,13 @@ class AdobeDomainsReport
       @app_ids ||= []
     end
     
+    
+    ####
+    # Take the domains file and platform and generate the report. 
+    # This will output 3 files: adobe_apps_ios.csv, adobe_apps_android.csv, 
+    # and adobe_domain_mapping.csv
+    ###
+    
     def generate(domains_file_name, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
@@ -66,6 +73,12 @@ class AdobeDomainsReport
 
       p "Done generating file"
     end
+    
+    ####
+    # Finds the intersection between Adobe's domain file
+    # and our domains so we don't need to check each
+    # of Adobe's domains
+    ####
     
     def get_publisher_ids(domains_file_name, platform)
       p "Reading domain file"
@@ -94,6 +107,11 @@ class AdobeDomainsReport
       publisher_ids
     end
 
+    ####
+    # Given the Hotstore output this generates an array
+    # to pass to the open CSV block
+    ####
+    
     def produce_csv_line(publisher, app, skds_used, platform)
       line = [publisher.website_ids.join("|")]
       line << app['id']
@@ -141,6 +159,10 @@ class AdobeDomainsReport
       line
     end
 
+    ####
+    # Takes the raw Hotstore hash and adds a key and value for is_used
+    ####
+    
     def get_used_sdks(app)
       return if app['sdk_activity'].nil? || app['sdk_activity'].empty?
       sdks_to_track.each do |sdk_data|
@@ -148,6 +170,10 @@ class AdobeDomainsReport
         sdk_data[:is_used] = sdk_found
       end
     end
+    
+    ####
+    # Converts the sdks CSV file into a hash
+    ####
 
     def get_sdk_list(sdks_data)
       sdks_data.each do |row|
@@ -155,6 +181,10 @@ class AdobeDomainsReport
         sdks_to_track << hash_data
       end
     end
+    
+    ####
+    # Writes the header row
+    ####
 
     def headers_row
       headers = [
