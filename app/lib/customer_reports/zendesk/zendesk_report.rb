@@ -1,30 +1,14 @@
 class ZendeskReport
 
-  # This class produces the domains report for Adobe.
+  # This class produces the domains report for Zendesk.
   # It pulls the input data and push the output data to AWS S3.
-
-  ######################## INSTRUCTIONS ################################
-
-  ## TO RUN IT
-
-  # Place the input data in the S3_INPUT_BUCKET url.
-  # From terminal you can use:
-  # $ awslogin
-  # $ aws s3 cp local_folder/file.csv  s3://mightysignal-customer-reports/adobe/input/
-
-  # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
-  # 64, AliPaySDK
-  # 46, Mixpanel
-  # 
-  # Note the IDs are different for iOS and Android!!
   #
-  # adobe_domains.csv is a csv file with the domains names, example:
-  # fr.as24.com
-  # AS24.COM
-
+  # Download the zendesk-mapping.csv file 
+  # $ aws s3 cp s3://mightysignal-customer-reports/zendesk/input/zendesk-mapping.csv zendesk-mapping.csv
+  #
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
-
+  # $ rails runner -e production "ZendeskReport.generate('zendesk-mapping.csv', 'ios')"
+  #
   # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
   # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/zendesk/input/
 
@@ -218,7 +202,7 @@ class ZendeskReport
       line << zendesk_id
       line << app['id']
       line << app['platform']
-      line << app['bundle_identifier']
+      line << app_data.app_identifier
       line << app['first_scanned_date']
       line << app['first_scraped']
       line << app['name']
@@ -236,12 +220,12 @@ class ZendeskReport
       line << publisher.id
       line << publisher.name
       line << publisher.try(:fortune_1000_rank)
-      if platform == 'ios'
-        line << ( 'https://itunes.apple.com/developer/id' + app['id'].to_s )
+      if app['platform'] == 'ios'
+        line << ( 'https://itunes.apple.com/app/id' + app_data.app_identifier.to_s )
       else
-        line << ( 'https://play.google.com/store/apps/details?id=' + app['bundle_identifier'].to_s )
+        line << ( 'https://play.google.com/store/apps/details?id=' + app_data.app_identifier.to_s )
       end
-      line << app['last_updated']
+      line << app_data.last_updated
       line << app['current_version']
       if app['sdk_activity'].nil? || app['sdk_activity'].empty?
         line << ""
@@ -251,7 +235,7 @@ class ZendeskReport
       line << app['mobile_priority']
       line << app['user_base']
       line << (app['ratings_by_country'] ? app['ratings_by_country'].sum {|rt| rt['ratings_per_day_current_release']} : 0)
-      if platform == 'ios'
+      if app['platform'] == 'ios'
         line << ""
       else
         line << app['downloads_min']
