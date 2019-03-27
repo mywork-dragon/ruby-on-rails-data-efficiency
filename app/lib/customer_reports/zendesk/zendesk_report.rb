@@ -9,20 +9,17 @@ class ZendeskReport
   # To generate the report, use the Rails runner from the container bash
   # $ rails runner -e production "ZendeskReport.generate('zendesk-mapping.csv', 'ios')"
   #
+  # Compress before uploading
+  # zip f1000.zip f1000-*
+  #
   # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
-  # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/zendesk/input/
+  # $ aws s3 cp f1000.zip s3://mightysignal-customer-reports/zendesk/output/
 
   class << self
 
     def apps_hot_store
       @apps_hot_store ||= AppHotStore.new
     end
-    
-    #### TODO
-    # Output should be written CSV with zendesk_id, android_publisher_id, domain, ios_publisher_id 
-    # and CSV table object
-    # Call it zendesk-mapping.csv
-    ####
     
     def get_publisher_ids(domains_file_name, platform)
       p "Reading domain file"
@@ -268,7 +265,7 @@ class ZendeskReport
       end
       line << app_data.first_seen_ads_date
       line << app_data.last_seen_ads_date
-      line << app_data.ad_attribution_sdks.join("|")
+      line << app_data.ad_attribution_sdks.map{ |sdk| sdk['name'] }.join("|")
       line
     rescue => e
       line
