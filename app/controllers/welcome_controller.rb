@@ -9,8 +9,6 @@ class WelcomeController < ApplicationController
   def index
     @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
-    # @apps = mock_index
-
     @logos = [
       #{image: 'ghostery.png', width: 150},
       #{image: 'fiksu.png', width: 135},

@@ -13,7 +13,7 @@ $(document).ready(function() {
       method: function (value, item) {
         return (
           `<div class="app-result-img-container">` +
-          `<i class="app-result-platform fa fa-${item.platform === 'ios' ? 'apple' : 'android'} fa-lg fa-fw" />` +
+          `<i class="app-result-platform fab fa-${item.platform === 'ios' ? 'apple' : 'android'} fa-lg fa-fw" />` +
           `<img class="app-result-icon" src="${item.icon}" />` +
           `</div>` +
           `<div class="app-result-name-container">` +
