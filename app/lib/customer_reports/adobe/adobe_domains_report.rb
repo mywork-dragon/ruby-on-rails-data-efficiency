@@ -95,12 +95,16 @@ class AdobeDomainsReport
         publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
       end
       p "Making domain mapping file"
-      CSV.open("adobe_domain_mapping.csv", "w") do |csv| 
+      CSV.open("adobe_domain_mapping.csv", "a+") do |csv| 
         csv << ['id', 'domain']
-        intersect.each do |d|
-          intersect_website_ids = DomainDatum.find_by_domain(d).website_ids
-          intersect_website_ids.each do |id|
-            csv << [id, d]
+        publisher_ids.each do |pid|
+          if platform == 'ios'
+            pub = IosDeveloper.find pid
+          else
+            pub = AndroidDeveloper.find pid
+          end
+          pub.websites.each do |w|
+            csv << [w.id, w.domain]
           end
         end
       end
