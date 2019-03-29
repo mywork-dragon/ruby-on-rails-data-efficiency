@@ -61,8 +61,8 @@ class ZendeskReport
       publisher_ids
     end
 
-    def generate(domains_file_name, platform)
-      #publisher_ids_table = get_publisher_ids(domains_file_name, platform)
+    def generate
+      #publisher_ids_table = get_publisher_ids(domains_file_name) # if it needs to be generated
       publisher_ids_table = CSV.read("zendesk-mapping.csv", headers: true)
       CSV.open("zendesk-android-apps.csv", "w") { |f| f << app_headers_row }
       CSV.open("zendesk-ios-apps.csv", "w") { |f| f << app_headers_row }
