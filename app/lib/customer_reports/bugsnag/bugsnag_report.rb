@@ -1,52 +1,19 @@
 class BugsnagReport
 
-  # This class produces the domains report for Adobe.
-  # It pulls the input data and push the output data to AWS S3.
-
-  ######################## INSTRUCTIONS ################################
-
-  ## TO RUN IT
-
-  # Place the input data in the S3_INPUT_BUCKET url.
-  # From terminal you can use:
-  # $ awslogin
-  # $ aws s3 cp local_folder/file.csv  s3://mightysignal-customer-reports/bugsnag/input/
-
-  # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
-  # 64, AliPaySDK
-  # 46, Mixpanel
-  # 
-  # Note the IDs are different for iOS and Android!!
+  # This class produces the domains report for Bugsnag.
   #
-  # adobe_domains.csv is a csv file with the domains names, example:
-  # fr.as24.com
-  # AS24.COM
-
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
-
+  # $ rails runner -e production "BugsnagReport.generate('ios')"
+  #
+  # Compress before uploading
+  # zip bugsnag.zip bugsnag-*
+  #
   # Upload the produced files to the S3_OUTPUT_BUCKET url (not automated yet)
-  # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/adobe/output/
+  # $ aws s3 cp bugsnag.zip s3://mightysignal-customer-reports/bugsnag/output/
 
   class << self
     def apps_hot_store
       @apps_hot_store ||= AppHotStore.new
-    end
-
-    def publisher_hot_store
-      @publisher_hot_store ||= PublisherHotStore.new
-    end
-
-    def domain_link
-      @domain_link ||= DomainLinker.new
-    end
-
-    def sdks_to_track
-      @sdks_to_track ||= []
-    end
-    
-    def app_ids
-      @app_ids ||= []
     end
     
     def produce_csv_line(sdk_name, publisher, app, platform)
@@ -202,9 +169,9 @@ class BugsnagReport
     
     
     def generate(platform)
-      sdks_data = platform == 'ios' ? [[641, 'Cordova'], [2567, 'React']] : [[20, 'Cordova'], [6665, 'React']]
+      sdks_data = platform == 'ios' ? [[2567, 'React']] : [[6665, 'React']]
       
-      CSV.open("bugsnag_#{platform}.csv", "a") do |csv|  
+      CSV.open("bugsnag_#{platform}.csv", "a+") do |csv|  
         csv << headers_row()
         sdks_data.each do |item|  
           sdk_name = item[1]
@@ -212,7 +179,7 @@ class BugsnagReport
           p "Processing #{sdk_name}"
           apps = get_current_apps(platform, sdk_id, 1)
           p "Apps found #{apps[:total_count]}"
-          page = 10
+          page = 1
           while apps[:apps].present?
             p "Doing page #{page}"
             apps = get_current_apps(platform, sdk_id, page)
