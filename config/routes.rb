@@ -1,17 +1,15 @@
 Rails.application.routes.draw do
-
   
-  scope :module => 'buttercms' do
-    get '/blog/rss' => 'feeds#rss', :format => 'rss', :as => :buttercms_blog_rss
-    get '/blog/atom' => 'feeds#atom', :format => 'atom', :as => :buttercms_blog_atom
-    get '/blog/sitemap.xml' => 'feeds#sitemap', :format => 'xml', :as => :buttercms_blog_sitemap
+  namespace :blog, :as => 'buttercms', :module => 'buttercms' do
+    get 'rss' => 'feeds#rss', :format => 'rss', :as => :rss
+    get 'atom' => 'feeds#atom', :format => 'atom', :as => :atom
+    get 'sitemap.xml' => 'feeds#sitemap', :format => 'xml', :as => :sitemap
 
-    get '/blog/case-studies(/page/:page)' => 'case_studies#index', :defaults => {:page => 1}, :as => :buttercms_case_studies
-    get '/blog/case-studies/:slug' => 'case_studies#show', :as => :buttercms_case_study
+    get 'case-studies(/page/:page)' => 'case_studies#index', :defaults => {:page => 1}, :as => :case_studies
+    get 'case-studies/:slug' => 'case_studies#show', :as => :case_study
 
-    get '/blog(/page/:page)' => 'posts#index', :defaults => {:page => 1}, :as => :buttercms_blog
-    get '/blog/:slug' => 'posts#show', :as => :buttercms_post
-
+    get '(/page/:page)' => 'posts#index', :defaults => {:page => 1}, :as => :posts
+    get ':slug' => 'posts#show', :as => :post
   end
 
   get 'ping' => 'application#ping'

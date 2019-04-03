@@ -1,4 +1,4 @@
-<%= form_tag buttercms_blog_path, method: "get", class: style_class do %>
+<%= form_tag buttercms_posts_path, method: "get", class: style_class do %>
   <select class="categories" name="category" onchange="this.form.submit();">
     <option value="" selected>Categories</option>
     <% @categories.each do |category| %>

@@ -10,7 +10,7 @@ class Buttercms::BaseController < ActionController::Base
 
   def handle_open_timeout
     flash[:alert] = "Something went wrong :( Please, try again."
-    request.env["HTTP_REFERER"].present? ? redirect_to(:back) : redirect_to(buttercms_blog_path)
+    request.env["HTTP_REFERER"].present? ? redirect_to(:back) : redirect_to(buttercms_posts_path)
   end
 
   private
