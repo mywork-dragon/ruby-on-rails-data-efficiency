@@ -1,0 +1,4 @@
+= form_tag buttercms_posts_path, method: "get", class: style_class do
+  .search
+    input.search-field name="search" placeholder=("Search blogs") required="" type="search" value="#{@current_search}" /
+    input.search-btn type="submit" value="" /
