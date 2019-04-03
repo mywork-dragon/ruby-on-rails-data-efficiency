@@ -60,6 +60,7 @@ class ContactsImport
     create_domains = []
     all_contacts_domains = []
     contacts.each do |row|
+      next unless row["domain"].present?
       all_contacts_domains << row["domain"]
       create_domains << DomainDatum.new(name: row["domain"], domain: row["domain"]) unless DomainDatum.exists?(domain: row["domain"])
     end
@@ -117,7 +118,7 @@ class ContactsImport
     cb_contact.linkedin = new_data["employee_li"].andand.truncate(190) unless cb_contact.linkedin.present?
     cb_contact.email = new_data["employee_email"] unless cb_contact.email.present?
     cb_contact.title = new_data["employee_title"].andand.truncate(190) unless cb_contact.title.present?
-    cb_contact.domain_datum_id = domain.id unless cb_contact.domain_datum_id.present?
+    cb_contact.domain_datum_id = domain.andand.id unless cb_contact.domain_datum_id.present?
     cb_contact.quality = new_data["employee_email_confidence"] unless new_data["employee_email_confidence"].present?
     
     return cb_contact if cb_contact.changed?
@@ -131,7 +132,7 @@ class ContactsImport
     new_contact.email = contact["employee_email"]
     new_contact.title = contact["employee_title"].andand.truncate(190)
     new_contact.quality = contact["employee_email_confidence"]
-    new_contact.domain_datum = domain
+    new_contact.domain_datum = domain if domain
 
     return new_contact
   end
