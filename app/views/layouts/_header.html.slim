@@ -51,8 +51,6 @@ nav.navbar.navbar-default.navbar-fixed-top role="navigation"
                 a class="dropdown-item" href=sdk_intelligence_path SDK Intelligence
         li
           = link_to 'CONTACT', root_path(anchor: 'contact_anchor'), class: 'contact-link'
-        / li
-        /   = link_to 'BLOG', buttercms_blog_path
 
         - if browser.device.mobile?
           li
@@ -88,15 +86,8 @@ nav.navbar.navbar-default.navbar-fixed-top role="navigation"
                 a class="dropdown-item" href=top_android_apps_path Top Android Apps
                 a class="dropdown-item" href=timeline_path Timeline
 
-        / li
-        /   a href=top_ios_sdks_path
-        /     | TOP SDKS
-        / li
-        /   a href="http://www.angel.co/mightysignal/jobs" target="_blank"  JOBS
         li.custom-menu-item
           div.app-search-container
             input#app-search name="name" placeholder="Search iOS or Android apps" autofocus=(true)
         li.login-button
           a href="/app/app/"  LOGIN
-        /! <li><a href="whmcs/register.php" role="button" class="btn btn-success">Sign Up</a></li
-    /! /.navbar-collapse

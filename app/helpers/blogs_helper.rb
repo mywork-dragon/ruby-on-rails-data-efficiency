@@ -10,24 +10,24 @@ module BlogsHelper
   end
 
   def author_profile_image(post)
-    !post.author.profile_image.blank? ? post.author.profile_image : "http://placehold.jp/18/2db6d8/ffffff/30x30.png?text=" + post.author.first_name[0] + "&css=%7B%22font-weight%22%3A%22%20500%22%2C%22padding-top%22%3A%22%201px%22%7D"
+    post.author.profile_image.present? ? post.author.profile_image : "http://placehold.jp/18/2db6d8/ffffff/30x30.png?text=" + post.author.first_name[0] + "&css=%7B%22font-weight%22%3A%22%20500%22%2C%22padding-top%22%3A%22%201px%22%7D"
   end
 
   def author_full_name(post)
-    post.author.first_name + ' ' + post.author.last_name
+    "#{post.author.first_name} #{post.author.last_name}"
   end
 
   def date(post)
     raw_date = Date.parse(post.published)
-    raw_date.strftime("%b") + ', ' + raw_date.strftime("%d") + ' ' + raw_date.strftime("%Y")
+    raw_date.strftime("%b %d, %Y")
   end
 
   def meta_tag(tag, text)
-    view_context.content_for :"#{tag}", text
+    view_context.content_for tag.to_sym, text
   end
 
   def yield_meta_tag(tag, additional_text = '', default_text = '')
-    content_for?(:"#{tag}") ? content_for(:"#{tag}").concat(additional_text) : default_text
+    content_for?(tag.to_sym) ? content_for(tag.to_sym).concat(additional_text) : default_text
   end
 
   def view_context

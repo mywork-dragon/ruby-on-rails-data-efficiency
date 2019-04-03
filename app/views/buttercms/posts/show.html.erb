@@ -16,7 +16,7 @@
       <!-- Post author and date -->
       <span class="creator_and_date">
       <%= image_tag(author_profile_image(@post)) %>
-        <%= "by " + @post.author.first_name + " " + @post.author.last_name + " on " + Time.parse(@post.published).strftime('%B %d, %Y') %>
+        <%= "by " + author_full_name(@post) + " on " + date(@post) %>
       </span>
 
       <!-- Go to www.addthis.com/dashboard to customize your tools -->
