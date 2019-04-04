@@ -6,11 +6,9 @@ article
       h2.sub-title
         = @case_study_page.fields.interviewed_person_title
       p.company
-        | Company:
-        | \#{@case_study_page.fields.company_name}
+        | Company: #{@case_study_page.fields.company_name}
       p.interviewed-person
-        | Interviewed person:
-        | \#{@case_study_page.fields.interviewed_person_name}
+        | Interviewed person: #{@case_study_page.fields.interviewed_person_name}
     .body
       - unless @case_study_page.fields.case_study_quote.blank?
         p.quote
