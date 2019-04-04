@@ -15,7 +15,7 @@ class ContactsImport
   STREAM_NAME = 'contacts_import'
 
 
-  def perform(file_content)
+  def perform(file_name, file_content)
     update_contacts = []
     create_contacts = []
 
@@ -26,34 +26,27 @@ class ContactsImport
 
     to_update = get_contacts_to_update(contacts_data)
     contacts_data.each do |row|
-      domain = domains[row['domain']] if row['domain'].present?
+      domain = domains[row['domain']]
       if to_update[row['employee_email']].present?
         current_contact = to_update[row['employee_email']]
-        update_contacts << update_clearbit_contact(current_contact, domain, row)
+        updated_contact = update_clearbit_contact(current_contact, domain, row)
+        update_contacts << updated_contact unless updated_contact.nil?
       else
         create_contacts << create_new_clearbit_contact(row, domain)
       end
     end
 
-    begin
-      ActiveRecord::Base.transaction do
-        ClearbitContact.import update_contacts, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :domain_datum_id, :quality]
-      end
-    rescue => p
-      MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "update_contacts: #{p.to_s}")
+    ActiveRecord::Base.transaction do
+      ClearbitContact.import update_contacts, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :domain_datum_id, :quality]
     end
 
-    begin
-      ActiveRecord::Base.transaction do
-        ClearbitContact.import create_contacts
-      end
-    rescue => p
-      MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "create_contacts: #{p.to_s}")
+    ActiveRecord::Base.transaction do
+      ClearbitContact.import create_contacts
     end
 
     created_contacts = ClearbitContact.where(email: create_contacts.map{|c| c.email}).pluck(:email)
     difference = (created_contacts.to_set - create_contacts.map{|c| c.email}.to_set).to_a
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: difference.to_s) unless difference.empty?
+    raise "There are missing contacts" unless difference.empty?
   end
 
   def create_domains(contacts)
@@ -68,8 +61,6 @@ class ContactsImport
       results = DomainDatum.import create_domains unless create_domains.empty?
     end
     return DomainDatum.where({domain: all_contacts_domains}).index_by(&:domain)
-  rescue => p
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "create_domains: #{p.to_s}")
   end
 
   def create_websites(domains)
@@ -80,8 +71,6 @@ class ContactsImport
     ActiveRecord::Base.transaction do
       Website.import create_websites unless create_websites.empty?
     end
-  rescue => p
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "create_websites: #{p.to_s}")
   end
 
   def get_contacts_to_update(contacts)
