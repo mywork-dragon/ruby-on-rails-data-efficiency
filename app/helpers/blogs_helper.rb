@@ -10,7 +10,7 @@ module BlogsHelper
   end
 
   def author_profile_image(post)
-    post.author.profile_image.present? ? post.author.profile_image : "http://placehold.jp/18/2db6d8/ffffff/30x30.png?text=" + post.author.first_name[0] + "&css=%7B%22font-weight%22%3A%22%20500%22%2C%22padding-top%22%3A%22%201px%22%7D"
+    post.author.profile_image.present? ? post.author.profile_image : "http://placehold.jp/18/2db6d8/ffffff/30x30.png?text=#{post.author.first_name[0]}&css=%7B%22font-weight%22%3A%22%20500%22%2C%22padding-top%22%3A%22%201px%22%7D"
   end
 
   def author_full_name(post)

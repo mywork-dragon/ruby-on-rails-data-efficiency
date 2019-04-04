@@ -4,23 +4,16 @@ body
   article.post
     header
       .img-container
-        /! Post image
         = image_tag(post_image(@post))
       .info-container
-        /! Post title
         h2= @post.title
-        /! Post author and date
         span.creator_and_date
           = image_tag(author_profile_image(@post))
           = "by " + author_full_name(@post) + " on " + date(@post)
-        /! Go to www.addthis.com/dashboard to customize your tools
         .addthis_sharing_toolbox
     hr
     .content
-      /! Post body
       .content-body
         = @post.body.html_safe
-      /! Subscribe
       = render 'buttercms/newsletter'
-      /! Request a Demo
       = render 'buttercms/request_demo'
