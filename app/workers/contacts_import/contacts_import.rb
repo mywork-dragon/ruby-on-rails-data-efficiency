@@ -22,7 +22,7 @@ class ContactsImport
     contacts_data = CSV.parse(file_content, :headers => true)
 
     domains = create_domains(contacts_data)
-    create_websites(domains)
+    websites = create_websites(domains)
 
     to_update = get_contacts_to_update(contacts_data)
     contacts_data.each do |row|
@@ -37,11 +37,10 @@ class ContactsImport
     end
 
     ActiveRecord::Base.transaction do
-      ClearbitContact.import update_contacts, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :domain_datum_id, :quality]
-    end
-
-    ActiveRecord::Base.transaction do
-      ClearbitContact.import create_contacts
+      DomainDatum.import(domains.values, on_duplicate_key_ignore: true) unless domains.empty?
+      Website.import(websites) unless websites.empty?
+      ClearbitContact.import(update_contacts, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :domain_datum_id, :quality])
+      ClearbitContact.import(create_contacts)
     end
 
     created_contacts = ClearbitContact.where(email: create_contacts.map{|c| c.email}).pluck(:email)
@@ -50,27 +49,21 @@ class ContactsImport
   end
 
   def create_domains(contacts)
-    create_domains = []
-    all_contacts_domains = []
+    domains = {}
     contacts.each do |row|
       next unless row["domain"].present?
-      all_contacts_domains << row["domain"]
-      create_domains << DomainDatum.new(name: row["domain"], domain: row["domain"]) unless DomainDatum.exists?(domain: row["domain"])
+      existing_domain = DomainDatum.find_by(domain: row["domain"])
+      domains[row["domain"]] = existing_domain.present? ? existing_domain : DomainDatum.new(name: row["domain"], domain: row["domain"])
     end
-    ActiveRecord::Base.transaction do
-      results = DomainDatum.import create_domains unless create_domains.empty?
-    end
-    return DomainDatum.where({domain: all_contacts_domains}).index_by(&:domain)
+    return domains
   end
 
   def create_websites(domains)
-    create_websites = []
+    websites = []
     domains.values.each do |row|
-      create_websites << Website.new(domain_datum: row, url: row.domain) unless Website.exists?(url: row.domain)
+      websites << Website.new(domain_datum: row, url: row.domain) unless Website.exists?(url: row.domain)
     end
-    ActiveRecord::Base.transaction do
-      Website.import create_websites unless create_websites.empty?
-    end
+    return websites
   end
 
   def get_contacts_to_update(contacts)
