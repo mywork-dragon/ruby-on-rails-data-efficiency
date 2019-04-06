@@ -51,9 +51,15 @@ class AdobeDomainsReport
     def generate(domains_file_name, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
-      result = get_publisher_ids(domains_file_name, platform)
-      publisher_ids = result[0]
-      intersect = result[1]
+
+      if domains_file_name
+        result = get_publisher_ids(domains_file_name, platform)
+        publisher_ids = result[0]
+        intersect = result[1]
+      else
+        publisher_ids = platform == 'ios' ? IosDeveloper.pluck(:id).sample(470000) : AndroidDeveloper.pluck(:id).sample(470000)
+        intersect = false
+      end
       
       i = 0
       CSV.open("adobe_apps_#{platform}.csv", "w") do |csv|  
@@ -120,7 +126,7 @@ class AdobeDomainsReport
     
     def produce_csv_line(publisher, app, skds_used, platform, intersect)
       line = [publisher.website_ids.join("|")]
-      line << (publisher.websites.pluck(:domain) & intersect).first
+      line << intersect.present? ? (publisher.websites.pluck(:domain) & intersect).first : publisher.websites.sample(:domain)
       line << app['id']
       line << app['name']
       line << app['all_version_ratings_count']
