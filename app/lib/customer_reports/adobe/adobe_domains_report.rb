@@ -10,7 +10,7 @@ class AdobeDomainsReport
   # Place the input data in the S3_INPUT_BUCKET url.
   # From terminal you can use:
   # $ awslogin
-  # $ aws s3 cp local_folder/file.csv  s3://mightysignal-customer-reports/adobe/input/
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/ ./
 
   # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
   # 64, AliPaySDK
@@ -26,7 +26,7 @@ class AdobeDomainsReport
   # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
 
   # Upload the produced files (adobe_apps_ios.csv, adobe_apps_android.csv, adobe_domain_mapping.csv to the S3_OUTPUT_BUCKET url (not automated yet)
-  # $ aws s3 cp /tmp/adobe.ios.output.csv s3://mightysignal-customer-reports/adobe/output/
+  # $ aws s3 cp adobe.zip s3://mightysignal-customer-reports/adobe/output/
 
   class << self
     def apps_hot_store
@@ -51,7 +51,9 @@ class AdobeDomainsReport
     def generate(domains_file_name, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
-      publisher_ids = get_publisher_ids(domains_file_name, platform)
+      result = get_publisher_ids(domains_file_name, platform)
+      publisher_ids = result[0]
+      intersect = result[1]
       
       i = 0
       CSV.open("adobe_apps_#{platform}.csv", "w") do |csv|  
@@ -66,7 +68,7 @@ class AdobeDomainsReport
             next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 10000 || app_ids.include?(app_data.id.to_i)) 
             app_ids << app_data.id.to_i
             skds_used = get_used_sdks(app)
-            csv << produce_csv_line(publisher, app, skds_used, platform)
+            csv << produce_csv_line(publisher, app, skds_used, platform, intersect)
           end
         end
       end  
@@ -108,7 +110,7 @@ class AdobeDomainsReport
           end
         end
       end
-      publisher_ids
+      [publisher_ids, intersect]
     end
 
     ####
@@ -116,8 +118,9 @@ class AdobeDomainsReport
     # to pass to the open CSV block
     ####
     
-    def produce_csv_line(publisher, app, skds_used, platform)
+    def produce_csv_line(publisher, app, skds_used, platform, intersect)
       line = [publisher.website_ids.join("|")]
+      line << (publisher.websites.pluck(:domain) & intersect).first
       line << app['id']
       line << app['name']
       line << app['all_version_ratings_count']
@@ -193,6 +196,7 @@ class AdobeDomainsReport
     def headers_row
       headers = [
         'Websites',
+        'Domain',
         'App Id',
         'App Name',
         'Rating Count (All Versions)',
