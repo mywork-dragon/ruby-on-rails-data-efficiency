@@ -214,3 +214,5 @@ gem 'activerecord4-redshift-adapter', '~> 0.2.4', git: 'https://11eba4fe4c8c9782
 gem 'pg', '~> 0.21'
 
 gem 'healthy_pools', '2.2.5'
+
+gem 'buttercms-rails'
