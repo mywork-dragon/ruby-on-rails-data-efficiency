@@ -56,106 +56,19 @@ html lang="en"
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
       iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
-    = render 'shared/consent'
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
           |×
         = content_tag :div, msg.split(",").join("\n"), :id => "flash_#{name}"
-    /! ==============Logo &amp; Menu Bar=================
-    nav.navbar.navbar-default.navbar-fixed-top role="navigation"
-      /! Brand and toggle get grouped for better mobile display
-      .container.nav-bar-container
-        .navbar-header
-          button.navbar-toggle data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button"
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a href='/'
-            img#headerLogo.navbar-brand alt="MightySignal - Mobile App & SDK Intelligence for iOS / Android" href="#" src="/lib/images/mighty_signal_logo_white.png" /
-        /! Collect the nav links, forms, and other content for toggling
-        .collapse.navbar-collapse.navbar-ex1-collapse
-          ul.nav.navbar-nav.navbar-right
-            - if browser.device.mobile?
-              li
-                  = link_to 'The Mightiest Mobile Data', data_path
-              li
-                  = link_to 'Web Portal', web_portal_path
-              li
-                  = link_to 'Salesforce Integration', salesforce_integration_path
-              li
-                  = link_to 'API', the_api_path
-              li
-                  = link_to 'Data Feed', data_feed_path
-            - else
-              li.custom-menu-item
-                .dropdown.show
-                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Capabilities
-                  .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href=data_path The Mightiest Mobile Data
-                    a class="dropdown-item" href=web_portal_path Web Portal
-                    a class="dropdown-item" href=salesforce_integration_path Salesforce Integration
-                    a class="dropdown-item" href=the_api_path API
-                    a class="dropdown-item" href=data_feed_path Data Feed
-            - if browser.device.mobile?
-              li
-                = link_to 'Lead Generation', lead_generation_path
-              li
-                  = link_to 'Account Based Marketing', abm_path
-              li
-                  = link_to 'SDK Intelligence', sdk_intelligence_path
-            - else
-              li.custom-menu-item
-                .dropdown.show
-                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Solutions
-                  .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href=lead_generation_path Lead Generation
-                    a class="dropdown-item" href=abm_path Account-Based Marketing
-                    a class="dropdown-item" href=sdk_intelligence_path SDK Intelligence
-            li
-              = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
-            li
-              a href="http://blog.mightysignal.com" target="_blank"  BLOG
 
-            - if browser.device.mobile?
-              li
-                = link_to 'Parade (Free Ad Intelligence)', 'https://parade.mightysignal.com'
-              li
-                = link_to 'Fastest Growing SDKs', fastest_growing_sdks_path
-              li
-                = link_to 'Top SDKs', top_ios_sdks_path
-            - else
-              li.custom-menu-item
-                .dropdown.show
-                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
-                  .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href='https://parade.mightysignal.com' MightySignal Parade (Free Ad Intelligence)
-                    a class="dropdown-item" href=fastest_growing_sdks_path Fastest Growing Android SDKs
-                    a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
-                    a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
-                    a class="dropdown-item" href=top_android_sdks_path Top Android SDKs
-                    a class="dropdown-item" href=top_android_apps_path Top Android Apps
-                    a class="dropdown-item" href=timeline_path Timeline
+    = render 'layouts/header'
 
-            / li
-            /   a href=top_ios_sdks_path
-            /     | TOP SDKS
-            / li
-            /   a href="http://www.angel.co/mightysignal/jobs" target="_blank"  JOBS
-            li.custom-menu-item
-              div.app-search-container
-                input#app-search name="name" placeholder="Search iOS or Android apps" autofocus=(true)
-            li.login-button
-              a href="/app/app/"  LOGIN
-            /! <li><a href="whmcs/register.php" role="button" class="btn btn-success">Sign Up</a></li
-        /! /.navbar-collapse
     = yield
+
     /! ============== Footer ==============
-    .footer
-      .container
-        .row.footerlinks
-          p © #{Time.new.year} MightySignal
+    = render 'layouts/footer'
+
     /! ==========ONE PAGE SCROLLING SCRIPTS STARTS===============
     /! =============ONE PAGE SCROLLING SCRIPTS ENDS============
     /! =============BACK TO TOP STARTS============

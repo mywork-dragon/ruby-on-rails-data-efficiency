@@ -1,0 +1,19 @@
+body
+  = content_for :html_title, @post.seo_title
+  = content_for :meta_description, @post.meta_description
+  article.post
+    header
+      .img-container
+        = image_tag(post_image(@post))
+      .info-container
+        h2= @post.title
+        span.creator_and_date
+          = image_tag(author_profile_image(@post))
+          = "by " + author_full_name(@post) + " on " + date(@post)
+        .addthis_sharing_toolbox
+    hr
+    .content
+      .content-body
+        = @post.body.html_safe
+      = render 'buttercms/newsletter'
+      = render 'buttercms/request_demo'

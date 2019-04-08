@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+  
+  namespace :blog, :as => 'buttercms', :module => 'buttercms' do
+    get 'rss' => 'feeds#rss', :format => 'rss', :as => :rss
+    get 'atom' => 'feeds#atom', :format => 'atom', :as => :atom
+    get 'sitemap.xml' => 'feeds#sitemap', :format => 'xml', :as => :sitemap
+
+    get 'case-studies(/page/:page)' => 'case_studies#index', :defaults => {:page => 1}, :as => :case_studies
+    get 'case-studies/:slug' => 'case_studies#show', :as => :case_study
+
+    get '(/page/:page)' => 'posts#index', :defaults => {:page => 1}, :as => :posts
+    get ':slug' => 'posts#show', :as => :post
+  end
 
   get 'ping' => 'application#ping'
   
