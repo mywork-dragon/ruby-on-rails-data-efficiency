@@ -24,7 +24,7 @@ gem 'foundation-rails', '5.4.3.1'
 gem 'sass-rails'
 
 # bootstrap css, read here https://github.com/twbs/bootstrap-sass
-gem 'bootstrap-sass', '3.2.0'
+gem 'bootstrap-sass', '3.3.0'
 gem 'autoprefixer-rails'
 
 # Use jquery as the JavaScript library
@@ -214,3 +214,6 @@ gem 'activerecord4-redshift-adapter', '~> 0.2.4', git: 'https://11eba4fe4c8c9782
 gem 'pg', '~> 0.21'
 
 gem 'healthy_pools', '2.2.5'
+
+# Butter is a blogging platform. See https://buttercms.com for details.
+gem 'buttercms-rails'

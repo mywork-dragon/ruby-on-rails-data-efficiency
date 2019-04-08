@@ -1,0 +1,14 @@
+= render 'buttercms/sub_header_for_blogs'
+.index-template
+  = render 'buttercms/blog_categories', style_class: 'mobile-search-widget'
+  = render 'buttercms/blog_search', style_class: 'mobile-search-widget'
+  .list.pages-container
+    .mdl-grid
+      - @pages.each do |page|
+        = render :partial => 'pages_list_item', :locals => {:page => page}
+  .sidebar
+    = render 'buttercms/blog_categories', style_class: 'search-widget'
+    = render 'buttercms/blog_search', style_class: 'search-widget'
+    = render 'buttercms/newsletter'
+    = render 'buttercms/request_demo'
+= paginate @paginatable_array, window: 2, outer_window: 1
