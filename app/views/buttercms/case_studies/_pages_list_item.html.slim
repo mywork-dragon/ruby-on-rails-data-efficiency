@@ -1,0 +1,15 @@
+.mdl-card.mdl-cell.mdl-cell--6-col.mdl-cell--4-col-tablet.mdl-shadow--2dp
+  figure.mdl-card__media
+    = link_to(buttercms_case_study_path(page.data.slug)) do
+      img.interviewed-person-image alt="#{page.fields.interviewed_person_name}" src="#{asset_url(page_image(page))}" /
+  .mdl-card__title
+    h2
+      a.header href="#{buttercms_case_study_path(page.data.slug)}" 
+        .header-interviewed-person= page.fields.interviewed_person_name
+        .header-company= page.fields.company_name
+  .mdl-card__supporting-text
+    = truncate(strip_tags(page.fields.case_study_body), length: 320, separator: " ")
+  .mdl-card__actions.mdl-card--border
+    = link_to "Read more", buttercms_case_study_path(page.data.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect"
+    .mdl-layout-spacer
+    .addthis_sharing_toolbox data-title=("#{page.fields.seo_title + ' | MightySignal'}") data-url="#{buttercms_case_study_url(page.data.slug)}"
