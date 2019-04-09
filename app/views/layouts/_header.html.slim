@@ -47,19 +47,17 @@ nav.navbar.navbar-expand-lg.navbar-dark.fixed-top.p-0.mb-3 role="navigation"
         li.nav-item.dropdown
           = link_to 'CONTACT', root_path(anchor: 'contact_anchor'), class: 'nav-link dropdown-normalize font-normalize pl-md-0'
 
-        - if browser.device.mobile?
-          li
-            = link_to 'Blogs', buttercms_posts_path
-          li
-            = link_to 'Case-studies', buttercms_case_studies_path
-
+        - if browser.device.mobile? || browser.device.tablet?
+          li.nav-item
+            = link_to 'Blogs', buttercms_posts_path, class: 'nav-link'
+          li.nav-item
+            = link_to 'Case-studies', buttercms_case_studies_path, class: 'nav-link'
         - else
-          li.custom-menu-item
-            .dropdown.show
-              a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" BLOGS
-              .dropdown-menu aria-labelledby="dropdownMenuLink"
-                a class="dropdown-item" href=buttercms_posts_path Blog
-                a class="dropdown-item" href=buttercms_case_studies_path Case studies
+          li.custom-menu-item.nav-item.dropdown
+            a.nav-link.header-font-normalize.pl-md-0 href="#" role="button" id="dropdownMenuLink-Blog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" BLOGS
+            .dropdown-menu aria-labelledby="dropdownMenuLink-Blog"
+              a.dropdown-item href=buttercms_posts_path Blog
+              a.dropdown-item href=buttercms_case_studies_path Case studies
 
         - if browser.device.mobile? || browser.device.tablet?
           li.nav-item
@@ -70,8 +68,8 @@ nav.navbar.navbar-expand-lg.navbar-dark.fixed-top.p-0.mb-3 role="navigation"
             = link_to 'Top SDKs', top_ios_sdks_path, class: 'nav-link'
         - else
           li.nav-item.dropdown
-            a.nav-link.header-font-normalize.pl-md-0 href="#" role="button" id="dropdownMenuLink-FREE DATA" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
-            .dropdown-menu aria-labelledby="dropdownMenuLink-FREE DATA"
+            a.nav-link.header-font-normalize.pl-md-0 href="#" role="button" id="dropdownMenuLink-FREE-DATA" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
+            .dropdown-menu aria-labelledby="dropdownMenuLink-FREE-DATA"
               a.dropdown-item href='https://parade.mightysignal.com' Parade (Free Ad Intelligence)
               a.dropdown-item href=fastest_growing_sdks_path Fastest Growing Android SDKs
               a.dropdown-item href=top_ios_sdks_path Top iOS SDKs
