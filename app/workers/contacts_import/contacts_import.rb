@@ -45,7 +45,7 @@ class ContactsImport
 
     created_contacts = ClearbitContact.where(email: create_contacts.map{|c| c.email}).pluck(:email)
     difference = (created_contacts.to_set - create_contacts.map{|c| c.email}.to_set).to_a
-    raise "There are missing contacts" unless difference.empty?
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: difference.to_s) unless difference.empty?
   end
 
   def create_domains(contacts)
