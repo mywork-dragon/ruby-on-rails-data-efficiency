@@ -250,6 +250,7 @@ a, a:visited {
     -moz-appearance: none;
     background: #fff url("./images/buttercms/dropdown_arrow.png") no-repeat top 15px right 17px;
     background-size: 9px 6px;
+    width: 100%;
 }
 
 
@@ -329,40 +330,20 @@ a, a:visited {
     font-weight: 400;
 }
 
-.blog-container .pagination {
-    display: block;
-    width: 100%;
-    max-width: 1190px;
-    margin: 10px auto 54px auto;
-}
-
-.pagination .page {
-    color: #2db6d8;
+nav ul.pagination .page-item .page-link {
     font-family: Proxima Nova Semibold, sans-serif;
-    font-size: 20px;
-    margin: 0 9px;
-    width: 39px;
-    height: 39px;
-}
-
-.pagination .page a {
+    font-size: 1.3em;
     color: #2db6d8;
-    font-weight: 400;
-}
-
-.pagination .page a:visited {
-    color: #2db6d8;
-    font-weight: 400;
-}
-
-.pagination .current {
+    background-color: transparent;
+    border: transparent;
     border-radius: 5px;
-    margin: 0;
+    margin: 0 4px;
+}
+
+nav ul.pagination .page-item.active .page-link {
     background-color: #9aa5aa;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    color: #ffffff;
+    border-color: #2db6d8;
+    color: #fff;
 }
 
 .post {
@@ -729,11 +710,6 @@ a, a:visited {
         padding: 0 10px;
     }
 
-    .blog-container .pagination {
-        padding: 10px 10px;
-        box-sizing: border-box;
-    }
-
     .related-reads {
         padding: 49px 0 73px 0;
     }
@@ -815,10 +791,6 @@ a, a:visited {
     .index-template .sidebar .subscribe {
         padding-top: 75px;
         background-position-y: 60px;
-    }
-
-    .blog-container .pagination {
-        text-align: center;
     }
 
     .related-reads {
