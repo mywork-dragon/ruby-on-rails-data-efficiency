@@ -7,7 +7,6 @@
     margin: 100px 0 0 0;
     position: relative;
     min-height: calc(100vh - 88px);
-    padding-bottom: 88px;
     height: unset !important;
 }
 
