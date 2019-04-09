@@ -213,7 +213,7 @@ class WelcomeController < ApplicationController
   end
 
   def fastest_growing_sdks
-    @blog_post = "https://mightysignal.com/fastest-growing-android-sdks-blog-post"
+    @blog_post = buttercms_post_path('fastest-growing-sdks-of-2017')
   end
 
   def data
@@ -351,7 +351,6 @@ class WelcomeController < ApplicationController
       flash[:error] = "Please enter your email"
     end
     redirect_to destination
-    # redirect_to(:back)
   end
 
   def contact_us
