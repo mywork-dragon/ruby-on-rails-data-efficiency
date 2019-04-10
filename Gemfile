@@ -133,7 +133,7 @@ gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
 
 gem "redis-rails"
-gem 'actionpack-action_caching'
+gem 'actionpack-action_caching', git: "https://github.com/rails/actionpack-action_caching.git", branch: "master"
 
 gem 'chewy', '0.8.4'
 

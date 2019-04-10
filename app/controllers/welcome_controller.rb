@@ -2,7 +2,7 @@ class WelcomeController < ApplicationController
   include AppsHelper
 
   protect_from_forgery except: :contact_us
-  caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
+  caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours, layout: false
 
   layout "marketing"
 

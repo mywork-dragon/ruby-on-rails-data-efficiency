@@ -35,8 +35,4 @@
             - sdk.top_200_apps.first(8).each do |app|
               a.app-sdks href='#{app.mightysignal_public_page_link}' target="_blank"
                 = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon'
-      - if browser.device.mobile?
-        = paginate @sdks, :theme => "next_prev"
-      - else
-        = paginate @sdks
-
+      = paginate @sdks, :theme => "blog", window: 1, outer_window: 1
