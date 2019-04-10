@@ -398,5 +398,8 @@ class WelcomeController < ApplicationController
 
     @creative = "/lib/images/creatives/#{creative}.png" if creative.present?
   end
+  
+  def privacy
+  end
 
 end
