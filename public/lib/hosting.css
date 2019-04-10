@@ -39,10 +39,16 @@ If you having trouble in editing css. please send a mail to support@surjithctly.
 body {
 	font-family:"Montserrat", Arial, Helvetica, sans-serif;
 	background: #f3f3f3;
-	position:relative;
-	min-height: calc(100vh - 88px);
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
 	height: unset !important;
 }
+
+.content-wrapper {
+	flex: 1;
+}
+
 /*a {
   color:#2cc76a;
 }*/

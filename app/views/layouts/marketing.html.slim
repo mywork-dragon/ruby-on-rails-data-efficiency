@@ -61,7 +61,8 @@ html lang="en"
 
     = render 'layouts/header'
 
-    = yield
+    .content-wrapper
+      = yield
 
     /! ============== Footer ==============
     - if params[:action] == 'app_page'
