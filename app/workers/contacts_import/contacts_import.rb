@@ -1,100 +1,61 @@
+require 'digest'
 class ContactsImport
   # This class imports and validate contacts from a file to clearbit.
   # It pulls the input data from AWS S3.
-  
+
   ######################## INSTRUCTIONS ################################
 
   # This script is executed as a rake tasks as follow:
-  # rake contacts:import[file_prefix, number_files]
-  # Ex: rake contacts:import[contacts, 10]
+  # rake contacts:import[number_files,file_prefix]
+  # Ex: rake contacts:import[10,contacts] #no space after comma.
 
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :contacts_upload, retry: true
 
   STREAM_NAME = 'contacts_import'
+  POOL_SIZE   = 4 #Tied to DB connections pool in database.yml pool: 5 (must be less than those)
 
-
-  def perform(file_content)
+  def perform(file_name, file_content)
 
     contacts_data = CSV.parse(file_content, :headers => true)
+    websites_index = {}
 
-    contacts_data.each do |row|
-      contact_match = get_clearbit_contact(row)
-      contact_match.present? ? update_clearbit_contact(contact_match, row) : create_new_clearbit_contact(row)
+    contacts_to_save = Queue.new
+    ClearbitContact.transaction do
+      contacts_data.each do |contact_raw|
+        contacts_to_save.push ClearbitContact.find_or_initialize_by(email: contact_raw['employee_email']).tap do |contact_obj|
+          website_digest            = Digest::MD5.hexdigest "http://#{contact_raw["domain"]}-#{contact_raw["domain"]}"
+          contact_obj.given_name    = contact_raw["employee_first_name"]                 if contact_raw["employee_first_name"].present?
+          contact_obj.family_name   = contact_raw["employee_last_name"]                  if contact_raw["employee_last_name"].present?
+          contact_obj.full_name     = "#{contact_raw["employee_first_name"]} #{contact_raw["employee_last_name"]}".strip
+          contact_obj.linkedin      = contact_raw["employee_li"].andand.truncate(190)    if contact_raw["employee_li"].present?
+          contact_obj.email         = contact_raw["employee_email"]                      if contact_raw["employee_email"].present?
+          contact_obj.title         = contact_raw["employee_title"].andand.truncate(190) if contact_raw["employee_title"].present?
+          contact_obj.quality       = contact_raw["employee_email_confidence"]           if contact_raw["employee_email_confidence"].present?
+          contact_obj.website       = websites_index[website_digest] ||
+                                      Website.find_or_create_by!(url: "http://#{contact_raw["domain"]}", domain: contact_raw["domain"]).tap do |web|
+                                        websites_index[website_digest] = web
+                                      end
+          contact_obj.website.domain_datum  = DomainDatum.find_or_initialize_by(domain: contact_raw["domain"])
+        end
+      end
+
+      threads = Array.new(POOL_SIZE) do
+        Thread.new do
+          begin
+            while contact_to_save = contacts_to_save.pop(true)
+              contact_to_save.save!
+            end
+          rescue ThreadError => e
+            raise e unless e.message == "queue empty"
+          end
+        end
+      end
+      threads.map(&:join)
     end
-  end
 
-  def get_clearbit_contact(contact)
-    linkedin = get_linkedin_data(contact["employee_li"]) if contact["employee_li"].present?
-
-    query_where = "email = :email"
-    query_where_params = {:email => contact["employee_email"]}
-    
-    query_where += " or linkedin = :linkedin" if linkedin
-    query_where_params[:linkedin] =  linkedin if linkedin
-
-    contact_match = ClearbitContact.where(query_where, query_where_params).first
-
-    return contact_match if contact_match
-
-    if contact[:domain].present?
-      query_where = 'domain_data.domain = :domain '
-      query_where += 'AND lower(clearbit_contacts.given_name) = :given_name ' if contact[:employee_first_name].present?
-      query_where += 'AND lower(clearbit_contacts.family_name) = :family_name' if contact[:employee_last_name].present?
-
-      where_params = {
-        domain: contact[:domain],
-        given_name: contact[:employee_first_name].andand.downcase,
-        family_name: contact[:employee_last_name].andand.downcase
-      }.compact
-      
-      contact_match = ClearbitContact.joins(:domain_datum).where(query_where, where_params).first
-    end
-
-    contact_match
-  end
-
-  def update_clearbit_contact(cb_contact, new_data)
-    cb_contact.given_name = new_data["employee_first_name"] unless cb_contact.given_name.present?
-    cb_contact.family_name = new_data["employee_last_name"] unless cb_contact.family_name.present?
-    cb_contact.linkedin = new_data["employee_li"] unless cb_contact.linkedin.present?
-    cb_contact.email = new_data["employee_email"] unless cb_contact.email.present?
-    cb_contact.title = new_data["employee_title"].andand.truncate(190) unless cb_contact.title.present?
-    cb_contact.domain_datum_id = find_or_create_domain_website(domain: new_data["domain"]).andand.id unless cb_contact.domain_datum_id.present?
-    
-    cb_contact.quality = new_data["employee_email_confidence"]
-
-    if cb_contact.changed?
-      MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "Contact not updated: #{cb_contact.id}") unless cb_contact.save()
-    end
-  end
-
-  def create_new_clearbit_contact(contact)
-    new_contact = ClearbitContact.new
-    new_contact.given_name = contact["employee_first_name"]
-    new_contact.family_name = contact["employee_last_name"]
-    new_contact.linkedin = contact["employee_li"]
-    new_contact.email = contact["employee_email"]
-    new_contact.title = contact["employee_title"].andand.truncate(190)
-    new_contact.quality = contact["employee_email_confidence"]
-    new_contact.domain_datum_id = find_or_create_domain_website(contact["domain"]).andand.id
-
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data:"Contact not saved: #{contact['employee_email']}") unless new_contact.save()
-  end
-
-  def find_or_create_domain_website(domain)
-    domain_datum = DomainDatum.find_by(domain: domain)
-    return domain_datum if domain_datum
-
-    domain_datum = DomainDatum.create(domain: domain)
-    website = Website.create(domain_datum: domain_datum, url: domain_datum.domain) if domain_datum
-    domain_datum
-  end
-
-  def get_linkedin_data(contact_linkedin)
-    linkedin = contact_linkedin.split("/").last
-    linkedin.present? ? "in/#{linkedin}" : nil
+  rescue StandardError => e
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: file_name)
   end
 end
-  

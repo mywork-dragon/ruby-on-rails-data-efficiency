@@ -10,16 +10,16 @@ class ContactsImportWorker
   MAX_FILE_SIZE = 600000
 
   class << self
-    def perform(filename_prefix='contacts', number_of_files=1)
+    def perform(number_of_files=1, filename_prefix='contacts')
       file_names = (1..number_of_files).map { |n| "#{filename_prefix}#{n}.csv" }
-      file_names.each { |file_name| execute_worker(file_name) }
+      file_names.each { |file_name| p "processing #{file_name}"; execute_worker(file_name) }
     end
 
     def execute_worker(file_name)
       file_size = MightyAws::S3.new.content_length(bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name)
       if file_size <= MAX_FILE_SIZE
         file_content = MightyAws::S3.new.retrieve( bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name, ungzip: false )
-        ContactsImport.perform_async(file_content) if file_content
+        ContactsImport.perform_async(file_name, file_content) if file_content
       else
         p "Couldn't download files bigger than #{MAX_FILE_SIZE}, current size file #{file_size}"
       end
