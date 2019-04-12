@@ -10,9 +10,9 @@ class ContactsImportWorker
   MAX_FILE_SIZE = 600000
 
   class << self
-    def perform(filename_prefix='contacts', number_of_files=1)
+    def perform(number_of_files=1, filename_prefix='contacts')
       file_names = (1..number_of_files).map { |n| "#{filename_prefix}#{n}.csv" }
-      file_names.each { |file_name| execute_worker(file_name) }
+      file_names.each { |file_name| p "processing #{file_name}"; execute_worker(file_name) }
     end
 
     def execute_worker(file_name)
