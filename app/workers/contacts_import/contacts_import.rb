@@ -50,13 +50,21 @@ class ContactsImport
           contact_obj.quality       = quality        if quality
           contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
           contact_obj.title         = title.andand.truncate(190)    if title
-
-          contact_obj.website       = websites_index[website_digest] ||
+          begin
+            contact_obj.website     = websites_index[website_digest] ||
                                       Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
                                         websites_index[website_digest] = web
                                       end
+          rescue ActiveRecord::RecordNotUnique
+            retry
+          end
 
-          contact_obj.website.domain_datum  = DomainDatum.find_or_initialize_by(domain: domain)
+          begin
+            contact_obj.website.domain_datum  = DomainDatum.find_or_create_by(domain: domain)
+          rescue ActiveRecord::RecordNotUnique
+            retry
+          end
+
         end
       end
       ActiveRecord::Base.logger = old_logger
