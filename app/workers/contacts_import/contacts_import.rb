@@ -17,9 +17,6 @@ class ContactsImport
   STREAM_NAME = 'contacts_import'
 
   def perform(file_name, file_content)
-    puts Benchmark.measure {
-
-
     contacts_data = CSV.parse(file_content, :headers => true)
     headers, *contacts_data = contacts_data.to_a
     fields_map = headers.each_with_index.inject({}){|memo,(name, position)| memo[name] = position and memo }
@@ -70,11 +67,9 @@ class ContactsImport
       ActiveRecord::Base.logger = old_logger
       result = ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
     end
-
-  }
-
   rescue StandardError => e
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: file_name)
+    p "=====================================ERROR=========================================="
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")
   end
 
 end
