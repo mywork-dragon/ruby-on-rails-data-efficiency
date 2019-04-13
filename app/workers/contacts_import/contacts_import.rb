@@ -1,5 +1,4 @@
 require 'digest'
-require 'benchmark'
 class ContactsImport
   # This class imports and validate contacts from a file to clearbit.
   # It pulls the input data from AWS S3.
