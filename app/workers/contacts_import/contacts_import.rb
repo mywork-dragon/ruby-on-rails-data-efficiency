@@ -66,7 +66,6 @@ class ContactsImport
   }
 
   rescue StandardError => e
-    byebug
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: file_name)
   end
 
