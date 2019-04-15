@@ -11,9 +11,14 @@ class ContactsImport
 
   include Sidekiq::Worker
 
-  sidekiq_options queue: :contacts_upload, retry: true
+  sidekiq_options queue: :contacts_upload #Dont retry. If fail then success logged as failed first time.
 
   STREAM_NAME = 'contacts_import'
+  MAX_RETRIES = 5
+
+  def initialize
+    @retries = MAX_RETRIES.dup
+  end
 
   def perform(file_name, file_content)
     contacts_data = CSV.parse(file_content, :headers => true)
@@ -23,51 +28,58 @@ class ContactsImport
     websites_index = {}
     contacts_to_save = []
 
-    ClearbitContact.transaction do
-      old_logger = ActiveRecord::Base.logger
-      ActiveRecord::Base.logger = nil
+    begin
+      ClearbitContact.transaction do
+        # old_logger = ActiveRecord::Base.logger
+        # ActiveRecord::Base.logger = nil
 
-      contacts_to_save = contacts_data.map do |contact_raw|
-        employee_email = contact_raw[fields_map[ 'employee_email'           ]].presence
-        given_name     = contact_raw[fields_map[ 'employee_first_name'      ]].presence
-        family_name    = contact_raw[fields_map[ 'employee_last_name'       ]].presence
-        linkedin       = contact_raw[fields_map[ 'employee_li'              ]].presence
-        title          = contact_raw[fields_map[ 'employee_title'           ]].presence
-        quality        = contact_raw[fields_map[ 'employee_email_confidence']].presence
-        domain         = contact_raw[fields_map[ 'domain'                   ]].presence
+        contacts_to_save = contacts_data.map do |contact_raw|
+          employee_email = contact_raw[fields_map[ 'employee_email'           ]].presence
+          given_name     = contact_raw[fields_map[ 'employee_first_name'      ]].presence
+          family_name    = contact_raw[fields_map[ 'employee_last_name'       ]].presence
+          linkedin       = contact_raw[fields_map[ 'employee_li'              ]].presence
+          title          = contact_raw[fields_map[ 'employee_title'           ]].presence
+          quality        = contact_raw[fields_map[ 'employee_email_confidence']].presence
+          domain         = contact_raw[fields_map[ 'domain'                   ]].presence
 
-        ClearbitContact.find_or_initialize_by(email: employee_email).tap do |contact_obj|
-          website_digest            = Digest::MD5.hexdigest "http://#{domain}-#{domain}"
-          contact_obj.full_name     = "#{given_name} #{family_name}".strip.presence
+          ClearbitContact.find_or_initialize_by(email: employee_email).tap do |contact_obj|
+            website_digest            = Digest::MD5.hexdigest "http://#{domain}-#{domain}"
+            contact_obj.full_name     = "#{given_name} #{family_name}".strip.presence
 
-          contact_obj.given_name    = given_name     if given_name
-          contact_obj.family_name   = family_name    if family_name
-          contact_obj.email         = employee_email if employee_email
-          contact_obj.quality       = quality        if quality
-          contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
-          contact_obj.title         = title.andand.truncate(190)    if title
-          begin
-            contact_obj.website     = websites_index[website_digest] ||
-                                      Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
-                                        websites_index[website_digest] = web
-                                      end
-          rescue ActiveRecord::RecordNotUnique
-            retry
+            contact_obj.given_name    = given_name     if given_name
+            contact_obj.family_name   = family_name    if family_name
+            contact_obj.email         = employee_email if employee_email
+            contact_obj.quality       = quality        if quality
+            contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
+            contact_obj.title         = title.andand.truncate(190)    if title
+            begin
+              contact_obj.website     = websites_index[website_digest] ||
+                                        Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
+                                          websites_index[website_digest] = web
+                                        end
+            rescue ActiveRecord::RecordNotUnique
+              retry
+            end
+
+            begin
+              contact_obj.website.domain_datum  = DomainDatum.find_or_create_by(domain: domain)
+            rescue ActiveRecord::RecordNotUnique
+              retry
+            end
           end
-
-          begin
-            contact_obj.website.domain_datum  = DomainDatum.find_or_create_by(domain: domain)
-          rescue ActiveRecord::RecordNotUnique
-            retry
-          end
-
         end
+        # ActiveRecord::Base.logger = old_logger
+        result = ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
       end
-      ActiveRecord::Base.logger = old_logger
-      result = ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
+    rescue StandardError => error
+      if @retries < @max_retries
+        @retries += 1
+        retry
+      else
+        raise error
+      end
     end
   rescue StandardError => e
-    p "=====================================ERROR=========================================="
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")
   end
 
