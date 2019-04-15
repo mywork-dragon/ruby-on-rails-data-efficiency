@@ -7,7 +7,7 @@ class ContactsImport
 
   # This script is executed as a rake tasks as follow:
   # rake contacts:import[number_files,file_prefix]
-  # Ex: rake contacts:import[10,contacts] #no space after comma.
+  # Ex: rake contacts:import[10,contacts,1] #no space after comma.
 
   include Sidekiq::Worker
 
@@ -16,22 +16,19 @@ class ContactsImport
   STREAM_NAME = 'contacts_import'
   MAX_RETRIES = 5
 
-  def initialize
-    @retries = MAX_RETRIES.dup
-  end
-
   def perform(file_name, file_content)
     contacts_data = CSV.parse(file_content, :headers => true)
     headers, *contacts_data = contacts_data.to_a
     fields_map = headers.each_with_index.inject({}){|memo,(name, position)| memo[name] = position and memo }
 
-    websites_index = {}
     contacts_to_save = []
+
+    redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
 
     begin
       ClearbitContact.transaction do
-        # old_logger = ActiveRecord::Base.logger
-        # ActiveRecord::Base.logger = nil
+        old_logger = ActiveRecord::Base.logger
+        ActiveRecord::Base.logger = nil
 
         contacts_to_save = contacts_data.map do |contact_raw|
           employee_email = contact_raw[fields_map[ 'employee_email'           ]].presence
@@ -53,9 +50,13 @@ class ContactsImport
             contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
             contact_obj.title         = title.andand.truncate(190)    if title
             begin
-              contact_obj.website     = websites_index[website_digest] ||
-                                        Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
-                                          websites_index[website_digest] = web
+              cached_website = redis.get(website_digest)
+              contact_obj.website     = if cached_website
+                                          Marshal.load(cached_website)
+                                        else
+                                          Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
+                                            redis.set(website_digest, Marshal.dump(web))
+                                          end
                                         end
             rescue ActiveRecord::RecordNotUnique
               retry
@@ -68,11 +69,12 @@ class ContactsImport
             end
           end
         end
-        # ActiveRecord::Base.logger = old_logger
+        ActiveRecord::Base.logger = old_logger
         result = ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
       end
-    rescue StandardError => error
-      if @retries < @max_retries
+    rescue Mysql2::Error => error
+      @retries || 0
+      if @retries < MAX_RETRIES
         @retries += 1
         retry
       else
@@ -80,6 +82,7 @@ class ContactsImport
       end
     end
   rescue StandardError => e
+    byebug
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")
   end
 
