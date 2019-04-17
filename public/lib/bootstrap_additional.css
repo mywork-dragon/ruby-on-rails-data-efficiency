@@ -62,6 +62,10 @@ nav.navbar.categories-bg button,
     line-height: inherit;
 }
 
+.detail-item h4{
+    font-size: 1.125rem;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search {
         min-width: 200px;
