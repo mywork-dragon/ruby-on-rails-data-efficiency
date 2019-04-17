@@ -10,7 +10,7 @@
         | Interact with MightySignal data through an easy-to-use web interface
   .container
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@timeline_graphic width=600
       .col-md-5.end.about-graphic
         .name
@@ -34,13 +34,13 @@
           p
         row
           = render 'contact_us_button', title: 'Slice Data How You Want It', button_id: 'lead-generation-explore'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@explore_graphic width=600
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
           img.img-fluid src=@live_scan_graphic width=600
       .col-md-5.end.about-graphic
         .name
@@ -66,13 +66,13 @@
           p
         row
           = render 'contact_us_button', title: "See Who's Spending", button_id: 'web-portal-ad-intel'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@ad_intelligence_graphic width=600
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
           img.img-fluid src=@popular_apps_graphic width=600
       .col-md-5.end.about-graphic
         .name

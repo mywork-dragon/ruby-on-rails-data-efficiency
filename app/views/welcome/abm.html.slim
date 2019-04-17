@@ -13,7 +13,7 @@
 
   .container
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@sfdc_graphic width=1500
       .col-md-5.end.about-graphic
         .name
@@ -40,13 +40,13 @@
           p
         row
           = render 'contact_us_button', title: 'Sell With Precision', button_id: 'abm-sales'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@sales_graphic width=200
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@marketing_graphic width=200
       .col-md-5.end.about-graphic
         .name
@@ -70,13 +70,13 @@
           p
         row
           = render 'contact_us_button', title: 'Make Your Customers Successful', button_id: 'abm-cs'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@customer_success_graphic width=200
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@learning_graphic width=200
       .col-md-5.end.about-graphic
         .name

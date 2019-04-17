@@ -11,7 +11,7 @@
 
   .container
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@competitor_graphic width=200
       .col-md-5.end.about-graphic
         .name
@@ -34,13 +34,13 @@
           p
         row
           = render 'contact_us_button', title: 'Fill Big Gaps', button_id: 'bi-gaps'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@gaps_graphic width=200
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
           img.img-fluid src=@future_graphic width=200
       .col-md-5.end.about-graphic
         .name
@@ -68,7 +68,7 @@
           p
         row
           = render 'contact_us_button', title: 'Implement Business Intelligence', button_id: 'bi-implement'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@networking_icon width=200
     - 4.times do
       .row

@@ -11,7 +11,7 @@
 
   .container
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@sfdc_graphic width=600
       .col-md-5.end.about-graphic
         .name
@@ -38,13 +38,13 @@
           p
         row
           = render 'contact_us_button', title: 'Supercharge Your Accounts', button_id: 'sfdc-accounts'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@account_graphic width=1500
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@reporting_graphic width=1500
       .col-md-5.end.about-graphic
         .name
@@ -68,13 +68,13 @@
           p
         row
           = render 'contact_us_button', title: "Export to SFDC", button_id: 'sfdc-export'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@export_graphic width=1500
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@sync_graphic width=300
       .col-md-5.end.about-graphic
         .name

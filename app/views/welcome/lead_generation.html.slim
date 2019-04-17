@@ -13,7 +13,7 @@
 
   .container
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@live_scan_graphic width=1500
       .col-md-5.end.about-graphic
         .name
@@ -41,13 +41,13 @@
           p
         row
           = render 'contact_us_button', title: 'See Who Has $', button_id: 'lead-generation-mobile-budget'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@new_advertisers_graphic width=1500
     - 4.times do
       .row
         p
     .row
-      .col-md-5.offset-md-1.graphic
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
         img.img-fluid src=@newcomers_graphic width=1500
       .col-md-5.end.about-graphic
         .name
@@ -71,7 +71,7 @@
           p
         row
           = render 'contact_us_button', title: 'Explore Mighty Data', button_id: 'lead-generation-interface'
-      .col-md-5.order-md-12.order-1.end.graphic
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
         img.img-fluid src=@explore_graphic width=1500
     - 4.times do
       .row
