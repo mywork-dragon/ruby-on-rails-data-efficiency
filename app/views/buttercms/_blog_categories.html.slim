@@ -1,0 +1,5 @@
+= form_tag buttercms_posts_path, method: "get", class: style_class do
+  select.categories name="category" onchange="this.form.submit();" 
+    option selected="selected" value=""  Categories
+    - @categories.each do |category|
+      = category.slug == @current_slug ? options_for_select([[category.name, category.slug]], @current_slug) : options_for_select([[category.name, category.slug]])

@@ -1,0 +1,12 @@
+.mdl-card.mdl-cell.mdl-cell--6-col.mdl-cell--4-col-tablet.mdl-shadow--2dp
+  figure.mdl-card__media
+    = link_to '', buttercms_post_path(post.slug), html_options = {:class => "post-image", :style => "background-image: url(#{asset_url(post_image(post))}); background-size: contain; background-repeat: no-repeat; background-position: center; "}
+  .mdl-card__title
+    h2
+      = link_to truncate(post.title, length: 40, separator: " "), buttercms_post_path(post.slug), class: "header"
+  .mdl-card__supporting-text
+    = truncate(post.summary, length: 340, separator: " ")
+  .mdl-card__actions.mdl-card--border
+    = link_to "Read more", buttercms_post_path(post.slug), class: "mdl-button mdl-js-button mdl-js-ripple-effect"
+    .mdl-layout-spacer
+    .addthis_sharing_toolbox data-media="#{post_image(post)}" data-title=("#{post.title + ' | MightySignal'}") data-url="#{buttercms_post_url(post.slug)}"

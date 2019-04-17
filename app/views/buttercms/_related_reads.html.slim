@@ -1,0 +1,5 @@
+.related-reads
+  h3 Related Reads
+  .mdl-grid.posts-container
+    - @related_posts.each do |post|
+      = render :partial => 'posts_list_item', :locals => {:post => post}

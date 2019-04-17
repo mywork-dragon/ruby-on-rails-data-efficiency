@@ -1,0 +1,5 @@
+.subscribe
+  h3 Newsletters <br> make you smarter.
+  = form_tag subscribe_path, method: "post", class: "header-item" do
+    input.email name="email" placeholder=("Email Address") required="" type="email" /
+    input.button type="submit" value="Subscribe" /
