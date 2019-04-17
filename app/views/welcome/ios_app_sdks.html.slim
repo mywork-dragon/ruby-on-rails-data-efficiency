@@ -60,6 +60,6 @@
   .row
     .col-lg-12.text-center
       br
-      = link_to 'Contact us to see current SDKs used by any iOS or Android app', '/#contact_anchor', class: 'btn btn-lg btn-primary'
-    
+      = render 'contact_us_button', title: 'Contact us to see current SDKs used by any iOS or Android app', button_id: 'ios-app-sdks'
 
+= render 'web_form_modal'
