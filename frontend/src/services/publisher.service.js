@@ -27,6 +27,9 @@ const PublisherService = (client = httpClient) => ({
       },
     })
   ),
+  getContactsExportCsv: domains => (
+    client.post('/api/contacts/start_export_to_csv', { domains })
+  ),
 });
 
 export default PublisherService;

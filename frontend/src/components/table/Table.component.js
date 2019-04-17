@@ -43,6 +43,7 @@ const Table = ({
   toggleItem,
   updateColumns,
   updateDefaultPageSize,
+  onCsvExportContacts,
   ...rest
 }) => {
   const allSelected = selectedItems.length === results.length;
@@ -89,6 +90,21 @@ const Table = ({
                 disabled
               >
                 Export to CSV
+              </button>
+            )}
+            {resultType === 'publisher' ? (
+              <button
+                className="btn btn-primary pull-right"
+                onClick={() => onCsvExportContacts()}
+              >
+                Export Contacts
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary pull-right"
+                disabled
+              >
+                Export Contacts
               </button>
             )}
             {toggleAll && toggleItem && resultType === 'app' && (
@@ -205,6 +221,7 @@ Table.propTypes = {
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
+  onCsvExportContacts: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -235,6 +252,7 @@ Table.defaultProps = {
   toggleAll: null,
   toggleItem: null,
   updateColumns: null,
+  onCsvExportContacts: () => {},
 };
 
 export default Table;

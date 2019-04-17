@@ -19,6 +19,15 @@ module ApiHelper
     headers
   end
 
+  def get_contacts_to_export(domains, quality)
+    results = ClearbitContact.joins(:domain_datum).where(
+      'domain_data.domain IN (?) AND quality > (?)', 
+      domains.uniq, 
+      quality).pluck(
+        :id, :title, :full_name, :given_name, :family_name, :email, :linkedin
+      )
+  end
+
   def render_csv(filter_args: nil, apps: nil, additional_fields:[], &block)
     set_file_headers
     set_streaming_headers

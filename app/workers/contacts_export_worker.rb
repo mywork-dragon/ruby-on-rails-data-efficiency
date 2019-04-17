@@ -4,10 +4,13 @@ class ContactsExportWorker
 
   sidekiq_options queue: :contacts_export, retry: true
 
-  S3_REPORTS_BUCKET = ''
+  S3_REPORTS_BUCKET = 'contacts-export'
   S3_INPUT_PATH = ''
 
-  def perform(publiser_id, filter)
+  def perform(publisher, filter)
+
+    platform = publisher['platform']
+    publisher_id = publisher['id']
 
     developer = if platform == 'ios' 
       IosDeveloper.find(publisher_id)
@@ -18,7 +21,6 @@ class ContactsExportWorker
     contacts = ContactDiscoveryService.new.get_contacts_for_developer(developer, filter)
 
     header = ['MightySignal ID', 'Company Name', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
-    companyName = 'tbd' #TODO
 
     file_name = "contacts_#{publisher_id}.csv"
 
@@ -28,7 +30,7 @@ class ContactsExportWorker
         contact = contact.with_indifferent_access
         contacts_hash = [
           contact['clearbitId'],
-          companyName,
+          publisher['name'],
           contact['title'],
           contact['fullName'],
           contact['givenName'],
@@ -36,6 +38,9 @@ class ContactsExportWorker
           contact['email'],
           contact['linkedin']
         ]
+
+        p contacts_hash.to_json
+
         csv << contacts_hash
       end
     end

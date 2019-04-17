@@ -721,19 +721,22 @@ class ApiController < ApplicationController
     render json: tags
   end
 
-  def export_contacts_to_csv_by_publishers
-    platform = params['platform']
-    publisher_ids = params['publisherIds']
-    filter = params['filter']
+  def export_contacts_to_csv_by_domains
+    domains = params['domains']
+    quality = params['quality'].to_i || 50
 
-    job_id = ContactsExportService.start_export(publisher_ids, platform, filter)
-    render json: {job_id: job_id}.to_json
-  end
+    results = get_contacts_to_export(domains, quality)
 
-  def export_contacts_status
-    jobs_count = params['jobs_count']
-    status_h = AndroidLiveScanService.check_status
-    render json: {status: status_h}
+    header = ['MightySignal ID', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
+
+    list_csv = CSV.generate do |csv|
+      csv << header
+      results.each do |contact|
+        csv << contact
+      end
+    end
+
+    send_data list_csv
   end
 
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)

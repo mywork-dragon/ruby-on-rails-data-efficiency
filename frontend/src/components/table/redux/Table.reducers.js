@@ -17,6 +17,7 @@ export function table(actionTypes, tableOptions) {
     selectedItems: [],
     sort: [{ id: headerNames.APP, desc: false }],
     resultsCount: 0,
+    contactsData: [],
     ...tableOptions,
   };
 
@@ -60,6 +61,11 @@ export function table(actionTypes, tableOptions) {
         return {
           ...state,
           pageSize: action.payload.newSize,
+        };
+      case actionTypes.PUBLISHERS_CONTACTS_CSV_EXPORT:
+        return {
+          ...state,
+          contactsData: action.payload.data,
         };
       default:
         return state;
