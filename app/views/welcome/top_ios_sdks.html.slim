@@ -8,11 +8,7 @@
   .row.top-200.marketing-row
     .col-xl-2.mb-2
       .addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="Most Used SDKs in Top 200 Free iOS Apps @MightySignal"
-      h3 Categories
-      nav.nav.nav-pills.flex-column.flex-row
-        = link_to 'All', top_ios_sdks_path, class: "flex-fill text-left nav-link #{params[:tag].blank? ? 'active' : ''}"
-        - @tags.each do |tag|
-          = link_to tag.name, top_ios_sdks_path(tag: tag.id), class: "flex-fill text-left nav-link #{params[:tag].to_i == tag.id ? 'active' : ''}"
+      = render 'shared/top_categories'
 
     .col-xl-10.block
       = image_tag '/lib/images/apple-app-store-icon.png', class: 'app-store-icon'

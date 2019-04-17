@@ -8,6 +8,11 @@
     width: 80px !important;
 }
 
+.categories-bg {
+    background: none !important;
+}
+
+nav.navbar.categories-bg button,
 .nav-pills .nav-link.active {
     color: #fff !important;
     background-color: #428bca !important;

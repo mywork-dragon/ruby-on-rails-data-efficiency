@@ -1,0 +1,8 @@
+nav.navbar.navbar-expand-xl.categories-bg
+  button.navbar-toggler.btn.btn-outline-primary.btn-block.py-2 type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
+    span Categories
+  .collapse.navbar-collapse#navbarNavAltMarkup
+    .nav.nav-pills.flex-column.flex-row
+      = link_to 'All', top_ios_sdks_path, class: "flex-fill text-left nav-link #{params[:tag].blank? ? 'active' : ''}"
+      - @tags.each do |tag|
+        = link_to tag.name, top_ios_sdks_path(tag: tag.id), class: "flex-fill text-left nav-link #{params[:tag].to_i == tag.id ? 'active' : ''}"
