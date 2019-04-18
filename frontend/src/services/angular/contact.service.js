@@ -18,8 +18,6 @@ function contactService($window, $http) {
     goToLinkedIn,
     trackCrunchbaseClick,
     trackLinkedinContactClick,
-    exportContactsToCsvByPublishers,
-    exportContactsToCsvByPublishersStatus,
   };
 
   return service;
