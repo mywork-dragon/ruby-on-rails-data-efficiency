@@ -54,5 +54,13 @@ module ApplicationHelper
     end
     label
   end
-  
+
+  def mobile_or_tablet_device?
+    browser.device.mobile? || browser.device.tablet?
+  end
+
+  def desktop_or_tablet_device?
+    !browser.device.mobile? || browser.device.tablet?
+  end
+
 end

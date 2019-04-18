@@ -1,0 +1,30 @@
+ul.nav.navbar-nav.pl-md-0.mobile-content
+  li.nav-item
+    = link_to 'The Mightiest Mobile Data', data_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Web Portal', web_portal_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Salesforce Integration', salesforce_integration_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'API', the_api_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Data Feed', data_feed_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Lead Generation', lead_generation_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Account Based Marketing', abm_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'SDK Intelligence', sdk_intelligence_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'CONTACT', root_path(anchor: 'contact_anchor'), class: 'nav-link dropdown-normalize font-normalize pl-md-0'
+  li.nav-item
+    = link_to 'Blogs', buttercms_posts_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Case-studies', buttercms_case_studies_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Parade (Free Ad Intelligence)', 'https://parade.mightysignal.com', class: 'nav-link'
+  li.nav-item
+    = link_to 'Fastest Growing SDKs', fastest_growing_sdks_path, class: 'nav-link'
+  li.nav-item
+    = link_to 'Top SDKs', top_ios_sdks_path, class: 'nav-link'
+  = render 'layouts/header_content/common_controls'

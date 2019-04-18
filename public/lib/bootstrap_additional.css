@@ -66,6 +66,14 @@ nav.navbar.categories-bg button,
     font-size: 1.125rem;
 }
 
+nav .container-fluid .navbar-collapse .desktop-content {
+    display: flex;
+}
+
+nav .container-fluid .navbar-collapse .mobile-content {
+    display: none;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search {
         min-width: 200px;
@@ -82,6 +90,14 @@ nav.navbar.categories-bg button,
 }
 
 @media only screen and (max-width: 992px) {
+    nav .container-fluid .navbar-collapse .desktop-content {
+        display: none;
+    }
+
+    nav .container-fluid .navbar-collapse .mobile-content {
+        display: flex;
+    }
+
     #app-search {
         min-width: 150px;
     }
