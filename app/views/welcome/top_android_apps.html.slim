@@ -9,13 +9,13 @@
       .addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="SDKs Used in Top 200 Free Android Apps @MightySignal"
       = image_tag '/lib/images/google_play.png', class: 'app-store-icon'
       h1 SDKs Used in Top 200 Free Android Apps
-      = render "welcome/subscribe_free_data", text: 'Report last updated', last_updated: @last_updated, form: 'top-android-apps',  message: "Top Android Apps page"
+      = render "welcome/subscribe_free_data", text: 'Report last updated', last_updated: @last_updated, form: 'top-android-apps', message: "Top Android Apps page"
 
       ul
         - @apps.each do |app|
           li.grid
             span.app-rank
-              = "#{app.rank}."
+              = app.rank.to_s
             - if app.released_days && app.released_days <= 7
               span.badge.badge-primary.app-rank-change New
             - elsif app.ranking_change > 0
@@ -26,11 +26,11 @@
               span.app-rank-change
                 i.fa.fa-arrow-down aria-hidden="true"
                 = app.ranking_change * -1
-            a.app-sdks target="_blank" href='#{app.mightysignal_public_page_link}'
+            a.app-sdks target="_blank" href=app.mightysignal_public_page_link.to_s
               = image_tag app.icon_url, size: '100'
             br
             span.app-name
-              a.app-sdks target="_blank" href='#{app.mightysignal_public_page_link}'
+              a.app-sdks target="_blank" href=app.mightysignal_public_page_link.to_s
                 = app.name
             br
             span.app-category
