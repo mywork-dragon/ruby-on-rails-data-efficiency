@@ -1,55 +1,29 @@
-html lang="en"
-  head
-    meta charset="utf-8"
-    meta content="width=device-width, initial-scale=1.0" name="viewport"
-    title = full_title(yield(:title))
-    meta property="og:image" content="#{og_image_url(yield(:og_image))}"
-    meta property="og:title" content="#{og_image_url(yield(:title))}"
-    meta name="description" content="#{meta_description(yield :meta_description)}"
-    meta property="og:site" content="@MightySignal"
-    meta property="twitter:site" content="@MightySignal"
-    meta property="fb:app_id" content="2070362686385472"
-    meta name="twitter:card" content="summary"
-    meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
-    meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
-    link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon"
-    link data-turbolinks-track="true" href="/lib/bootstrap_additional.css" media="all" rel="stylesheet"
-    script crossorigin="anonymous" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-    link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" rel="stylesheet"
-    script data-turbolinks-track="true" src="/lib/jquery-2.1.3.min.js?body=1"
-    script src="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js"
-    link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/flexslider.css?body=1" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/hosting.css?body=1" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/normalize.css?body=1" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/easy-autocomplete.min.css" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/easy-autocomplete.themes.min.css" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/main.css" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
-    link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"
-    link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"
-    link href="/lib/jquery.bxslider.css" rel="stylesheet"
-    link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'
-    script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
-    script data-turbolinks-track="true" src="/lib/jquery.easing.1.3.js"
-    script src="/lib/jquery.bxslider.min.js"
-    script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/appSearch.js?body=1"
-    script data-turbolinks-track="true" src="/lib/jquery.easy-autocomplete.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/jquery.ddslick.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
-    script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"
-    script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"
-    script src="/lib/script.js"
-    meta content="authenticity_token" name="csrf-param"
-    meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"
-    meta name="google-site-verification" content="XuIVxYZsc5qwP3zQJNxlH5PG1je9p89sF5I7OnZslbo"
-    = render 'shared/ga'
-    = render 'shared/autopilot'
-    script async="true" src="https://ga.clearbit.com/v1/ga.js?authorization=pk_b264e532e71973a3385b816920c4d29a"
-
+- content_for :own_meta do
+  title = full_title(yield(:title))
+  meta property="og:image" content="#{og_image_url(yield(:og_image))}"
+  meta property="og:title" content="#{og_image_url(yield(:title))}"
+  meta name="description" content="#{meta_description(yield :meta_description)}"
+  meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
+  meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
+  meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"
+- content_for :own_links do
+  link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet"
+  link data-turbolinks-track="true" href="/lib/flexslider.css?body=1" media="all" rel="stylesheet"
+  link data-turbolinks-track="true" href="/lib/normalize.css?body=1" media="all" rel="stylesheet"
+  link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
+  link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"
+  link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"
+  script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
+  script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"
+  script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"
+  script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
+  = render 'shared/ga'
+  = render 'shared/autopilot'
+- content_for :own_scripts do
+  = render 'shared/linkedin_insight_tag'
+  = render 'shared/facebook_pixel_1'
+  = yield :web_form_modal
+- content_for :body do
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
       iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
@@ -66,7 +40,7 @@ html lang="en"
 
     /! ============== Footer ==============
     - if params[:action] == 'app_page'
-      = render 'layouts/footer' , styles: "m-0"
+      = render 'layouts/footer', styles: "m-0"
     - else
       = render 'layouts/footer'
 
@@ -74,54 +48,54 @@ html lang="en"
     /! =============ONE PAGE SCROLLING SCRIPTS ENDS============
     /! =============BACK TO TOP STARTS============
     javascript:
-      $(document).ready(function() {
+        $(document).ready(function () {
 
-        if (window.location.hash) {
-           $('html, body').stop().animate({
-            scrollTop: $(window.location.hash).offset().top - 80
-          }, 1500,'easeInOutExpo');
-        }
-        $('.lead-form-btn').bind('click', function(event) {
-          var form = $(this).closest('form')
-          var serializedForm = form.serializeArray()
+            if (window.location.hash) {
+                $('html, body').stop().animate({
+                    scrollTop: $(window.location.hash).offset().top - 80
+                }, 1500, 'easeInOutExpo');
+            }
+            $('.lead-form-btn').bind('click', function (event) {
+                var form = $(this).closest('form')
+                var serializedForm = form.serializeArray()
 
-          formData = {}
-          for (var i = 0; i < serializedForm.length; i++) {
-            var field = serializedForm[i];
-            formData[field.name] = field.value;
-          }
+                formData = {}
+                for (var i = 0; i < serializedForm.length; i++) {
+                    var field = serializedForm[i];
+                    formData[field.name] = field.value;
+                }
 
-        })
-        $('.nav li a').bind('click',function(event) {
-          var $anchor2 = $(this).parent();
-          var $anchor = $(this);
-          if (window.location.pathname != '/' || $anchor.attr('href').indexOf('#') < 0) {
-            return
-          }
-          $('.nav  li').removeClass('active');
-          $anchor2.addClass('active');
-          $('html, body').stop().animate({
-            scrollTop: $($anchor.attr('href').replace('/','')).offset().top - 80
-          }, 1500,'easeInOutExpo');
-          event.preventDefault();
+            })
+            $('.nav li a').bind('click', function (event) {
+                var $anchor2 = $(this).parent();
+                var $anchor = $(this);
+                if (window.location.pathname != '/' || $anchor.attr('href').indexOf('#') < 0) {
+                    return
+                }
+                $('.nav  li').removeClass('active');
+                $anchor2.addClass('active');
+                $('html, body').stop().animate({
+                    scrollTop: $($anchor.attr('href').replace('/', '')).offset().top - 80
+                }, 1500, 'easeInOutExpo');
+                event.preventDefault();
+            });
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 800) {
+                    $('.scrollup').fadeIn();
+                } else {
+                    $('.scrollup').fadeOut();
+                }
+            });
+
+            $('.scrollup').click(function () {
+                $("html, body").animate({scrollTop: 0}, 600);
+                return false;
+            });
+            console.log('Hi! We like people like you. Check out https://mightysignal.com/challenge');
+            ahoy.trackAll();
         });
-        $(window).scroll(function(){
-          if ($(this).scrollTop() > 800) {
-            $('.scrollup').fadeIn();
-          } else {
-            $('.scrollup').fadeOut();
-          }
-        });
-
-        $('.scrollup').click(function(){
-          $("html, body").animate({ scrollTop: 0 }, 600);
-          return false;
-        });
-        console.log('Hi! We like people like you. Check out https://mightysignal.com/challenge');
-        ahoy.trackAll();
-      });
     script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
-    = render 'shared/linkedin_insight_tag'
-    = render 'shared/facebook_pixel_1'
     = render 'shared/beacon'
-    = yield :web_form_modal
+    = yield(:own_scripts)
+
+= render :file => 'layouts/application'

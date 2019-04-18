@@ -1,7 +1,7 @@
 class Buttercms::BaseController < ActionController::Base
   include BlogsHelper
 
-  layout 'buttercms/default'
+  layout 'blog'
   before_action :categories
   rescue_from Net::OpenTimeout, :with => :handle_open_timeout
 
