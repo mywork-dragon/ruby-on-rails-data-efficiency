@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     post 'subscribe' => 'welcome#subscribe', as: :subscribe
     post 'contact_us' => 'welcome#contact_us', as: :contact_us
     post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
-    get '/privacy', to: redirect('/legal/privacy.pdf'), as: :privacy
+    get 'privacy' => 'welcome#privacy', as: :privacy
 
     get 'coding-challenge', to: redirect('https://mightysignal.github.io/coding-challenge-directions/')
 
