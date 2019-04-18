@@ -136,7 +136,6 @@ Rails.application.routes.draw do
     post 'api/contacts/export_to_csv' => 'api#export_contacts_to_csv'
 
     post 'api/contacts/start_export_to_csv' => 'api#export_contacts_to_csv_by_domains'
-    get 'api/contacts/status_export_to_csv' => 'api#export_contacts_status'
 
     get 'api/results' => 'api#results'
 

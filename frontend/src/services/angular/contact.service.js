@@ -105,21 +105,4 @@ function contactService($window, $http) {
       'Source Type': source,
     });
   }
-
-  function exportContactsToCsvByPublishers(publishersIds, platform) {
-    return $http({
-      method: 'POST',
-      url: `${API_URI_BASE}api/contacts/start_export_to_csv`,
-      data: { publishersIds, platform }
-    })
-    .then(response => response.data);
-  }
-
-  function exportContactsToCsvByPublishersStatus() {
-    return $http({
-      method: 'GET',
-      url: `${API_URI_BASE}api/contacts/status_export_to_csv`
-    })
-    .then(response => response);
-  }
 }
