@@ -22,13 +22,14 @@ class ContactsImport
     fields_map = headers.each_with_index.inject({}){|memo,(name, position)| memo[name] = position and memo }
 
     contacts_to_save = []
+    old_logger = ActiveRecord::Base.logger
+    ActiveRecord::Base.logger = nil
 
     redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
 
     begin
       ClearbitContact.transaction do
-        old_logger = ActiveRecord::Base.logger
-        ActiveRecord::Base.logger = nil
+
 
         contacts_to_save = contacts_data.map do |contact_raw|
           employee_email = contact_raw[fields_map[ 'employee_email'           ]].presence
@@ -55,7 +56,7 @@ class ContactsImport
                                           Marshal.load(cached_website)
                                         else
                                           Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
-                                            redis.set(website_digest, Marshal.dump(web))
+                                            redis.set(website_digest, Marshal.dump(web), ex: 60.days.to_i)
                                           end
                                         end
             rescue ActiveRecord::RecordNotUnique
@@ -69,21 +70,25 @@ class ContactsImport
             end
           end
         end
-        ActiveRecord::Base.logger = old_logger
-        result = ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
+        ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
       end
     rescue Mysql2::Error => error
+      ActiveRecord::Base.logger = old_logger
       @retries || 0
       if @retries < MAX_RETRIES
         @retries += 1
+        logger.error("Retry #{@retries}:  #{file_name} = #{error.message}")
         retry
       else
         raise error
       end
     end
   rescue StandardError => e
-    byebug
+    ActiveRecord::Base.logger = old_logger
+    logger.error("#{file_name} = #{e.message}")
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")
+  ensure
+    ActiveRecord::Base.logger = old_logger
   end
 
 end
