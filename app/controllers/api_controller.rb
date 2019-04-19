@@ -725,7 +725,7 @@ class ApiController < ApplicationController
     domains = params['domains']
     quality = params['quality'].to_i || 50
 
-    header = ['MightySignal ID', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
+    header = ['MightySignal ID', 'Company', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn', 'Quality']
 
     set_streaming_headers
     set_file_headers(file_name:"contacts.csv")

@@ -20,7 +20,7 @@ module ApiHelper
   end
 
   def get_contacts_to_export(domains, quality)
-    fields = ['id', 'title', 'full_name', 'given_name', 'family_name', 'email', 'linkedin']
+    fields = ['id', 'domain_data.legal_name', 'title', 'full_name', 'given_name', 'family_name', 'email', 'linkedin', 'quality']
     ClearbitContact.joins(:domain_datum)
     .where(
       'domain_data.domain IN (?) AND quality > (?)', 
