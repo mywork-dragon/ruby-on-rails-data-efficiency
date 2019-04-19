@@ -11,7 +11,6 @@ const tableActionTypes = [
   'UPDATE_FILTER',
   'CSV_EXPORTED',
   'UPDATE_PAGE_SIZE',
-  'PUBLISHERS_CONTACTS_CSV_EXPORT',
 ];
 
 const tableRequestTypes = [
@@ -49,5 +48,8 @@ export function createTableRequestActions (types) {
 export const UPDATE_DEFAULT_PAGE_SIZE = 'UPDATE_DEFAULT_PAGE_SIZE';
 export const updateDefaultPageSize = pageSize => action(UPDATE_DEFAULT_PAGE_SIZE, { pageSize });
 
-export const PUBLISHERS_CONTACTS_CSV_EXPORT = 'PUBLISHERS_CONTACTS_CSV_EXPORT';
-export const getPublishersContactsExportCsv = id => action(PUBLISHERS_CONTACTS_CSV_EXPORT, { id });
+
+export const PUBLISHERS_CONTACTS_CSV_EXPORT_START = 'PUBLISHERS_CONTACTS_CSV_EXPORT_START';
+export const PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH = 'PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH';
+export const getPublishersContactsExportCsv = id => action(PUBLISHERS_CONTACTS_CSV_EXPORT_START, { id });
+export const getPublishersContactsExportCsvFinish = () => action(PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH);

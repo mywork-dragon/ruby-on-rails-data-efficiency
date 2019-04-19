@@ -725,18 +725,18 @@ class ApiController < ApplicationController
     domains = params['domains']
     quality = params['quality'].to_i || 50
 
-    results = get_contacts_to_export(domains, quality)
-
     header = ['MightySignal ID', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
 
-    list_csv = CSV.generate do |csv|
-      csv << header
-      results.each do |contact|
-        csv << contact
+    set_streaming_headers
+    set_file_headers(file_name:"contacts.csv")
+    response.status = 200
+
+    self.response_body = Enumerator.new do |y|
+      y << header.to_csv
+      get_contacts_to_export(domains, quality) do |row| 
+        y << row.to_csv
       end
     end
-
-    send_data list_csv
   end
 
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)

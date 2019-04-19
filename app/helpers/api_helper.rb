@@ -20,12 +20,14 @@ module ApiHelper
   end
 
   def get_contacts_to_export(domains, quality)
-    results = ClearbitContact.joins(:domain_datum).where(
+    fields = ['id', 'title', 'full_name', 'given_name', 'family_name', 'email', 'linkedin']
+    ClearbitContact.joins(:domain_datum)
+    .where(
       'domain_data.domain IN (?) AND quality > (?)', 
-      domains.uniq, 
-      quality).pluck(
-        :id, :title, :full_name, :given_name, :family_name, :email, :linkedin
-      )
+      domains.uniq, quality)
+    .find_each do |t|
+      yield t.attributes.values_at(*fields)
+    end
   end
 
   def render_csv(filter_args: nil, apps: nil, additional_fields:[], &block)

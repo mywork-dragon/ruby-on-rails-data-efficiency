@@ -44,6 +44,7 @@ const Table = ({
   updateColumns,
   updateDefaultPageSize,
   onCsvExportContacts,
+  csvContactsLoading,
   ...rest
 }) => {
   const allSelected = selectedItems.length === results.length;
@@ -96,8 +97,9 @@ const Table = ({
               <button
                 className="btn btn-primary pull-right"
                 onClick={() => onCsvExportContacts()}
+                disabled={csvContactsLoading}
               >
-                Export Contacts
+                {csvContactsLoading ? 'Loading' : 'Export Contacts'}
               </button>
             ) : (
               <button
@@ -156,6 +158,7 @@ const Table = ({
               </div>
             )}
             ThComponent={CustomHeaderCell}
+            csvContactsLoading={csvContactsLoading}
           />
         ) : (
           <ReactTable
@@ -178,6 +181,7 @@ const Table = ({
               </div>
             )}
             ThComponent={CustomHeaderCell}
+            csvContactsLoading={csvContactsLoading}
           />
         )
       }
@@ -222,6 +226,7 @@ Table.propTypes = {
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
   onCsvExportContacts: PropTypes.func,
+  csvContactsLoading: PropTypes.bool,
 };
 
 Table.defaultProps = {
@@ -253,6 +258,7 @@ Table.defaultProps = {
   toggleItem: null,
   updateColumns: null,
   onCsvExportContacts: () => {},
+  csvContactsLoading: false,
 };
 
 export default Table;

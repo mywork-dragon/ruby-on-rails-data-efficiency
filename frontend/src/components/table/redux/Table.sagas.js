@@ -1,11 +1,16 @@
-import { all, takeLatest, select, call } from 'redux-saga/effects';
+import { all, takeLatest, select, call, put } from 'redux-saga/effects';
 import { setPreferredPageSize } from 'utils/table.utils';
-import { currentQueryId } from 'selectors/explore.selectors'
+import { currentQueryId } from 'selectors/explore.selectors';
 import { buildContactsExportCsvRequest } from 'utils/explore/queryBuilder.utils';
 import service from 'services/mightyQuery.service';
 import publisherService from 'services/publisher.service';
 
-import { UPDATE_DEFAULT_PAGE_SIZE, PUBLISHERS_CONTACTS_CSV_EXPORT } from './Table.actions';
+import {
+  UPDATE_DEFAULT_PAGE_SIZE,
+  PUBLISHERS_CONTACTS_CSV_EXPORT_START,
+  PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH,
+} from './Table.actions';
+
 
 function updatePageSize ({ payload: { pageSize } }) {
   setPreferredPageSize(pageSize);
@@ -26,7 +31,6 @@ export default function* tableSaga() {
 function formatDomains(data) {
   return Object.values(data).flat(2).map(domainsHash => domainsHash.domains).flat(2);
 }
-
 
 function downloadCsv(content, name) {
   var hiddenElement = document.createElement('a');
@@ -52,6 +56,7 @@ function* getPublishersContactsExportStatus({payload}) {
     const domains = yield call(formatDomains, pages);
     const res = yield call(publisherService().getContactsExportCsv, domains);
     yield call(downloadCsv, res.data, 'contacts');
+    yield put({ type: PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH });
   } catch (error) {
     yield call(console.log, error);
   }
@@ -59,5 +64,5 @@ function* getPublishersContactsExportStatus({payload}) {
 
 
 function* requestPublisherContactsCsv () {
-  yield takeLatest(PUBLISHERS_CONTACTS_CSV_EXPORT, getPublishersContactsExportStatus);
+  yield takeLatest(PUBLISHERS_CONTACTS_CSV_EXPORT_START, getPublishersContactsExportStatus);
 }

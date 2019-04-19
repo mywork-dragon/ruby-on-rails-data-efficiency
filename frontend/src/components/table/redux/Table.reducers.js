@@ -1,5 +1,6 @@
 import { getPreferredPageSize } from 'utils/table.utils';
 import { headerNames } from './column.models';
+import { PUBLISHERS_CONTACTS_CSV_EXPORT_START, PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH } from './Table.actions';
 
 export { headerNames };
 export { initializeColumns, syncColumns } from 'utils/table.utils';
@@ -17,7 +18,7 @@ export function table(actionTypes, tableOptions) {
     selectedItems: [],
     sort: [{ id: headerNames.APP, desc: false }],
     resultsCount: 0,
-    contactsData: [],
+    csvContactsLoading: false,
     ...tableOptions,
   };
 
@@ -62,10 +63,15 @@ export function table(actionTypes, tableOptions) {
           ...state,
           pageSize: action.payload.newSize,
         };
-      case actionTypes.PUBLISHERS_CONTACTS_CSV_EXPORT:
+      case PUBLISHERS_CONTACTS_CSV_EXPORT_START:
         return {
           ...state,
-          contactsData: action.payload.data,
+          csvContactsLoading: true,
+        };
+      case PUBLISHERS_CONTACTS_CSV_EXPORT_FINISH:
+        return {
+          ...state,
+          csvContactsLoading: false,
         };
       default:
         return state;
