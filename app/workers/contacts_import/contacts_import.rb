@@ -17,21 +17,22 @@ class ContactsImport
   MAX_RETRIES = 5
 
   def perform(file_name, file_content)
+    print_to_screen = false	  
     contacts_data = CSV.parse(file_content, :headers => true)
     headers, *contacts_data = contacts_data.to_a
     fields_map = headers.each_with_index.inject({}){|memo,(name, position)| memo[name] = position and memo }
 
     contacts_to_save = []
+    websites = {}
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
-    redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
+    redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'], timeout: 2)
 
     begin
       ClearbitContact.transaction do
-
-
         contacts_to_save = contacts_data.map do |contact_raw|
+          print('**') if print_to_screen
           employee_email = contact_raw[fields_map[ 'employee_email'           ]].presence
           given_name     = contact_raw[fields_map[ 'employee_first_name'      ]].presence
           family_name    = contact_raw[fields_map[ 'employee_last_name'       ]].presence
@@ -40,8 +41,10 @@ class ContactsImport
           quality        = contact_raw[fields_map[ 'employee_email_confidence']].presence
           domain         = contact_raw[fields_map[ 'domain'                   ]].presence
 
-          ClearbitContact.find_or_initialize_by(email: employee_email).tap do |contact_obj|
+          cbc = ClearbitContact.find_or_initialize_by(email: employee_email).tap do |contact_obj|
+	    print('=') if print_to_screen
             website_digest            = Digest::MD5.hexdigest "http://#{domain}-#{domain}"
+	    domain_digest             = Digest::MD5.hexdigest domain
             contact_obj.full_name     = "#{given_name} #{family_name}".strip.presence
 
             contact_obj.given_name    = given_name     if given_name
@@ -51,30 +54,56 @@ class ContactsImport
             contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
             contact_obj.title         = title.andand.truncate(190)    if title
             begin
-              cached_website = redis.get(website_digest)
+	      print('~1') if print_to_screen
+              cached_website =  websites[website_digest] || redis.get(website_digest)
               contact_obj.website     = if cached_website
+					  print '.'
                                           Marshal.load(cached_website)
                                         else
-                                          Website.find_or_create_by!(url: "http://#{domain}", domain: domain).tap do |web|
-                                            redis.set(website_digest, Marshal.dump(web), ex: 60.days.to_i)
+					  print '!'
+					  Website.where('url=? OR domain=?', "http://#{domain}", domain: domain).first_or_create.tap do |web|
+				            marshaled_web = Marshal.dump(web) 
+					    websites[website_digest] = marshaled_web	  
+                                            redis.set(website_digest, marshaled_web, ex: 10.days.to_i)
                                           end
                                         end
             rescue ActiveRecord::RecordNotUnique
-              retry
+	      #byebug
+	      redis.del(website_digest)
+	      @retries_website ||= 0
+              if @retries_website < MAX_RETRIES
+                @retries_website += 1
+                logger.error("Retry #{@retries}:  #{file_name} = #{error.message}")
+                retry
+              else
+                raise error
+              end
             end
 
             begin
-              contact_obj.website.domain_datum  = DomainDatum.find_or_create_by(domain: domain)
+              print('~2') if print_to_screen
+	      cached_domain = redis.get(domain_digest)
+              contact_obj.website.domain_datum  = if cached_domain
+                                                     Marshal.load(cached_domain)
+                                                   else
+                                                     DomainDatum.find_or_create_by!(domain: domain).tap do |dd|
+                                                       redis.set(domain_digest, Marshal.dump(dd), ex: 10.days.to_i)
+                                                     end
+                                                   end
             rescue ActiveRecord::RecordNotUnique
+	      redis.del(domain_digest)
               retry
             end
+	    print('=') if print_to_screen
           end
+	  p('**') if print_to_screen
+	  cbc
         end
         ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
       end
-    rescue Mysql2::Error => error
+    rescue Mysql2::Error, Redis::TimeoutError => error
       ActiveRecord::Base.logger = old_logger
-      @retries || 0
+      @retries ||= 0
       if @retries < MAX_RETRIES
         @retries += 1
         logger.error("Retry #{@retries}:  #{file_name} = #{error.message}")
@@ -84,6 +113,7 @@ class ContactsImport
       end
     end
   rescue StandardError => e
+    #byebug
     ActiveRecord::Base.logger = old_logger
     logger.error("#{file_name} = #{e.message}")
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")
