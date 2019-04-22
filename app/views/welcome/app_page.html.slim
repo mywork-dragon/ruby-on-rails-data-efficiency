@@ -21,7 +21,7 @@
               span.label.label-warning
                 | App is no longer available in the app store
     .col-md-3.col-xs-12
-      a{href="#{@json_app['app_store_url']}" target='_blank'}
+      a href=@json_app['app_store_url'].to_s target='_blank'
         button.btn.btn-primary.mt-3.ml-3.ml-md-0
           | View in App Store
 
@@ -87,8 +87,8 @@
               | Number of Apps: #{@json_publisher['apps'].size}, including
             .pub-apps
               - @top_apps.each do |app|
-                a.app-logo-link href="#{ app['public_link'] }"
-                  img.app-logo.sm-logo src="#{ app['icon_url'] }" alt="#{ app['name'] }"
+                a.app-logo-link href=app['public_link'].to_s
+                  img.app-logo.sm-logo src=app['icon_url'].to_s alt=app['name'].to_s
             | Latest Update/Release: #{ @latest_update } days ago
 
 .white-panel

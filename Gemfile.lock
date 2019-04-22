@@ -23,6 +23,14 @@ GIT
       xml-simple
 
 GIT
+  remote: https://github.com/rails/actionpack-action_caching.git
+  revision: 4c3cdbe714d567558126bff02b5148740709e581
+  branch: master
+  specs:
+    actionpack-action_caching (1.2.0)
+      actionpack (>= 4.0.0)
+
+GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git
   revision: 884cc27bb3e3b2c1f2679068d7b636dc2d256b0c
   specs:
@@ -58,14 +66,6 @@ GIT
   specs:
     ruby_apk (0.7.1.pre.patched)
       rubyzip (= 1.1.7)
-
-GIT
-  remote: https://github.com/rails/actionpack-action_caching.git
-  revision: 4c3cdbe714d567558126bff02b5148740709e581
-  branch: master
-  specs:
-    actionpack-action_caching (1.2.0)
-      actionpack (>= 4.0.0)
 
 GEM
   remote: https://rubygems.org/

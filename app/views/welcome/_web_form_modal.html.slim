@@ -28,18 +28,18 @@
                   | Please provide your email.
             .form-group.row
               .col-md-12
-                input#phone.form-control name="phone" placeholder=("Phone Number") type="text" required=true
-                .invalid-feedback
-                  | Please provide your phone number.
+                input#phone.form-control name="phone" placeholder=("Phone Number") type="text"
+                / .invalid-feedback
+                /   | Please provide your phone number.
             .form-group.row
               .col-md-12
                 input#company.form-control name="company" placeholder="Company" type="text"
-                .valid-feedback
-                  | Some message
+                / .valid-feedback
+                /   | Some message
             .form-group
               textarea#message.form-control name="message" placeholder=("Your Message")
-              .valid-feedback
-                | Some message
+              / .valid-feedback
+              /   | Some message
             = recaptcha_tags
             br
             .form-group.text-center

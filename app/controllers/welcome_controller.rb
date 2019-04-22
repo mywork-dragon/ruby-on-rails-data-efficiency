@@ -126,7 +126,6 @@ class WelcomeController < ApplicationController
       memo
     end
     @categories = @json_app['categories'].andand.map{|cat| cat['name']}
-    ap @json_app.except('sdk_activity').except('ratings_history')
   end
 
   def android_app_sdks

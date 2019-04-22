@@ -136,23 +136,31 @@
               p
         .col-md-3
         .col-md-6.offset-md-3
-          form accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form"
+          form.needs-validation accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form" novalidate=true
             div style="display:none"
-              input name="utf8" type="hidden" value="✓" /
-              input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
+              input name="utf8" type="hidden" value="✓"
+              input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY="
               = hidden_field_tag('button_id', 'main')
             .form-group
-              input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required="" /
+              input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required=true
+              .invalid-feedback
+                | Please provide your name.
             .form-group
-              input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required="" /
+              input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required=true
+              .invalid-feedback
+                | Please provide your surname.
             .form-group
-              input#company.form-control name="company" placeholder="Company" type="text" /
+              input#company.form-control name="company" placeholder="Company" type="text"
             .form-group
-              input#email.form-control name="email" placeholder="Email" type="email" required="" /
+              input#email.form-control name="email" placeholder="Email" type="email" required=true
+              .invalid-feedback
+                | Please provide your email.
             .form-group
-              input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+              input#phone.form-control name="phone" placeholder=("Phone Number") type="text"
             .form-group
-              textarea#message.form-control name="message" placeholder=("Your Message") required=""
+              textarea#message.form-control name="message" placeholder=("Your Message") required=true
+              .invalid-feedback
+                | Please provide your message.
             - unless Rails.env.development?
               = recaptcha_tags
             br
