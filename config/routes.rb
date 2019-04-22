@@ -310,6 +310,10 @@ Rails.application.routes.draw do
       get 'android/publisher' => 'android_publisher#filter'
       get 'android/publisher/:id' => 'android_publisher#show'
 
+      # Contacts
+      get 'ios/publisher/:publisher_id/contacts' => 'ios_publisher#contacts'
+      get 'android/publisher/:publisher_id/contacts' => 'android_publisher#contacts'
+
       # misc
       get 'app_company' => 'app_companies#show'
       get 'rate-limit' => 'rate_limit#show'
