@@ -17,17 +17,16 @@ class ContactsImport
   MAX_RETRIES = 5
 
   def perform(file_name, file_content)
-    print_to_screen = false	  
+    print_to_screen = true
     contacts_data = CSV.parse(file_content, :headers => true)
     headers, *contacts_data = contacts_data.to_a
     fields_map = headers.each_with_index.inject({}){|memo,(name, position)| memo[name] = position and memo }
 
     contacts_to_save = []
     websites = {}
+    domains = {}
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
-
-    redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'], timeout: 2)
 
     begin
       ClearbitContact.transaction do
@@ -42,9 +41,9 @@ class ContactsImport
           domain         = contact_raw[fields_map[ 'domain'                   ]].presence
 
           cbc = ClearbitContact.find_or_initialize_by(email: employee_email).tap do |contact_obj|
-	    print('=') if print_to_screen
+      	    print('=') if print_to_screen
             website_digest            = Digest::MD5.hexdigest "http://#{domain}-#{domain}"
-	    domain_digest             = Digest::MD5.hexdigest domain
+      	    domain_digest             = Digest::MD5.hexdigest domain
             contact_obj.full_name     = "#{given_name} #{family_name}".strip.presence
 
             contact_obj.given_name    = given_name     if given_name
@@ -54,50 +53,28 @@ class ContactsImport
             contact_obj.linkedin      = linkedin.andand.truncate(190) if linkedin
             contact_obj.title         = title.andand.truncate(190)    if title
             begin
-	      print('~1') if print_to_screen
-              cached_website =  websites[website_digest] || redis.get(website_digest)
-              contact_obj.website     = if cached_website
-					  print '.'
-                                          Marshal.load(cached_website)
-                                        else
-					  print '!'
-					  Website.where('url=? OR domain=?', "http://#{domain}", domain: domain).first_or_create.tap do |web|
-				            marshaled_web = Marshal.dump(web) 
-					    websites[website_digest] = marshaled_web	  
-                                            redis.set(website_digest, marshaled_web, ex: 10.days.to_i)
-                                          end
+      	      print('~1') if print_to_screen
+              contact_obj.website    =  websites[website_digest] ||
+                                        Website.where('url=? OR domain=?', "http://#{domain}", domain: domain).first_or_create(url: "http://#{domain}", domain: domain).tap do |web|
+					                                websites[website_digest] = web
                                         end
             rescue ActiveRecord::RecordNotUnique
-	      #byebug
-	      redis.del(website_digest)
-	      @retries_website ||= 0
-              if @retries_website < MAX_RETRIES
-                @retries_website += 1
-                logger.error("Retry #{@retries}:  #{file_name} = #{error.message}")
-                retry
-              else
-                raise error
-              end
+              retry
             end
 
             begin
               print('~2') if print_to_screen
-	      cached_domain = redis.get(domain_digest)
-              contact_obj.website.domain_datum  = if cached_domain
-                                                     Marshal.load(cached_domain)
-                                                   else
-                                                     DomainDatum.find_or_create_by!(domain: domain).tap do |dd|
-                                                       redis.set(domain_digest, Marshal.dump(dd), ex: 10.days.to_i)
-                                                     end
-                                                   end
+              contact_obj.website.domain_datum  = domains[domain_digest] ||
+                                                  DomainDatum.where(domain: domain).first_or_create(domain: domain).tap do |dd|
+                                                    domains[domain_digest] =  dd
+                                                  end
             rescue ActiveRecord::RecordNotUnique
-	      redis.del(domain_digest)
               retry
             end
-	    print('=') if print_to_screen
+      	    print('=') if print_to_screen
           end
-	  p('**') if print_to_screen
-	  cbc
+      	  p('**') if print_to_screen
+      	  cbc
         end
         ClearbitContact.import contacts_to_save, on_duplicate_key_update: [:given_name, :family_name, :linkedin, :email, :title, :quality]
       end
