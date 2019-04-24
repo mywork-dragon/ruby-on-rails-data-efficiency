@@ -17,8 +17,10 @@ class ClientApi::IosPublisherController < ApplicationController
 
   def contacts
     publisher_id = params.fetch(:publisher_id)
-    developer = IosDeveloper.find(publisher_id)
     ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('ios_contacts')
+    developer = IosDeveloper.find(publisher_id)
     render json: ClearbitContact.get_contacts_for_developer(developer, nil).as_json
+  rescue ActiveRecord::RecordNotFound => e
+    render json: {error: e.to_s}, status: :not_found
   end
 end

@@ -66,5 +66,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   # Subdomain helper
+  # this helper is used to setup the subdomain in the rspec tests
+  # see this https://stackoverflow.com/questions/2556627/rails-rspec-set-subdomain
   config.extend RequestSubdomainHelpers, type: :request
 end

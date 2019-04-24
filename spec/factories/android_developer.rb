@@ -1,16 +1,15 @@
 FactoryGirl.define do
   factory :android_developer do
+    name  { Faker::Name.name }
 
-    factory :android_developer_with_valid_websites do
-      transient do
-        valid_websites_count 1
-      end
-
-      after(:create) do |android_developer, evaluator|
-        create_list(:valid_websites, evaluator.valid_websites_count, android_developer: android_developer)
-      end
+    transient do
+      domain  Faker::Internet.domain_name
     end
 
+    after(:create) do |android_developer, evaluator|
+      android_developer.websites << FactoryGirl.create(:website, domain: evaluator.domain, url: "www.test.#{evaluator.domain}")
+      FactoryGirl.create(:domain_datum, domain: evaluator.domain, name: evaluator.domain)
+    end
   end     
 end
   
