@@ -83,10 +83,11 @@ export const selectMap = (type) => {
       [headerNames.LAST_SEEN_ADS]: ['last_seen_ads'],
       [headerNames.LAST_UPDATED]: ['last_app_update_date'],
       [headerNames.NUM_APPS]: ['number_of_apps'],
-      [headerNames.PUBLISHER]: ['name', 'publisher_identifier', 'domains', 'id', 'icon_url', 'companies'],
+      [headerNames.PUBLISHER]: ['name', 'publisher_identifier', 'domains', 'id', 'icon_url', 'companies', 'total_contacts'],
       [headerNames.PLATFORM]: ['platform'],
       [headerNames.RATING]: ['average_ratings'],
       [headerNames.RATINGS_COUNT]: ['total_ratings'],
+      [headerNames.TOTAL_CONCTACTS]: ['total_contacts'],
     };
   }
 
@@ -176,6 +177,7 @@ export const csvSelect = (facebookOnly, resultType, form) => {
       country: true,
       postal_code: true,
       domains: true,
+      total_contacts: true,
     };
 
     if (!facebookOnly) {

@@ -65,6 +65,7 @@ export function publisherColumns () {
     headerNames.RATINGS_COUNT,
     headerNames.DOWNLOADS,
     headerNames.LAST_UPDATED,
+    headerNames.TOTAL_CONTACTS,
   ];
 
   const initialColumns = [

@@ -84,7 +84,8 @@ class IosDeveloper < ActiveRecord::Base
       platform: :ios,
       publisher_identifier: identifier,
       websites: website_urls,
-      apps: ios_apps.pluck(:id).map {|x| {"id" => x,"platform" => "ios"}}
+      apps: ios_apps.pluck(:id).map {|x| {"id" => x,"platform" => "ios"}},
+      contacts: websites.joins(:clearbit_contacts).count
     }
   end
 
