@@ -20,6 +20,9 @@ jobs:
                 name: Run tests
                 command: docker-compose -f circleci-compose.yml run varys bash -c "sleep 5 && rake db:create db:schema:load test"
             - run:
+                name: Run specs
+                command: docker-compose -f circleci-compose.yml run varys rspec
+            - run:
                 name: Run frontend tests
                 command: docker-compose -f circleci-compose.yml run varys bash -c "sleep 5 && cd frontend/ && yarn install && yarn test --coverage"
     build:

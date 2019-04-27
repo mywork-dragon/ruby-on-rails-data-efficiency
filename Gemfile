@@ -24,7 +24,7 @@ gem 'foundation-rails', '5.4.3.1'
 gem 'sass-rails'
 
 # bootstrap css, read here https://github.com/twbs/bootstrap-sass
-gem 'bootstrap-sass', '3.2.0'
+gem 'bootstrap-sass', '3.3.0' #bumped: https://snyk.io/blog/malicious-remote-code-execution-backdoor-discovered-in-the-popular-bootstrap-sass-ruby-gem/
 gem 'autoprefixer-rails'
 
 # Use jquery as the JavaScript library
@@ -141,7 +141,7 @@ gem 'chewy', '0.8.4'
 
 gem 'paperclip', '~>5.0.0.beta2'
 
-gem 'mighty_aws', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git', tag: '0.9.0'
+gem 'mighty_aws', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git', tag: '0.9.1'
 
 gem 'colorize', '0.7.7'
 
@@ -156,7 +156,6 @@ gem 'seed_dump'
 # for browser detection
 gem 'browser', '2.5.2'
 
-gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
 
 # for mass inserts
@@ -165,16 +164,9 @@ gem 'activerecord-import', '0.13.0'
 # for mighty bot
 gem 'twitter', '5.16.0'
 gem 'googl', '0.7.1'
-# gem 'daemons', '1.2.3'
-
-# for syntax checks
-gem 'rubocop', group: [:development, :test]
 
 # for mightyapk's protocol buffer
 gem 'ruby-protocol-buffers', '~>1.6.1'
-
-# for non-Docker local development
-gem 'dotenv-rails', '~>2.1.1', group: [:development, :test]
 
 # for JSON logs
 gem 'lograge', '~> 0.4.1'
@@ -189,9 +181,21 @@ gem 'simplecov', '~>0.15.1', :require => false, :group => :test
 
 
 group :development, :test do
-  gem 'rspec-mocks', '~> 3.5'
-  gem 'minitest', '~> 5.1'
   gem "mocha", '~> 1.3.0'
+  # for non-Docker local development
+  gem 'dotenv-rails', '~>2.1.1'
+  gem 'rubocop'
+  gem 'byebug'
+end
+
+group :test do
+  gem 'rspec-rails', '~> 3.8'
+  gem 'minitest', '~> 5.1'
+  gem 'database_cleaner'
+end
+
+group :development, :staging, :test do
+  gem 'factory_girl_rails'
 end
 
 # for manipulate IPA plists
@@ -214,3 +218,6 @@ gem 'activerecord4-redshift-adapter', '~> 0.2.4', git: 'https://11eba4fe4c8c9782
 gem 'pg', '~> 0.21'
 
 gem 'healthy_pools', '2.2.5'
+
+# Butter is a blogging platform. See https://buttercms.com for details.
+gem 'buttercms-rails'

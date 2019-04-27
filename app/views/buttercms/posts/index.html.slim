@@ -1,0 +1,17 @@
+= render 'buttercms/sub_header_for_blogs'
+.index-template
+  = render 'buttercms/blog_categories', style_class: 'mobile-search-widget'
+  = render 'buttercms/blog_search', style_class: 'mobile-search-widget'
+  - if @posts.count > 0
+    .mdl-grid.posts-container
+      - @posts.each do |post|
+        = render :partial => 'posts_list_item', :locals => {:post => post, :style => ''}
+  - else
+    .not_found
+      p No posts were found
+  .sidebar
+    = render 'buttercms/blog_categories', style_class: 'search-widget'
+    = render 'buttercms/blog_search', style_class: 'search-widget'
+    = render 'buttercms/newsletter'
+    = render 'buttercms/request_demo'
+= paginate @paginatable_array, window: 2, outer_window: 1
