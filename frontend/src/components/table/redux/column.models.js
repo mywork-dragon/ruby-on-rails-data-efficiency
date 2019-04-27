@@ -79,6 +79,7 @@ export const headerNames = {
   TOTAL_CREATIVES_SEEN: 'Total Creatives Seen',
   USER_BASE: 'User Base',
   WEEKLY_CHANGE: '1 Week Rank Change',
+  TOTAL_CONTACTS: 'Total Contacts',
 };
 
 export const columnModels = [
@@ -350,5 +351,13 @@ export const columnModels = [
     accessor: 'rankings',
     minWidth: widths.large,
     Cell: cell => <RankChangeCell app={cell.original} changeType="week" {...cell.tdProps.rest} />,
+  },
+  {
+    Header: headerNames.TOTAL_CONTACTS,
+    id: headerNames.TOTAL_CONTACTS,
+    accessor: 'total_contacts',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => cell.value,
   },
 ];

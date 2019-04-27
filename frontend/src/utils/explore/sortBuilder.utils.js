@@ -127,6 +127,7 @@ export const sortMap = (form) => {
       [headerNames.NUM_APPS]: { field: 'id', object: 'app', function: 'count' },
       [headerNames.RATING]: { field: 'average_rating', object: 'app' },
       [headerNames.RATINGS_COUNT]: { field: 'all_version_ratings_count', object: 'app', function: 'sum' },
+      [headerNames.TOTAL_CONTACTS]: { field: 'total_contacts', object: 'app'},
     };
   }
 
