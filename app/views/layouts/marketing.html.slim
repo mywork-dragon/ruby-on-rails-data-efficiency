@@ -61,62 +61,6 @@ html lang="en"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
           |×
         = content_tag :div, msg.split(",").join("\n"), :id => "flash_#{name}"
-    /! ==============Logo &amp; Menu Bar=================
-    nav.navbar.navbar-default.navbar-fixed-top role="navigation"
-      /! Brand and toggle get grouped for better mobile display
-      .container.nav-bar-container
-        .navbar-header
-          button.navbar-toggle data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button"
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a href='/'
-            img#headerLogo.navbar-brand alt="MightySignal - Mobile App & SDK Intelligence for iOS / Android" href="#" src="/lib/images/mighty_signal_logo_white.png" /
-        /! Collect the nav links, forms, and other content for toggling
-        .collapse.navbar-collapse.navbar-ex1-collapse
-          ul.nav.navbar-nav.navbar-right
-            - if browser.device.mobile?
-              li
-                  = link_to 'The Mightiest Mobile Data', data_path
-              li
-                  = link_to 'Web Portal', web_portal_path
-              li
-                  = link_to 'Salesforce Integration', salesforce_integration_path
-              li
-                  = link_to 'API', the_api_path
-              li
-                  = link_to 'Data Feed', data_feed_path
-            - else
-              li.custom-menu-item
-                .dropdown.show
-                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Capabilities
-                  .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href=data_path The Mightiest Mobile Data
-                    a class="dropdown-item" href=web_portal_path Web Portal
-                    a class="dropdown-item" href=salesforce_integration_path Salesforce Integration
-                    a class="dropdown-item" href=the_api_path API
-                    a class="dropdown-item" href=data_feed_path Data Feed
-            - if browser.device.mobile?
-              li
-                = link_to 'Lead Generation', lead_generation_path
-              li
-                  = link_to 'Account Based Marketing', abm_path
-              li
-                  = link_to 'SDK Intelligence', sdk_intelligence_path
-            - else
-              li.custom-menu-item
-                .dropdown.show
-                  a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Solutions
-                  .dropdown-menu aria-labelledby="dropdownMenuLink"
-                    a class="dropdown-item" href=lead_generation_path Lead Generation
-                    a class="dropdown-item" href=abm_path Account-Based Marketing
-                    a class="dropdown-item" href=sdk_intelligence_path SDK Intelligence
-                    a class="dropdown-item" href=publisher_contacts_path Publisher Contacts
-            li
-              = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
-            li
-              a href="http://blog.mightysignal.com" target="_blank"  BLOG
 
     = render 'layouts/header'
 
