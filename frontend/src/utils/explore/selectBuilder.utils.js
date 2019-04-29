@@ -94,6 +94,18 @@ export const selectMap = (type) => {
   return null;
 };
 
+export const csvContactsSelect = () => {
+  let fields = {
+    domains: true,
+  };
+  return {
+    object: 'publisher',
+    fields: {
+      'publisher': fields,
+    },
+  };
+};
+
 export const csvSelect = (facebookOnly, resultType, form) => {
   let fields = {
     name: true,
