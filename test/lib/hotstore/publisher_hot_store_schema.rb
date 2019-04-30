@@ -48,6 +48,7 @@ module PublisherHotStoreSchema
       "raised"=> Integer,
       "annual_revenue"=> Integer,
       "fortune_1000_rank"=> Integer
+
     }
 
   @@APP_SCHEMA = {
@@ -62,7 +63,8 @@ module PublisherHotStoreSchema
     "id" => Integer,
     "platform" => String,
     "apps" => [@@APP_SCHEMA],
-    "websites" => [ String ]
+    "websites" => [ String ],
+    "contacts" => Integer
   }
 
 end

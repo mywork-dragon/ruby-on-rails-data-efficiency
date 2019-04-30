@@ -7,18 +7,19 @@ class PublisherHotStoreImportWorker
   end
 
   def perform(platform, publisher_id)
+    
     @hot_store.write(platform, publisher_id)
   end
 
   def queue_ios_publishers
-    IosDeveloper.pluck(:id).map do |id|
-      PublisherHotStoreImportWorker.perform_async("ios", id)
+    IosDeveloper.find_in_batches(start:1, batch_size: 1000) do |group| 
+      group.each { |iosd| PublisherHotStoreImportWorker.perform_async('ios', iosd.id) }
     end
   end
 
   def queue_android_publishers
-    AndroidDeveloper.pluck(:id).map do |id|
-      PublisherHotStoreImportWorker.perform_async("android", id)
+    AndroidDeveloper.find_in_batches(start:1, batch_size: 1000) do |group| 
+      group.each { |andrd| PublisherHotStoreImportWorker.perform_async('android', andrd.id) }
     end
   end
   
