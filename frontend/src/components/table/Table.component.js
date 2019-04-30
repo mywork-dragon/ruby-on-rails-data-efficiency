@@ -43,6 +43,8 @@ const Table = ({
   toggleItem,
   updateColumns,
   updateDefaultPageSize,
+  onCsvExportContacts,
+  csvContactsLoading,
   ...rest
 }) => {
   const allSelected = selectedItems.length === results.length;
@@ -89,6 +91,22 @@ const Table = ({
                 disabled
               >
                 Export to CSV
+              </button>
+            )}
+            {resultType === 'publisher' ? (
+              <button
+                className="btn btn-primary pull-right"
+                onClick={() => onCsvExportContacts()}
+                disabled={csvContactsLoading}
+              >
+                {csvContactsLoading ? 'Loading' : 'Export Contacts'}
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary pull-right"
+                disabled
+              >
+                Export Contacts
               </button>
             )}
             {toggleAll && toggleItem && resultType === 'app' && (
@@ -140,6 +158,7 @@ const Table = ({
               </div>
             )}
             ThComponent={CustomHeaderCell}
+            csvContactsLoading={csvContactsLoading}
           />
         ) : (
           <ReactTable
@@ -162,6 +181,7 @@ const Table = ({
               </div>
             )}
             ThComponent={CustomHeaderCell}
+            csvContactsLoading={csvContactsLoading}
           />
         )
       }
@@ -205,6 +225,8 @@ Table.propTypes = {
   resultsCount: PropTypes.number.isRequired,
   updateColumns: PropTypes.func,
   updateDefaultPageSize: PropTypes.func.isRequired,
+  onCsvExportContacts: PropTypes.func,
+  csvContactsLoading: PropTypes.bool,
 };
 
 Table.defaultProps = {
@@ -235,6 +257,8 @@ Table.defaultProps = {
   toggleAll: null,
   toggleItem: null,
   updateColumns: null,
+  onCsvExportContacts: () => {},
+  csvContactsLoading: false,
 };
 
 export default Table;
