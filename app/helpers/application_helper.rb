@@ -55,12 +55,8 @@ module ApplicationHelper
     label
   end
 
-  def mobile_or_tablet_device?
-    browser.device.mobile? || browser.device.tablet?
-  end
-
-  def desktop_or_tablet_device?
-    !browser.device.mobile? || browser.device.tablet?
+  def header_styles
+    browser.device.mobile? ? 'navbar-expand-lg' : 'navbar-expand-md fixed-top'
   end
 
 end

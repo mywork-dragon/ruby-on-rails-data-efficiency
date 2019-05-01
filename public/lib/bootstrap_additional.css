@@ -66,52 +66,55 @@ nav.navbar.categories-bg button,
     font-size: 1.125rem;
 }
 
-nav .container-fluid .navbar-collapse .desktop-content {
-    display: flex;
+#app-search {
+    min-width: 200px !important;
+    max-width: 300px !important;
 }
 
-nav .container-fluid .navbar-collapse .mobile-content {
-    display: none;
+.easy-autocomplete.eac-round ul {
+    min-width: 200px !important;
+    max-width: 300px !important;
 }
+
+/*nav .container-fluid .navbar-collapse .desktop-content {*/
+/*    display: flex;*/
+/*}*/
+
+/*nav .container-fluid .navbar-collapse .mobile-content {*/
+/*    display: none;*/
+/*}*/
 
 @media only screen and (max-width: 1200px) {
     #app-search {
-        min-width: 200px;
+        max-width: 200px !important;
     }
 
     .easy-autocomplete.eac-round ul {
-        min-width: 200px !important;
-    }
-
-    .header-font-normalize {
-        letter-spacing: -1px !important;
+        max-width: 200px !important;
     }
 
 }
 
-@media only screen and (max-width: 992px) {
-    nav .container-fluid .navbar-collapse .desktop-content {
-        display: none;
+@media only screen and (max-width: 992px) and (orientation: landscape){
+    .scrollable-menu {
+        height: auto;
+        max-height: 220px !important;
+        overflow-x: hidden;
     }
+}
 
-    nav .container-fluid .navbar-collapse .mobile-content {
-        display: flex;
-    }
+@media only screen and (max-width: 992px) {
 
     #app-search {
-        min-width: 150px;
+        max-width: 300px !important;
     }
 
     .easy-autocomplete.eac-round ul {
-        min-width: 150px !important;
+        max-width: 300px !important;
     }
 
-    .header-font-normalize {
-        word-spacing: -2px;
-    }
-
-    .nav-item a {
-        padding: 10px 15px !important;
+    .nav-item.dropdown a {
+        padding: 10px !important;
     }
 
     .heading-font-normalize {
@@ -128,12 +131,6 @@ nav .container-fluid .navbar-collapse .mobile-content {
         height: 36px !important;
     }
 
-    .scrollable-menu {
-        height: auto;
-        max-height: 370px;
-        overflow-x: hidden;
-    }
-
     .g-recaptcha {
         transform: scale(0.9);
         transform-origin: 0 0;
@@ -143,12 +140,35 @@ nav .container-fluid .navbar-collapse .mobile-content {
         margin: 0 !important;
     }
 
+    /*nav .container-fluid .navbar-collapse .desktop-content {*/
+    /*    display: none;*/
+    /*}*/
+
+    /*nav .container-fluid .navbar-collapse .mobile-content {*/
+    /*    display: flex;*/
+    /*}*/
+
+    /*ul.nav.navbar-nav {*/
+    /*    flex-direction: column;*/
+    /*}*/
+
 }
 
 @media only screen and (max-width: 576px) {
     .full-width-xs {
         width: 100%;
     }
+
+    .scrollable-menu {
+        height: auto;
+        max-height: 370px;
+        overflow-x: hidden;
+    }
+
+    /*ul.nav.navbar-nav {*/
+    /*    flex-direction: column;*/
+    /*}*/
+
 }
 
 /* APP PAGE STYLES */

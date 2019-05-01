@@ -1,16 +1,14 @@
 /! ==============Logo &amp; Menu Bar=================
-nav.navbar.navbar-expand-lg.navbar-dark.fixed-top.p-0.mb-3 role="navigation"
+nav.header-nav.navbar.navbar-dark.p-0.mb-3 role="navigation" class="#{header_styles}"
   /! Brand and toggle get grouped for better mobile display
   .container-fluid.p-0.nav-bar-container
     a href='/'
       img.img-fluid.navbar-brand#headerLogo alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png" /
-    button.navbar-toggler.mr-3 data-target="#navbar-ex1-collapse" data-toggle="collapse" type="button"
+    button.navbar-toggler.mr-3 data-target="#navbar-header-collapse" data-toggle="collapse" type="button"
       span.navbar-toggler-icon
     /! Collect the nav links, forms, and other content for toggling
-    .collapse.navbar-collapse#navbar-ex1-collapse.justify-content-end.scrollable-menu
-      // Here conditionally rendered header content for desktop or mobile devices
-      // When a device is a tablet rendered both partials because for tablets with viewport screen width
-      // more then 992px we show desktop partial, for tablets with viewport width less than 992px we show
-      // mobile partial. This rule works on CSS in additional_bootstrap.css.
-      = render 'layouts/header_content/desktop' if desktop_or_tablet_device?
-      = render 'layouts/header_content/mobile' if mobile_or_tablet_device?
+    .collapse.navbar-collapse#navbar-header-collapse.scrollable-menu
+      ul.nav.navbar-nav.pl-lg-0.pb-0.w-100.justify-content-end
+        = render 'layouts/header_content/desktop' unless browser.device.mobile?
+        = render 'layouts/header_content/mobile' if browser.device.mobile?
+        = render 'layouts/header_content/common_controls'
