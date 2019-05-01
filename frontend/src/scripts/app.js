@@ -10,7 +10,7 @@ import $ from 'jquery';
 window.API_URI_BASE = `${window.location.protocol}//${window.location.host}/`;
 window.APP_PLATFORM = 'ios'; // Default
 window.JWT_TOKEN_NAME = 'ms_jwt_auth_token';
-window.MQUERY_SERVICE = 'http://54.224.31.240:5000';
+window.MQUERY_SERVICE = 'http://mightyquery-staging-1309764538.us-east-1.elb.amazonaws.com';
 
 if (window.location.host === 'localhost:3000') {
   window.JWT_TOKEN_NAME = 'dev_ms_jwt_auth_token';
