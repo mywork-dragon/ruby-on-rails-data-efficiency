@@ -83,7 +83,7 @@ class AndroidDeveloper < ActiveRecord::Base
       publisher_identifier: identifier,
       websites: website_urls,
       apps: android_apps.pluck(:id).map {|x| {"id" => x,"platform" => "android"}},
-      contacts: websites.joins(:clearbit_contacts).count
+      contacts: ContactDiscoveryService.new.get_contacts_for_developer(self, nil).count
     }
   end
 
