@@ -21,7 +21,7 @@
     /! End Autopilot
 - content_for :own_scripts do
 - content_for :body do
-  body.blog-container
+  body.blog-container class="#{blog_container_mobile}"
     = render 'layouts/header'
     - if flash[:alert]
       .alert-wrapper

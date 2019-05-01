@@ -730,6 +730,10 @@ nav ul.pagination .page-item.active .page-link {
 }
 
 @media only screen and (max-width: 960px) {
+    .blog-container-mobile {
+        margin: 0 !important;
+    }
+
     .blog_header {
         width: 100%;
         max-width: 620px;

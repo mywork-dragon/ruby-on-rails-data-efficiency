@@ -2,11 +2,11 @@
 - provide :meta_description, "Use real-time SDK and ad intelligence to find new customers."
 
 .solution-page
-  .jumbotron
+  .jumbotron class="#{jumbotron_mobile}"
     .container
       - if @creative.present?
         img.img-fluid src=@creative style="display: none;"
-      h1#title.solution-page.heading-font-normalize
+      h1#title.solution-page.heading-font-normalize class="#{heading_margin_normalize}"
         | Lead Generation
       h2#subtitle.solution-page
         | Use real-time SDK and ad intelligence to find new customers.
