@@ -1,14 +1,14 @@
 /! ==============Logo &amp; Menu Bar=================
 nav.header-nav.navbar.navbar-dark.p-0.mb-3 role="navigation" class="#{header_styles}"
   /! Brand and toggle get grouped for better mobile display
-  .container-fluid.p-0.nav-bar-container
+  .container.py-0.px-2.nav-bar-container
     a href='/'
-      img.img-fluid.navbar-brand#headerLogo alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png" /
+      img.navbar-brand#headerLogo alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png"
     button.navbar-toggler.mr-3 data-target="#navbar-header-collapse" data-toggle="collapse" type="button"
       span.navbar-toggler-icon
     /! Collect the nav links, forms, and other content for toggling
     .collapse.navbar-collapse#navbar-header-collapse.scrollable-menu
-      ul.nav.navbar-nav.pl-lg-0.pb-0.w-100.justify-content-end
+      ul.nav.navbar-nav.w-100.justify-content-end
         = render 'layouts/header_content/desktop' unless browser.device.mobile?
         = render 'layouts/header_content/mobile' if browser.device.mobile?
         = render 'layouts/header_content/common_controls'
