@@ -23,7 +23,9 @@
     .col-md-3.col-xs-12
       a href=@json_app['app_store_url'].to_s target='_blank'
         button.btn.btn-primary.mt-3.ml-3.ml-md-0
-          | View in App Store
+          = 'View in '
+          i class="#{platform_icon(@platform)}"
+          = ' store'
 
 .white-panel
   .container.sdk-panel

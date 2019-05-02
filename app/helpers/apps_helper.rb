@@ -32,4 +32,8 @@ module AppsHelper
     @unsorted_apps = apps.map { |a| apps_hot_store.read(a['platform'], a['id']) }
   end
 
+  def platform_icon(platform)
+    platform == 'ios' ? 'fab fa-apple' : 'fab fa-android'
+  end
+
 end
