@@ -4,7 +4,7 @@ require 'lib/hotstore/hot_store_schema_test_base'
 
 ContactDiscoveryService.class_eval do
   def mightybit_get(path)
-    {}.to_json
+    { 'contacts' => [] }.to_json
   end
 end
 
