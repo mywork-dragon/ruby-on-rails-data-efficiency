@@ -121,6 +121,10 @@ nav.navbar.categories-bg button,
         margin-top: 80px !important;
     }
 
+    .free-data-margin-normalize {
+        margin-top: 150px !important;
+    }
+
     .jumbotron-mobile {
         margin-top: -20px !important;
     }

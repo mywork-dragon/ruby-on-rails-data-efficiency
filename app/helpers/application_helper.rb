@@ -67,6 +67,10 @@ module ApplicationHelper
     browser.device.mobile? ? '' : 'heading-margin-normalize'
   end
 
+  def free_data_margin_normalize
+    browser.device.mobile? ? '' : 'free-data-margin-normalize'
+  end
+
   def jumbotron_mobile
     browser.device.mobile? ? 'jumbotron-mobile' : ''
   end
