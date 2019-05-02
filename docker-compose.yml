@@ -106,11 +106,11 @@ services:
       - RESTFORCE_CLIENT_SECRET=6384884061761347258
       - SIDEKIQ_UI_PASSWORD=gv6shgdsdqji65e90n
     depends_on:
-      - db
-      - redis
-      - elasticsearch
-      - proxy
-      - redshift
+      - proxy    
+      # - db
+      # - redis
+      # - elasticsearch
+      # - redshift
   redis:
     image: redis:2.8
     expose:
@@ -160,11 +160,11 @@ services:
       - HOT_STORE_REDIS_PORT=6379
       - HOT_STORE_REDIS_MAX_CONNECTIONS=6
     depends_on:
-      - db
-      - redis
-      - elasticsearch
-      - proxy
-      - redshift
+      - proxy    
+      # - db
+      # - redis
+      # - elasticsearch
+      # - redshift
   elasticsearch:
     image: elasticsearch:2.3
     ports:
