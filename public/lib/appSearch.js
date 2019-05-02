@@ -6,7 +6,7 @@ $(document).ready(function() {
         return `/welcome/search_apps?query=${input}`;
       }
     },
-    getValue: "name",
+    getValue: 'name',
     theme: 'round',
     template: {
       type: 'custom',
@@ -27,7 +27,8 @@ $(document).ready(function() {
       onChooseEvent: function () {
         const item = $("#app-search").getSelectedItemData();
         const url = `/a/${item.platform === 'ios' ? 'ios' : 'google-play'}/${item.app_identifier}?utm_source=search_box`;
-        document.location.hostname = url;
+        console.log(document.location.hostname);
+        document.location.href = url;
       }
     }
   };
