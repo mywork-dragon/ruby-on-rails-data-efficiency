@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'mocks/redis_mock'
 require 'lib/hotstore/hot_store_schema_test_base'
-<<<<<<< HEAD
+
 ContactDiscoveryService.class_eval do
   def mightybit_get(path)
     {}.to_json
