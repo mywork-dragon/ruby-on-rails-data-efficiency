@@ -59,8 +59,8 @@ module ApplicationHelper
     browser.device.mobile? ? 'navbar-expand-lg' : 'navbar-expand-md fixed-top'
   end
 
-  def blog_container_mobile
-    browser.device.mobile? ? 'blog-container-mobile' : ''
+  def blog_container_styles
+    browser.device.mobile? ? 'blog-container-mobile' : 'blog-container-tablet'
   end
 
   def heading_margin_normalize

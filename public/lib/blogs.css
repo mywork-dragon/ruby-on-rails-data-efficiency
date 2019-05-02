@@ -734,6 +734,10 @@ nav ul.pagination .page-item.active .page-link {
         margin: 0 !important;
     }
 
+    .blog-container-tablet {
+        margin-top: 150px !important;
+    }
+
     .blog_header {
         width: 100%;
         max-width: 620px;
