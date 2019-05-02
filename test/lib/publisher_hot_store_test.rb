@@ -1,6 +1,11 @@
 require 'test_helper'
 require 'mocks/redis_mock'
 require 'lib/hotstore/hot_store_schema_test_base'
+class ContactDiscoveryService
+  def mightybit_get(path)
+    {}.to_json
+  end
+end
 
 class PublisherHotStoreTest < ::HotStoreSchemaTestBase
 
