@@ -110,7 +110,7 @@
       </span>
     </a>
     <div class="tocify-wrapper">
-      <a href="https://mightysignal.com" target="_blank"><img src="images/logo.png" alt="Logo" /></a>
+      <a href="https://mightysignal.com" target="blank"><img src="images/logo.png" alt="Logo" /></a>
         <div class="lang-selector">
               <a href="#" data-language-name="shell">shell</a>
         </div>
@@ -1257,6 +1257,46 @@ SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code
 <p><code class="prettyprint">GET /android/publisher?domain=&lt;domain&gt;</code></p>
 
 <p>where <code class="prettyprint">&lt;domain&gt;</code> is the domain in question. Make sure to use only the domain, and not the scheme (i.e <code class="prettyprint">http/s</code>), subdomains, or path</p>
+
+<h2 id="lookup-publisher-contacts">Lookup publisher contacts</h2>
+
+<blockquote>
+<p>Example: Retrieve the contacts of the Android publisher with ID 360</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/publisher/360/contacts"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"clearbitId"</span><span class="err">=&gt;</span><span class="s2">"e_d6d2f126-a158-4eee-b44a-de7105867179"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"givenName"</span><span class="err">=&gt;</span><span class="s2">"katherine"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"familyName"</span><span class="err">=&gt;</span><span class="s2">"tassi"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"fullName"</span><span class="err">=&gt;</span><span class="s2">"Katherine Tassi"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"title"</span><span class="err">=&gt;</span><span class="s2">"Managing Counsel, Privacy"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"email"</span><span class="err">=&gt;</span><span class="s2">"katherine.tassi@uber.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"linkedin"</span><span class="err">=&gt;</span><span class="s2">"https://www.linkedin.com/in/katherinetassi"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"clearbitId"</span><span class="err">=&gt;</span><span class="s2">"e_a88f586d-74f1-4d49-85b0-7763f11d3804"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"givenName"</span><span class="err">=&gt;</span><span class="s2">"mary"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"familyName"</span><span class="err">=&gt;</span><span class="s2">"demyanritti"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"fullName"</span><span class="err">=&gt;</span><span class="s2">"Mary Ritti"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"title"</span><span class="err">=&gt;</span><span class="s2">"VP Communications"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"email"</span><span class="err">=&gt;</span><span class="s2">"mary@snap.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"linkedin"</span><span class="err">=&gt;</span><span class="s2">"in/maryritti"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format-ios">HTTP Request Format (iOS)</h3>
+
+<p><code class="prettyprint">GET /ios/publisher/&lt;publisher_id&gt;/contacts</code></p>
+
+<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the iOS publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/ios/207911">http://mightysignal.com/app/app#/publisher/ios/207911</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an iOS app.</p>
+
+<h3 id="http-request-format-android">HTTP Request Format (Android)</h3>
+
+<p><code class="prettyprint">GET /android/publisher/&lt;publisher_id&gt;/contacts</code></p>
+
+<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the Android publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/android/1162">http://mightysignal.com/app/app#/publisher/android/1162</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an Android app.</p>
 
 <h1 id="pagination">Pagination</h1>
 
