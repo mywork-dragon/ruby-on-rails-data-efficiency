@@ -937,3 +937,9 @@ form .form-group {
 .flag.flag-za {background-position: -160px -224px}
 .flag.flag-zm {background-position: -176px -224px}
 .flag.flag-zw {background-position: -192px -224px}
+
+.alert.alert-recaptcha_error {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+}
