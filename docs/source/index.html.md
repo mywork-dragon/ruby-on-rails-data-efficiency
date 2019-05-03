@@ -6,7 +6,6 @@ language_tabs:
 
 includes:
   - errors
-  - changelog
 
 search: true
 ---
