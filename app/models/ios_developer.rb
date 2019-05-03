@@ -78,7 +78,7 @@ class IosDeveloper < ActiveRecord::Base
   end
 
   def hotstore_json(options = {})
-
+    
     {
       id: id,
       name: name,
@@ -86,7 +86,7 @@ class IosDeveloper < ActiveRecord::Base
       publisher_identifier: identifier,
       websites: website_urls,
       apps: ios_apps.pluck(:id).map {|x| {"id" => x,"platform" => "ios"}},
-      contacts: ContactDiscoveryService.new.get_contacts_for_developer(self, nil).count
+      contacts: ClearbitContact.joins(:website).where(websites: { domain: possible_contact_domains}).count
     }
   end
 
