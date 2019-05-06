@@ -20,13 +20,17 @@ module ApiHelper
   end
 
   def get_contacts_to_export(domains, quality)
-    fields = ['id', 'domain_data.legal_name', 'title', 'full_name', 'given_name', 'family_name', 'email', 'linkedin', 'quality']
-    ClearbitContact.joins(:domain_datum)
+    fields = [:id, :'domain_data.legal_name', :title, :full_name, :given_name, :family_name, :email, :linkedin, :quality]
+    max_records = 10_000
+    index = 0
+    ClearbitContact.joins(:domain_datum).select(fields)
     .where(
-      'domain_data.domain IN (?) AND quality > (?)', 
+      'domain_data.domain IN (?) AND quality > (?)',
       domains.uniq, quality)
-    .find_each do |t|
-      yield t.attributes.values_at(*fields)
+    .find_each do |t| #:batch_size - Specifies the size of the batch. Defaults to 1000.
+      break if index == max_records
+      yield [t.id, t.legal_name, t.title, t.full_name, t.given_name, t.family_name, t.email, t.linkedin, t.quality]
+      index +=1
     end
   end
 
