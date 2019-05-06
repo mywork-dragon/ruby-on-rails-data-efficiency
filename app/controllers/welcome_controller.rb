@@ -103,7 +103,7 @@ class WelcomeController < ApplicationController
   end
 
   def app_page
-    platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    @platform = params[:platform] == 'ios' ? 'ios' : 'android'
     app_identifier =  params[:app_identifier]
     @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
     @json_app = apps_hot_store.read(platform, @app.id)
