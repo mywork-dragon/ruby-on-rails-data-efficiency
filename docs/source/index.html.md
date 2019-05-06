@@ -709,22 +709,22 @@ curl "https://api.mightysignal.com/ios/publisher/360/contacts"
 ```json
 [
   {
-    "clearbitId"=>"e_d6d2f126-a158-4eee-b44a-de7105867179",
-    "givenName"=>"katherine",
-    "familyName"=>"tassi",
-    "fullName"=>"Katherine Tassi",
-    "title"=>"Managing Counsel, Privacy",
-    "email"=>"katherine.tassi@uber.com",
-    "linkedin"=>"https://www.linkedin.com/in/katherinetassi"
+    "clearbitId":"e_d6d2f126-a158-4eee-b44a-de7105867179",
+    "givenName":"katherine",
+    "familyName":"tassi",
+    "fullName":"Katherine Tassi",
+    "title":"Managing Counsel, Privacy",
+    "email":"katherine.tassi@uber.com",
+    "linkedin":"https://www.linkedin.com/in/katherinetassi"
   },
   {
-    "clearbitId"=>"e_a88f586d-74f1-4d49-85b0-7763f11d3804",
-    "givenName"=>"mary",
-    "familyName"=>"demyanritti",
-    "fullName"=>"Mary Ritti",
-    "title"=>"VP Communications",
-    "email"=>"mary@snap.com",
-    "linkedin"=>"in/maryritti"
+    "clearbitId":"e_a88f586d-74f1-4d49-85b0-7763f11d3804",
+    "givenName":"mary",
+    "familyName":"demyanritti",
+    "fullName":"Mary Ritti",
+    "title":"VP Communications",
+    "email":"mary@snap.com",
+    "linkedin":"in/maryritti"
   }
 ]
 ```
