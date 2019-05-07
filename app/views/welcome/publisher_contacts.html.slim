@@ -1,0 +1,76 @@
+- provide :title, "Mobile App Publisher Contacts"
+- provide :meta_description, "Find the contact information for mobile app publishers that meet your qualification criteria using our SDK and app intelligence database. Marketing and sales intelligence is only as valuable as it is timely and accurate. That's why we’ve imported over ten million new and updated app publisher and employee contacts."
+
+.solution-page
+  .jumbotron
+    .container
+      h1#title.solution-page
+        | Mobile App Publisher Contacts<br/>
+      h2#subtitle.solution-page
+        | MightySignal now has millions of contacts across millions of apps
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@contact_box 
+    .column.medium-5.end.about-graphic
+      .name
+        | App Publisher Contact Information
+      .description
+        | MightySignal’s Publisher contact profiles contain mobile developer’s geographic location, social media profiles and employee names, titles, and email address. Use our publisher profiles to quickly and easily see the entire roll-up of all their app properties and SDK install/uninstall history.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Show Me The Contacts', button_id: 'contacts-contacts'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | ABM (Account-Based Marketing)
+      .description
+        | MightySignal has always been a powerful ABM tool that allows your sales and marketing team to prospect, qualify and contact publisher employees using our directory to get names, emails, and titles. When combined with our live app scan data, giving you real-time insight into exactly when your customer is thinking about your solution, MightySignal allows you to deliver the correct message, to the right person, at the perfect time.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Check Out Mobile ABM', button_id: 'contacts-abm'
+    .column.medium-5.end.graphic
+      img src=@abm_graphic 
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@sfdc_graphic
+    .column.medium-5.end.about-graphic
+      .name
+        | Salesforce Integration
+      .description
+        | For those of you using Salesforce, and I’m going to go out on a limb and assume that’s a large portion of you, MightySignal is the firehose full of juicy mobile market data that can hydrate your Account Objects in Salesforce. You'll have an Account-level view of SDK makeup of all apps belonging to your Accounts. This data is highly actionable and available in Salesforce, where your whole team can act on it. MightySignal's accurate, real-time data will be synced continuously with your Salesforce, providing market data that can help you prevent churn and understand your competition.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Connect With Salesforce', button_id: 'contacts-sfdc'
+  - 4.times do 
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Sales-Centric Interface
+      .description
+        | Our platform is utilized by professionals of all types but was built with salespeople in mind. We designed our robust search filtering into our report system, allowing you to filter on the criteria that matter most to your organization and find the leads with the most value.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Show Me The Sales', button_id: 'contacts-sales'
+    .column.medium-5.end.graphic
+      img src=@publishers_graphic
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 

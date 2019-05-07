@@ -13,7 +13,7 @@ function csvUtils() {
 
   function downloadCsv(content, name) {
     var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+    hiddenElement.href = 'data:attachment/csv,' + encodeURIComponent(content);
     hiddenElement.target = '_blank';
     hiddenElement.download = name + '.csv';
     hiddenElement.click();
