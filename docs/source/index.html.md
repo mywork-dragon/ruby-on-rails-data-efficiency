@@ -6,7 +6,6 @@ language_tabs:
 
 includes:
   - errors
-  - changelog
 
 search: true
 ---
@@ -698,6 +697,49 @@ where `<domain>` is the domain in question. Make sure to use only the domain, an
 
 where `<domain>` is the domain in question. Make sure to use only the domain, and not the scheme (i.e `http/s`), subdomains, or path
 
+## Lookup publisher contacts
+
+> Example: Retrieve the contacts of the Android publisher with ID 360
+
+```bash
+curl "https://api.mightysignal.com/ios/publisher/360/contacts"
+    -H "MIGHTYSIGNAL-TOKEN: <your-api-token>"
+```
+
+```json
+[
+  {
+    "clearbitId":"e_d6d2f126-a158-4eee-b44a-de7105867179",
+    "givenName":"katherine",
+    "familyName":"tassi",
+    "fullName":"Katherine Tassi",
+    "title":"Managing Counsel, Privacy",
+    "email":"katherine.tassi@uber.com",
+    "linkedin":"https://www.linkedin.com/in/katherinetassi"
+  },
+  {
+    "clearbitId":"e_a88f586d-74f1-4d49-85b0-7763f11d3804",
+    "givenName":"mary",
+    "familyName":"demyanritti",
+    "fullName":"Mary Ritti",
+    "title":"VP Communications",
+    "email":"mary@snap.com",
+    "linkedin":"in/maryritti"
+  }
+]
+```
+
+### HTTP Request Format (iOS)
+
+`GET /ios/publisher/<publisher_id>/contacts`
+
+where `<publisher_id>` is the MightySignal ID of the iOS publisher. You can get it from the MightySignal publisher page (eg. [http://mightysignal.com/app/app#/publisher/ios/207911](http://mightysignal.com/app/app#/publisher/ios/207911)) or from the `publisher.id` field from the JSON for an iOS app.
+
+### HTTP Request Format (Android)
+
+`GET /android/publisher/<publisher_id>/contacts`
+
+where `<publisher_id>` is the MightySignal ID of the Android publisher. You can get it from the MightySignal publisher page (eg. [http://mightysignal.com/app/app#/publisher/android/1162](http://mightysignal.com/app/app#/publisher/android/1162)) or from the `publisher.id` field from the JSON for an Android app.
 
 # Pagination
 

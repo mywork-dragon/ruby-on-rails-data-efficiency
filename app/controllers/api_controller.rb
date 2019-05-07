@@ -997,7 +997,7 @@ class ApiController < ApplicationController
     require 'rss'
     require 'open-uri'
     result = Rails.cache.fetch('blog_feed', expires: 1.hours) do
-      rss = RSS::Parser.parse(open(buttercms_rss_path).read, false).items
+      rss = RSS::Parser.parse(open(buttercms_rss_url).read, false).items
       rss.select { |result| result.categories.none? { |category| category.content == "engineering" } }.first
     end
 
