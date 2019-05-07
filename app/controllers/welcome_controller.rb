@@ -105,9 +105,9 @@ class WelcomeController < ApplicationController
   def app_page
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
     app_identifier =  params[:app_identifier]
-    @app = "#{platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
-    @json_app = apps_hot_store.read(platform, @app.id)
-    @json_publisher = publisher_hot_store.read(platform, @app.publisher.id)
+    @app = "#{@platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
+    @json_app = apps_hot_store.read(@platform, @app.id)
+    @json_publisher = publisher_hot_store.read(@platform, @app.publisher.id)
     @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
     most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
     @last_update_date = latest_release_of(most_recent_app).to_date

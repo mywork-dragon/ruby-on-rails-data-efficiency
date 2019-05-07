@@ -68,11 +68,16 @@ module ApplicationHelper
   end
 
   def free_data_margin_normalize
-    browser.device.mobile? ? '' : 'free-data-margin-normalize'
+    !browser.device.mobile? && free_data_pages? ? 'free-data-margin-normalize' : ''
   end
 
   def jumbotron_mobile
     browser.device.mobile? ? 'jumbotron-mobile' : ''
+  end
+
+  private
+  def free_data_pages?
+    %w(ios_app_sdks fastest_growing_sdks top_ios_apps top_ios_sdks top_android_apps top_android_sdks timeline).include?(action_name)
   end
 
 end

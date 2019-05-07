@@ -332,9 +332,6 @@ p {
 .nav.nav-tabs li img {
 	margin-top: -5px;
 }
-.nav.nav-tabs li:nth-child(3), .nav.nav-tabs li:nth-child(5) {
-	margin-left: 30px;
-}
 .top-apps .addthis_native_toolbox {
 	margin-top: 10px;
 }
@@ -1442,6 +1439,12 @@ a.anchor{
 	.copyright-container span {
 		max-width: 620px;
 		padding: 0;
+	}
+}
+
+@media only screen and (min-width: 960px){
+	.nav.nav-tabs li:nth-child(3), .nav.nav-tabs li:nth-child(5) {
+		margin-left: 30px;
 	}
 }
 
