@@ -14,7 +14,7 @@ class ContactsImportWorker
       if file_name
         file_names = [file_name]
       else
-        file_names = (starting_file.to_i..number_of_files).map { |n| "#{filename_prefix}#{n}.csv" }
+        file_names = (starting_file.to_i..(starting_file.to_i+number_of_files)).map { |n| "#{filename_prefix}#{n}.csv" }
       end
       file_names.each { |file_name| p "processing #{file_name}"; execute_worker(file_name) }
     end
@@ -23,7 +23,7 @@ class ContactsImportWorker
       file_size = MightyAws::S3.new.content_length(bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name)
       if file_size <= MAX_FILE_SIZE
         file_content = MightyAws::S3.new.retrieve( bucket: S3_BUCKET, key_path: S3_FOLDER + '/' + file_name, ungzip: false )
-        ContactsImport.new.perform(file_name, file_content) if file_content
+	ContactsImport.new.perform(file_name, file_content) if file_content
       else
         p "Couldn't download files bigger than #{MAX_FILE_SIZE}, current size file #{file_size}"
       end
