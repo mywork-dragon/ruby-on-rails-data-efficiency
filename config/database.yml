@@ -17,7 +17,6 @@ default: &default
   username: <%= ENV['VARYS_DATABASE_USER'] %>
   host: <%= ENV['VARYS_DATABASE_HOST'] %>
   password: <%= ENV['VARYS_DATABASE_PASSWORD'] %>
-  reconnect: true
 
 development:
   <<: *default

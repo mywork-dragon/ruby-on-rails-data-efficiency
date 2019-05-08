@@ -8,7 +8,7 @@ COPY Gemfile /varys/Gemfile
 COPY Gemfile.lock /varys/Gemfile.lock
 ARG exclude_gems=none
 ARG bundle_mode=
-RUN bundle config build.nokogiri --use-system-libraries &&\
+RUN gem update bundler && bundle config build.nokogiri --use-system-libraries &&\
   bundle install --without $exclude_gems $bundle_mode --jobs 8
 
 # install frontend dependencies
