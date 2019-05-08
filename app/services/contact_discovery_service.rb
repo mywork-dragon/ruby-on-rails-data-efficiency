@@ -4,7 +4,7 @@ class ContactDiscoveryService
   def valid_developer_ids(developer, domain)
     if developer.is_a?(IosDeveloper)
       ClearbitWorker::IOS_DEVELOPER_IDS[domain]
-    else 
+    else
       ClearbitWorker::ANDROID_DEVELOPER_IDS[domain]
     end
   end

@@ -1,5 +1,5 @@
 import { $localStorage } from 'utils/localStorage.utils';
-import { buildSelect, csvSelect } from './selectBuilder.utils';
+import { buildSelect, csvSelect, csvContactsSelect } from './selectBuilder.utils';
 import { buildSortSettings } from './sortBuilder.utils';
 import { buildFilter } from './filterBuilder.utils';
 import { cleanState } from './general.utils';
@@ -20,6 +20,13 @@ export function buildCsvRequest (query, facebookOnly, form) {
   };
   result.page_settings = { page_size: 20000 };
   result.select = csvSelect(facebookOnly, query.select.object, form);
+  return result;
+}
+
+export function buildContactsExportCsvRequest() {
+  const result = {};
+  result.page_settings = { page_size: 20000 };
+  result.select = csvContactsSelect();
   return result;
 }
 

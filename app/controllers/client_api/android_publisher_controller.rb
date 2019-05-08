@@ -14,4 +14,13 @@ class ClientApi::AndroidPublisherController < ApplicationController
     ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('android_publisher_filter')
     render json: AndroidDeveloper.find_by_domain(domain).map { |d| d.api_json }
   end
+
+  def contacts
+    publisher_id = params.fetch(:publisher_id)
+    ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('android_contacts')
+    developer = AndroidDeveloper.find(publisher_id)
+    render json: ClearbitContact.get_contacts_for_developer(developer, nil).as_json
+  rescue ActiveRecord::RecordNotFound => e
+    render json: {error: e.to_s}, status: :not_found
+  end
 end

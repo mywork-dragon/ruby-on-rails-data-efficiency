@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     post 'subscribe' => 'welcome#subscribe', as: :subscribe
     post 'contact_us' => 'welcome#contact_us', as: :contact_us
     post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
-    get '/privacy', to: redirect('/legal/privacy.pdf'), as: :privacy
+    get 'privacy' => 'welcome#privacy', as: :privacy
 
     get 'coding-challenge', to: redirect('https://mightysignal.github.io/coding-challenge-directions/')
 
@@ -134,6 +134,8 @@ Rails.application.routes.draw do
     get 'api/test_timeout' => 'api#test_timeout'
 
     post 'api/contacts/export_to_csv' => 'api#export_contacts_to_csv'
+
+    post 'api/contacts/start_export_to_csv' => 'api#export_contacts_to_csv_by_domains'
 
     get 'api/results' => 'api#results'
 
@@ -309,6 +311,10 @@ Rails.application.routes.draw do
       get 'ios/publisher/:id' => 'ios_publisher#show'
       get 'android/publisher' => 'android_publisher#filter'
       get 'android/publisher/:id' => 'android_publisher#show'
+
+      # Contacts
+      get 'ios/publisher/:publisher_id/contacts' => 'ios_publisher#contacts'
+      get 'android/publisher/:publisher_id/contacts' => 'android_publisher#contacts'
 
       # misc
       get 'app_company' => 'app_companies#show'
