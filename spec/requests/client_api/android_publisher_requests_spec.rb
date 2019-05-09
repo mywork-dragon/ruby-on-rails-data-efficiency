@@ -10,6 +10,9 @@ describe "Android Publisher", :type => :request do
 
   before :each do
     allow_any_instance_of(ApiRequestAnalytics).to receive(:log_request).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:authenticate_client_api_request).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:limit_client_api_call).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:bill_api_request).and_return(true)
   end
 
   within_subdomain :api do

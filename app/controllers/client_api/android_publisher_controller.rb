@@ -1,6 +1,6 @@
 class ClientApi::AndroidPublisherController < ApplicationController
 
-  before_action :limit_client_api_call, only: [:show, :filter]
+  before_action :limit_client_api_call, only: [:show, :filter, :contacts]
   after_action :bill_api_request
 
   def show
