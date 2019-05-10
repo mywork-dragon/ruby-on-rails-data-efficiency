@@ -85,6 +85,8 @@ nav.navbar.categories-bg button,
 
 .app-page-content {
     margin-top: 3rem;
+    position: relative;
+    top: 1.5rem;
 }
 
 .custom-menu-item {
