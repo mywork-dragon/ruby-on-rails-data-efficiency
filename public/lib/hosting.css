@@ -1128,6 +1128,12 @@ a.anchor{
 
 .custom-menu-item {
 	height: 50px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.custom-menu-item:hover {
+	background-color: #3A7CB4 !important;
 }
 
 .nav .dropdown a {
