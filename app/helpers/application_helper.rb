@@ -68,7 +68,7 @@ module ApplicationHelper
   end
 
   def free_data_margin_normalize
-    !browser.device.mobile? && free_data_pages? ? 'free-data-margin-normalize' : ''
+    !browser.device.mobile? && (free_data_pages? || not_found_page?) ? 'free-data-margin-normalize' : ''
   end
 
   def jumbotron_mobile
@@ -78,6 +78,10 @@ module ApplicationHelper
   private
   def free_data_pages?
     %w(ios_app_sdks fastest_growing_sdks top_ios_apps top_ios_sdks top_android_apps top_android_sdks timeline).include?(action_name)
+  end
+
+  def not_found_page?
+    'not_found' == action_name
   end
 
 end
