@@ -175,6 +175,7 @@ function AppController (
         Object.assign(app, data);
         app.facebookAds = addAdIds(data.facebookAds);
         app.appFetchComplete = true;
+        $scope.appAvailable = data.appAvailable;
         if ($stateParams.platform === 'ios') {
           app.ratings = appUtils.filterUnavailableCountries(data.ratings, data.appStores.availableIn);
           app.rating = appUtils.formatRatings(app.ratings);

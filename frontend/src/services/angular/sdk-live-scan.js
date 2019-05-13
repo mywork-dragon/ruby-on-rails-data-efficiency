@@ -307,5 +307,12 @@ angular.module('appApp')
         }
         return moment(date).fromNow(); // JS library for human readable dates
       },
+      allowLiveScan(appAvailable, liveScanEnabled) {
+        // This service can be extended to incorporate
+        // the countries where the livescan is available
+        // or any other parameter we need to add to the
+        // livescan activation.
+        return appAvailable && liveScanEnabled;
+      }
     };
   }]);
