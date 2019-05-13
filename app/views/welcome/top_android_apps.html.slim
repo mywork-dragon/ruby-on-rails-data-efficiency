@@ -9,7 +9,7 @@
       .addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="SDKs Used in Top 200 Free Android Apps @MightySignal"
       = image_tag '/lib/images/google_play.png', class: 'app-store-icon'
       h1 SDKs Used in Top 200 Free Android Apps
-      = render "welcome/subscribe_free_data", text: 'Report last updated', last_updated: @last_updated, form: 'top-android-apps', message: "Top Android Apps page"
+      = render "welcome/subscribe_free_data", text: 'Report last updated', last_updated: @last_updated, form: 'top_android_apps', message: "Top Android Apps page"
 
       ul
         - @apps.each do |app|
