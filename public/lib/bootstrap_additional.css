@@ -35,8 +35,8 @@ nav.navbar.categories-bg button,
 
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 1) !important;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     padding-right: 1rem !important;
 }
 
@@ -89,14 +89,20 @@ nav.navbar.categories-bg button,
     top: 1.5rem;
 }
 
+.navbar .nav {
+    padding: 0 !important;
+}
+
 .custom-menu-item {
-    padding-right: 0 !important;
-    margin-right: 0.25rem !important;
+    height: 38px !important;
+    margin-right: 0.5rem !important;
 }
 
 .navbar-dark .navbar-nav .nav-link {
-    padding-right: 0 !important;
-    padding-left: 0 !important;
+    height: 38px !important;
+    padding-right: 0.25rem !important;
+    padding-left: 0.25rem !important;
+    line-height: 1rem;
 }
 
 @media only screen and (max-width: 1200px) {
@@ -107,7 +113,13 @@ nav.navbar.categories-bg button,
         width: 200px !important;
     }
 
+    .custom-menu-item {
+        margin-right: 0.5rem !important;
+    }
+
     .navbar-dark .navbar-nav .nav-link {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
         letter-spacing: -0.5px;
     }
 }
