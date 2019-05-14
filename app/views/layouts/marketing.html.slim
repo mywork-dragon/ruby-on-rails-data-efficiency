@@ -56,6 +56,7 @@ html lang="en"
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
       iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NNPFN7W" height="0" width="0" style="display:none;visibility:hidden">
+    = render 'shared/consent'
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
