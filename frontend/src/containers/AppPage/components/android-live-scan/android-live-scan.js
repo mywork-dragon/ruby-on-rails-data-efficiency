@@ -26,6 +26,7 @@ angular.module('appApp').controller('AndroidLiveScanCtrl', ['$scope', '$http', '
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
       sdkLiveScanService.checkForAndroidSdks(appId)
         .success((data) => {
+          let allowLiveScanData = {appAvailable: $scope.appAvailable, liveScanEnabled: data.live_scan_enabled};
           androidLiveScanCtrl.sdkData = {
             installedSdks: data.installed_sdks,
             uninstalledSdks: data.uninstalled_sdks,
@@ -33,7 +34,7 @@ angular.module('appApp').controller('AndroidLiveScanCtrl', ['$scope', '$http', '
             uninstalledSdksCount: data.uninstalled_sdks_count,
             lastUpdated: data.updated,
             errorCode: data.error_code,
-            liveScanEnabled: sdkLiveScanService.allowLiveScan($scope.appAvailable, data.live_scan_enabled),
+            liveScanEnabled: sdkLiveScanService.allowLiveScan(allowLiveScanData),
           };
 
           androidLiveScanCtrl.noSdkData = false;

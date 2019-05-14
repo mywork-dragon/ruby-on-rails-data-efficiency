@@ -3,6 +3,9 @@ import mixpanel from 'mixpanel-browser';
 import moment from 'moment';
 
 const API_URI_BASE = window.API_URI_BASE;
+const LIVESCAN_ENABLED_COUNTRIES = {
+  'ios': ['US']
+};
 
 angular.module('appApp')
   .factory('sdkLiveScanService', ['$http', 'slacktivity', function($http, slacktivity) {
@@ -307,12 +310,21 @@ angular.module('appApp')
         }
         return moment(date).fromNow(); // JS library for human readable dates
       },
-      allowLiveScan(appAvailable, liveScanEnabled) {
-        // This service can be extended to incorporate
-        // the countries where the livescan is available
-        // or any other parameter we need to add to the
-        // livescan activation.
-        return appAvailable && liveScanEnabled;
+      allowLiveScan({appAvailable, liveScanEnabled, ...args}) {
+        /*
+          This service function can be exted to incorporate more
+          validations for the live scan activation.
+          Call examples:
+            allowLiveScan({appAvailable: true, liveScanEnabled: true, platform: 'ios', appAvailableCountries: ['US']})
+            allowLiveScan({appAvailable: true, liveScanEnabled: true})
+        */
+        let availableInCountries = true;
+        if (args.appAvailableCountries && args.platform && args.platform === 'ios') {
+          for (var idx in args.appAvailableCountries) {
+            availableInCountries = availableInCountries && LIVESCAN_ENABLED_COUNTRIES[args.platform].includes(args.appAvailableCountries[idx]);
+          }
+        }
+        return appAvailable && liveScanEnabled && availableInCountries;
       }
     };
   }]);
