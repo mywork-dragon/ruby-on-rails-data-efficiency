@@ -34,7 +34,7 @@
                 <li>
                   <div id="showSdksButton">
                     <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.app.id)">Live Scan</button>
-                    <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
+                    <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">{{iosLiveScanCtrl.liveScanUnavailableMsg}}</button>
                   </div>
                 </li>
                 <li id="live-scan-hint-li">

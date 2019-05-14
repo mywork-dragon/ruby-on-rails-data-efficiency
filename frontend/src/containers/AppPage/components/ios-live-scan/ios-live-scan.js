@@ -12,6 +12,7 @@ IosLiveScanCtrl.$inject = [
   '$interval',
   '$timeout',
   '$stateParams',
+  '$scope',
 ];
 
 function IosLiveScanCtrl (
@@ -20,6 +21,7 @@ function IosLiveScanCtrl (
   $interval,
   $timeout,
   $stateParams,
+  $scope,
 ) {
   const iosLiveScanCtrl = this;
 
@@ -48,7 +50,7 @@ function IosLiveScanCtrl (
           uninstalledSdksCount: data.uninstalled_sdks_count,
           lastUpdated: data.updated,
           errorCode: data.error_code,
-          liveScanEnabled: data.live_scan_enabled,
+          liveScanEnabled: sdkLiveScanService.allowLiveScan($scope.appAvailable, data.live_scan_enabled),
         };
 
         iosLiveScanCtrl.noSdkData = false;
@@ -73,6 +75,11 @@ function IosLiveScanCtrl (
           iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
           // Failed analytics response - MixPanel & Slacktivity
           sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($stateParams.platform, iosLiveScanCtrl.iosAppId, data.error_code, errorCodeMessages[data.error_code]);
+        }
+
+        iosLiveScanCtrl.liveScanUnavailableMsg = "Live Scan Temporarily Unavailable";
+        if (!$scope.appAvailable) {
+          iosLiveScanCtrl.liveScanUnavailableMsg = "Live Scan Unavailable";
         }
 
         // LS Success Analytics - MixPanel & Slacktivity

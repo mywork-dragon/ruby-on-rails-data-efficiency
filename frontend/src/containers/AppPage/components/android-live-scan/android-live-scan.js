@@ -33,7 +33,7 @@ angular.module('appApp').controller('AndroidLiveScanCtrl', ['$scope', '$http', '
             uninstalledSdksCount: data.uninstalled_sdks_count,
             lastUpdated: data.updated,
             errorCode: data.error_code,
-            liveScanEnabled: data.live_scan_enabled,
+            liveScanEnabled: sdkLiveScanService.allowLiveScan($scope.appAvailable, data.live_scan_enabled),
           };
 
           androidLiveScanCtrl.noSdkData = false;
@@ -55,6 +55,11 @@ angular.module('appApp').controller('AndroidLiveScanCtrl', ['$scope', '$http', '
           if (data.error_code != null) {
             androidLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
             sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($stateParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
+          }
+
+          androidLiveScanCtrl.liveScanUnavailableMsg = "Live Scan Temporarily Unavailable";
+          if (!$scope.appAvailable) {
+            androidLiveScanCtrl.liveScanUnavailableMsg = "Live Scan Unavailable";
           }
 
           // LS Success Analytics - MixPanel & Slacktivity
