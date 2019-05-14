@@ -2,7 +2,7 @@ class WelcomeController < ApplicationController
   include AppsHelper
 
   protect_from_forgery except: :contact_us
-  caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours, layout: false
+  caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url}, expires_in: 24.hours, layout: false
 
   layout "marketing"
 
@@ -10,25 +10,25 @@ class WelcomeController < ApplicationController
     @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
     @logos = [
-      #{image: 'ghostery.png', width: 150},
-      #{image: 'fiksu.png', width: 135},
-      #{image: 'radiumone.png', width: 190},
-      #{image: 'swrve.png', width: 150},
-      #{image: 'mparticle.png', width: 180},
-      # {image: 'tune.png', width: 135},
-      {image: 'amplitude.png', width: 170},
-      # {image: 'microsoft.png', width: 160},
-      # {image: 'ironsrc.png', width: 170},
-      #{image: 'vungle.png', width: 125},
-      #{image: 'realm.png', width: 135},
-      #{image: 'neumob.png', width: 170},
-      # {image: 'yahoo.png', width: 165},
-      # {image: 'appsflyer.png', width: 180},
-      {image: 'leanplum.png', width: 180},
-      {image: 'mixpanel.png', width: 160},
-      {image: 'zendesk.png', width: 170},
-      {image: 'adobe.png', width: 160}
-    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
+        #{image: 'ghostery.png', width: 150},
+        #{image: 'fiksu.png', width: 135},
+        #{image: 'radiumone.png', width: 190},
+        #{image: 'swrve.png', width: 150},
+        #{image: 'mparticle.png', width: 180},
+        # {image: 'tune.png', width: 135},
+        {image: 'amplitude.png', width: 170},
+        # {image: 'microsoft.png', width: 160},
+        # {image: 'ironsrc.png', width: 170},
+        #{image: 'vungle.png', width: 125},
+        #{image: 'realm.png', width: 135},
+        #{image: 'neumob.png', width: 170},
+        # {image: 'yahoo.png', width: 165},
+        # {image: 'appsflyer.png', width: 180},
+        {image: 'leanplum.png', width: 180},
+        {image: 'mixpanel.png', width: 160},
+        {image: 'zendesk.png', width: 170},
+        {image: 'adobe.png', width: 160}
+    ].each {|logo| logo[:image] = '/lib/images/logos/' + logo[:image]}.sample(5)
 
     @funnel_icon = icons_folder + 'funnel.svg'
     @networking_icon = icons_folder + 'networking.svg'
@@ -43,21 +43,21 @@ class WelcomeController < ApplicationController
     query = params['query']
 
     result_ids = AppsIndex.query(
-      multi_match: {
-        query: query,
-        fields: ['name.title^2', 'seller_url', 'seller'],
-        type: 'phrase_prefix',
-        max_expansions: 50,
-      }
+        multi_match: {
+            query: query,
+            fields: ['name.title^2', 'seller_url', 'seller'],
+            type: 'phrase_prefix',
+            max_expansions: 50,
+        }
     ).boost_factor(
-      3,
-      filter: { term: { user_base: 'elite' } }
+        3,
+        filter: {term: {user_base: 'elite'}}
     ).boost_factor(
-      2,
-      filter: { term: { user_base: 'strong' } }
+        2,
+        filter: {term: {user_base: 'strong'}}
     ).boost_factor(
-      1,
-      filter: { term: { user_base: 'moderate' } }
+        1,
+        filter: {term: {user_base: 'moderate'}}
     )
     result_ids = result_ids.limit(10)
 
@@ -66,11 +66,11 @@ class WelcomeController < ApplicationController
       type = result._data["_type"]
       app = type == "ios_app" ? IosApp.find(id) : AndroidApp.find(id)
       {
-        name: app.name,
-        icon: app.icon_url,
-        platform: app.platform,
-        app_identifier: app.app_identifier,
-        publisher: app.publisher.try(:name),
+          name: app.name,
+          icon: app.icon_url,
+          platform: app.platform,
+          app_identifier: app.app_identifier,
+          publisher: app.publisher.try(:name),
       }
     end
 
@@ -104,7 +104,7 @@ class WelcomeController < ApplicationController
 
   def app_page
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
-    app_identifier =  params[:app_identifier]
+    app_identifier = params[:app_identifier]
     @app = "#{@platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
     @json_app = apps_hot_store.read(@platform, @app.id)
     @json_publisher = publisher_hot_store.read(@platform, @app.publisher.id)
@@ -113,19 +113,19 @@ class WelcomeController < ApplicationController
     @last_update_date = latest_release_of(most_recent_app).to_date
     @latest_update = (Date.current - @last_update_date).to_i
     @sdks = @json_app['sdk_activity']
-    @sdk_installed = @sdks.count { |sdk| sdk['installed'] }
-    @sdk_uninstalled = @sdks.count { |sdk| !sdk['installed'] }
+    @sdk_installed = @sdks.count {|sdk| sdk['installed']}
+    @sdk_uninstalled = @sdks.count {|sdk| !sdk['installed']}
     @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
       next memo unless sdk['installed'] && sdk['categories']
-      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
       memo
     end
     @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
       next memo unless !sdk['installed'] && sdk['categories']
-      sdk['categories'].each { |cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1 }
+      sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
       memo
     end
-    @categories = @json_app['categories'].andand.map{|cat| cat['name']}
+    @categories = @json_app['categories'].andand.map {|cat| cat['name']}
   end
 
   def android_app_sdks
@@ -144,10 +144,10 @@ class WelcomeController < ApplicationController
   def timeline
     top_200_ids = IosAppRankingSnapshot.top_200_app_ids
     batches_i = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-                                 owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+                                  owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now - 1.month..Time.now).order('week desc')
     top_200_ids_a = AndroidAppRankingSnapshot.top_200_app_ids
     batches_a = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
-                                 owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now-1.month..Time.now).order('week desc')
+                                  owner_id: top_200_ids_a, owner_type: 'AndroidApp', week: Time.now - 1.month..Time.now).order('week desc')
 
     batches_by_week = {}
     (batches_i + batches_a).each do |batch|
@@ -158,7 +158,7 @@ class WelcomeController < ApplicationController
       end
     end
 
-    batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
+    batches_by_week.sort_by {|k, v| -(k.to_time.to_i)}
     @batches_by_week = batches_by_week
   end
 
@@ -176,6 +176,7 @@ class WelcomeController < ApplicationController
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
+
   def top_ios_apps
     newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     @last_updated = newest_snapshot.try(:created_at) || Time.now
@@ -205,7 +206,7 @@ class WelcomeController < ApplicationController
     @last_updated = newest_snapshot.try(:created_at) || Time.now
     @apps = if newest_snapshot
               AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
-                        select(:rank, 'android_apps.*').order('rank ASC').limit(200)
+                  select(:rank, 'android_apps.*').order('rank ASC').limit(200)
             else
               []
             end
@@ -223,7 +224,7 @@ class WelcomeController < ApplicationController
     @live_graphic = graphics_folder + 'live.svg'
     @legos_graphic = graphics_folder + 'legos.svg'
   end
-  
+
   def publisher_contacts
     get_logos
 
@@ -311,10 +312,10 @@ class WelcomeController < ApplicationController
     get_creative
 
     @logos = [
-      {image: 'taptica_color.png', width: 200},
-      {image: 'verizon_color.png', width: 200},
-      {image: 'liftoff_color.png', width: 200}
-    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
+        {image: 'taptica_color.png', width: 200},
+        {image: 'verizon_color.png', width: 200},
+        {image: 'liftoff_color.png', width: 200}
+    ].each {|logo| logo[:image] = '/lib/images/logos/' + logo[:image]}
 
     @new_advertisers_graphic = graphics_folder + 'new_advertisers.png'
     @ad_attribution_graphic = graphics_folder + 'ad_attribution.png'
@@ -417,13 +418,13 @@ class WelcomeController < ApplicationController
 
   def get_logos
     @logos = [
-      {image: 'leanplum_color.png', width: 170},
-      {image: 'taptica_color.png', width: 170},
-      {image: 'zendesk_color.png', width: 170},
-      {image: 'adobe_color.png', width: 170},
-      {image: 'amplitude_color.png', width: 170},
-      {image: 'verizon_color.png', width: 170}
-    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
+        {image: 'leanplum_color.png', width: 170},
+        {image: 'taptica_color.png', width: 170},
+        {image: 'zendesk_color.png', width: 170},
+        {image: 'adobe_color.png', width: 170},
+        {image: 'amplitude_color.png', width: 170},
+        {image: 'verizon_color.png', width: 170}
+    ].each {|logo| logo[:image] = '/lib/images/logos/' + logo[:image]}
   end
 
   def get_creative
@@ -431,7 +432,7 @@ class WelcomeController < ApplicationController
 
     @creative = "/lib/images/creatives/#{creative}.png" if creative.present?
   end
-  
+
   def privacy
   end
 

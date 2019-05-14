@@ -27,7 +27,6 @@ $(document).ready(function() {
       onChooseEvent: function () {
         const item = $("#app-search").getSelectedItemData();
         const url = `/a/${item.platform === 'ios' ? 'ios' : 'google-play'}/${item.app_identifier}?utm_source=search_box`;
-        console.log(document.location.hostname);
         document.location.href = url;
       }
     }

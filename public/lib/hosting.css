@@ -49,12 +49,6 @@ body {
 	flex: 1;
 }
 
-/*a {
-  color:#2cc76a;
-}*/
-/*a:hover, a:focus {
-  color:#1eb45a;
-}*/
 h1, h2, h3, h4 {
 	font-weight:bold;
 }
@@ -79,16 +73,10 @@ p {
 	max-height: 370px;
 }
 
-/*.navbar.navbar-default.navbar-fixed-top {
-  background-color: white;
-}*/
-
 .jumbotron {
 	position: relative;
 	color: #fff;
 	text-align: center;
-/*	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);*/
-/*	background: url("header-bg.jpg") no-repeat #232a31; */ /* Old browsers */
 	background-color: #232a31;
 	background-size:cover;
 }
@@ -109,7 +97,6 @@ p {
 .navbar .nav > li > a {
 	color:#FFF;
 	text-transform:uppercase;
-/*	text-shadow: 0 1px 0 #666;*/
 }
 .navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
 	color:#CCC;
