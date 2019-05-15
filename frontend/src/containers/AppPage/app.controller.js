@@ -180,6 +180,7 @@ function AppController (
           app.ratings = appUtils.filterUnavailableCountries(data.ratings, data.appStores.availableIn);
           app.rating = appUtils.formatRatings(app.ratings);
           app.userBases = appUtils.filterUnavailableCountries(data.userBases, data.appStores.availableIn);
+          $scope.appAvailableCountries = data.appStores.availableIn.map(country => country.country_code);
         }
       })
       .catch(() => { throw Error('Failed App Page Load'); });
