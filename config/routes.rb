@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   get 'ping' => 'application#ping'
-  
+
   constraints lambda { |req| req.subdomain != 'api' }  do
 
     require 'sidekiq/web'
@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     root 'welcome#index'
     get 'apps/ios/:app_identifier' => 'welcome#ios_app_sdks'
     get 'apps/android/:app_identifier' => 'welcome#android_app_sdks'
+    get 'a/:platform/:app_identifier' => 'welcome#app_page', constraints: { platform: /ios|google-play/i,
+                                                                           app_identifier: /.*/ }
     get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
     get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
     get 'timeline' => 'welcome#timeline', as: 'timeline'
@@ -41,8 +43,8 @@ Rails.application.routes.draw do
     get 'fastest-growing-android-sdks' => 'fastest_growing_sdks#top_install_base', as: 'fastest-growing-android-sdks'
     get 'fastest-growing-android-sdks-blog-post' => 'fastest_growing_sdks#blog_post_redirect', as: 'fastest-growing-android-sdks-blog-post'
 
-    get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
-    get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
+    get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top_android_sdks'
+    get 'top-android-apps' => 'welcome#top_android_apps', as: 'top_android_apps'
 
     get 'fastest-growing-sdks' => 'welcome#fastest_growing_sdks', as: 'fastest-growing-sdks'
 

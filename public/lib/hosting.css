@@ -39,16 +39,16 @@ If you having trouble in editing css. please send a mail to support@surjithctly.
 body {
 	font-family:"Montserrat", Arial, Helvetica, sans-serif;
 	background: #f3f3f3;
-	position:relative;
-	min-height: calc(100vh - 88px);
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
 	height: unset !important;
 }
-/*a {
-  color:#2cc76a;
-}*/
-/*a:hover, a:focus {
-  color:#1eb45a;
-}*/
+
+.content-wrapper {
+	flex: 1;
+}
+
 h1, h2, h3, h4 {
 	font-weight:bold;
 }
@@ -73,16 +73,10 @@ p {
 	max-height: 370px;
 }
 
-/*.navbar.navbar-default.navbar-fixed-top {
-  background-color: white;
-}*/
-
 .jumbotron {
 	position: relative;
 	color: #fff;
 	text-align: center;
-/*	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);*/
-/*	background: url("header-bg.jpg") no-repeat #232a31; */ /* Old browsers */
 	background-color: #232a31;
 	background-size:cover;
 }
@@ -103,7 +97,6 @@ p {
 .navbar .nav > li > a {
 	color:#FFF;
 	text-transform:uppercase;
-/*	text-shadow: 0 1px 0 #666;*/
 }
 .navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
 	color:#CCC;
@@ -325,9 +318,6 @@ p {
 }
 .nav.nav-tabs li img {
 	margin-top: -5px;
-}
-.nav.nav-tabs li:nth-child(3), .nav.nav-tabs li:nth-child(5) {
-	margin-left: 30px;
 }
 .top-apps .addthis_native_toolbox {
 	margin-top: 10px;
@@ -1125,6 +1115,12 @@ a.anchor{
 
 .custom-menu-item {
 	height: 50px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.custom-menu-item:hover {
+	background-color: #3A7CB4 !important;
 }
 
 .nav .dropdown a {
@@ -1251,12 +1247,12 @@ a.anchor{
 
 
 .solution-page .about-graphic .name {
-	text-align: left;
+	text-align: center;
 	font-size: 2.5rem;
 }
 
 .solution-page .about-graphic .description {
-	text-align: left;
+	text-align: center;
 	font-size: 1.25rem;
 }
 
@@ -1436,6 +1432,12 @@ a.anchor{
 	.copyright-container span {
 		max-width: 620px;
 		padding: 0;
+	}
+}
+
+@media only screen and (min-width: 960px){
+	.nav.nav-tabs li:nth-child(3), .nav.nav-tabs li:nth-child(5) {
+		margin-left: 30px;
 	}
 }
 

@@ -1,0 +1,14 @@
+.info.alert.alert-warning
+  .row.flex-column.flex-lg-row.justify-content-around
+    p
+      |#{text}
+      - if form != 'timeline'
+        strong  #{time_ago_in_words(@last_updated)} ago.
+    p.email-form
+      | Sign up to get more SDK data
+    = form_tag subscribe_path, method: 'post', class: 'form-inline mb-2 ml-0', data: {form: form} do |f|
+      .form-group.full-width-xs
+        input type="hidden" name="message" value="#{message}"
+        input#email.form-control name="email" placeholder="Email" type="email" /
+      .form-group.full-width-xs
+        input.btn.btn-primary.btn-block.lead-form-btn.mt-0.ml-md-1 name="commit" type="submit" value="Alright!" /

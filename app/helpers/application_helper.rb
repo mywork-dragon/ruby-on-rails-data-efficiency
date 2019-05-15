@@ -9,10 +9,10 @@ module ApplicationHelper
 
   # Highlight link if current page is the link destination
   def nav_link(link_text, link_path, html_options = {})
-    class_name = current_page?(link_path) ? 'active' : nil
+    class_name = current_page?(link_path) ? 'active' : ''
 
-    content_tag(:li, :class => [class_name, 'nav-item']) do
-      link_to link_text, link_path, class: html_options[:class] || 'nav-link'
+    content_tag(:li, :class => ['nav-item']) do
+      link_to link_text, link_path, class: html_options[:class] || 'nav-link ' + class_name
     end
   end
 
@@ -54,5 +54,34 @@ module ApplicationHelper
     end
     label
   end
-  
+
+  def header_styles
+    browser.device.mobile? ? 'navbar-expand-lg' : 'navbar-expand-md fixed-top'
+  end
+
+  def blog_container_styles
+    browser.device.mobile? ? 'blog-container-mobile' : 'blog-container-tablet'
+  end
+
+  def heading_margin_normalize
+    browser.device.mobile? ? '' : 'heading-margin-normalize'
+  end
+
+  def free_data_margin_normalize
+    !browser.device.mobile? && (free_data_pages? || not_found_page?) ? 'free-data-margin-normalize' : ''
+  end
+
+  def jumbotron_mobile
+    browser.device.mobile? ? 'jumbotron-mobile' : ''
+  end
+
+  private
+  def free_data_pages?
+    %w(ios_app_sdks fastest_growing_sdks top_ios_apps top_ios_sdks top_android_apps top_android_sdks timeline).include?(action_name)
+  end
+
+  def not_found_page?
+    'not_found' == action_name
+  end
+
 end
