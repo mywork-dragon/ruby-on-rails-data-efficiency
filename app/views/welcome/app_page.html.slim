@@ -1,0 +1,136 @@
+#large-header.app-page-content
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .app-header-main.col-md-9.col-xs-12
+      img.app-logo.lg-logo.hidden-xs src = @json_app['icon_url']
+      .header-info
+        #app-name
+          h1.px-3.py-0 = @json_app['name']
+        h3.px-3.py-0 = @json_app['publisher']['name']
+        .app-header-details
+          .col-12
+            | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
+          .col-12
+            | App ID: #{@app.app_identifier}
+          .col-12
+            | Price: #{@json_app['price'] > 0 ? @json_app['price'] : 'Free' }
+          .col-12
+            | Category: #{@categories.andand.join(', ')}
+          - if @json_app['taken_down']
+            .col-12.taken-down-label
+              span.label.label-warning
+                | App is no longer available in the app store
+    .col-md-3.col-xs-12
+      a href=@json_app['app_store_url'].to_s target='_blank'
+        button.btn.btn-primary.mt-3.ml-3.ml-md-0
+          = 'View in '
+          i class="#{platform_icon(@platform)}"
+          = ' store'
+
+.white-panel
+  .container.sdk-panel
+    .row
+      - if @sdks.present?
+        .sdk-total-container.col-md-5
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold
+            .total.d-flex.align-items-center.installed
+              i.fas.fa-cubes
+              = @sdk_installed
+            | SDKs Installed
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold
+            .total.d-flex.align-items-center.uninstalled
+              i.fas.fa-cubes
+              = @sdk_uninstalled
+            | SDKs Uninstalled
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold.last-scanned
+            | Last Scanned: #{ time_ago_in_words(@json_app['last_scanned_date']) } ago
+          = render 'contact_us_button', title: 'Live Scan This App', button_id: 'app-page-live-scan'
+        .col-md-7
+          .row
+            - if @installed_sdk_categories.present?
+              .col-md-6.col-xs-12
+                h4 Installed SDKs
+                - @installed_sdk_categories.each do |category, val|
+                  li.sdk-li
+                    i.far.fa-check-circle
+                    = "#{category} (#{val})"
+            - if @uninstalled_sdk_categories.present?
+              .col-md-6.col-xs-12
+                - if @uninstalled_sdk_categories
+                  h4 Uninstalled SDKs
+                  - @uninstalled_sdk_categories.each do |category, val|
+                    li.sdk-li
+                      i.far.fa-times-circle
+                      = "#{category} (#{val})"
+                .see-sdks-container
+                  = render 'contact_us_button', title: 'See Individual SDKs', button_id: 'app-page-individual-sdks', btn_styles: 'btn btn-primary see-sdks'
+            - else
+              .see-sdks-container
+                = render 'contact_us_button', title: 'See Individual SDKs', button_id: 'app-page-individual-sdks', btn_styles: 'btn btn-primary see-sdks'
+      - else
+        .col
+          .sdk-total.d-flex.flex-column.align-items-center.text-center.font-weight-bold.no-data
+            .total.d-flex.align-items-center.installed
+              i.fas.fa-cubes
+              | No SDK Data
+
+.gray-panel
+  .container.app-description
+    .row
+      .description-container.col-md-6.col-xs-12
+        h3 Description
+        .description-body
+          = @json_app['description']
+      - if @json_app['publisher'].present?
+        .col-md-6.col-xs-12
+          .publisher-panel
+            h4 Publisher: #{@json_app['publisher']['name']}
+            .pub-app.s-title
+              | Number of Apps: #{@json_publisher['apps'].size}, including
+            .pub-apps
+              - @top_apps.each do |app|
+                a.app-logo-link href=app['public_link'].to_s
+                  img.app-logo.sm-logo src=app['icon_url'].to_s alt=app['name'].to_s
+            | Latest Update/Release: #{ @latest_update } days ago
+
+.white-panel
+  .container.app-details
+    .col-md-12
+      .details-row
+        - if @json_app['all_version_rating'] > 0
+          .detail-item
+            h4 Rating:
+            .big-num
+              i.fas.fa-star
+              = number_with_precision(@json_app['all_version_rating'], precision: 1)
+            | Based on #{ number_to_human(@json_app['all_version_ratings_count']) } ratings
+        - if @json_app['current_version'].present?
+          .detail-item
+            h4 Last Update
+            .big-num
+              = @json_app['current_version']
+            - if @json_app['current_version_release_date'].present?
+              | Released #{ @json_app['current_version_release_date'].to_date.strftime("%B %d, %Y") }
+        .detail-item
+          h4 Requested Permissions:
+          - if @json_app['permissions'].present?
+            .big-num
+              i.fas.fa-mobile-alt
+              = @json_app['permissions'].size
+            = render 'contact_us_button', title: 'See which permissions', button_id: 'app-page-permissions-data', btn_styles: 'btn'
+          - else
+            .big-num
+              | No data
+      .details-row
+        .detail-item
+          h4 User Base
+          .solo-icon
+            i.fas.fa-users
+          = render 'contact_us_button', title: 'See user bases by country', button_id: 'app-page-userbase-data', btn_styles: 'btn'
+        .detail-item.no-border
+          h4 Firmographic Data
+          .solo-icon
+            i.fas.fa-globe
+          = render 'contact_us_button', title: 'See location, contacts, and more', button_id: 'app-page-firmographic-data', btn_styles: 'btn'
+
+= render 'welcome/web_form_modal'

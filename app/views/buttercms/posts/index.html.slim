@@ -14,4 +14,8 @@
     = render 'buttercms/blog_search', style_class: 'search-widget'
     = render 'buttercms/newsletter'
     = render 'buttercms/request_demo'
-= paginate @paginatable_array, window: 2, outer_window: 1
+  .container
+    - if browser.device.mobile?
+      = paginate @paginatable_array, :theme => "next_prev"
+    - else
+      = paginate @paginatable_array, :theme => "blog", window: 2, outer_window: 1

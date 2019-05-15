@@ -1,37 +1,47 @@
-div class="modal fade" id="webFormModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+.modal.fade.w-100 id="webFormModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
   .modal-dialog.modal-lg
     .modal-content
       .web-form-modal
-        .row
-          .column
-            p
-          .title Contact MightySignal
-          .column
-            p
-          .column.medium-6.medium-offset-3.end
-            form accept-charset="UTF-8" action=contact_us_path method="post" data-form="modal-lead-form"
-              div style="display:none"
-                input name="utf8" type="hidden" value="✓" /
-                input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
-                = hidden_field_tag('button_id', nil, id: 'button-id-field')
-              .form-group
-                input#first_name.form-control name="first_name" placeholder=("First Name") type="text" /
-              .form-group
-                input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" /
-              .form-group
-                input#company.form-control name="company" placeholder="Company" type="text" /
-              .form-group
-                input#email.form-control name="email" placeholder="Email" type="email" /
-              .form-group
-                input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
-              .form-group
-                textarea#message.form-control name="message" placeholder=("Your Message")
-              = recaptcha_tags
-              br
-              .form-group.text-center
-                p
-                  input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
-                span.loading
+        button.close.py-2.px-3.mt-1.mr-1 aria-label="Close" data-dismiss="modal" type="button"
+          span aria-hidden="true"  &times;
+        .col-md-8.col-lg-6.offset-md-2.offset-lg-3.mt-5
+          .row
+            .title.my-3.mx-auto Contact MightySignal
+        .col-md-8.col-lg-6.offset-md-2.offset-lg-3.end
+          form.needs-validation accept-charset="UTF-8" action=contact_us_path method="post" data-form="modal-lead-form" novalidate=true
+            div style="display:none"
+              input name="utf8" type="hidden" value="✓"
+              input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY="
+              = hidden_field_tag('button_id', nil, id: 'button-id-field')
+            .form-group.row
+              .col-md-12
+                input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required=true
+                .invalid-feedback
+                  | Please provide your name.
+            .form-group.row
+              .col-md-12
+                input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required=true
+                .invalid-feedback
+                  | Please provide your surname.
+            .form-group.row
+              .col-md-12
+                input#email.form-control name="email" placeholder="Email" type="email" required=true
+                .invalid-feedback
+                  | Please provide your email.
+            .form-group.row
+              .col-md-12
+                input#phone.form-control name="phone" placeholder=("Phone Number") type="text"
+            .form-group.row
+              .col-md-12
+                input#company.form-control name="company" placeholder="Company" type="text"
+            .form-group
+              textarea#message.form-control name="message" placeholder=("Your Message")
+            = recaptcha_tags
+            br
+            .form-group.text-center
+              p
+                input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit"
+              span.loading
 
 - content_for :web_form_modal
-  script src="/lib/web_form_modal.js"
+script src="/lib/web_form_modal.js"
