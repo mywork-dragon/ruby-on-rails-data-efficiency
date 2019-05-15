@@ -4,7 +4,7 @@ import moment from 'moment';
 
 const API_URI_BASE = window.API_URI_BASE;
 const LIVESCAN_ENABLED_COUNTRIES = {
-  'ios': ['US']
+  'ios': ['US', 'FR']
 };
 
 angular.module('appApp')
@@ -318,13 +318,16 @@ angular.module('appApp')
             allowLiveScan({appAvailable: true, liveScanEnabled: true, platform: 'ios', appAvailableCountries: ['US']})
             allowLiveScan({appAvailable: true, liveScanEnabled: true})
         */
-        let availableInCountries = true;
         if (args.appAvailableCountries && args.platform && args.platform === 'ios') {
+          let availableInCountries = false;
           for (var idx in args.appAvailableCountries) {
-            availableInCountries = availableInCountries && LIVESCAN_ENABLED_COUNTRIES[args.platform].includes(args.appAvailableCountries[idx]);
+            if (LIVESCAN_ENABLED_COUNTRIES[args.platform].includes(args.appAvailableCountries[idx])) {
+              availableInCountries = true;
+            }
           }
+          return appAvailable && liveScanEnabled && availableInCountries;
         }
-        return appAvailable && liveScanEnabled && availableInCountries;
+        return appAvailable && liveScanEnabled;
       }
     };
   }]);
