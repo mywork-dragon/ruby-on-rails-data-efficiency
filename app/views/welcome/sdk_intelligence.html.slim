@@ -2,78 +2,79 @@
 - provide :meta_description, "Examine the app SDK market holistically to inform your high-level strategies."
 
 .solution-page
-  .jumbotron
+  .jumbotron class="#{jumbotron_mobile}"
     .container
-      h1#title.solution-page
+      h1#title.solution-page.heading-font-normalize class="#{heading_margin_normalize}"
         | SDK Intelligence
       h2#subtitle.solution-page
         | Examine your market holistically to inform high-level strategies.
 
-  .row
-    .column.medium-5.medium-offset-1.graphic
-      img src=@competitor_graphic width=200
-    .column.medium-5.end.about-graphic
-      .name
-        | Track Your Competitors
-      .description
-        | Constantly have an eye on what your competitors are doing across the entire mobile market. Know what types of customers they're signing, know how fast they're growing, and know when new competitors arise.
-      row
-        p
-      row
-        = render 'contact_us_button', title: 'Keep an Eye on the Competition', button_id: 'bi-competitors'
-  - 4.times do
+  .container
     .row
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | Find Gaps in the Market
-      .description
-        | Using MightySignal for business SDK intelligence, you can spot gaps in the market that no one else can see. Then you can create high-level strategies to attack those gaps and profit. For example, you could discover through MightySignal data that a certain type of app that you weren't aware before is a great fit to buy your product, and you can have your sales and marketing teams immediately target that customer profile.
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
+        img.img-fluid src=@competitor_graphic width=200
+      .col-md-5.end.about-graphic
+        .name
+          | Track Your Competitors
+        .description
+          | Constantly have an eye on what your competitors are doing across the entire mobile market. Know what types of customers they're signing, know how fast they're growing, and know when new competitors arise.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Keep an Eye on the Competition', button_id: 'bi-competitors'
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'Fill Big Gaps', button_id: 'bi-gaps'
-    .column.medium-5.end.graphic
-      img src=@gaps_graphic width=200
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.graphic
-        img src=@future_graphic width=200
-    .column.medium-5.end.about-graphic
-      .name
-        | Predict the Future
-      .description
-        | Not only can you use MightySignal data to see past and current market trends, but you can also build intelligent models to predict the future of the mobile market. This will allow you to plan out your go-to-market strategies months or years in advance.
-      row
+    .row
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | Find Gaps in the Market
+        .description
+          | Using MightySignal for business SDK intelligence, you can spot gaps in the market that no one else can see. Then you can create high-level strategies to attack those gaps and profit. For example, you could discover through MightySignal data that a certain type of app that you weren't aware before is a great fit to buy your product, and you can have your sales and marketing teams immediately target that customer profile.
+          p
+        row
+          = render 'contact_us_button', title: 'Fill Big Gaps', button_id: 'bi-gaps'
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
+        img.img-fluid src=@gaps_graphic width=200
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'See the Future', button_id: 'bi-feed'
-  - 4.times do
-    .row 
-      p
-  .row
-    .column.medium-5.medium-offset-1.about-graphic
-      .name
-        | How to Implement Mighty BI
-      .description
-        | In order to harness the power of MightySignal data for your SDK BI strategies, 
-        a href=the_api_path target="_blank" the MightySignal API 
-        | and 
-        a href=data_feed_path target="_blank" the MightySignal Data Feed 
-        | are perfect for accessing the data at scale so that you can have intelligence into the entire mobile market.
+    .row
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
+        img.img-fluid src=@future_graphic width=200
+      .col-md-5.end.about-graphic
+        .name
+          | Predict the Future
+        .description
+          | Not only can you use MightySignal data to see past and current market trends, but you can also build intelligent models to predict the future of the mobile market. This will allow you to plan out your go-to-market strategies months or years in advance.
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'See the Future', button_id: 'bi-feed'
+    - 4.times do
+      .row
+        p
+    .row
+      .col-md-5.offset-md-1.order-md-1.order-12.about-graphic
+        .name
+          | How to Implement Mighty BI
+        .description
+          | In order to harness the power of MightySignal data for your SDK BI strategies,
+          a href=the_api_path target="_blank" the MightySignal API
+          | and
+          a href=data_feed_path target="_blank" the MightySignal Data Feed
+          | are perfect for accessing the data at scale so that you can have intelligence into the entire mobile market.
 
+          p
+        row
+          = render 'contact_us_button', title: 'Implement Business Intelligence', button_id: 'bi-implement'
+      .col-md-5.order-md-12.order-1.end.graphic.d-flex.align-items-center
+        img.img-fluid src=@networking_icon width=200
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'Implement Business Intelligence', button_id: 'bi-implement'
-    .column.medium-5.end.graphic
-      img src=@networking_icon width=200
-  - 4.times do
-    .row 
-      p
-  .row
-    = render 'logos'
+    .row.align-items-center
+      = render 'logos'
 
 
   = render 'web_form_modal' 

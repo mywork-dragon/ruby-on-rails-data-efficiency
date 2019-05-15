@@ -1,7 +1,7 @@
 .row.header.challenge
-  .column.large-1
+  .col-lg-1
     p
-  .column.large-10
+  .col-lg-10
     h1 The Mighty Backend Challenge
     p What we’re looking for is clarity of thought in design and the technical capacity to execute on your insight.
     p If your ideal solution would take too long to implement, then document how you'd change your prototype to work in production. We’ll use your solution later in the interview process and discuss what design decisions you made, how to handle more complexity, etc.
@@ -9,18 +9,18 @@
     p Congratulations! You’re the lead developer on the newest analytics SDK for mobile apps. Before you can start building your SDK integration, you’ll need to architect your backend web service to support this new data stream.
     p Design a web service with an HTTP API to handle requests. This API will have a few endpoints.
     p
-      | The 
-      code="/event" 
-      |  endpoint should allow clients to send 2 integers of information - 
+      | The
+      code="/event"
+      |  endpoint should allow clients to send 2 integers of information -
       code app_id
-      |  and  
+      |  and
       code user_id
-      | - as well as a string - 
+      | - as well as a string -
       code name
       |. Process each incoming message by giving the event a unique identifier and then store the result, timestamp, and any relevant status, error, or debug information. The API should respond with the generated identifier.
     p
-      | The 
-      code="/events/<id>" 
+      | The
+      code="/events/<id>"
       |  route should show the basic info associated with an event of that identifier if it has been processed (
       code> app_id
       | ,
@@ -29,11 +29,11 @@
       code name
       |)
     p
-      | The 
+      | The
       code="/app/<id>"
       |  route should show the number of events for that app and the number of unique user ids across all the app’s events.
     p
-      | 
+      |
       a href="https://s3.amazonaws.com/ms-public-files/backend.md" target="_blank" You can download these instructions as text here
     h2 Considerations
     p Does your solution scale well to handle many requests in a short period of time? How would you increase capacity to match spikes of incoming requests?
@@ -47,6 +47,6 @@
     p
       | Feel free to shoot a note to
       a href="mailto:osman@mightysignal.com"  osman@mightysignal.com
-   
-  .column.large-1
+
+  .col-lg-1
     p

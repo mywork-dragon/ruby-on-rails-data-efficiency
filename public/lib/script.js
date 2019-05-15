@@ -1,5 +1,9 @@
 $(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip()
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="popover"]').popover()
+    })
+
     $('#app-select').ddslick({
         'width': '100%',
         onSelected: function(data){
@@ -67,6 +71,21 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    function toggleDropdown (e) {
+        const _d = $(e.target).closest('.dropdown'),
+            _m = $('.dropdown-menu', _d);
+        setTimeout(function(){
+            const shouldOpen = e.type !== 'click' && _d.is(':hover');
+            _m.toggleClass('show', shouldOpen);
+            _d.toggleClass('show', shouldOpen);
+            $('[data-toggle="dropdown"]', _d).attr('aria-expanded', shouldOpen);
+        }, e.type === 'mouseleave' ? 30 : 0);
+    }
+
+    $('body')
+        .on('mouseenter mouseleave','.dropdown',toggleDropdown)
+        .on('click', '.dropdown-menu a', toggleDropdown);
 
 });
 

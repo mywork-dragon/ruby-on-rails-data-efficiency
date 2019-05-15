@@ -2,7 +2,7 @@
 - provide :meta_description, "MightySignal is the leader in SDK data and SDK intelligence for iOS and Android."
 
 /! ==============HEADER =================
-#large-header.jumbotron.masthead.vertical-center
+#large-header.jumbotron.masthead.vertical-center.pt-md-5 class="#{jumbotron_mobile}"
   .container
     canvas#demo-canvas
     #engineer_message.domain
@@ -19,147 +19,154 @@
       img src=logo[:image] width=logo[:width]
 
 /! ==============Content Area=================
-.container
-  .landing-page
-    /! ============== Other Features ==============
-    .row.PageHead
-      .col-md-12
-        h2#solutions Fresh Content!
-        h3
-          | Read the new blog post about
-          br
-          | Account Based Marketing for Mobile.
-        .row
+.container.landing-page
+  /! ============== Other Features ==============
+  .row.PageHead
+    .col
+      h2#solutions Fresh Content!
+      h3
+        | Read the new blog post about
+        br
+        | Account Based Marketing for Mobile.
+      .row.fresh-content.m-0
+        .col-md-6.offset-md-3.solution
           a href=@abm4m_post_0 target='_blank'
-            .column.medium-6.medium-offset-3.solution
-              .row
-                p
-              .row.title
-                | Introducing ABM4M
-              .row
-                p
-              .row
-                img src=@abm_blog_icon width=2000
-              .row
-                p
-              .row
-                .column.medium-10.medium-offset-1.end
-                  | MightySignal is excited to introduce you to ABM4M: Account Based Marketing for Mobile
-                  br
-                  br
-    - 1.times
-      .row
-        p
-
-    div
+            .row
+              p
+            .row.title.justify-content-center
+              | Introducing ABM4M
+            .row
+              p
+            .row
+              img.img-fluid src=@abm_blog_icon width=2000
+            .row
+              p
+            .row
+              .col-md-10.offset-md-1.end
+                | MightySignal is excited to introduce you to ABM4M: Account Based Marketing for Mobile
+                br
+                br
+  - 1.times
+  .row
+    p
+  .row
+    .col
       a#solutions_anchor.anchor
-    .row.PageHead
-      .col-md-12
-        h2#solutions MightySignal Mobile SDK Solutions
-        h3
-          | Our solutions help companies make better decisions.
-        .row
-          p
-
-    .row
-      a href=lead_generation_path
-        .column.medium-2.medium-offset-2.solution
-          .row
-            p
-          .row.title
-            | Lead
-            br Generation
-          .row
-            p
-          .row
-            img src=@funnel_icon width=100
-          .row
-            p
-          .row
-            .column.medium-10.medium-offset-1.end
-              | Use MightySignal's real-time SDK and ad intelligence to find new customers.
-              br
-              br
-          .row
-            p
-      a href=abm_path
-        .column.medium-2.medium-offset-1.solution
-          .row
-            p
-          .row.title
-            | Account Based
-            br Marketing
-          .row
-            p
-          .row
-            img src=@target_icon width=100
-          .row
-            p
-          .row
-            .column.medium-10.medium-offset-1.end
-              | Integrate your entire target market into Salesforce and power all GTM teams.
-          .row
-            p
-      a href=sdk_intelligence_path
-        .column.medium-2.medium-offset-1.solution.end
-          .row
-            p
-          .row.title
-            | SDK
-            br Intelligence
-          .row
-            p
-          .row
-            img src=@networking_icon width=100
-          .row
-            p
-          .row
-            .column.medium-10.medium-offset-1.end
-              | Examine your market holistically to inform high-level strategies.
-              br
-              br
-          .row
-            p
-
-    - 2.times
-      .row
-        p
-
-    /! ============== Contact us ==============
-    div
-      a#contact_anchor.anchor
-    #contact.container
       .row.PageHead
         .col-md-12
-          h2 Contact MightySignal
-          h3 Fill this out and we'll be in touch.
+          h2#solutions Solutions
+          h3
+            | Our solutions help companies make better decisions.
           .row
             p
-      .col-md-3
-      .col-md-6
-        form accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form"
-          div style="display:none"
-            input name="utf8" type="hidden" value="✓" /
-            input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
-            = hidden_field_tag('button_id', 'main')
-          .form-group
-            input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required="" /
-          .form-group
-            input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required="" /
-          .form-group
-            input#company.form-control name="company" placeholder="Company" type="text" /
-          .form-group
-            input#email.form-control name="email" placeholder="Email" type="email" required="" /
-          .form-group
-            input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
-          .form-group
-            textarea#message.form-control name="message" placeholder=("Your Message") required=""
-          - unless Rails.env.development?
-            = recaptcha_tags
-          br
-          .form-group.text-center
-            p
-              input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
-            span.loading
-      .col-md-3
-/! Container Closed
+      .row.m-0
+        .col-lg-2.offset-lg-2.solution
+          a href=lead_generation_path
+            .row
+              p
+            .row.title.justify-content-center
+              | Lead
+              br Generation
+            .row
+              p
+            .row
+              img src=@funnel_icon width=100
+            .row
+              p
+            .row
+              .col-md-10.offset-md-1.end
+                | Use real-time SDK and ad intelligence to find new customers.
+                br
+                br
+            .row
+              p
+        .col-lg-2.offset-lg-1.solution
+          a href=abm_path
+            .row
+              p
+            .row.title.justify-content-center
+              | Account Based
+              br Marketing
+            .row
+              p
+            .row
+              img src=@target_icon width=100
+            .row
+              p
+            .row
+              .col-md-10.offset-md-1.end
+                | Integrate your entire target market into Salesforce and power all GTM teams.
+            .row
+              p
+        .col-lg-2.offset-lg-1.solution.end
+          a href=sdk_intelligence_path
+            .row
+              p
+            .row.title.justify-content-center
+              | SDK
+              br Intelligence
+            .row
+              p
+            .row
+              img src=@networking_icon width=100
+            .row
+              p
+            .row
+              .col-md-10.offset-md-1.end
+                | Examine your market holistically to inform high-level strategies.
+                br
+                br
+            .row
+              p
+
+  - 2.times
+  .row
+    p
+
+  /! ============== Contact us ==============
+  .row
+    .col
+      a#contact_anchor.anchor
+      #contact
+        .row.PageHead
+          .col-md-12
+            h2 Contact Us
+            h3 Fill this out and we'll be in touch.
+            .row
+              p
+        .col-md-3
+        .col-md-6.offset-md-3
+          form.needs-validation accept-charset="UTF-8" action="/contact_us?method=post" method="post" data-form="main-lead-form" novalidate=true
+            div style="display:none"
+              input name="utf8" type="hidden" value="✓"
+              input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY="
+              = hidden_field_tag('button_id', 'main')
+            .form-group
+              input#first_name.form-control name="first_name" placeholder=("First Name") type="text" required=true
+              .invalid-feedback
+                | Please provide your name.
+            .form-group
+              input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" required=true
+              .invalid-feedback
+                | Please provide your surname.
+            .form-group
+              input#company.form-control name="company" placeholder="Company" type="text"
+            .form-group
+              input#email.form-control name="email" placeholder="Email" type="email" required=true
+              .invalid-feedback
+                | Please provide your email.
+            .form-group
+              input#phone.form-control name="phone" placeholder=("Phone Number") type="text"
+            .form-group
+              textarea#message.form-control name="message" placeholder=("Your Message") required=true
+              .invalid-feedback
+                | Please provide your message.
+            - unless Rails.env.development?
+              = recaptcha_tags
+            br
+            .form-group.text-center
+              p
+                input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
+              span.loading
+        .col-md-3
+          /! Container Closed

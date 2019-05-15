@@ -52,9 +52,6 @@ class User < ActiveRecord::Base
 
   encrypt_attribute(:salesforce_token, @@kms_key)
 
-  # email/pw login
-  EMAIL_USERS = [498, 794]
-
   def record_feature_use(feature_name, last_used)
     # Record website feature use.
     feature = website_features.select { |x| x.name.to_s == feature_name.to_s }
@@ -70,7 +67,7 @@ class User < ActiveRecord::Base
   end
 
   def connected_oauth?
-    linkedin_uid.present? || google_uid.present? || EMAIL_USERS.include?(id)
+    linkedin_uid.present? || google_uid.present?
   end
 
   def seed_timeline
