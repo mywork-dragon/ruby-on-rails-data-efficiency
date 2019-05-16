@@ -12,7 +12,7 @@ angular.module('appApp')
       $scope.toggleEmailLogin = function() {
         $scope.showEmailLogin = !$scope.showEmailLogin;
         if ($scope.showEmailLogin) {
-          $scope.message = 'Log In With E-mail';
+          $scope.message = 'Log in with email and password';
         } else {
           $scope.message = 'Log in using Google or LinkedIn';
         }
@@ -50,7 +50,7 @@ angular.module('appApp')
       $scope.onLoginButtonClick = function() {
         authService.login($scope.user.email, $scope.user.password).then(
           () => {
-          // $rootScope.isAuthenticated = authToken.isAuthenticated();
+            // $rootScope.isAuthenticated = authToken.isAuthenticated();
             listApiService.getLists().success((data) => {
               $rootScope.usersLists = data;
             });

@@ -2,33 +2,34 @@
 - provide :meta_description, "Access MightySignal data programmatically to import directly into your business intelligence tools, CRMs, or any internal tooling."
 
 .solution-page
-  .jumbotron
+  .jumbotron class="#{jumbotron_mobile}"
     .container
-      h1#title.solution-page
+      h1#title.solution-page.heading-font-normalize class="#{heading_margin_normalize}"
         | The SDK Intelligence API
       h2#subtitle.solution-page
         | Access MightySignal data programmatically
 
-  .row
-    .column.medium-5.medium-offset-1.graphic
-      img src=@api_graphic width=1500
-    .column.medium-5.end.about-graphic
-      .name
-        | About the API
-      .description
-        | Our API allows you to programatically ingest MightySignal data into any system you want, giving you ultimate flexibility to accomplish your business goals. 
-        a href='https://api.mightysignal.com/docs' target="_blank" Check out our documentation to see endpoints and available data.
-        '
-      row
+  .container
+    .row
+      .col-md-5.offset-md-1.graphic.d-flex.align-items-center
+        img.img-fluid src=@api_graphic width=1500
+      .col-md-5.end.about-graphic
+        .name
+          | About the API
+        .description
+          | Our API allows you to programatically ingest MightySignal data into any system you want, giving you ultimate flexibility to accomplish your business goals.
+          a href='https://api.mightysignal.com/docs' target="_blank"  Check out our documentation to see endpoints and available data.
+          '
+        row
+          p
+        row
+          = render 'contact_us_button', title: 'Get An API Key', button_id: 'api-key'
+
+    - 4.times do
+      .row
         p
-      row
-        = render 'contact_us_button', title: 'Get An API Key', button_id: 'api-key'
-  
-  - 4.times do
-    .row 
-      p
-  .row
-    = render 'logos'
+    .row.align-items-center
+      = render 'logos'
 
 
   = render 'web_form_modal' 

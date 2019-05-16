@@ -16,16 +16,14 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'slim', '3.0.6'
 gem 'slim-rails', '3.0.1'
 
-gem 'foundation-rails', '5.4.3.1'
-
 # required for asset pipeline
 # for middleman/turbolinks
 # http://guides.rubyonrails.org/asset_pipeline.html
 gem 'sass-rails'
 
-# bootstrap css, read here https://github.com/twbs/bootstrap-sass
-gem 'bootstrap-sass', '3.3.0' #bumped: https://snyk.io/blog/malicious-remote-code-execution-backdoor-discovered-in-the-popular-bootstrap-sass-ruby-gem/
-gem 'autoprefixer-rails'
+# The most popular HTML, CSS, and JavaScript framework for developing responsive, mobile first projects on the web. http://getbootstrap.com
+# gem 'bootstrap', '4.3.0'
+gem 'autoprefixer-rails', '9.4.8'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -135,7 +133,7 @@ gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
 
 gem "redis-rails"
-gem 'actionpack-action_caching'
+gem 'actionpack-action_caching', git: "https://github.com/rails/actionpack-action_caching.git", branch: "master"
 
 gem 'chewy', '0.8.4'
 
@@ -207,7 +205,7 @@ gem 'redis'
 # for API docs
 gem 'middleman', '~>4.2.1'
 gem 'middleman-syntax', '~> 3.0.0'
-gem 'middleman-autoprefixer', '~> 2.7.0'
+gem 'middleman-autoprefixer', '~> 2.10.0'
 gem "middleman-sprockets", "~> 4.1.0"
 gem 'rouge', '~> 2.0.5'
 gem 'redcarpet', '~> 3.4.0'
