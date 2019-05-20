@@ -10,7 +10,10 @@ class AdobeDomainsReport
   # Place the input data in the S3_INPUT_BUCKET url.
   # From terminal you can use:
   # $ awslogin
-  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/ ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/ios_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/android_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/top-1m.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/domains.csv ./
 
   # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
   # 64, AliPaySDK
@@ -41,92 +44,144 @@ class AdobeDomainsReport
       @app_ids ||= []
     end
     
+    def domains
+      @domains ||= File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
+    end
+    
     
     ####
     # Take the domains file and platform and generate the report. 
     # This will output 3 files: adobe_apps_ios.csv, adobe_apps_android.csv, 
     # and adobe_domain_mapping.csv
+    # generate('domains.csv', 'ios', 0, 600000)
     ###
     
-    def generate(domains_file_name, platform)
+    def generate(domains_file_name, platform, bottom, top)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
-
-      if domains_file_name
-        result = get_publisher_ids(domains_file_name, platform)
-        publisher_ids = result[0]
-        intersect = result[1]
-      else
-        publisher_ids = platform == 'ios' ? IosDeveloper.pluck(:id).sample(470000) : AndroidDeveloper.pluck(:id).sample(470000)
-        intersect = false
-      end
       
-      i = 0
-      CSV.open("adobe_apps_#{platform}.csv", "w") do |csv|  
+      p "Reading domain file"
+      domains = CSV.read(domains_file_name).flatten.uniq[bottom..top]
+
+      CSV.open("adobe_apps_#{platform}_#{bottom}_#{top}.csv", "w") do |csv|  
         csv << headers_row()  
-        publisher_ids.each do |publisher_id|
+        i = 0
+        domains.each do |domain|
+          d = UrlHelper.url_with_domain_only(domain)
           i += 1
-          p "Running #{i}"
-          publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
-          p "Apps found #{publisher.apps.length}"
-          publisher.apps.each do |app_data|
-            app = apps_hot_store.read(platform, app_data.id)
-            next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 10000 || app_ids.include?(app_data.id.to_i)) 
-            app_ids << app_data.id.to_i
-            skds_used = get_used_sdks(app)
-            csv << produce_csv_line(publisher, app, skds_used, platform, intersect)
+          percent = ((i.to_f / domains.count) * 100).round(0)
+          puts "#{i} #{domain} #{percent}%"
+          publisher_id = get_best_publisher(d, platform)
+          if publisher_id > 0
+            publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
+            p "Apps found #{publisher.apps.length}"
+            publisher.apps.each do |app_data|
+              app = apps_hot_store.read(platform, app_data.id)
+              next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 1000 || app_ids.include?(app_data.id.to_i)) 
+              app_ids << app_data.id.to_i
+              skds_used = get_used_sdks(app)
+              csv << produce_csv_line(publisher, app, skds_used, platform, domain)
+            end
+          else
+            p "Skipped #{i}"
+            csv << [domain]
           end
         end
       end  
-
-      p "Done generating file"
     end
     
     ####
-    # Finds the intersection between Adobe's domain file
-    # and our domains so we don't need to check each
-    # of Adobe's domains
+    # Choose the best match between the given domain
+    # and the multiple publishers related to it:
+    # Algorithm: Shortest domain that passes inclusion test
     ####
     
-    def get_publisher_ids(domains_file_name, platform)
-      p "Reading domain file"
-      domains = CSV.read(domains_file_name).flatten
-      p "Plucking domains from db"
-      domain_data = DomainDatum.pluck(:domain)
-      p "Finding intersection"
-      intersect = domains & domain_data
-      p "Converting domain_datum IDs to website IDs"
-      intersect_website_ids = intersect.map{ |d| DomainDatum.find_by_domain(d).website_ids }.flatten.uniq
-      if platform == 'ios'
-        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).ios_developer_ids }.flatten.uniq
+    def get_best_publisher(domain, platform)
+      publisher_id = handle_major_publishers(domain, platform)
+      return publisher_id if publisher_id > 0
+      
+      domain_co = domain.split('.').first
+      developer_ids = platform == 'ios' ? Website.where(domain: domain).map{ |w| w.ios_developer_ids }.flatten.uniq : Website.where(domain: domain).map{ |w| w.android_developer_ids }.flatten.uniq
+      devs = []
+      developer_ids.each do |id|
+        h = Hash.new
+        developer = platform == 'ios' ? IosDeveloper.find(id) : AndroidDeveloper.find(id)
+        h['id'] = id
+        h['company'] = clean(developer.name)
+        h['company_length'] = h['company'].size
+        h['domain'] = domain
+        h['rank'] = domains.index(domain) || 1000000
+        h['test'] = inclusion_test(domain_co, h['company'])
+        devs << h
+      end
+      #find devs where test is true and pick the lowest rank and then shortest company name
+      winner = devs.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
+      if winner.present?
+        developer = platform == 'ios' ? IosDeveloper.find(winner['id']) : AndroidDeveloper.find(winner['id'])
+        publisher_id = developer.id
+      end
+      publisher_id
+    rescue
+      0
+    end
+    
+    ####
+    #
+    # String comparison functions
+    #
+    ####
+    
+    def clean(string)
+      clean_company(string).to_s.downcase.gsub(/[\.\s]/, '')
+    end
+  
+    def inclusion_test(domain_co, developer_name)
+      sort = [clean(domain_co), clean(developer_name)].sort_by(&:length)
+      short = sort.first
+      long = sort.last
+      if short.to_s.length >= 3
+        long.include? short
       else
-        publisher_ids = intersect_website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
+        false
       end
-      p "Making domain mapping file"
-      CSV.open("adobe_domain_mapping.csv", "a+") do |csv| 
-        csv << ['id', 'domain']
-        publisher_ids.each do |pid|
-          if platform == 'ios'
-            pub = IosDeveloper.find pid
-          else
-            pub = AndroidDeveloper.find pid
-          end
-          pub.websites.each do |w|
-            csv << [w.id, w.domain]
-          end
-        end
-      end
-      [publisher_ids, intersect]
     end
-
+    
+    def clean_company(company)
+      company.to_s
+      .gsub(/[\u0080-\u00ff]/, '') # remove non-UTF i think?
+      .gsub(/\(.*\)/i, '') # remove parentheses and all content between
+      .gsub(/,?\s+(pty ltd|pte ltd|ltd|llc|l.l.c|inc|lp|llp|corporation|associates|holdings|corporate)(\.|\s)?/i, '') # remove common company endings
+      .gsub(/[^0-9a-z:.\/\s-]/i, '')
+      .gsub('...', '')
+      .gsub(/\.+/i, '.')
+      .sub(/^https?\:?\/\//i, '')
+      .sub(/^www./i, '')
+      .gsub(/\s+/, ' ')
+      .gsub('--', '')
+      .downcase
+      .truncate(100, separator: ' ', omission: '')
+      .encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      .squish
+    end 
+    
+    def handle_major_publishers(domain, platform)
+      publisher_id = false
+      h = Hash.new
+      h['facebook.com'] = {'ios': 37304, 'android': 55 }
+      h['instagram.com'] = {'ios': 37304, 'android': 55 }
+      h['google.com'] = {'ios': 6864, 'android': 928995 }
+      h['gmail.com'] = {'ios': 6864, 'android': 928995 }
+      h['youtube.com'] = {'ios': 6864, 'android': 928995 }
+      h.dig(domain, platform.to_sym).to_i
+    end
+    
     ####
     # Given the Hotstore output this generates an array
     # to pass to the open CSV block
     ####
     
-    def produce_csv_line(publisher, app, skds_used, platform, intersect)
-      line = [publisher.website_ids.join("|")]
-      line << intersect.present? ? (publisher.websites.pluck(:domain) & intersect).first : publisher.websites.sample(:domain)
+    def produce_csv_line(publisher, app, skds_used, platform, domain)
+      line = [domain]
       line << app['id']
       line << app['name']
       line << app['all_version_ratings_count']
@@ -141,14 +196,12 @@ class AdobeDomainsReport
       end
       line << publisher.name
       if platform == 'ios'
-        line << ( 'https://itunes.apple.com/developer/id' + app['id'].to_s )
+        line << ( 'https://itunes.apple.com/developer/id' + app.app_identifier.to_s )
       else
-        line << ( 'https://play.google.com/store/apps/details?id=' + app['bundle_identifier'].to_s )
+        line << ( 'https://play.google.com/store/apps/details?id=' + app.app_identifier.to_s )
       end
       line << app['original_release_date']
       line << app['last_updated']
-      line << ""
-      line << ""
       line << app['current_version']
       if app['sdk_activity'].nil? || app['sdk_activity'].empty?
         line << ""
@@ -201,7 +254,6 @@ class AdobeDomainsReport
 
     def headers_row
       headers = [
-        'Websites',
         'Domain',
         'App Id',
         'App Name',
@@ -215,8 +267,6 @@ class AdobeDomainsReport
         'Store Link',
         'Release Date',
         'Updated Date',
-        'Company Region',
-        'Company Country',
         'Version',
         'Number of SDKs',
         'Mobile Priority',
