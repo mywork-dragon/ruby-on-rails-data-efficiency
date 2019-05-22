@@ -1,3 +1,5 @@
+# Used in AppStoreSnapshotService
+
 class AppStoreSnapshotQueueWorker
   include Sidekiq::Worker
 

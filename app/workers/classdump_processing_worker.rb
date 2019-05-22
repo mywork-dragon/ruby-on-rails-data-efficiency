@@ -1,4 +1,6 @@
-require 'rubygems/package' 
+# Used in IosScanRunner
+
+require 'rubygems/package'
 
 class ClassdumpProcessingWorker
   include Sidekiq::Worker
@@ -61,7 +63,7 @@ class ClassdumpProcessingWorker
     classdump.store_files(summary['files'])
     classdump.store_frameworks(summary['frameworks'])
   end
-  
+
   def store_app_content_data(classdump)
     return unless classdump.app_content.present?
     extract_app_content(classdump) do |tgz|

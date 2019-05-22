@@ -1,3 +1,4 @@
+# Used in DAG
 class IosMassScanService
 
   class << self

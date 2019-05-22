@@ -1,3 +1,5 @@
+# Used in several places
+
 class AppStoreDevelopersWorker
   class NoDeveloperIdentifier < RuntimeError; end
 
@@ -104,7 +106,7 @@ class AppStoreDevelopersWorker
   end
 
   class << self
-    
+
     def test
       ios_apps = [1, 2, 3, 4].map { |app_identifier| IosApp.find_or_create_by!(app_identifier: app_identifier) }
       rows = ios_apps.map do |ios_app|

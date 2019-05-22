@@ -1,4 +1,6 @@
 # Calculates user bases for apps
+# Used in a couple of places
+
 module UserBaseService
 
   class Ios
@@ -40,7 +42,7 @@ module UserBaseService
 
       # These scaling factors were calculated on 06/20/2017 by taking the top 100,000 apps
       # in each region with regards to total rating count and daily ratings.
-      def scaling_factor_details 
+      def scaling_factor_details
         {
           1 => scaling_hash(2398.63544, 1.0, 1.2530845, 1.0),
           2 => scaling_hash(526.17989, 0.21936634522501677, 0.4361451, 0.3480572140186875),

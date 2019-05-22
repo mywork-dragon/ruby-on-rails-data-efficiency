@@ -1,3 +1,4 @@
+# Used in SalesforceWorker
 class SalesforceLeadService
 
   def initialize
@@ -42,7 +43,7 @@ class SalesforceLeadService
       SalesforceLeadService.new.add_to_salesforce(data)
     end
 
-    def import_old_leads 
+    def import_old_leads
       Dir.glob('web_form/*').each do |file_name|
         file = File.read(file_name)
         data_hash = JSON.parse(file)

@@ -1,3 +1,4 @@
+# Used at least in IosSdkClassifier, AndroidClassification
 class SdkService
 
     QUERY_MINIMUM_LENGTH = 4
@@ -335,7 +336,7 @@ class SdkService
                 rescue RegexpError
                     next
                 end
-                
+
                 if !!(url =~ url_re)    # if matches format like https://github.com/MightySignal/slackiq
           rd = GithubApi.repo_info_from_url(url)
                     next if rd['message'] == 'Not Found'    # repository is not valid; try the next link

@@ -1,3 +1,5 @@
+# Used in a few places
+
 class FaviconService
 
   GOOGLE_DEFAULT_PATH = Rails.root.join('lib', 'globe.png')
@@ -55,7 +57,7 @@ class FaviconService
       end
 
       current_path = File.join('/tmp', "#{current_path}.png")
-      
+
       # turn off SSL strictness for favicon downloading
       File.open(current_path, 'wb') {|f| f << open(favicon_url, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read}
 

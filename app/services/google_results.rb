@@ -1,3 +1,4 @@
+# Used by internal API
 class GoogleResults
 
   class << self

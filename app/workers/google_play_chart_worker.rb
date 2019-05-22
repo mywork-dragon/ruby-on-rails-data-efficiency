@@ -1,6 +1,8 @@
+# Used in DAG
+
 class GooglePlayChartWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :google_play_charts, retry: false
 
   attr_writer :s3_client
@@ -124,5 +126,5 @@ class GooglePlayChartWorker
     android_app_ids = options['android_app_ids'].map(&:to_i)
     update_developers(android_app_ids)
   end
-  
+
 end

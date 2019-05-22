@@ -1,3 +1,5 @@
+# Used in several places
+
 class AppStoreService
 
   include AppAttributeChecker
@@ -15,21 +17,21 @@ class AppStoreService
   def attributes(id, country_code: 'us', lookup: true, scrape: true)
     @app_identifier = id
     @country_code = country_code
-    
+
     @json = app_store_json(id) if lookup
     @html = app_store_html(id) if scrape
     @s3_client = ItunesS3Store.new
-    
+
     #ld "@html: #{@html}"
-    
+
     methods = []
-    
+
     if @json
       check_ios # check to make sure it's an iOS app
 
       methods += json_methods
     end
-    
+
     if @html
       if !@json # if could not get JSON, need to get these from scrape
         methods += %w(
@@ -51,7 +53,7 @@ class AppStoreService
           released_html
         )
       end
-      
+
       methods += %w(
         support_url_html
         languages_html
@@ -60,24 +62,24 @@ class AppStoreService
       )
 
     end
-    
+
     ret = {}
-    
+
     # Go through the list of methods, call each one, and store it in ret
     # The key in ret is the method minus _json or _html at the end
     methods.each do |method|
       key = method.gsub(/_html\z/, '').gsub(/_json\z/, '').to_sym
-      
+
       begin
         attribute = send(method.to_sym)
-        
+
         ret[key] = attribute
       rescue
         ret[key] = nil
       end
-      
+
     end
-    
+
     ret
   end
 
@@ -116,7 +118,7 @@ class AppStoreService
       category_ids_json
       )
   end
-  
+
   # Gets the JSON through the iTunes Store API
   # Returns nil if cannot get JSON
   def app_store_json(id)
@@ -160,7 +162,7 @@ class AppStoreService
   def description_json
     @json['description']
   end
-  
+
   def description_html
     @html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
   end
@@ -176,7 +178,7 @@ class AppStoreService
   def version_json
     @json['version']
   end
-  
+
   def version_html
     size_text = @html.css('li').select{ |li| li.text.match(/Version: /) }.first.children[1].text
   end
@@ -209,7 +211,7 @@ class AppStoreService
     children.select{ |c| c.text.match(/Site\z/) }.first['href']
   end
 
-  # Only available in HTML 
+  # Only available in HTML
   def support_url_html
     @html.at('a:contains("App Support")')['href']
   end
@@ -219,7 +221,7 @@ class AppStoreService
     primary = all_cats.first
 
     secondary = all_cats - [primary]
-    
+
     {primary: primary, secondary: secondary}
   end
 
@@ -254,7 +256,7 @@ class AppStoreService
   def seller_json
     @json['sellerName']
   end
-  
+
   def seller_html
     @html.css('li').select{ |li| li.text.match(/Seller: /) }.first.children[1].text
   end
@@ -266,7 +268,7 @@ class AppStoreService
   def by_html
     @html.css('#title > div.left').children.find{ |c| c.name == 'h2' }.text.gsub(/\ABy /, '')
   end
-  
+
   def developer_app_store_identifier_json
     @json['artistId'].to_i
   end
@@ -290,19 +292,19 @@ class AppStoreService
     current_version_hash = {}
     current_version_hash[:stars] = ratings_current_stars_json
     current_version_hash[:count] = ratings_current_count_json
-    
+
     all_versions_hash = {}
     all_versions_hash[:stars] = ratings_all_stars_json
     all_versions_hash[:count] = ratings_all_count_json
-    
-    
+
+
     {current: current_version_hash, all: all_versions_hash}
   end
 
   def ratings_html
     ratings = @html.css("#left-stack > div.extra-list.customer-ratings > div.rating")
 
-    
+
     if ratings.count == 1
       all_versions_s = ratings.first["aria-label"]
     elsif ratings.count >= 2
@@ -324,14 +326,14 @@ class AppStoreService
       all_versions_hash[:stars] = count_stars(all_versions_split[0])
       all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
     end
-    
+
     {current: current_version_hash, all: all_versions_hash}
   end
-  
+
   def recommended_age_json
     @json['trackContentRating']
   end
-  
+
   def recommended_age_html
     @html.css("#left-stack > div.lockup.product.application > div.app-rating > a").text.gsub("Rated ", '')
   end
@@ -347,11 +349,11 @@ class AppStoreService
       nil
     end
   end
-  
+
   def required_ios_version_json
     @json['minimumOsVersion']
   end
-  
+
   def first_released_json
     @json['releaseDate'].to_date
   end
@@ -363,7 +365,7 @@ class AppStoreService
   def ratings_current_stars_json
     @json['averageUserRatingForCurrentVersion'].to_f
   end
-  
+
   def ratings_current_count_json
     @json['userRatingCountForCurrentVersion'].to_i
   end
@@ -375,11 +377,11 @@ class AppStoreService
   def ratings_all_count_json
     @json['userRatingCount'].to_i
   end
-    
+
   def icon_url_512x512_json
     @json['artworkUrl512']
   end
-  
+
   def icon_url_100x100_json
     @json['artworkUrl100']
   end
@@ -391,11 +393,11 @@ class AppStoreService
   def game_center_enabled_json
     @json['isGameCenterEnabled']
   end
-  
+
   def bundle_identifier_json
     @json['bundleId']
   end
-  
+
   def currency_json
     @json['currency']
   end
@@ -403,17 +405,17 @@ class AppStoreService
   def category_ids_json
     primary = @json['primaryGenreId']
     all_cats = @json['genreIds'].map(&:to_i)
-    
+
     secondary = all_cats - [primary]
-    
+
     {primary: primary, secondary: secondary}
   end
-  
+
   def required_ios_version_html
     compatibility_text(@html).match(/Requires iOS (\d)+.(\d)/)[0].gsub('Requires iOS ', '').to_f
   end
-  
-  # HTML Only 
+
+  # HTML Only
   def editors_choice_html
     @html.css(".editorial-badge").present?
   end
@@ -423,7 +425,7 @@ class AppStoreService
 
     ap attributes
 
-    attributes_expected = 
+    attributes_expected =
       {
         name: ->(x) { x == 'Uber' },
         description: ->(x) { x.class == String && x.include?('Uber') && x.length > 20 },
@@ -443,7 +445,7 @@ class AppStoreService
         support_url: -> (x) { x.include?('help.uber') },
         released: -> (x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2016 },
         languages: -> (x) { (['English', 'Japanese', 'Italian'] - x).empty? }
-      }    
+      }
 
     # If one of the expected attributes is nil, we receive "undefined method for nil:NilClass" error.
     # Catch these and return false to the caller so we return a more descriptive error.
@@ -453,7 +455,7 @@ class AppStoreService
       return false
     end
   end
-  
+
   # 3 and a half stars --> 3.5
   # @author Jason Lew
   def count_stars(s)
@@ -479,14 +481,14 @@ class AppStoreService
   end
 
   class << self
-    
+
     # Attributes hash
     # @author Jason Lew
     # @param id The App Store identifier
     def attributes(id, country_code: 'us', lookup: true, scrape: true)
       self.new.attributes(id, country_code: country_code, lookup: lookup, scrape: scrape)
     end
-    
+
     def test(options={})
       # links = %w(
       #   https://itunes.apple.com/us/app/a$$hole-by-martin-kihn/id389377362?mt=8
@@ -501,13 +503,13 @@ class AppStoreService
 
       page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
       html = Nokogiri::HTML(page)
-    
+
       app_prefix = 'https://itunes.apple.com/us/app/'
       links = html.css("a").select{ |a| a['href'].match(app_prefix) }.map{|a| a['href']}
       puts links
-      
+
       ids = links.map{|link| link.match(/\/id\d*/)[0].gsub('/id', '')}
-    
+
       limit = options[:limit]
 
       ids.each_with_index do |id, i|

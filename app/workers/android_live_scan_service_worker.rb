@@ -1,3 +1,5 @@
+# Used in AndroidLiveScanService
+
 class AndroidLiveScanServiceWorker
   include Sidekiq::Worker
   sidekiq_options queue: :live, retry: false

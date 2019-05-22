@@ -1,3 +1,5 @@
+# Used in DAG
+
 class GooglePlayChartService
 
   class << self

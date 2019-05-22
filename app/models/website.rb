@@ -18,7 +18,8 @@ class Website < ActiveRecord::Base
   class BadFormat; end
 
   belongs_to :company
-  
+  # belongs_to :ios_app TODO: This relationship exists in DB Remove if deprecated
+
   has_many :ios_apps_websites
   has_many :ios_apps, through: :ios_apps_websites
 
@@ -37,7 +38,7 @@ class Website < ActiveRecord::Base
   has_many :clearbit_contacts
 
   enum kind: [:primary, :secondary]
-  
+
   validates :url, presence: true
 
   before_create :populate_helper_fields

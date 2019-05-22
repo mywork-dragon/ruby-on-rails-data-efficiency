@@ -1,3 +1,5 @@
+# Used in AndroidLiveScanServiceWorker
+
 class ApkSnapshotServiceSingleWorker
 
   include Sidekiq::Worker

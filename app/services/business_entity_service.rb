@@ -1,3 +1,5 @@
+# used at AppStoreSnapshotService
+
 class BusinessEntityService
 
   class << self
@@ -8,9 +10,9 @@ class BusinessEntityService
     # @author Jason Lew
     def ios_new_apps
       batch = Sidekiq::Batch.new
-      batch.description = "ios_new_apps" 
+      batch.description = "ios_new_apps"
       batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
-  
+
       previous_week_epf_date = EpfFullFeed.last(2).first.date
 
       batch.jobs do

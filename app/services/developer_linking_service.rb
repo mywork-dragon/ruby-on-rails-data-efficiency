@@ -1,3 +1,5 @@
+# This seems to be an attemp to create a link between the Android and IOS developers
+
 class DeveloperLinkingService
   class << self
 

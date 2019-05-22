@@ -1,8 +1,10 @@
+# Used in multiple locations
+
 class IosReclassificationService
   class << self
     def reclassify_all
       batch = Sidekiq::Batch.new
-      batch.description = "reclassifying snapshots" 
+      batch.description = "reclassifying snapshots"
       batch.on(:complete, 'IosReclassificationService#on_complete')
 
       batch.jobs do
@@ -12,7 +14,7 @@ class IosReclassificationService
 
     def reclassify_ios_apps(ios_app_ids)
       batch = Sidekiq::Batch.new
-      batch.description = "reclassifying snapshots" 
+      batch.description = "reclassifying snapshots"
       batch.on(:complete, 'IosReclassificationService#on_complete')
 
       batch.jobs do

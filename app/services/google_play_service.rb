@@ -1,3 +1,5 @@
+# Used by GooglePlaySnapshotModule
+
 class GooglePlayService
   include AppAttributeChecker
 
@@ -51,7 +53,7 @@ class GooglePlayService
     @html = google_play_html(app_identifier)
 
     ret = {}
-    
+
     methods = %w(
       name
       description
@@ -78,12 +80,12 @@ class GooglePlayService
       developer_google_play_identifier
     )
     # note: for speedup, in_app_purchases_range must come after in_app_purchases
-    
+
     methods.each do |method|
       key = method.to_sym
 
       next if key == :in_app_purchases_range && !ret[:in_app_purchases]
-    
+
       begin
         attribute = send(method.to_sym)
         ret[key] = attribute
@@ -257,7 +259,7 @@ class GooglePlayService
     end
     unique_itemprop('meta', 'ratingValue')['content'].to_f
   end
-  
+
   # Returns integer of total number of app reviews
   def ratings_all_count
     if match = /aria-label="([\d,]+?) ratings">([\d,]+?)</.match(@html.to_html)
@@ -278,7 +280,7 @@ class GooglePlayService
       x['src'].gsub(/^https?:/, '')
     end
   end
-  
+
   def icon_url_300x300
     unique_itemprop('img', 'image')['src']
   end
@@ -323,7 +325,7 @@ class GooglePlayService
 
     attributes = self.attributes('com.ubercab')
 
-    attributes_expected = 
+    attributes_expected =
       {
         name: ->(x) { x == 'Uber' },
         description: ->(x) { x.class == String && x.include?('Uber') && x.length > 20 },

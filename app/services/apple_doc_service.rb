@@ -1,3 +1,5 @@
+# Seems to populate an important table but no idea how often / where it is called
+
 class AppleDocService
 
   DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'ios_headers') : '/tmp/ios_headers'

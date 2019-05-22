@@ -1,3 +1,5 @@
+# Used in ApiController
+
 class IosSdkService
 
   class << self

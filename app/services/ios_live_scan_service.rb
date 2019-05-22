@@ -1,3 +1,5 @@
+# Used in ApiController
+
 class IosLiveScanService
   class << self
     def scan_ios_app(ios_app_id:, job_type: :one_off, international_enabled: false)
@@ -44,7 +46,7 @@ class IosLiveScanService
       job = IpaSnapshotJob.find(job_id)
 
       return nil if job.nil? || !(job.job_type == 'one_off' || job.job_type == 'test')
-      
+
       snapshot = job.ipa_snapshots.first # shouldn't matter...only one snapshot
 
       # first set of checks: validation stage
@@ -99,7 +101,7 @@ class IosLiveScanService
       job = IpaSnapshotJob.find(job_id)
 
       return nil if job.nil? || !(job.job_type == 'one_off' || job.job_type == 'test')
-      
+
       # first set of checks: validation stage
       status = if %w(validating not_available paid unchanged device_incompatible failed).include?(job.live_scan_status)
         result_map[job.live_scan_status.to_sym]

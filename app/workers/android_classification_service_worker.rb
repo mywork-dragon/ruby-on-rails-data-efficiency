@@ -1,3 +1,5 @@
+# Used in AndroidMassScanService and others
+
 class AndroidClassificationServiceWorker
   include Sidekiq::Worker
   include AndroidClassification

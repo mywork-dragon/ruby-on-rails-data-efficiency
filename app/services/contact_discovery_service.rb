@@ -1,3 +1,5 @@
+# Used by internal API <=> Frontend
+
 class ContactDiscoveryService
   @@endpoint = "http://lense.mightysignal.com/v1/"
 
