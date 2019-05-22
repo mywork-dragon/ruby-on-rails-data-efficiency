@@ -10,10 +10,10 @@ class RadarReport
   # Place the input data in the S3_INPUT_BUCKET url.
   # From terminal you can use:
   # $ awslogin
-  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/ios_sdks.csv ./
-  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/android_sdks.csv ./
-  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/top-1m.csv ./
-  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/domains.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/ios_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/android_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_publishers_android.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_publishers_ios.csv ./
 
   # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
   # 64, AliPaySDK
@@ -21,15 +21,16 @@ class RadarReport
   # 
   # Note the IDs are different for iOS and Android!!
   #
-  # adobe_domains.csv is a csv file with the domains names, example:
-  # fr.as24.com
-  # AS24.COM
+  # radar_publishers_*.csv is a csv file with the domains names, example:
+  # 487732
+  # 1146461
+  # 612020
 
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
+  # $ rails runner -e production "RadarDomainsReport.generate(true, 'ios')"
 
-  # Upload the produced files (adobe_apps_ios.csv, adobe_apps_android.csv, adobe_domain_mapping.csv to the S3_OUTPUT_BUCKET url (not automated yet)
-  # $ aws s3 cp adobe.zip s3://mightysignal-customer-reports/adobe/output/
+  # zip radar.zip radar_out_*
+  # $ aws s3 cp radar.zip s3://mightysignal-customer-reports/radar/output/
 
   class << self
     def apps_hot_store
@@ -44,10 +45,9 @@ class RadarReport
       @app_ids ||= []
     end
     
-    def domains
-      @domains ||= File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
+    def top_domains
+      @top_domains ||= File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
     end
-    
     
     ####
     # Take the domains file and platform and generate the report. 
@@ -56,34 +56,34 @@ class RadarReport
     # generate('domains.csv', 'ios', 0, 600000)
     ###
     
-    def generate(platform)
+    def generate(f1000, platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
       
-      publisher_ids = get_f1000_publisher_ids(platform)
+      f1000_text = ''
+      if f1000
+        f1000_text = '_f1000'
+        publisher_ids = get_f1000_publisher_ids(platform)
+      else
+        publisher_ids = platform == 'ios' ? CSV.read("radar_publishers_ios.csv") : CSV.read("radar_publishers_android.csv")
+      end
 
-      CSV.open("adobe_apps_#{platform}_#{bottom}_#{top}.csv", "w") do |csv|  
+      CSV.open("radar_out_#{platform}#{f1000_text}.csv", "w") do |csv|  
         csv << headers_row()  
         i = 0
-        domains.each do |domain|
-          d = UrlHelper.url_with_domain_only(domain)
+        total = publisher_ids.count
+        publisher_ids.each do |publisher_id|
+          publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
           i += 1
-          percent = ((i.to_f / domains.count) * 100).round(0)
-          puts "#{i} #{domain} #{percent}%"
-          publisher_id = get_best_publisher(d, platform)
-          if publisher_id > 0
-            publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
-            p "Apps found #{publisher.apps.length}"
-            publisher.apps.each do |app_data|
-              app = apps_hot_store.read(platform, app_data.id)
-              next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 1000 || app_ids.include?(app_data.id.to_i)) 
-              app_ids << app_data.id.to_i
-              skds_used = get_used_sdks(app)
-              csv << produce_csv_line(publisher, app, skds_used, platform, domain)
-            end
-          else
-            p "Skipped #{i}"
-            csv << [domain]
+          percent = ((i.to_f / total) * 100).round(0)
+          puts "#{i} #{publisher_id} #{percent}%"
+          domain = get_best_domain(publisher)        
+          publisher.apps.each do |app_data|
+            app = apps_hot_store.read(platform, app_data.id)
+            next if (app.nil? || app.empty?)
+            app_ids << app_data.id.to_i
+            sdks_used = get_used_sdks(app)
+            csv << produce_csv_line(publisher, app, sdks_used, platform, domain)
           end
         end
       end  
@@ -107,33 +107,19 @@ class RadarReport
     # Algorithm: Shortest domain that passes inclusion test
     ####
     
-    def get_best_publisher(domain, platform)
-      publisher_id = handle_major_publishers(domain, platform)
-      return publisher_id if publisher_id > 0
-      
-      domain_co = domain.split('.').first
-      developer_ids = platform == 'ios' ? Website.where(domain: domain).map{ |w| w.ios_developer_ids }.flatten.uniq : Website.where(domain: domain).map{ |w| w.android_developer_ids }.flatten.uniq
-      devs = []
-      developer_ids.each do |id|
+    def get_best_domain(developer)
+      domains = developer.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq
+      sites = []
+      domains.each do |domain|
         h = Hash.new
-        developer = platform == 'ios' ? IosDeveloper.find(id) : AndroidDeveloper.find(id)
-        h['id'] = id
+        h['domain'] = domain
         h['company'] = clean(developer.name)
         h['company_length'] = h['company'].size
-        h['domain'] = domain
-        h['rank'] = domains.index(domain) || 1000000
-        h['test'] = inclusion_test(domain_co, h['company'])
-        devs << h
+        h['rank'] = top_domains.index(domain) || 1000000
+        h['test'] = inclusion_test(developer.name, h['company'])
+        sites << h
       end
-      #find devs where test is true and pick the lowest rank and then shortest company name
-      winner = devs.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
-      if winner.present?
-        developer = platform == 'ios' ? IosDeveloper.find(winner['id']) : AndroidDeveloper.find(winner['id'])
-        publisher_id = developer.id
-      end
-      publisher_id
-    rescue
-      0
+      winner = sites.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
     end
     
     ####
@@ -191,7 +177,7 @@ class RadarReport
     # to pass to the open CSV block
     ####
     
-    def produce_csv_line(publisher, app, skds_used, platform, domain)
+    def produce_csv_line(publisher, app, sdks_used, platform, domain)
       line = [domain]
       line << app['id']
       line << app['name']
@@ -227,7 +213,7 @@ class RadarReport
       else
         line << app['downloads_min']
       end
-      sdks_to_track.each do |sdks|
+      sdks_used.each do |sdks|
         line << sdks[:is_used]
       end
 
