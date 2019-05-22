@@ -65,7 +65,7 @@ class RadarReport
         f1000_text = '_f1000'
         publisher_ids = get_f1000_publisher_ids(platform)
       else
-        publisher_ids = platform == 'ios' ? CSV.read("radar_publishers_ios.csv") : CSV.read("radar_publishers_android.csv")
+        publisher_ids = platform == 'ios' ? CSV.read("radar_publishers_ios.csv").flatten : CSV.read("radar_publishers_android.csv").flatten
       end
 
       CSV.open("radar_out_#{platform}#{f1000_text}.csv", "w") do |csv|  
@@ -73,7 +73,7 @@ class RadarReport
         i = 0
         total = publisher_ids.count
         publisher_ids.each do |publisher_id|
-          publisher = platform == 'ios' ? IosDeveloper.find(publisher_id) : AndroidDeveloper.find(publisher_id)
+          publisher = platform == 'ios' ? IosDeveloper.find(publisher_id.to_i) : AndroidDeveloper.find(publisher_id.to_i)
           i += 1
           percent = ((i.to_f / total) * 100).round(0)
           puts "#{i} #{publisher_id} #{percent}%"
