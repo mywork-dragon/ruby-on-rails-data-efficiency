@@ -79,8 +79,9 @@ class AdobeDomainsReport
               app = apps_hot_store.read(platform, app_data.id)
               next if (app.nil? || app.empty? || app['all_version_ratings_count'].to_i < 1000 || app_ids.include?(app_data.id.to_i)) 
               app_ids << app_data.id.to_i
-              skds_used = get_used_sdks(app)
-              csv << produce_csv_line(publisher, app, skds_used, platform, domain)
+              sdks_used = get_used_sdks(app)
+              app['app_identifier'] = app_data.app_identifier
+              csv << produce_csv_line(publisher, app, sdks_used, platform, domain)
             end
           else
             p "Skipped #{i}"
@@ -180,7 +181,7 @@ class AdobeDomainsReport
     # to pass to the open CSV block
     ####
     
-    def produce_csv_line(publisher, app, skds_used, platform, domain)
+    def produce_csv_line(publisher, app, sdks_used, platform, domain)
       line = [domain]
       line << app['id']
       line << app['name']
@@ -196,9 +197,9 @@ class AdobeDomainsReport
       end
       line << publisher.name
       if platform == 'ios'
-        line << ( 'https://itunes.apple.com/developer/id' + app.app_identifier.to_s )
+        line << ( 'https://itunes.apple.com/developer/id' + app['app_identifier'].to_s )
       else
-        line << ( 'https://play.google.com/store/apps/details?id=' + app.app_identifier.to_s )
+        line << ( 'https://play.google.com/store/apps/details?id=' + app['app_identifier'].to_s )
       end
       line << app['original_release_date']
       line << app['last_updated']
@@ -216,12 +217,13 @@ class AdobeDomainsReport
       else
         line << app['downloads_min']
       end
-      sdks_to_track.each do |sdks|
+      sdks_used.each do |sdks|
         line << sdks[:is_used]
       end
 
       line
     rescue => e
+      puts e
       line
     end
 
