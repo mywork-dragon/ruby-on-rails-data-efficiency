@@ -325,6 +325,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get '404' => 'error#not_found', :via => :all
-  get '500' => 'error#internal_error', :via => :all
+  get '404' => 'error#not_found', :via => :all, as: 'not_found'
+  get '500' => 'error#internal_error', :via => :all, as: 'internal_error'
 end
