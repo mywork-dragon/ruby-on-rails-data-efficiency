@@ -222,6 +222,11 @@ angular
   .config(['$authProvider', function ($authProvider) {
     $authProvider.linkedin({
       clientId: '755ulzsox4aboj',
+      authorizationEndpoint: 'https://www.linkedin.com/oauth/v2/authorization',
+      scope: ['r_liteprofile', 'r_emailaddress'],
+      responseType: 'code',
+      scopeDelimiter: '%20',
+      oauthType: '2.0',
     });
 
     $authProvider.google({

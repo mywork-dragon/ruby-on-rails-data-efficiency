@@ -146,7 +146,7 @@ class User < ActiveRecord::Base
         end
       end
     # we are logging in a user that has already previously connected linkedin or google
-    elsif user = User.where("#{params[:provider]}_uid" => params[:uid]).first
+    elsif params[:uid].present? && user = User.where("#{params[:provider]}_uid" => params[:uid]).first
       user.send("#{params[:provider]}_token=", params[:token])
       user.save
       user
