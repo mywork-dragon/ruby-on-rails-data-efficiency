@@ -223,6 +223,7 @@ angular
     $authProvider.linkedin({
       clientId: '755ulzsox4aboj',
       authorizationEndpoint: 'https://www.linkedin.com/oauth/v2/authorization',
+      optionalUrlParams: ['scope'],
       scope: ['r_liteprofile', 'r_emailaddress'],
       responseType: 'code',
       scopeDelimiter: '%20',
