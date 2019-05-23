@@ -30,7 +30,9 @@ class RadarReport
   # $ rails runner -e production "RadarDomainsReport.generate(true, 'ios')"
 
   # zip radar.zip radar_out_*
-  # $ aws s3 cp radar.zip s3://mightysignal-customer-reports/radar/output/
+  # aws s3 cp radar.zip s3://mightysignal-customer-reports/radar/output/
+  # aws s3api put-object-acl --bucket mightysignal-customer-reports --key radar/output/radar.zip --acl public-read
+  # url is https://s3.amazonaws.com/mightysignal-customer-reports/radar/output/radar.zip
 
   class << self
     def apps_hot_store
