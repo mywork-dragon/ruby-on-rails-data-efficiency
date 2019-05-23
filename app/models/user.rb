@@ -132,7 +132,9 @@ class User < ActiveRecord::Base
         user.save
         user
       else
-        return if User.where("#{params[:provider]}_uid" => params[:uid]).first
+        if params[:uid].present? && (found_user = User.where("#{params[:provider]}_uid" => params[:uid]).first)
+          return found_user
+        end
 
         if user.send("#{params[:provider]}_uid").blank?
           user.send("#{params[:provider]}_uid=", params[:uid])
