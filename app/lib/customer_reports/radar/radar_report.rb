@@ -10,10 +10,11 @@ class RadarReport
   # Place the input data in the S3_INPUT_BUCKET url.
   # From terminal you can use:
   # $ awslogin
-  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/ios_sdks.csv ./
-  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/android_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_ios_sdks.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_android_sdks.csv ./
   # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_publishers_android.csv ./
   # $ aws s3 cp s3://mightysignal-customer-reports/radar/input/radar_publishers_ios.csv ./
+  # $ aws s3 cp s3://mightysignal-customer-reports/adobe/input/top-1m.csv ./
 
   # ios_sdks.csv and android_sdks are csv files with the sdk ids and names, like:
   # 64, AliPaySDK
@@ -27,7 +28,7 @@ class RadarReport
   # 612020
 
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "RadarDomainsReport.generate(true, 'ios')"
+  # $ rails runner -e production "RadarReport.generate(true, 'ios')"
 
   # zip radar.zip radar_out_*
   # aws s3 cp radar.zip s3://mightysignal-customer-reports/radar/output/
@@ -43,14 +44,6 @@ class RadarReport
       @sdks_to_track ||= []
     end
     
-    def app_ids
-      @app_ids ||= []
-    end
-    
-    def top_domains
-      @top_domains ||= File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
-    end
-    
     ####
     # Take the domains file and platform and generate the report. 
     # This will output 3 files: adobe_apps_ios.csv, adobe_apps_android.csv, 
@@ -59,7 +52,7 @@ class RadarReport
     ###
     
     def generate(f1000, platform)
-      sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
+      sdks_data = platform == 'ios' ? CSV.read("radar_ios_sdks.csv") : CSV.read("radar_android_sdks.csv")
       get_sdk_list(sdks_data)
       
       f1000_text = ''
@@ -69,7 +62,8 @@ class RadarReport
       else
         publisher_ids = platform == 'ios' ? CSV.read("radar_publishers_ios.csv").flatten : CSV.read("radar_publishers_android.csv").flatten
       end
-
+      
+      dl = DomainLinker.new
       CSV.open("radar_out_#{platform}#{f1000_text}.csv", "w") do |csv|  
         csv << headers_row()  
         i = 0
@@ -79,13 +73,14 @@ class RadarReport
           i += 1
           percent = ((i.to_f / total) * 100).round(0)
           puts "#{i} #{publisher_id} #{percent}%"
-          domain = get_best_domain(publisher)        
-          publisher.apps.each do |app_data|
-            app = apps_hot_store.read(platform, app_data.id)
-            next if (app.nil? || app.empty?)
-            app_ids << app_data.id.to_i
-            sdks_used = get_used_sdks(app)
-            csv << produce_csv_line(publisher, app, sdks_used, platform, domain)
+          domain = dl.get_best_domain(publisher)
+          if domain
+            publisher.apps.each do |app_data|
+              app = apps_hot_store.read(platform, app_data.id)
+              next if (app.nil? || app.empty?)
+              sdks_used = get_used_sdks(app)
+              csv << produce_csv_line(publisher, app, sdks_used, platform, domain)
+            end
           end
         end
       end  
@@ -101,77 +96,6 @@ class RadarReport
         publisher_ids = website_ids.map{ |id| Website.find(id).android_developer_ids }.flatten.uniq
       end
       publisher_ids
-    end
-    
-    ####
-    # Choose the best match between the given domain
-    # and the multiple publishers related to it:
-    # Algorithm: Shortest domain that passes inclusion test
-    ####
-    
-    def get_best_domain(developer)
-      domains = developer.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq
-      sites = []
-      domains.each do |domain|
-        h = Hash.new
-        h['domain'] = domain
-        h['company'] = clean(developer.name)
-        h['company_length'] = h['company'].size
-        h['rank'] = top_domains.index(domain) || 1000000
-        h['test'] = inclusion_test(developer.name, h['company'])
-        sites << h
-      end
-      winner = sites.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
-    end
-    
-    ####
-    #
-    # String comparison functions
-    #
-    ####
-    
-    def clean(string)
-      clean_company(string).to_s.downcase.gsub(/[\.\s]/, '')
-    end
-  
-    def inclusion_test(domain_co, developer_name)
-      sort = [clean(domain_co), clean(developer_name)].sort_by(&:length)
-      short = sort.first
-      long = sort.last
-      if short.to_s.length >= 3
-        long.include? short
-      else
-        false
-      end
-    end
-    
-    def clean_company(company)
-      company.to_s
-      .gsub(/[\u0080-\u00ff]/, '') # remove non-UTF i think?
-      .gsub(/\(.*\)/i, '') # remove parentheses and all content between
-      .gsub(/,?\s+(pty ltd|pte ltd|ltd|llc|l.l.c|inc|lp|llp|corporation|associates|holdings|corporate)(\.|\s)?/i, '') # remove common company endings
-      .gsub(/[^0-9a-z:.\/\s-]/i, '')
-      .gsub('...', '')
-      .gsub(/\.+/i, '.')
-      .sub(/^https?\:?\/\//i, '')
-      .sub(/^www./i, '')
-      .gsub(/\s+/, ' ')
-      .gsub('--', '')
-      .downcase
-      .truncate(100, separator: ' ', omission: '')
-      .encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
-      .squish
-    end 
-    
-    def handle_major_publishers(domain, platform)
-      publisher_id = false
-      h = Hash.new
-      h['facebook.com'] = {'ios': 37304, 'android': 55 }
-      h['instagram.com'] = {'ios': 37304, 'android': 55 }
-      h['google.com'] = {'ios': 6864, 'android': 928995 }
-      h['gmail.com'] = {'ios': 6864, 'android': 928995 }
-      h['youtube.com'] = {'ios': 6864, 'android': 928995 }
-      h.dig(domain, platform.to_sym).to_i
     end
     
     ####
@@ -191,13 +115,15 @@ class RadarReport
       if app['categories'].nil? || app['categories'].empty?
         line << ""
       else
-        line << app['categories'].find { |cat| cat['type'] == 'primary' }.andand['name']
+        category = app['categories'].find { |cat| cat['type'] == 'primary' }
+        category_name = category.present? ? category['name'] : ""
+        line << category_name
       end
       line << publisher.name
       if platform == 'ios'
-        line << ( 'https://itunes.apple.com/developer/id' + app.app_identifier.to_s )
+        line << ( 'https://itunes.apple.com/developer/id' + app['app_identifier'].to_s )
       else
-        line << ( 'https://play.google.com/store/apps/details?id=' + app.app_identifier.to_s )
+        line << ( 'https://play.google.com/store/apps/details?id=' + app['app_identifier'].to_s )
       end
       line << app['original_release_date']
       line << app['last_updated']
@@ -221,6 +147,7 @@ class RadarReport
 
       line
     rescue => e
+      puts "#{app['id']} - #{e}"
       line
     end
 
@@ -229,7 +156,7 @@ class RadarReport
     ####
     
     def get_used_sdks(app)
-      return if app['sdk_activity'].nil? || app['sdk_activity'].empty?
+      return [] if app['sdk_activity'].nil? || app['sdk_activity'].empty?
       sdks_to_track.each do |sdk_data|
         sdk_found = app['sdk_activity'].find{ |sdkact| sdkact['id'] == sdk_data[:id].to_i && sdkact['installed'] }.present?
         sdk_data[:is_used] = sdk_found

@@ -14,6 +14,7 @@ class DomainLinker
     if @@dd_hotstore.nil?
       @@dd_hotstore = DomainDataHotStore.new
     end
+    @top_domains = File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
   end
 
   def domain_to_publisher(domain)
@@ -57,16 +58,17 @@ class DomainLinker
     0
   end
   
+  # should prefer .com
   def get_best_domain(publisher)
-    domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq
+    domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq.select{ |n| n.present? }
     sites = []
     domains.each do |domain|
       h = Hash.new
       h['domain'] = domain
       h['company'] = clean(publisher.name)
       h['company_length'] = h['company'].size
-      h['rank'] = top_domains.index(domain) || 1000000
-      h['test'] = inclusion_test(domain, h['company'])
+      h['rank'] = @top_domains.index(domain) || 1000000
+      h['test'] = inclusion_test(domain.split(".").first, h['company'])
       sites << h
     end
     winner = sites.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
@@ -117,10 +119,6 @@ class DomainLinker
     h['gmail.com'] = {'ios': 6864, 'android': 928995 }
     h['youtube.com'] = {'ios': 6864, 'android': 928995 }
     h.dig(domain, platform.to_sym).to_i
-  end
-  
-  def top_domains
-    @top_domains ||= File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
   end
 
 end

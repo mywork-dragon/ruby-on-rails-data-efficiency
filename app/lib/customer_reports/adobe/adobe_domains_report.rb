@@ -26,10 +26,13 @@ class AdobeDomainsReport
   # AS24.COM
 
   # To generate the report, use the Rails runner from the container bash
-  # $ rails runner -e production "AdobeDomainsReport.generate('domains.csv', 'ios')"
+  # $ rails runner -e production "AdobeDomainsReport.generate('ios')"
 
   # Upload the produced files (adobe_apps_ios.csv, adobe_apps_android.csv, adobe_domain_mapping.csv to the S3_OUTPUT_BUCKET url (not automated yet)
   # $ aws s3 cp adobe.zip s3://mightysignal-customer-reports/adobe/output/
+  # aws s3api put-object-acl --bucket mightysignal-customer-reports --key adobe/output/adobe.zip --acl public-read
+  # url is https://mightysignal-customer-reports.s3.amazonaws.com/adobe/output/adobe.zip
+
 
   class << self
     def apps_hot_store
@@ -38,11 +41,7 @@ class AdobeDomainsReport
 
     def sdks_to_track
       @sdks_to_track ||= []
-    end
-    
-    def app_ids
-      @app_ids ||= []
-    end    
+    end  
     
     ####
     # Take the domains file and platform and generate the report. 
@@ -54,6 +53,8 @@ class AdobeDomainsReport
     def generate(platform)
       sdks_data = platform == 'ios' ? CSV.read("ios_sdks.csv") : CSV.read("android_sdks.csv")
       get_sdk_list(sdks_data)
+      
+      dl = DomainLinker.new
       CSV.open("adobe_apps_#{platform}.csv", "a+") do |csv|  
         csv << headers_row()  
         i = 0
@@ -62,12 +63,11 @@ class AdobeDomainsReport
           group.each do |publisher|
             i += 1
             puts "#{i} - #{publisher.id}"
-            domain = DomainLinker.new.get_best_domain(publisher)
+            domain = dl.get_best_domain(publisher)
             if domain
               publisher.apps.each do |app_data|
                 app = apps_hot_store.read(platform, app_data.id)
                 next if (app.nil? || app.empty?)
-                app_ids << app_data.id.to_i
                 sdks_used = get_used_sdks(app) || []
                 csv << produce_csv_line(publisher, app, sdks_used, platform, domain)
               end
@@ -94,7 +94,9 @@ class AdobeDomainsReport
       if app['categories'].nil? || app['categories'].empty?
         line << ""
       else
-        line << app['categories'].find { |cat| cat['type'] == 'primary' }.andand['name']
+        category = app['categories'].find { |cat| cat['type'] == 'primary' }
+        category_name = category.present? ? category['name'] : ""
+        line << category_name
       end
       line << publisher.name
       if platform == 'ios'
@@ -124,7 +126,7 @@ class AdobeDomainsReport
 
       line
     rescue => e
-      puts e
+      puts "#{app['id']} #{e}"
       line
     end
 
@@ -133,7 +135,7 @@ class AdobeDomainsReport
     ####
     
     def get_used_sdks(app)
-      return if app['sdk_activity'].nil? || app['sdk_activity'].empty?
+      return [] if app['sdk_activity'].nil? || app['sdk_activity'].empty?
       sdks_to_track.each do |sdk_data|
         sdk_found = app['sdk_activity'].find{ |sdkact| sdkact['id'] == sdk_data[:id].to_i && sdkact['installed'] }.present?
         sdk_data[:is_used] = sdk_found
