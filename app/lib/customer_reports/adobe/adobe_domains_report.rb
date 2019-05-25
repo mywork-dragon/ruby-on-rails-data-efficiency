@@ -28,7 +28,7 @@ class AdobeDomainsReport
   # To generate the report, use the Rails runner from the container bash
   # $ rails runner -e production "AdobeDomainsReport.generate('ios')"
 
-  # Upload the produced files (adobe_apps_ios.csv, adobe_apps_android.csv, adobe_domain_mapping.csv to the S3_OUTPUT_BUCKET url (not automated yet)
+  # zip adobe.zip adobe_apps_*
   # $ aws s3 cp adobe.zip s3://mightysignal-customer-reports/adobe/output/
   # aws s3api put-object-acl --bucket mightysignal-customer-reports --key adobe/output/adobe.zip --acl public-read
   # url is https://mightysignal-customer-reports.s3.amazonaws.com/adobe/output/adobe.zip

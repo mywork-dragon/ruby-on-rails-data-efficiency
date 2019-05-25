@@ -59,8 +59,10 @@ class DomainLinker
   end
   
   # should prefer .com
+  # handle acronym company names
+  # incorporate page scraper
   def get_best_domain(publisher)
-    domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq.select{ |n| n.present? }
+    domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq.compact
     sites = []
     domains.each do |domain|
       h = Hash.new
