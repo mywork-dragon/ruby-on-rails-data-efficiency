@@ -65,6 +65,9 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 * To run syntax linter: `rubocop`
 * To run tests: `rake test`
 
+#### Static app landing pages
+* Run `AppsIndex.reset!` in Rails console after db is seeded to get index of app landing pages.
+
 ## Deployment
 
 There are two deployment methods, ECS or Capistrano.

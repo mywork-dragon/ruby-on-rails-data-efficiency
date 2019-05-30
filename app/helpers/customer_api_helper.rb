@@ -1,2 +1,0 @@
-module CustomerApiHelper
-end
