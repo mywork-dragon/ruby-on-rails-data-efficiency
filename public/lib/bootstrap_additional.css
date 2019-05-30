@@ -98,6 +98,21 @@ nav.navbar.categories-bg button,
     line-height: 1rem;
 }
 
+.app-page-btn-font-size {
+    font-size: 0.875rem !important;
+}
+
+.app-page-h4 {
+    font-size: 1.125rem;
+    margin: 10px 0;
+}
+
+.app-page-h3 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 @media only screen and (max-width: 1200px) {
     #app-search,
     .easy-autocomplete-container ul {
@@ -216,6 +231,11 @@ nav.navbar.categories-bg button,
 
     .app-page-content {
         margin-top: -3rem;
+    }
+
+    .lg-logo {
+        height: 150px !important;
+        width: 150px !important;
     }
 
 }
