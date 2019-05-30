@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   namespace :blog, :as => 'buttercms', :module => 'buttercms' do
     get 'rss' => 'feeds#rss', :format => 'rss', :as => :rss
     get 'atom' => 'feeds#atom', :format => 'atom', :as => :atom
