@@ -1,5 +1,3 @@
-# Used in ItunesChartWorker
-
 module ItunesChartScraperService
 
   class FreeApps
@@ -14,7 +12,7 @@ module ItunesChartScraperService
       ranked_apps
     end
 
-    private
+    private 
 
     def store_html
       limit = 200

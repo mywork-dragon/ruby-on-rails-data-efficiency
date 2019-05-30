@@ -1,96 +1,14 @@
 /! ==============Logo &amp; Menu Bar=================
-nav.navbar.navbar-default.navbar-fixed-top role="navigation"
+nav.header-nav.navbar.navbar-dark.p-0.mb-3 role="navigation" class="#{header_styles}"
   /! Brand and toggle get grouped for better mobile display
-  .container.nav-bar-container
-    .navbar-header
-      button.navbar-toggle data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button"
-        span.sr-only Toggle navigation
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-      a href='/'
-        img#headerLogo.navbar-brand alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png" /
+  .container.py-0.px-2.nav-bar-container
+    a href='/'
+      img.navbar-brand#headerLogo alt="logo" href="#" src="/lib/images/mighty_signal_logo_white.png"
+    button.navbar-toggler.mr-3 data-target="#navbar-header-collapse" data-toggle="collapse" type="button"
+      span.navbar-toggler-icon
     /! Collect the nav links, forms, and other content for toggling
-    .collapse.navbar-collapse.navbar-ex1-collapse
-      ul.nav.navbar-nav.navbar-right
-        - if browser.device.mobile?
-          li
-              = link_to 'The Mightiest Mobile Data', data_path
-          li
-              = link_to 'Web Portal', web_portal_path
-          li
-              = link_to 'Salesforce Integration', salesforce_integration_path
-          li
-              = link_to 'API', the_api_path
-          li
-              = link_to 'Data Feed', data_feed_path
-        - else
-          li.custom-menu-item
-            .dropdown.show
-              a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Capabilities
-              .dropdown-menu aria-labelledby="dropdownMenuLink"
-                a class="dropdown-item" href=data_path The Mightiest Mobile Data
-                a class="dropdown-item" href=web_portal_path Web Portal
-                a class="dropdown-item" href=salesforce_integration_path Salesforce Integration
-                a class="dropdown-item" href=the_api_path API
-                a class="dropdown-item" href=data_feed_path Data Feed
-        - if browser.device.mobile?
-          li
-            = link_to 'Lead Generation', lead_generation_path
-          li
-              = link_to 'Account Based Marketing', abm_path
-          li
-              = link_to 'SDK Intelligence', sdk_intelligence_path
-          li
-              = link_to 'Publisher Contacts', publisher_contacts_path
-        - else
-          li.custom-menu-item
-            .dropdown.show
-              a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Solutions
-              .dropdown-menu aria-labelledby="dropdownMenuLink"
-                a class="dropdown-item" href=lead_generation_path Lead Generation
-                a class="dropdown-item" href=abm_path Account Based Marketing
-                a class="dropdown-item" href=sdk_intelligence_path SDK Intelligence
-                a class="dropdown-item" href=publisher_contacts_path Publisher Contacts
-        li
-          = link_to 'CONTACT', root_path(anchor: 'contact_anchor'), class: 'contact-link'
-
-        - if browser.device.mobile?
-          li
-            = link_to 'Blogs', buttercms_posts_path
-          li
-            = link_to 'Case-studies', buttercms_case_studies_path
-
-        - else
-          li.custom-menu-item
-            .dropdown.show
-              a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" BLOGS
-              .dropdown-menu aria-labelledby="dropdownMenuLink"
-                a class="dropdown-item" href=buttercms_posts_path Blog
-                a class="dropdown-item" href=buttercms_case_studies_path Case studies
-
-        - if browser.device.mobile?
-          li
-            = link_to 'Parade (Free Ad Intelligence)', 'https://parade.mightysignal.com'
-          li
-            = link_to 'Fastest Growing SDKs', fastest_growing_sdks_path
-          li
-            = link_to 'Top SDKs', top_ios_sdks_path
-        - else
-          li.custom-menu-item
-            .dropdown.show
-              a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" FREE DATA!
-              .dropdown-menu aria-labelledby="dropdownMenuLink"
-                a class="dropdown-item" href='https://parade.mightysignal.com' Parade (Free Ad Intelligence)
-                a class="dropdown-item" href=fastest_growing_sdks_path Fastest Growing Android SDKs
-                a class="dropdown-item" href=top_ios_sdks_path Top iOS SDKs
-                a class="dropdown-item" href=top_ios_apps_path Top iOS Apps
-                a class="dropdown-item" href=top_android_sdks_path Top Android SDKs
-                a class="dropdown-item" href=top_android_apps_path Top Android Apps
-                a class="dropdown-item" href=timeline_path Timeline
-
-        li.custom-menu-item
-          div.app-search-container
-            input#app-search name="name" placeholder="Search iOS or Android apps" autofocus=(true)
-        li.login-button
-          a href="/app/app/"  LOGIN
+    .collapse.navbar-collapse#navbar-header-collapse.scrollable-menu
+      ul.nav.navbar-nav.w-100.justify-content-end
+        = render 'layouts/header_content/desktop' unless browser.device.mobile?
+        = render 'layouts/header_content/mobile' if browser.device.mobile?
+        = render 'layouts/header_content/common_controls'

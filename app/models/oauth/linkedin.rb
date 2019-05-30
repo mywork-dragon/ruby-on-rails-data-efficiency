@@ -1,6 +1,6 @@
 module Oauth
   class Linkedin < Oauth::Base
-    DATA_URL = 'https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name,picture-url,summary,location,picture-urls::(original),public-profile-url)?format=json'
+    DATA_URL = 'https://api.linkedin.com/v2/me'
 
     def get_data
       response = @client.get(DATA_URL, oauth2_access_token: @access_token)
@@ -10,7 +10,7 @@ module Oauth
     end
 
     def self.access_token_url
-      'https://www.linkedin.com/uas/oauth2/accessToken'
+      'https://www.linkedin.com/oauth/v2/accessToken'
     end
 
     def formatted_user_data

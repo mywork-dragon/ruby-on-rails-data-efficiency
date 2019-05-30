@@ -1,5 +1,3 @@
-# Used in ApkSnapshotServiceSingleWorker, ApkSnapshotServiceWorker
-
 module ApkWorker
   def perform(apk_snapshot_job_id, bid, android_app_id, google_account_id=nil)
     @attempted_google_account_ids = []

@@ -53,7 +53,7 @@ class AndroidApp < ActiveRecord::Base
   has_many :tags, through: :tag_relationships
 
   has_many :apk_snapshot_scrape_failures
-  # has_many :apk_snapshot_jobs
+  has_many :apk_snapshot_jobs
   has_many :apk_snapshot_scrape_exceptions
   has_many :weekly_batches, as: :owner
   has_many :activities, through: :weekly_batches
@@ -524,38 +524,65 @@ class AndroidApp < ActiveRecord::Base
       app = self
 
       # Only these attributes will be output in the final response.
-      white_list = ["id", "name", "price", "seller_url",
-          "current_version", "released",
-          "in_app_purchases", "required_android_version",
-          "content_rating", "seller", "in_app_purchase_min",
-          "in_app_purchase_max", "downloads_min", "downloads_max",
-          "icon_url", "categories", "publisher", "platform", "google_play_id",
-          "user_base", "last_updated", "all_version_rating",
-          "all_version_ratings_count", "first_scanned", "last_scanned",
-          "description", "installed_sdks", "uninstalled_sdks",
-          "mobile_priority", "developer_google_play_identifier",
-          "ratings_history", "versions_history", "downloads_history",
-          "taken_down", "last_seen_ads_date", "first_seen_ads_date",
-          "last_scanned_date", "first_scanned_date",
-          "download_regions", "first_scraped"
-          ] + extra_white_list + extra_from_app
+      white_list = [
+        "all_version_rating",
+        "all_version_ratings_count",
+        "categories",
+        "content_rating",
+        "current_version",
+        "description",
+        "developer_google_play_identifier",
+        "download_regions",
+        "downloads_history",
+        "downloads_max",
+        "downloads_min",
+        "first_scanned",
+        "first_scanned_date",
+        "first_scraped",
+        "first_seen_ads_date",
+        "google_play_id",
+        "icon_url",
+        "id",
+        "in_app_purchase_max",
+        "in_app_purchase_min",
+        "in_app_purchases",
+        "installed_sdks",
+        "last_scanned",
+        "last_scanned_date",
+        "last_seen_ads_date",
+        "last_updated",
+        "mobile_priority",
+        "name",
+        "platform",
+        "price",
+        "publisher",
+        "ratings_history",
+        "released",
+        "required_android_version",
+        "seller",
+        "seller_url",
+        "taken_down",
+        "uninstalled_sdks",
+        "user_base",
+        "versions_history"
+      ] + extra_white_list + extra_from_app
 
       rename = [
-          ['ratings_all_stars', 'all_version_rating'],
-          ['ratings_all_count', 'all_version_ratings_count'],
           ['icon_url_300x300', 'icon_url'],
+          ['ratings_all_count', 'all_version_ratings_count'],
+          ['ratings_all_stars', 'all_version_rating'],
           ['version', 'current_version']
           ]
 
       fields_from_app = [
           ['app_identifier', 'google_play_id'],
-          ['region_codes', 'download_regions'],
-          ['mobile_priority', 'mobile_priority'],
-          ['user_base', 'user_base'],
-          ['last_updated', 'last_updated'],
-          ['id', 'id'],
           ['downloads_history', 'downloads_history'],
+          ['id', 'id'],
+          ['last_updated', 'last_updated'],
+          ['mobile_priority', 'mobile_priority'],
           ['ratings_history', 'ratings_history'],
+          ['region_codes', 'download_regions'],
+          ['user_base', 'user_base'],
           ['versions_history', 'versions_history']
           ] + (extra_from_app.map { |field| [ field, field ] })
 

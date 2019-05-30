@@ -1,5 +1,3 @@
-# Used in several places
-
 class AppStoreInternationalService
 
   class UnrecognizedType < RuntimeError; end
@@ -8,7 +6,7 @@ class AppStoreInternationalService
 
     def run_snapshots(automated: false, scrape_type: :all)
       batch = Sidekiq::Batch.new
-      batch.description = "AppStoreInternationalService.run_snapshots"
+      batch.description = "AppStoreInternationalService.run_snapshots" 
       batch.on(
         :complete,
         'AppStoreInternationalService#on_complete_snapshots',
@@ -49,7 +47,7 @@ class AppStoreInternationalService
       if scrape_type == :all
         150
       else
-        # Limit batch size to 50 for non "all" scrape types so we
+        # Limit batch size to 50 for non "all" scrape types so we 
         # don't receive lock timeout errors from the batch insert.
         50
       end
@@ -106,7 +104,7 @@ class AppStoreInternationalService
         missing_ios_app_entries = missing_ios_app_entry_identifiers.map do |app_identifier|
           IosApp.new(
             app_identifier: app_identifier,
-            source: :rankings
+            source: :rankings 
           )
         end
 
@@ -123,7 +121,7 @@ class AppStoreInternationalService
         app_ids_missing_snapshots = existing_app_ids - app_ids_with_snapshot
 
         app_ids_to_scrape = missing_ios_app_entries.map(&:id) + app_ids_missing_snapshots
-
+        
         scrape_ios_apps(app_ids_to_scrape, live: true, job: snapshot_job)
       end
     end
@@ -145,7 +143,7 @@ class AppStoreInternationalService
   end
 
   def on_complete_snapshots(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: options['notification_title'],
+    Slackiq.notify(webhook_name: :main, status: status, title: options['notification_title'], 
      'New Snapshots Added' => IosAppCurrentSnapshot.last.id - options['last_snapshot_id'].to_i)
   end
 

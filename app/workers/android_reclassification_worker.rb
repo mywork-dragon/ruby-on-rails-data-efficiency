@@ -1,4 +1,3 @@
-# used in JobsController
 class AndroidReclassificationWorker
 
   include Sidekiq::Worker
@@ -12,3 +11,4 @@ class AndroidReclassificationWorker
   end
 
 end
+

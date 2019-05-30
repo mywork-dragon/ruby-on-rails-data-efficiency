@@ -43,6 +43,16 @@ function IosLiveScanCtrl (
   function checkForIosSdks (appId, calledAfterSuccess) {
     sdkLiveScanService.checkForIosSdks(appId)
       .success((data) => {
+        let allowLiveScanData = {
+          appAvailable: $scope.appAvailable,
+          liveScanEnabled: data.live_scan_enabled,
+        };
+
+        if ($scope.appAvailableCountries) {
+          allowLiveScanData.platform = $stateParams.platform;
+          allowLiveScanData.appAvailableCountries = $scope.appAvailableCountries;
+        }
+
         iosLiveScanCtrl.sdkData = {
           installedSdks: data.installed_sdks,
           uninstalledSdks: data.uninstalled_sdks,
@@ -50,7 +60,7 @@ function IosLiveScanCtrl (
           uninstalledSdksCount: data.uninstalled_sdks_count,
           lastUpdated: data.updated,
           errorCode: data.error_code,
-          liveScanEnabled: sdkLiveScanService.allowLiveScan($scope.appAvailable, data.live_scan_enabled),
+          liveScanEnabled: sdkLiveScanService.allowLiveScan(allowLiveScanData),
         };
 
         iosLiveScanCtrl.noSdkData = false;

@@ -1,5 +1,3 @@
-# Used in several parts and DAG
-
 class CustomerHappinessService
 
   # Call this to get the hash of users, their events, and when they were last used
@@ -27,7 +25,7 @@ class CustomerHappinessService
       date = Time.at(epoch_time).to_date
 
       date_current = ulue[email][feature]
-
+   
       ulue[email][feature] = date if date_current.nil? || date > date_current
     end
 

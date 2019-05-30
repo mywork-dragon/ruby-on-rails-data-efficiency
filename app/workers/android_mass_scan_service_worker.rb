@@ -1,4 +1,3 @@
-# used in AndroidMassScanService
 class AndroidMassScanServiceWorker
   include Sidekiq::Worker
   sidekiq_options queue: :android_mass_scan, retry: false

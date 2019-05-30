@@ -1,4 +1,3 @@
-# Lots of code depend on this service
 class FilterService
   class << self
 

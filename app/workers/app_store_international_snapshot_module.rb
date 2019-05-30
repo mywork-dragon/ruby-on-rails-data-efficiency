@@ -1,5 +1,3 @@
-# Used in couple places like AppStoreInternationalLiveSnapshotWorker
-
 module AppStoreInternationalSnapshotModule
 
   attr_writer :bulk_store

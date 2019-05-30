@@ -1,6 +1,3 @@
-# Seems useful. It fills the table FbStatus.
-# Haven't actually smoke tested it.
-
 class FbStatusService
   class << self
     def populate
@@ -8,7 +5,7 @@ class FbStatusService
 
       if Rails.env.production?
         batch = Sidekiq::Batch.new
-        batch.description = "populating statuses"
+        batch.description = "populating statuses" 
         batch.on(:complete, 'FbStatusService#on_complete')
 
         batch.jobs do

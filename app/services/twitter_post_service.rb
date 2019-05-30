@@ -1,5 +1,4 @@
 # Posts a msg and GIF to Twitter
-# Used in TwitterPostWorker
 class TwitterPostService
 
   TWITTER_CHARACTER_LIMIT = 140
@@ -59,7 +58,7 @@ class TwitterPostService
     ios_app_twitter_handle = ios_app.twitter_handles.first.try(:handle)
 
     ios_app_name = ios_app_name_truncated(ios_app)
-
+    
     ios_sdk_twitter_handle = ios_sdk.twitter_handles.first.try(:handle)
 
     return {} if ios_sdk_twitter_handle.blank? || ios_app_name.blank?
@@ -73,7 +72,7 @@ class TwitterPostService
     ]
 
     handles = [ios_sdk_twitter_handle, ios_app_twitter_handle].compact.map{ |h| "@#{h}" }.join(' ')
-    status = statuses.sample
+    status = statuses.sample 
     status += " #{handles}" if handles.present?
     status += " #{Googl.shorten(ios_app.app_store_link, nil, GOOGLE_KEY).short_url}" if status.length <= 110
 
@@ -141,7 +140,7 @@ class TwitterPostService
     else
       MightyBot.new.post_status(status)
     end
-
+    
   end
 
   class << self

@@ -1,0 +1,61 @@
+.white-panel {
+    background-color: #fff;
+    width: 100%;
+}
+
+.container.app-description {
+  margin-bottom: 25px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 30px 15px;
+}
+
+.container.sdk-panel, .container.app-details {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.detail-item button {
+  background: none;
+  color: black;
+}
+
+.sdk-total-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.sdk-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+  text-align: center;
+}
+
+.sdk-total {
+  margin-bottom: 5px;
+}
+
+.sdk-total .total {
+  font-size: 100px;
+}
+
+.sdk-total .total .fas {
+  padding-right: 0.25em;
+}
+
+.big-num i {
+  padding-right: 0.25em;
+}
+
+.sdk-panel li {
+  margin: 10px 0;
+  list-style: none;
+}
+
+.sdk-li {
+  transition-duration: .5s;
+}

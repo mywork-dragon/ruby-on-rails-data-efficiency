@@ -1,4 +1,3 @@
-# Used in Cron
 class IosMonitorService
 
   DEVICE_USERNAME = 'root'
@@ -13,7 +12,7 @@ class IosMonitorService
 
     def check_hanging_mass_ssh
 
-      times = {}
+      times = {}      
       devices = IosDevice.where(purpose: IosDevice.purposes[:mass]).find_each do |device|
         ap "Starting device #{device.id}"
         times[device.id] = IosDownloadDeviceService.new(device, apple_account: device.apple_account).get_ssh_times

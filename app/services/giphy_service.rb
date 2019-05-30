@@ -1,4 +1,3 @@
-# Seems to be used by other services
 class GiphyService
 
   def gif(search_term)
@@ -15,7 +14,7 @@ class GiphyService
 
   def random_gif
     figures = @search_html.css('figure')
-    ids = figures.map do |figure|
+    ids = figures.map do |figure| 
       begin
         image = figure.at_css('img')
         url = image['data-animated']

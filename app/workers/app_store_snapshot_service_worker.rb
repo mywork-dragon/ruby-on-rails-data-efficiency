@@ -1,4 +1,3 @@
-# Used in multiple places
 class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   include AppStoreSnapshotServiceWorkerModule

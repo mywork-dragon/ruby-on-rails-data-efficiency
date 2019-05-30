@@ -1,5 +1,3 @@
-# Used in DAG
-
 class GooglePlaySnapshotService
   class InvalidDom < RuntimeError; end
 

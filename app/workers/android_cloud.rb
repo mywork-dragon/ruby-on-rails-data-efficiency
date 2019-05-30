@@ -1,4 +1,3 @@
-# Used in AndroidMassScanServiceWorker, AndroidLiveScanServiceWorker
 module AndroidCloud
 
   def perform(apk_snapshot_job_id, android_app_id)

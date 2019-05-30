@@ -1,4 +1,3 @@
-# Used AndroidClassificationServiceWorker
 module AndroidClassification
   class NoApkFile < RuntimeError; end
 

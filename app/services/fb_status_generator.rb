@@ -1,4 +1,2 @@
-# Empty!!!
-
-# class FbStatusGenerator
-# end
+class FbStatusGenerator
+end

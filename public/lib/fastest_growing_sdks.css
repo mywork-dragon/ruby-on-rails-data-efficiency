@@ -56,7 +56,7 @@
 }
 
 button:hover {
-  background-color: red;
+  background-color: lightgray;
 }
 
 #fastest-growing-sdk-table-container {

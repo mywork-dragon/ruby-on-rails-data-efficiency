@@ -1,5 +1,3 @@
-# Used in IosScanRunner
-
 class IosDownloadDeviceService
   class UnexpectedCondition < RuntimeError; end
 
@@ -67,7 +65,7 @@ class IosDownloadDeviceService
   class SignInFailed < RuntimeError; end
   class DontRequirePasswordFailed < RuntimeError; end
   class IMessageOnlyApp < RuntimeError; end
-
+  
   class NoJbApp; end
 
   def initialize(device, apple_account:, logger:, account_changed_lambda: nil)
@@ -698,7 +696,7 @@ class IosDownloadDeviceService
   end
 
   def extract_bundle_info
-
+    
     return @bundle_info if @bundle_info
 
     impt_keys = %w(CFBundleExecutable CFBundleShortVersionString CFBundleIdentifier)

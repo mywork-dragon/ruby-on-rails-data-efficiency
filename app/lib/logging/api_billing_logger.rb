@@ -1,5 +1,3 @@
-# Used in ApplicationController
-
 class ApiBillingLogger
   attr_accessor :auth
   attr_reader :event

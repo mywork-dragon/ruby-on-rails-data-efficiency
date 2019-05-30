@@ -1,5 +1,3 @@
-# Used in DAG
-
 class ApplicationHotStoreImportWorker
   include Sidekiq::Worker
   sidekiq_options queue: :hot_store_application_import, retry: 2
@@ -23,7 +21,7 @@ class ApplicationHotStoreImportWorker
       ApplicationHotStoreImportWorker.perform_async("android", ids)
     end
   end
-
+  
   def queue_apps
     queue_ios_apps
     queue_android_apps

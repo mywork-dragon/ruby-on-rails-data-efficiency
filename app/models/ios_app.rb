@@ -79,11 +79,7 @@ class IosApp < ActiveRecord::Base
   ad_table :ios_fb_ads
   # update_index('apps#ios_app') { self } if Rails.env.production?
 
-  WHITELISTED_APPS =  if Rails.env.production?
-                        [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730]
-                      else
-                        IosApp.pluck(:id).sample(14)
-                      end
+  WHITELISTED_APPS = Rails.env.production? ? [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730] : IosApp.pluck(:id).sample(14)
 
   attr_writer :es_client
 
@@ -620,45 +616,45 @@ class IosApp < ActiveRecord::Base
       # attributes that we don't want to expose.
 
       attribute_whitelist = [
+        "all_version_rating",
+        "all_version_ratings_count",
+        "app_store_id",
+        "bundle_identifier",
+        "categories",
+        "content_rating",
+        "countries_available_in",
+        "current_version",
+        "current_version_rating",
+        "current_version_ratings_count",
+        "description",
+        "first_scanned_date",
+        "first_scraped",
+        "first_seen_ads_date",
+        "has_ad_spend",
+        "has_in_app_purchases",
+        "headquarters",
+        "icon_url",
+        "id",
+        "installed_sdks",
+        "last_scanned_date",
         "last_seen_ads_date",
         "last_updated",
-        "seller_url",
-        "current_version",
-        "has_in_app_purchases",
-        "id",
-        "first_seen_ads_date",
-        "platform",
-        "support_url",
-        "seller",
-        "headquarters",
-        "original_release_date",
-        "uninstalled_sdks",
-        "all_version_rating",
-        "description",
-        "price",
-        "has_ad_spend",
-        "categories",
-        "name",
-        "installed_sdks",
-        "publisher",
-        "content_rating",
         "mobile_priority",
-        "user_base",
-        "last_scanned_date",
-        "app_store_id",
-        "current_version_ratings_count",
-        "current_version_rating",
-        "all_version_ratings_count",
-        "first_scanned_date",
-        "ratings_history",
-        "versions_history",
-        "bundle_identifier",
-        "countries_available_in",
-        "taken_down",
-        "icon_url",
-        "first_scraped",
+        "name",
+        "original_release_date",
+        "platform",
+        "price",
+        "publisher",
         "ratings_by_country",
-        "user_base_by_country"
+        "ratings_history",
+        "seller",
+        "seller_url",
+        "support_url",
+        "taken_down",
+        "uninstalled_sdks",
+        "user_base",
+        "user_base_by_country",
+        "versions_history"
       ]
 
       # List of attributes to pluck from respective collections
@@ -873,7 +869,7 @@ class IosApp < ActiveRecord::Base
 
       app_to_storefront_snapshot_attributes = {}
       if storefront_clauses.any?
-        storefront_snapshot_results = IosAppCurrentSnapshot.from('ios_app_current_snapshots FORCE INDEX(index_ios_app_current_snapshot_backups_on_ios_app_id_and_latest)').where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
+        storefront_snapshot_results = IosAppCurrentSnapshot.from('ios_app_current_snapshots FORCE INDEX(index_ios_app_current_snapshots_on_ios_app_id_and_latest)').where(:latest => true).where(:ios_app_id => app_ids).where(storefront_clauses.join(" or ")).pluck(*all_storefront_snapshot_attributes)
         storefront_snapshot_results.each do |result|
           app_id = result[all_storefront_snapshot_attributes.index("ios_app_id")]
           if app_to_storefront_snapshot_attributes[app_id]
@@ -1311,28 +1307,43 @@ class IosApp < ActiveRecord::Base
 
       # Only these attributes will be output in the final response.
       white_list = [
-          'last_seen_ads_date', 'last_updated',
-          'seller_url',
-          'current_version', 'has_in_app_purchases',
-          'id', 'first_seen_ads_date', 'platform',
-          'support_url', 'seller',
-          'original_release_date',
-          'uninstalled_sdks', 'all_version_rating',
-          'description', 'price',
-          'has_ad_spend',
-          'categories', 'name', 'installed_sdks',
-          'publisher', 'content_rating',
-          'mobile_priority',
-          'user_base', 'app_store_id', 'last_scanned_date',
-          'current_version_ratings_count',
-          'current_version_rating', 'all_version_ratings_count',
-          'first_scanned_date',
-          'ratings_history', 'versions_history', 'bundle_identifier',
-          'countries_available_in',
-          'taken_down',
-          'icon_url',
-          'first_scraped'
-          ] + extra_white_list + extra_from_app
+        "all_version_rating",
+        "all_version_ratings_count",
+        "app_store_id",
+        "bundle_identifier",
+        "categories",
+        "content_rating",
+        "countries_available_in",
+        "current_version",
+        "current_version_rating",
+        "current_version_ratings_count",
+        "description",
+        "first_scanned_date",
+        "first_scraped",
+        "first_seen_ads_date",
+        "has_ad_spend",
+        "has_in_app_purchases",
+        "icon_url",
+        "id",
+        "installed_sdks",
+        "last_scanned_date",
+        "last_seen_ads_date",
+        "last_updated",
+        "mobile_priority",
+        "name",
+        "original_release_date",
+        "platform",
+        "price",
+        "publisher",
+        "ratings_history",
+        "seller",
+        "seller_url",
+        "support_url",
+        "taken_down",
+        "uninstalled_sdks",
+        "user_base",
+        "versions_history"
+      ] + extra_white_list + extra_from_app
 
       rename = [
           ['ratings_all_stars', 'all_version_rating'],
@@ -1425,6 +1436,7 @@ class IosApp < ActiveRecord::Base
 
       data = app.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
+
       if data[0]
         app_obj["first_scanned_date"] = data[0].first_scanned.utc.iso8601
         app_obj["last_scanned_date"] = data[0].last_scanned.utc.iso8601

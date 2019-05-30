@@ -1,4 +1,3 @@
-# Used in Activity
 class TwitterPostWorker
 
   include Sidekiq::Worker

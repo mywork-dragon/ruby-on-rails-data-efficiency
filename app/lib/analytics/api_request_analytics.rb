@@ -1,5 +1,3 @@
-# Used in ClientApi::AndroidAppController and many other places
-
 class ApiRequestAnalytics
 
   attr_accessor :event_data, :api_token, :request

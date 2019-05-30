@@ -1,0 +1,253 @@
+.row img {
+    -webkit-align-self: center; /* Safari 7.0+ */
+    align-self: center;
+    margin: auto;
+}
+
+.login-button {
+    width: 80px !important;
+}
+
+.categories-bg {
+    background: none !important;
+}
+
+nav.navbar.categories-bg button,
+.nav-pills .nav-link.active {
+    color: #fff !important;
+    background-color: #428bca !important;
+}
+
+.nav-pills .nav-link {
+    color: #008cba !important;
+}
+
+.media-heading a,
+.text a {
+    color: #008cba;
+}
+
+.info.alert.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.see-sdks {
+    font-size: 0.875rem !important;
+    line-height: 0.875rem !important;
+}
+
+#app-select {
+    color: #4d4d4d;
+}
+
+#app-select .dd-selected-text {
+    color: #4d4d4d;
+    font-weight: normal;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 0 10px 0 0 !important;
+}
+
+#app-select .dd-option-text {
+    text-align: center;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 0 10px 0 0 !important;
+}
+
+.link {
+    color: #008cba;
+    text-decoration: none;
+    line-height: inherit;
+}
+
+.detail-item h4 {
+    font-size: 1.125rem;
+}
+
+#app-search,
+.easy-autocomplete-container ul {
+    width: 300px !important;
+}
+
+.free-data-margin-normalize {
+    margin-top: 120px !important;
+}
+
+.app-page-content {
+    margin-top: 3rem;
+    position: relative;
+    top: 1.5rem;
+}
+
+.navbar .nav {
+    padding: 0 !important;
+}
+
+.custom-menu-item {
+    height: 38px !important;
+    margin-right: 0.5rem !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 1) !important;
+    height: 38px !important;
+    padding: 0.75rem 0.25rem !important;
+    line-height: 1rem;
+}
+
+.app-page-btn-font-size {
+    font-size: 0.875rem !important;
+}
+
+.app-page-h4 {
+    font-size: 1.125rem;
+    margin: 10px 0;
+}
+
+.app-page-h3 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 1200px) {
+    #app-search,
+    .easy-autocomplete-container ul {
+        max-width: 200px !important;
+        min-width: 200px !important;
+        width: 200px !important;
+    }
+
+    .custom-menu-item {
+        margin-right: 0.5rem !important;
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        letter-spacing: -0.5px;
+    }
+}
+
+@media only screen and (max-width: 992px) and (orientation: landscape){
+    .scrollable-menu {
+        height: auto;
+        max-height: 220px !important;
+        overflow-x: hidden;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    #app-search,
+    .easy-autocomplete-container ul {
+        max-width: 300px !important;
+        min-width: 300px !important;
+        width: 300px !important;
+    }
+
+    .nav-item.dropdown a {
+        padding-right: 1.5rem !important;
+    }
+
+    .heading-font-normalize {
+        font-size: 3rem !important;
+    }
+
+    .heading-margin-normalize {
+        margin-top: 80px !important;
+    }
+
+    .free-data-margin-normalize {
+        margin-top: 150px !important;
+    }
+
+    .jumbotron-mobile {
+        margin-top: -20px !important;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+    .dropdown-normalize {
+        text-align: left !important;
+        padding: 8px 0 !important;
+        height: 36px !important;
+    }
+
+    .g-recaptcha {
+        transform: scale(0.9);
+        transform-origin: 0 0;
+    }
+
+    .row.header .nav-tabs li {
+        margin: 0 !important;
+    }
+
+    .dropdown-menu-right-mobile {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+}
+
+@media only screen and (max-width: 576px) {
+    .navbar-dark .navbar-nav .nav-link {
+        padding-right: 1rem !important;
+        letter-spacing: unset;
+    }
+
+    .full-width-xs {
+        width: 100%;
+    }
+
+    .scrollable-menu {
+        height: auto;
+        max-height: 370px;
+        overflow-x: hidden;
+    }
+
+    #app-select .dd-selected-image {
+        float: none;
+    }
+
+    #app-select .dd-selected-text {
+        margin: 0 10px 0 0 !important;
+    }
+
+    #app-select .dd-option-image {
+        float: none;
+    }
+
+    #app-select .dd-option-text {
+        margin: 0 10px 0 0 !important;
+    }
+
+    .container-fluid .row.header {
+        margin-top: 10px !important;
+    }
+
+    .app-page-content {
+        margin-top: -3rem;
+    }
+
+    .lg-logo {
+        height: 150px !important;
+        width: 150px !important;
+    }
+
+}
+
+@media only screen and (max-width: 320px) {
+    .navbar-collapse ul.nav{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+/* APP PAGE STYLES */
+.detail-item button {
+    background: none;
+}

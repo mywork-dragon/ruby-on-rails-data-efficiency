@@ -1,5 +1,3 @@
-# Used in ApiRequestAnalytics
-
 class ApiRequestAnalyticsWorker
 
   include Sidekiq::Worker

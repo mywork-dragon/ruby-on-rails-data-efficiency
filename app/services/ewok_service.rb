@@ -1,7 +1,4 @@
 # Service for the Ewok Chrome Extension
-# https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch/related
-
-# Used in different places
 class EwokService
 
   STAGING = false
@@ -18,11 +15,11 @@ class EwokService
         app_identifier = md.captures.first
         ios_app = IosApp.find_by_app_identifier(app_identifier)
         raise AppNotInDb.new(store: :ios, app_identifier: app_identifier) unless ios_app
-        return {id: ios_app.id, store: :ios}
+        return {id: ios_app.id, store: :ios} 
       elsif md = url.match(/play.google.com\/store\/apps\/details\?id=([^&]*)/)
         app_identifier = md.captures.first
         android_app = AndroidApp.find_by_app_identifier(app_identifier)
-        raise AppNotInDb.new(store: :android, app_identifier: app_identifier) unless android_app
+        raise AppNotInDb.new(store: :android, app_identifier: app_identifier) unless android_app  
         return {id: android_app.id, store: :android}
       end
       nil
@@ -32,7 +29,7 @@ class EwokService
 
     def app_url(url)
       ais = app_id_and_store(url)
-
+      
       return nil if ais.nil?
 
       id = ais[:id]
@@ -43,7 +40,7 @@ class EwokService
       if store == :ios
         ret = "https://#{domain}/app/app#/app/ios/#{id}"
       elsif store == :android
-        ret = "https://#{domain}/app/app#/app/android/#{id}"
+        ret = "https://#{domain}/app/app#/app/android/#{id}" 
       end
 
       ret
@@ -63,14 +60,14 @@ class EwokService
       method = :scrape_ios_international
 
       batch = Sidekiq::Batch.new
-      batch.description = "New app Ewok international scrape (#{store}): #{app_identifier}"
+      batch.description = "New app Ewok international scrape (#{store}): #{app_identifier}" 
       batch.on(
         :complete,
         'EwokService#on_complete_scrape_international_async',
         'app_identifier' => app_identifier
       )
 
-      batch.jobs do
+      batch.jobs do 
         EwokScrapeWorker.perform_async(method, app_identifier)
       end
     end
@@ -81,7 +78,7 @@ class EwokService
     app = IosApp.find_by_app_identifier(options['app_identifier'].to_i)
     AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, app.id) if app.present?
   end
-
+  
 
   class AppNotInDb < StandardError
     attr_reader :store

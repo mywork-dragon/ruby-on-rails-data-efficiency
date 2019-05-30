@@ -1,8 +1,3 @@
-# Called from DAG
-# google_play_top_free_scrape seems to be defined in ECS by the google_play_scrape repo
-# and contains two containers:
-# 1. google_play_scraper
-# 2. Selenium
 class GooglePlayChartScraperService
   class << self
     def scrape_google_play_top_free

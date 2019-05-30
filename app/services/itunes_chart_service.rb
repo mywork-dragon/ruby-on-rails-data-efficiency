@@ -1,4 +1,3 @@
-# Used in multiple parts including DAG, Cron
 class ItunesChartService
   class << self
     def run_itunes_top_free
