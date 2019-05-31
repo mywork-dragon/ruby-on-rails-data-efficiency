@@ -14,7 +14,6 @@ class DomainLinker
     if @@dd_hotstore.nil?
       @@dd_hotstore = DomainDataHotStore.new
     end
-    @top_domains = File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
   end
 
   def domain_to_publisher(domain)
@@ -62,6 +61,7 @@ class DomainLinker
   # handle acronym company names
   # incorporate page scraper
   def get_best_domain(publisher)
+    @top_domains = File.read("#{ Rails.root }/config/top-1m.csv").split("\n").map{ |i| i.split(",").last }
     domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq.compact
     sites = []
     domains.each do |domain|
