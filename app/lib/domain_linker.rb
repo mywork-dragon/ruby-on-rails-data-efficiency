@@ -3,7 +3,7 @@
 
 class DomainLinker
   @@hotstore = nil
-  @@dd_hotstore = nil  
+  @@dd_hotstore = nil
 
   def initialize()
     @downloaded = false
@@ -14,7 +14,6 @@ class DomainLinker
     if @@dd_hotstore.nil?
       @@dd_hotstore = DomainDataHotStore.new
     end
-    @top_domains = File.read('top-1m.csv').split("\n").map{ |i| i.split(",").last }
   end
 
   def domain_to_publisher(domain)
@@ -28,11 +27,11 @@ class DomainLinker
   def publisher_to_domains(platform, publisher_id)
     @@hotstore.read(platform, publisher_id)['domains'] || []
   end
-  
+
   def get_best_publisher(domain, platform)
     publisher_id = handle_major_publishers(domain, platform)
     return publisher_id if publisher_id > 0
-    
+
     domain_co = domain.split('.').first
     developer_ids = platform == 'ios' ? Website.where(domain: domain).map{ |w| w.ios_developer_ids }.flatten.uniq : Website.where(domain: domain).map{ |w| w.android_developer_ids }.flatten.uniq
     devs = []
@@ -57,11 +56,22 @@ class DomainLinker
   rescue
     0
   end
-  
+
+
+  # USE EXCLUSIVELY FOR REPORTS.
   # should prefer .com
   # handle acronym company names
   # incorporate page scraper
+  # ~22M file
   def get_best_domain(publisher)
+    # Revisit this method after masterID project completed. This S3 info should be in the DB.
+
+    unless @top_domains
+      file_content = MightyAws::S3.new.retrieve( bucket: 'mightysignal-customer-reports', key_path: 'top-1m.csv.gz' ) rescue nil
+      return unless file_content
+      @top_domains = file_content.split("\n").map{ |i| i.split(",").last }
+    end
+
     domains = publisher.website_urls.map{ |w| UrlHelper.url_with_domain_only(w) }.uniq.compact
     sites = []
     domains.each do |domain|
@@ -74,11 +84,11 @@ class DomainLinker
       sites << h
     end
     winner = sites.select{ |d| d['test'] == true }.sort_by{ |v| [v['rank'],v['company_length']] }.first
-    winner.nil? ? nil : winner['domain']
+    winner.andand['domain']
   end
-  
+
   private
-  
+
   def clean(string)
     clean_company(string).to_s.downcase.gsub(/[\.\s]/, '')
   end
@@ -93,7 +103,7 @@ class DomainLinker
       false
     end
   end
-  
+
   def clean_company(company)
     company.to_s
     .gsub(/[\u0080-\u00ff]/, '') # remove non-UTF i think?
@@ -110,8 +120,8 @@ class DomainLinker
     .truncate(100, separator: ' ', omission: '')
     .encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
     .squish
-  end 
-  
+  end
+
   def handle_major_publishers(domain, platform)
     publisher_id = false
     h = Hash.new
