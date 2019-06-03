@@ -62,7 +62,6 @@ class AdobeReport
 
       file_content = MightyAws::S3.new.retrieve( bucket: S3_REPORTS_BUCKET,
                                                  key_path: S3_INPUT_PATH + file_name )
-      # file_content = File.read(Rails.root.join('app', 'lib', 'customer_reports', 'adobe', 'publishers.csv'))
       publisher_names = extract_publisher_names(file_content)
       write_header_to_files
       publisher_names.each do |publisher_name|
