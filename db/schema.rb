@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190416190854) do
+ActiveRecord::Schema.define(version: 20190606005846) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1202,18 +1202,6 @@ ActiveRecord::Schema.define(version: 20190416190854) do
   add_index "ios_app_categories", ["name"], name: "index_ios_app_categories_on_name", using: :btree
   add_index "ios_app_categories", ["parent_identifier"], name: "index_ios_app_categories_on_parent_identifier", using: :btree
 
-  create_table "ios_app_categories_current_snapshot_backups", force: :cascade do |t|
-    t.integer  "ios_app_category_id",         limit: 4
-    t.integer  "ios_app_current_snapshot_id", limit: 4
-    t.integer  "kind",                        limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-  end
-
-  add_index "ios_app_categories_current_snapshot_backups", ["ios_app_category_id"], name: "index_backup_ios_category_snapshot_on_category_id", using: :btree
-  add_index "ios_app_categories_current_snapshot_backups", ["ios_app_current_snapshot_id", "ios_app_category_id", "kind"], name: "index_backup_ios_category_snap_on_snap_id_cat_id_kind", unique: true, using: :btree
-  add_index "ios_app_categories_current_snapshot_backups", ["kind"], name: "index_ios_app_categories_current_snapshot_backups_on_kind", using: :btree
-
   create_table "ios_app_categories_current_snapshots", force: :cascade do |t|
     t.integer  "ios_app_category_id",         limit: 4
     t.integer  "ios_app_current_snapshot_id", limit: 4
@@ -1261,59 +1249,6 @@ ActiveRecord::Schema.define(version: 20190416190854) do
   add_index "ios_app_category_names", ["app_store_id"], name: "index_ios_app_category_names_on_app_store_id", using: :btree
   add_index "ios_app_category_names", ["ios_app_category_id", "app_store_id"], name: "index_on_ios_app_category_id_and_app_store_id", unique: true, using: :btree
   add_index "ios_app_category_names", ["name"], name: "index_ios_app_category_names_on_name", using: :btree
-
-  create_table "ios_app_current_snapshot_backups", force: :cascade do |t|
-    t.string   "name",                            limit: 191
-    t.integer  "price",                           limit: 4
-    t.integer  "size",                            limit: 8
-    t.string   "seller_url",                      limit: 191
-    t.string   "version",                         limit: 191
-    t.date     "released"
-    t.string   "recommended_age",                 limit: 191
-    t.text     "description",                     limit: 65535
-    t.integer  "ios_app_id",                      limit: 4
-    t.string   "required_ios_version",            limit: 191
-    t.integer  "ios_app_current_snapshot_job_id", limit: 4
-    t.text     "release_notes",                   limit: 65535
-    t.integer  "developer_app_store_identifier",  limit: 4
-    t.decimal  "ratings_current_stars",                         precision: 3,  scale: 2
-    t.integer  "ratings_current_count",           limit: 4
-    t.decimal  "ratings_all_stars",                             precision: 3,  scale: 2
-    t.integer  "ratings_all_count",               limit: 4
-    t.text     "icon_url_60x60",                  limit: 65535
-    t.text     "icon_url_100x100",                limit: 65535
-    t.text     "icon_url_512x512",                limit: 65535
-    t.decimal  "ratings_per_day_current_release",               precision: 10
-    t.date     "first_released"
-    t.boolean  "game_center_enabled"
-    t.string   "bundle_identifier",               limit: 191
-    t.string   "currency",                        limit: 191
-    t.text     "screenshot_urls",                 limit: 65535
-    t.integer  "app_store_id",                    limit: 4
-    t.integer  "app_identifier",                  limit: 4
-    t.integer  "mobile_priority",                 limit: 4
-    t.integer  "user_base",                       limit: 4
-    t.datetime "created_at",                                                                            null: false
-    t.datetime "updated_at",                                                                            null: false
-    t.text     "app_link_urls",                   limit: 65535
-    t.boolean  "has_in_app_purchases"
-    t.text     "seller_name",                     limit: 65535
-    t.boolean  "latest",                                                                 default: true
-    t.datetime "last_scraped"
-    t.string   "etag",                            limit: 64
-  end
-
-  add_index "ios_app_current_snapshot_backups", ["app_identifier"], name: "index_ios_app_current_snapshot_backups_on_app_identifier", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["app_store_id", "ratings_all_count", "latest"], name: "index_ios_app_current_snapshot_backups_latest_store_ratings_bk", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["app_store_id", "ratings_per_day_current_release"], name: "index_backup_ios_app_current_store_id_rpd", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["developer_app_store_identifier", "latest"], name: "index_ios_app_current_snapshots_on_dev_id_latest_bk", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ios_app_current_snapshot_job_id"], name: "index_ios_app_backup_on_job_id", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ios_app_id", "app_store_id", "latest"], name: "index_ios_app_current_snap_app_id_store_id_latest_bk", unique: true, using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ios_app_id", "latest"], name: "index_ios_app_current_snapshot_backups_on_ios_app_id_and_latest", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["mobile_priority"], name: "index_ios_app_current_snapshot_backups_on_mobile_priority", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ratings_all_count"], name: "index_backup_ios_app_current_ratings_count", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ratings_per_day_current_release"], name: "index_backup_ios_app_current_rpd", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["user_base", "latest"], name: "index_ios_app_current_snapshot_backups_on_user_base_and_latest", using: :btree
 
   create_table "ios_app_current_snapshot_jobs", force: :cascade do |t|
     t.text     "notes",      limit: 65535
