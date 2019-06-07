@@ -29,7 +29,6 @@ class AppStore < ActiveRecord::Base
   has_many :ios_app_category_backups, through: :ios_app_category_name_backups, source: :ios_app_category
 
   has_many :ios_app_current_snapshots
-  has_many :ios_app_current_snapshot_backups
 
   has_many :app_store_tos_snapshots
 
@@ -38,7 +37,7 @@ class AppStore < ActiveRecord::Base
 
   validates_uniqueness_of :priority, allow_blank: true
   validates_uniqueness_of :display_priority, allow_blank: true
-  
+
   scope :enabled, -> {where(enabled: true)}
 
   def disable(automate: false)
