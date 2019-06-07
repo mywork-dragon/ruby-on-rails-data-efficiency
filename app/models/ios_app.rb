@@ -45,7 +45,6 @@ class IosApp < ActiveRecord::Base
 
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   has_many :ios_app_current_snapshots
-  has_many :ios_app_current_snapshot_backups
   belongs_to :newest_ipa_snapshot, class_name: 'IpaSnapshot', foreign_key: 'newest_ipa_snapshot_id'
 
   has_many :app_stores_ios_apps
