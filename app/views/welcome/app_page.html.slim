@@ -97,7 +97,7 @@
   .container.app-details
     .col-md-12
       .details-row
-        - if @json_app['all_version_rating'] > 0
+        - if (@json_app['all_version_rating'] > 0 rescue false) 
           .detail-item
             h4.my-2 Rating:
             .big-num
