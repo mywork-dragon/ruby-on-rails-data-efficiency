@@ -106,6 +106,7 @@ class WelcomeController < ApplicationController
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
     app_identifier = params[:app_identifier]
     @app = "#{@platform.capitalize}App".constantize.find_by(app_identifier: app_identifier)
+    return render('error/not_found', status: 404, layout: 'marketing') if @app.nil?
     @json_app = apps_hot_store.read(@platform, @app.id)
     @json_publisher = publisher_hot_store.read(@platform, @app.publisher.id)
     @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
