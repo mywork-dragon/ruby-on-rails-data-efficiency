@@ -430,6 +430,20 @@ nav ul.pagination .page-item.active .page-link {
     margin-bottom: 24px;
 }
 
+.content-body h1 {
+    margin-bottom: 24px;
+    font-size: 2.5em;
+}
+
+.content-body h2 {
+    font-size: 2em;
+}
+
+.content-body p {
+    font-size: 19px;
+    line-height: 29px;
+}
+
 .post .content {
     width: 100%;
     max-width: 694px;
