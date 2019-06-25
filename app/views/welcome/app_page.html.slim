@@ -12,20 +12,22 @@
             | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
           .col-12
             | App ID: #{@app.app_identifier}
-          .col-12
-            | Price: #{@json_app['price'] > 0 ? @json_app['price'] : 'Free' }
+          - if @json_app['price']
+            .col-12
+              | Price: #{@json_app['price'] > 0 ? @json_app['price'] : 'Free' }
           .col-12
             | Category: #{@categories.andand.join(', ')}
           - if @json_app['taken_down']
             .col-12.taken-down-label
               span.label.label-warning
                 | App is no longer available in the app store
-    .col-md-3.col-xs-12.d-flex.justify-content-xs-start.justify-content-md-end
-      a href=@json_app['app_store_url'].to_s target='_blank'
-        button.btn.btn-primary.mt-3.ml-3.ml-md-0.app-page-btn-font-size
-          = 'View in '
-          i class="#{platform_icon(@platform)}"
-          = ' store'
+    - if @json_app['app_store_url']
+      .col-md-3.col-xs-12.d-flex.justify-content-xs-start.justify-content-md-end
+        a href=@json_app['app_store_url'].to_s target='_blank'
+          button.btn.btn-primary.mt-3.ml-3.ml-md-0.app-page-btn-font-size
+            = 'View in '
+            i class="#{platform_icon(@platform)}"
+            = ' store'
 
 .white-panel
   .container.sdk-panel
