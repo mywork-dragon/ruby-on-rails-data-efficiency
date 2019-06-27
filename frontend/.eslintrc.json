@@ -85,6 +85,7 @@
       "no-debugger": "warn",
       "prefer-const": "warn",
       "no-fallthrough": "warn",
-      "class-methods-use-this": "warn"
+      "class-methods-use-this": "warn",
+      "react/prop-types": 0
     }
 }
