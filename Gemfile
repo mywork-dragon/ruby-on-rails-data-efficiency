@@ -151,6 +151,9 @@ gem 'diff_dirs', '0.1.2'
 
 gem 'seed_dump'
 
+# for sitemap gen
+gem 'sitemap_generator'
+
 # for browser detection
 gem 'browser', '2.5.2'
 
