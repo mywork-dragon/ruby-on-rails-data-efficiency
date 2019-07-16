@@ -47,6 +47,8 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   after_create :seed_timeline
+  after_create :notify_slack
+  after_create :notify_autopilot
 
   @@kms_key = ENV["SALESFORCE_KMS_KEY_ID"]
 
@@ -74,6 +76,13 @@ class User < ActiveRecord::Base
     account.following.each do |followable|
       self.follow(followable)
     end
+  end
+  
+  def notify_slack
+    Slackiq.message("USER ADDED! #{self.account.name} now has #{self.account.users.count} users and their limit is #{self.account.seats_count}.", webhook_name: :new_users)
+  end
+  
+  def notify_autopilot
   end
 
   def engagement
