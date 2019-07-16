@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     get 'apps/android/:app_identifier' => 'welcome#android_app_sdks'
     get 'a/:platform/:app_identifier(/:app_name)' => 'welcome#app_page', constraints: { platform: /ios|google-play/i,
                                                                            app_identifier: /.*/ }
+    get 'sdk/:platform/:sdk_id(/:sdk_name)' => 'welcome#sdk_page', constraints: { platform: /ios|google-play/i }                                                                       
     get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
     get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
     get 'timeline' => 'welcome#timeline', as: 'timeline'

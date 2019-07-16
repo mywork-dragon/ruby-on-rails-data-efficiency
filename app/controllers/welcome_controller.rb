@@ -127,6 +127,12 @@ class WelcomeController < ApplicationController
     end
     @categories = @json_app['categories'].andand.map {|cat| cat['name']}
   end
+  
+  def sdk_page
+    @platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    @sdk = "#{@platform.capitalize}Sdk".constantize.find(params[:sdk_id])
+    @json_sdk = sdk_hot_store.read(@platform, @sdk.id)
+  end
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids
@@ -444,6 +450,10 @@ class WelcomeController < ApplicationController
 
   def apps_hot_store
     @apps_hot_store ||= AppHotStore.new
+  end
+  
+  def sdks_hot_store
+    @sdks_hot_store ||= SdkHotStore.new
   end
 
 end
