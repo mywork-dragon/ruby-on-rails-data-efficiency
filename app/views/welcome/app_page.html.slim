@@ -12,9 +12,8 @@
             | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
           .col-12
             | App ID: #{@app.app_identifier}
-          - if @json_app['price']
-            .col-12
-              | Price: #{@json_app['price'] > 0 ? @json_app['price'] : 'Free' }
+          .col-12
+            | Price: #{(@json_app['price'] > 0 ? @json_app['price'] : 'Free') rescue '' }
           .col-12
             | Category: #{@categories.andand.join(', ')}
           - if @json_app['taken_down']

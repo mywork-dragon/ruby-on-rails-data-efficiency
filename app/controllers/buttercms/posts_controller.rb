@@ -21,8 +21,6 @@ class Buttercms::PostsController < Buttercms::BaseController
   def show
     @post = ButterCMS::Post.find(params[:slug])
     @related_posts = related_posts(@post)
-    meta_tag('html_title', @post.seo_title)
-    meta_tag('meta_description', @post.meta_description)
   end
 
   private

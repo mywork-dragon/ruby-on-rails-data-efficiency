@@ -22,6 +22,7 @@
   script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
   = render 'shared/ga'
   = render 'shared/autopilot'
+  = render 'shared/leadbooster'
 - content_for :own_scripts do
   = render 'shared/linkedin_insight_tag'
   = render 'shared/facebook_pixel_1'
@@ -99,7 +100,6 @@
             ahoy.trackAll();
         });
     script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
-    = render 'shared/beacon'
     = yield(:own_scripts)
 
 = render :file => 'layouts/application'
