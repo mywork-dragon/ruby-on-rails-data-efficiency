@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
     https.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
     req['autopilotapikey'] = ENV['API_AUTOPILOT_KEY']
-    req.body = { "contact": { "FirstName": self.first_name, "LastName": self.last_name, "Email": self.email } }
+    req.body = { "contact": { "Email": self.email } }.to_json
     https.request(req)
   end
 
