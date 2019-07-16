@@ -83,12 +83,13 @@ class User < ActiveRecord::Base
   end
   
   def notify_autopilot
-    uri = URI.parse("https://api2.autopilothq.com/v1/trigger/0002/contact/#{self.email}")
+    uri = URI.parse("https://api2.autopilothq.com/v1/trigger/0002/contact")
     https = Net::HTTP.new(uri.host,uri.port)
     https.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
     req['autopilotapikey'] = ENV['API_AUTOPILOT_KEY']
-    res = https.request(req)
+    req.body = { "contact": { "FirstName": self.first_name, "LastName": self.last_name, "Email": self.email } }
+    https.request(req)
   end
 
   def engagement
