@@ -1,4 +1,4 @@
-require "rails_helper"
+require "spec_helper"
 
 describe "Android Publisher", :type => :request do
 
@@ -21,7 +21,7 @@ describe "Android Publisher", :type => :request do
       expected_result = ["clearbitId", "givenName", "familyName", "fullName", "title", "email", "linkedin"]
 
       get "/android/publisher/1/contacts", headers
-  
+
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
       json_response = JSON.parse(response.body)
@@ -32,10 +32,9 @@ describe "Android Publisher", :type => :request do
     it "returns error developer not found" do
 
       get "/android/publisher/5/contacts", headers
-  
+
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:not_found)
-      p response
     end
   end
 

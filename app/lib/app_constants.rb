@@ -1,0 +1,2 @@
+module AppConstants
+end

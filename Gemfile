@@ -96,7 +96,8 @@ gem 'net-ssh', '~> 4.0'
 
 gem 'kaminari', '0.16.3'
 
-gem 'faker', '1.9.3'
+# gem 'faker', '1.9.3'
+gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 
 gem 'jwt', '1.0.0'
 
@@ -182,6 +183,7 @@ gem 'simplecov', '~>0.15.1', :require => false, :group => :test
 
 
 group :development, :test do
+  gem 'timecop'
   gem "mocha", '~> 1.3.0'
   # for non-Docker local development
   gem 'dotenv-rails', '~>2.1.1'
