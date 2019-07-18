@@ -132,6 +132,7 @@ class WelcomeController < ApplicationController
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
     @sdk = "#{@platform.capitalize}Sdk".constantize.find(params[:sdk_id])
     @json_sdk = sdks_hot_store.read(@platform, @sdk.id)
+    @installs_over_time = get_last(5, @json_sdk['installs_over_time'])
     @json_sdk['installs_over_time'] = {'2019-07-01': 161, '2019-03-01': 371, '2019-05-01': 2154, '2019-06-01': 434, '2016-05-01': 4555, '2019-02-01': 376, '2019-01-01': 538, '2019-04-01': 336}
     @json_sdk['uninstalls_over_time'] = {'2019-03-01': -29, '2019-05-01': -47, '2019-07-01': -11, '2019-02-01': -32, '2019-06-01': -47, '2019-01-01': -33, '2019-04-01': -35}
     @json_sdk['apps_over_time'] = {"2019-06-01": 58632, "2019-03-01": 58674, "2019-05-01": 56909, "2019-07-01": 58887, "2019-02-01": 58672, "2019-01-01": 58511, "2019-04-01": 58715}
