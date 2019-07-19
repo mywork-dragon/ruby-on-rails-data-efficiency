@@ -88,6 +88,7 @@ module MobileApp
       output
     end
 
+    # REFACTOR: This method only works for android apps, this module is common to ios apps too.
     def filter_older_versions_from_android_apk_snapshots(snaps)
       snaps = snaps.sort_by {|x| x.good_as_of_date}
       latest_app_versions = []
