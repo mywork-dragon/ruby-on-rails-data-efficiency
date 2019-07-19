@@ -79,17 +79,11 @@ class User < ActiveRecord::Base
   end
   
   def notify_slack
-    Slackiq.message("USER ADDED! #{self.account.name} now has #{self.account.users.count} users and their limit is #{self.account.seats_count}.", webhook_name: :new_users)
+    UserNotifyWorker.perform_async(:slack, self)
   end
   
   def notify_autopilot
-    uri = URI.parse("https://api2.autopilothq.com/v1/trigger/0002/contact")
-    https = Net::HTTP.new(uri.host,uri.port)
-    https.use_ssl = true
-    req = Net::HTTP::Post.new(uri.path)
-    req['autopilotapikey'] = ENV['API_AUTOPILOT_KEY']
-    req.body = { "contact": { "Email": self.email } }.to_json
-    https.request(req)
+    UserNotifyWorker.perform_async(:autopilot, self)
   end
 
   def engagement
