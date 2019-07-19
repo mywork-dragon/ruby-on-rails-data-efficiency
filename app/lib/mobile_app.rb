@@ -203,11 +203,6 @@ module MobileApp
       resp.with_indifferent_access
     end
 
-    private
-
-
-
-
     def tagged_sdk_history(only_show_tagged=false)
       tagged_data = { installed_sdks: [], uninstalled_sdks: [],
                            installed_sdks_count: 0, uninstalled_sdks_count: 0 }

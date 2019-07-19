@@ -96,7 +96,6 @@ gem 'net-ssh', '~> 4.0'
 
 gem 'kaminari', '0.16.3'
 
-# gem 'faker', '1.9.3'
 gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 
 gem 'jwt', '1.0.0'
