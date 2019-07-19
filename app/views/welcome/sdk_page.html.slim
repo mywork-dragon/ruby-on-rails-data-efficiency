@@ -19,9 +19,9 @@
   .container.sdk-panel
     .row.mt-4
       .col-md-6
-        #installs
+        #apps
       .col-md-6
-        | Install and uninstall goes here
+        #installs
         
 .gray-panel
   .container.app-description
@@ -48,4 +48,5 @@
 = render 'welcome/web_form_modal'
 
 javascript: 
-  new Chartkick.ColumnChart("installs", [{name: "Installs", data: #{@json_sdk['installs_over_time'].to_json.html_safe}}, {name: "Uninstalls", data: #{@json_sdk['uninstalls_over_time'].to_json.html_safe}}], {stacked: true});
+  new Chartkick.ColumnChart("installs", [{name: "Installs", data: #{@installs_over_time.to_json.html_safe}}, {name: "Uninstalls", data: #{@uninstalls_over_time.to_json.html_safe}}], {stacked: true});
+  new Chartkick.ColumnChart("apps", [{name: "Apps Installed", data: #{@apps_over_time.to_json.html_safe}});
