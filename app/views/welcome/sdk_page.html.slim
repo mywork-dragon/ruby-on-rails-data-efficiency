@@ -3,8 +3,7 @@
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       .header-info
-        #app-name
-          h1.px-3.py-0 = @json_sdk['name']
+        h1.px-3.py-0 = "#{@json_sdk['name']} SDK"
         .app-header-details
           .col-12
             | Description: #{@json_sdk['summary']}          
@@ -19,8 +18,10 @@
   .container.sdk-panel
     .row.mt-4
       .col-md-6
+        h2 #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} apps with #{@sdk.name} installed
         #apps
       .col-md-6
+        h2 Monthly installs and uninstalls of #{@sdk.name} 
         #installs
         
 .gray-panel
@@ -33,11 +34,22 @@
 
 .white-panel
   .container.sdk-panel
-    .row.mt-4
+    .row
       .col-md-6
-        | #{@json_sdk['similar_sdks'].andand.join(', ')}
+        .row
+          .col-md-12
+            h2 SDKs Similar to #{@sdk.name}
+          - @similar_sdks.each do |sdk_id|
+            - similar_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
+            .col-md-4.mt-3 
+              a href=(sdk_page_path @platform, sdk_id, similar_sdk.name.parameterize) = similar_sdk.name
       .col-md-6
-        | Competing SDKs goes here
+        .row
+          .col-md-12
+            h2 SDKs Competing with #{@sdk.name}
+          /- @competing_sdks.each do |sdk_id|
+            - similar_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
+            .col-md-4.mt-3 = similar_sdk.name
         
 .gray-panel
   .container.app-details
@@ -48,5 +60,5 @@
 = render 'welcome/web_form_modal'
 
 javascript: 
-  new Chartkick.ColumnChart("installs", [{name: "Installs", data: #{@installs_over_time.to_json.html_safe}}, {name: "Uninstalls", data: #{@uninstalls_over_time.to_json.html_safe}}], {stacked: true});
-  new Chartkick.ColumnChart("apps", [{name: "Apps Installed", data: #{@apps_over_time.to_json.html_safe}});
+  new Chartkick.LineChart("installs", [{name: "Installs", data: #{@installs_over_time.to_json.html_safe}}, {name: "Uninstalls", data: #{@uninstalls_over_time.to_json.html_safe}}], {stacked: true, legend: false});
+  new Chartkick.LineChart("apps", [{name: "Apps Installed", data: #{@apps_over_time.to_json.html_safe}}], {legend: false});
