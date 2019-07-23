@@ -190,6 +190,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'webmock'
   gem 'rspec-rails', '~> 3.8'
   gem 'minitest', '~> 5.1'
   gem 'database_cleaner'
