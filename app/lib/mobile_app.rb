@@ -108,33 +108,32 @@ module MobileApp
     end
 
     def sdk_history
+
+      # TEMPLATE
       resp = {
         installed_sdks: [],
         uninstalled_sdks: [],
         updated: nil
       }
-      snap = if ios?
-               newest_ipa_snapshot
-             else
-               newest_apk_snapshot
-             end
 
+      snap = ios? ? newest_ipa_snapshot : newest_apk_snapshot
       return resp if snap.nil?
 
       snapshots = if ios?
-                      ipa_snapshots.includes(:ios_sdks).where(
-                        scan_status: IpaSnapshot.scan_statuses[:scanned],
-                      ).order(:good_as_of_date).to_a
+                      ipa_snapshots.includes(:ios_sdks)
+                        .where(scan_status: IpaSnapshot.scan_statuses[:scanned])
+                        .order(:good_as_of_date).to_a
                     else
-                      apk_snapshots.includes(:android_sdks).where(
-                        scan_status: ApkSnapshot.scan_statuses['scan_success']
-                      ).order(:good_as_of_date).to_a
+                      apk_snapshots.includes(:android_sdks)
+                        .where(scan_status: ApkSnapshot.scan_statuses['scan_success'])
+                        .order(:good_as_of_date).to_a
                     end
 
-      if android? and newest_android_app_snapshot.try(:version) == "Varies with device"
+
+      # REFACTOR: Misused `and` keyword
+      if android? && newest_android_app_snapshot.try(:version) == "Varies with device"
         snapshots = filter_older_versions_from_android_apk_snapshots(snapshots)
       end
-
       return resp if snapshots.empty?
 
       previous_sdk_info = {}
@@ -147,6 +146,7 @@ module MobileApp
                else
                  snapshot.android_sdks.where('android_sdks.flagged = false').distinct.to_a
                end
+
         sdks.each do |sdk|
           # never seen before (first install)
           if previous_sdk_info[sdk.id].nil?
@@ -200,7 +200,7 @@ module MobileApp
         end
       end
       resp[:updated] = snapshots.last.good_as_of_date
-      resp
+      resp.with_indifferent_access
     end
 
     def tagged_sdk_history(only_show_tagged=false)
@@ -213,7 +213,7 @@ module MobileApp
         sdks = history[type]
         sdks.each do |sdk|
           sdk_model = ios? ? IosSdk.find(sdk['id']) : AndroidSdk.find(sdk['id'])
-          
+
           tag = sdk_model.tags.first
           tag_name = tag.try(:name) || untagged_name
 
