@@ -13,25 +13,30 @@
             | Website: #{@json_sdk['website']}
           .col-12
             | Category: #{@categories.andand.join(', ')}
+          .col-12
+            | Install base: #{@sdk.get_current_apps.count} apps
 
 .white-panel
   .container.sdk-panel
     .row.mt-4
       .col-md-6
-        h2 #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} apps with #{@sdk.name} installed
+        h2 #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} apps with #{@sdk.name} SDK installed
         #apps
       .col-md-6
-        h2 Monthly installs and uninstalls of #{@sdk.name} 
+        h2 Monthly installs and uninstalls of #{@sdk.name} SDK
         #installs
         
 .gray-panel
   .container.app-description
     .row.mt-4
       .col-md-6
-        | Market share stuff goes here
-      .col-md-6
-        h2 Market share of #{@sdk.name} 
+        h2 Category market share of #{@sdk.name} 
         #share
+      .col-md-6
+        h2 Top 200 app share of #{@sdk.name}
+        .card.p-5
+          h3.text-center #{@sdk.top_200_apps.size} Apps 
+          p.text-center.mb-0 #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'}
 
 .white-panel
   .container.sdk-panel
@@ -39,25 +44,39 @@
       .col-md-6
         .row
           .col-md-12
-            h2 SDKs Similar to #{@sdk.name}
+            h2 SDKs Similar to #{@sdk.name} SDK
           - @similar_sdks.each do |sdk_id|
             - similar_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
             .col-md-4.mt-3 
-              a href=(sdk_page_path @platform, sdk_id, similar_sdk.name.parameterize) = similar_sdk.name
+              a href=(similar_sdk.mightysignal_public_page_link.to_s) 
+                = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
+                = similar_sdk.name
       .col-md-6
         .row
           .col-md-12
-            h2 SDKs Competing with #{@sdk.name}
+            h2 SDKs Competing with #{@sdk.name} SDK
           - @competitive_sdks.each do |sdk_id|
             - competitive_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
             .col-md-4.mt-3
-              a href=(sdk_page_path @platform, sdk_id, competitive_sdk.name.parameterize) = competitive_sdk.name
+              a href=(sdk_page_path @platform, sdk_id, competitive_sdk.name.parameterize)
+                = image_tag "https://ui-avatars.com/api/?name=#{competitive_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
+                = competitive_sdk.name
         
 .gray-panel
   .container.app-details
     .row.mt-4
-      .col-md-12
-        | Top apps goes here
+      .col-12
+        h2 Top Apps Using #{@sdk.name} SDK
+      - IosApp.first(8).each do |app|
+        .col-md-3.mt-3
+          a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+            = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
+            = app.name
+      /- @sdk.top_200_apps.first(8).each do |app|
+        .col-md-3.mt-3
+          a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+            = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
+            = app.name
       
 = render 'welcome/web_form_modal'
 

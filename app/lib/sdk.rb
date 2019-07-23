@@ -5,9 +5,29 @@ module Sdk
   end
 
   module InstanceMethods
+    def platform
+      self.class.platform
+    end
+
+    def publisher
+      ios? ? ios_developer : android_developer
+    end
+
+    def ios?
+      platform == 'ios'
+    end
+
+    def android?
+      platform == 'android'
+    end
+    
     def top_200_apps
       # This all apps in the top 200 apps which have this sdk installed.
       get_current_apps(app_ids: self.class.app_class.top_n_app_ids(200), limit: 200)[:apps]
+    end
+    
+    def mightysignal_public_page_link
+      "https://mightysignal.com/sdk/#{platform}/#{id}/#{name.parameterize}"
     end
   end
 
