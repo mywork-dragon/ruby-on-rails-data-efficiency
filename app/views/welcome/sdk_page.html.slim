@@ -3,7 +3,7 @@
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       .header-info
-        h1.px-3.py-0 = "#{@json_sdk['name']} SDK"
+        h1.px-3.py-0 = "#{@sdk.name} SDK"
         .app-header-details
           .col-12
             | Description: #{@json_sdk['summary']}          
@@ -22,9 +22,13 @@
       .col-md-6
         h2 #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} apps with #{@sdk.name} SDK installed
         #apps
+        br
+        small.text-muted #{@sdk.name} is currently installed in #{@apps_over_time.first.last} apps. As of #{@apps_over_time.last.first}, it was installed in #{@apps_over_time.last.last} apps. That is a change of #{number_to_percentage((@apps_over_time.last.last.to_f-@apps_over_time.first.last)/@apps_over_time.last.last)} over six months.
       .col-md-6
         h2 Monthly installs and uninstalls of #{@sdk.name} SDK
         #installs
+        br
+        small.text-muted #{@sdk.name} was installed in #{@installs_over_time.first.last} apps and uninstalled in #{@uninstalls_over_time.first.last.to_i.abs} apps last month. That's a net change of #{@installs_over_time.first.last + @uninstalls_over_time.first.last} apps over the last month.
         
 .gray-panel
   .container.app-description
