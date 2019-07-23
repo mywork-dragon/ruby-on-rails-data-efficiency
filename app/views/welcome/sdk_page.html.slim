@@ -30,7 +30,8 @@
       .col-md-6
         | Market share stuff goes here
       .col-md-6
-        | Market share overall goes here
+        h2 Market share of #{@sdk.name} 
+        #share
 
 .white-panel
   .container.sdk-panel
@@ -47,9 +48,10 @@
         .row
           .col-md-12
             h2 SDKs Competing with #{@sdk.name}
-          /- @competing_sdks.each do |sdk_id|
-            - similar_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
-            .col-md-4.mt-3 = similar_sdk.name
+          - @competitive_sdks.each do |sdk_id|
+            - competitive_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
+            .col-md-4.mt-3
+              a href=(sdk_page_path @platform, sdk_id, competitive_sdk.name.parameterize) = competitive_sdk.name
         
 .gray-panel
   .container.app-details
@@ -62,3 +64,4 @@
 javascript: 
   new Chartkick.LineChart("installs", [{name: "Installs", data: #{@installs_over_time.to_json.html_safe}}, {name: "Uninstalls", data: #{@uninstalls_over_time.to_json.html_safe}}], {stacked: true, legend: false});
   new Chartkick.LineChart("apps", [{name: "Apps Installed", data: #{@apps_over_time.to_json.html_safe}}], {legend: false});
+  new Chartkick.LineChart("share", [{name: "Market Share", data: #{@market_share_over_time.to_json.html_safe}}], {legend: false});
