@@ -9,10 +9,6 @@ module Sdk
       self.class.platform
     end
 
-    def publisher
-      ios? ? ios_developer : android_developer
-    end
-
     def ios?
       platform == 'ios'
     end
