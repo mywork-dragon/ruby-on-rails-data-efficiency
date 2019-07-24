@@ -6,15 +6,15 @@
         h1.px-3.py-0 = "#{@sdk.name} SDK"
         .app-header-details
           .col-12
-            | Description: #{@json_sdk['summary']}          
+            | <b>Description</b>: #{@json_sdk['summary']}          
           .col-12
-            | Platform: #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'}
+            | <b>Platform</b>: #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'}
           .col-12
-            | Website: #{@json_sdk['website']}
+            | <b>Website</b>: #{@json_sdk['website']}
           .col-12
-            | Category: #{@categories.andand.join(', ')}
+            | <b>Category</b>: #{@categories.andand.join(', ')}
           .col-12
-            | Install base: #{@sdk.get_current_apps.count} apps
+            | <b>Install base</b>: #{number_with_delimiter(@sdk.get_current_apps.count)} #{"app".pluralize(@sdk.get_current_apps.count)}
 
 .white-panel
   .container.sdk-panel
