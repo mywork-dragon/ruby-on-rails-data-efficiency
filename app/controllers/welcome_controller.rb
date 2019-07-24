@@ -141,6 +141,18 @@ class WelcomeController < ApplicationController
     @similar_sdks = JSON.parse(@json_sdk['similar_sdks'])
     @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
   end
+  
+  def sdk_directory
+    platform = params[:platform] || 'ios'
+    @platform = platform == 'ios' ? 'iOS' : 'Android'
+    @letter = params[:letter] || 'a'
+    @page = params[:page] || 1
+    if platform == 'ios'
+      @sdks = IosSdk.where("name like '#{@letter.to_s}%'")
+    else 
+      @sdks = AndroidSdk.where("name like '#{@letter.to_s}%'")
+    end
+  end
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids

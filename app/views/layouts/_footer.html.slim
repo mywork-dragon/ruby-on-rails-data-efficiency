@@ -1,4 +1,8 @@
 .footer class="#{styles ||= ''}"
   .container
     .row.footerlinks
-      p © #{Time.new.year} MightySignal
+      p.mr-5 © #{Time.new.year} MightySignal
+      p.mr-5
+        = link_to 'iOS SDK Directory', sdk_directory_path('ios')
+      p
+        = link_to 'Android SDK Directory', sdk_directory_path('android')

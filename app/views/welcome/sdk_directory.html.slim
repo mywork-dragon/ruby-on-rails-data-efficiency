@@ -1,0 +1,22 @@
+#large-header.app-page-content
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .app-header-main.col-md-9.col-xs-12
+      .header-info
+        h1.py-0
+          | #{@platform} SDK directory
+      .app-header-details
+        - (('a'..'z').to_a + ('0'..'9').to_a).each do |letter|
+          = link_to letter.capitalize, sdk_directory_path(@platform, letter), class: 'text-white mr-2'
+
+.white-panel
+  .container.sdk-panel
+    .row.mt-4
+      - if @sdks.count > 0
+        - @sdks.each_slice(60) do |group|
+          - group.each do |sdk|
+            .col-2.mt-4
+              a href=(sdk_page_path @platform.to_s.downcase, sdk.id, sdk.name.parameterize)
+                = sdk.name
+      - else
+        p.lead Sorry, no SDKs found starting with #{@letter.to_s.capitalize}.
