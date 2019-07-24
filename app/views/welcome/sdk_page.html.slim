@@ -36,11 +36,15 @@
       .col-md-6
         h2 Category market share of #{@sdk.name} 
         #share
+        br
+        small.text-muted #{@sdk.name} currently owns #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} of the #{@categories.first} SDK market. As of #{@market_share_over_time.last.first}, it owned #{number_to_percentage(@market_share_over_time.last.last*100, precision: 0)} of the #{@categories.first} SDK market. That is a change of #{number_to_percentage((@market_share_over_time.last.last.to_f-@market_share_over_time.first.last)/@market_share_over_time.last.last, precision: 0)} over six months.
       .col-md-6
         h2 Top 200 app share of #{@sdk.name}
         .card.p-5
           h3.text-center #{@sdk.top_200_apps.size} Apps 
           p.text-center.mb-0 #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'}
+        br
+        small.text-muted #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
 
 .white-panel
   .container.sdk-panel
