@@ -1,3 +1,6 @@
+- content_for :meta_description, "#{@sdk.name} is currently installed in #{@apps_over_time.first.last} apps and has a #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} share of the #{@categories.first} SDK market"
+- content_for :title, "#{@sdk.name} SDK Market Share and Analytics"
+
 #large-header.app-page-content
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs

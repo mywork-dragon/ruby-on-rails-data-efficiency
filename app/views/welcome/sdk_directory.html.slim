@@ -1,3 +1,6 @@
+- content_for :meta_description, "A directory list of all #{@platform} SDKs starting with the letter #{@letter.to_s.capitalize}."
+- content_for :title, "#{@platform} SDK Directory | #{@letter.to_s.capitalize}"
+
 #large-header.app-page-content
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
@@ -7,7 +10,7 @@
           | #{@platform} SDK directory
       .app-header-details
         - (('a'..'z').to_a + ('0'..'9').to_a).each do |letter|
-          = link_to letter.capitalize, sdk_directory_path(@platform, letter), class: 'text-white mr-2'
+          = link_to letter.capitalize, sdk_directory_path(@platform.to_s.downcase, letter), class: 'text-white mr-2'
 
 .white-panel
   .container.sdk-panel
