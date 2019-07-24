@@ -1,4 +1,4 @@
-- content_for :meta_description, "#{@sdk.name} is currently installed in #{@apps_over_time.first.last} apps and has a #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} share of the #{@categories.first} SDK market"
+- content_for :meta_description, "#{@sdk.name} SDK is currently installed in #{@apps_over_time.first.last} apps and has a #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} share of the #{@categories.first} SDK market"
 - content_for :title, "#{@sdk.name} SDK Market Share and Analytics"
 
 #large-header.app-page-content
@@ -59,7 +59,7 @@
           - @similar_sdks.each do |sdk_id|
             - similar_sdk = "#{@platform.capitalize}Sdk".constantize.find(sdk_id)
             .col-md-4.mt-3 
-              a href=(similar_sdk.mightysignal_public_page_link.to_s) 
+              a href=(sdk_page_path @platform.to_s.downcase, sdk_id, similar_sdk.name.parameterize) 
                 = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
                 = similar_sdk.name
       .col-md-6
