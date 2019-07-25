@@ -152,6 +152,13 @@ class WelcomeController < ApplicationController
       @sdks = AndroidSdk.where("name like '#{@letter.to_s}%'")
     end
   end
+  
+  def sdk_category_page
+  end
+  
+  def sdk_category_directory
+  end
+  
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids
