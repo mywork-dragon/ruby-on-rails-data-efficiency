@@ -54,7 +54,7 @@ Rails.application.configure do
   config.paperclip_defaults = {}
 
   config.logger = Logger.new(STDOUT)
-  config.log_level = :INFO
+  config.log_level = :error
 
   config.google_play_scrape_data = 'ms-google-play-scrape-data-dev'
 
