@@ -84,26 +84,6 @@ module MobileApp
       output
     end
 
-    # REFACTOR: This method only works for android apps, this module is common to ios apps too.
-    def filter_older_versions_from_android_apk_snapshots(snaps)
-      snaps = snaps.sort_by {|x| x.good_as_of_date}
-      latest_app_versions = []
-      max_versioncode = 0
-      snaps.each do |snap|
-        # Only include app versions which are incrementing on
-        # the highest version_code
-        if snap.scan_status == "scan_success"
-          if snap.version_code.nil? or (snap.version_code >= max_versioncode)
-            latest_app_versions.append(snap)
-            if !snap.version_code.nil?
-              max_versioncode = snap.version_code
-            end
-          end
-        end
-      end
-      latest_app_versions
-    end
-
     def sdk_history
       # TEMPLATE
       resp = {

@@ -10,6 +10,8 @@ RSpec.shared_examples 'a mobile app' do |platform, snap_prefix|
     let(:snapshot_plural_key)       { "#{snap_prefix}_snapshots".to_sym }
     let(:newest_store_snapshot_key) { "newest_#{platform}_app_snapshot".to_sym }
     let(:store_snapshot_key)        { "#{platform}_app_snapshot".to_sym }
+    let(:snapshot_class)            { "#{snap_prefix.capitalize}Snapshot".constantize }
+    let(:snapshots_scan_statuses)   {  snapshot_class.scan_statuses.keys.map(&:to_sym) }
 
     describe '#platform' do
       it { expect(subject.platform).to eq(platform) }
@@ -179,8 +181,5 @@ RSpec.shared_examples 'a mobile app' do |platform, snap_prefix|
       it { expect(subject).to eq(ad_sdks.map(&:id)) }
       it { expect(subject.size).to eq(2) }
     end
-
   end
-
-
 end

@@ -6,7 +6,6 @@ describe AndroidApp, type: :model do
 
   context 'instance methods' do
 
-    #included in MobileApp module. Extract into behave_like_a support file, later.
     describe '#filter_older_versions_from_android_apk_snapshots' do
       context 'only counts successful scans' do
         let(:snaps) { Array.new }
