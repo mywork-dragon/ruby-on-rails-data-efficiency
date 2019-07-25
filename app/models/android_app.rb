@@ -21,6 +21,8 @@ class AndroidApp < ActiveRecord::Base
 
   class NoESData; end
 
+  STORE = 'google-play'.freeze
+
   validates :app_identifier, uniqueness: true
   validate :validate_regions
   belongs_to :app
@@ -45,6 +47,8 @@ class AndroidApp < ActiveRecord::Base
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
 
   belongs_to :android_developer
+  alias_attribute :publisher, :android_developer
+
   has_many :android_app_rankings
 
   has_many :sdk_js_tags
@@ -73,6 +77,14 @@ class AndroidApp < ActiveRecord::Base
   # update_index('apps#android_app') { self } if Rails.env.production?
 
   attr_writer :es_client
+
+  def store
+    STORE
+  end
+
+  def publisher
+    android_developer
+  end
 
   def es_client
     @es_client ||= AppsIndex::AndroidApp

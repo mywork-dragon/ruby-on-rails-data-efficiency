@@ -11,10 +11,6 @@ module MobileApp
       self.class.platform
     end
 
-    def publisher
-      ios? ? ios_developer : android_developer
-    end
-
     def ios?
       platform == 'ios'
     end
@@ -24,20 +20,20 @@ module MobileApp
     end
 
     def mightysignal_public_page_link
-      if platform == 'android'
-        store = 'google-play'
-      else
-        store = 'ios'
-      end
       "https://mightysignal.com/a/#{store}/#{app_identifier}"
     end
 
+    # def ad_attribution_sdks
+    #   tag = Tag.find_by(name: 'Ad Attribution')
+    #   attribution_sdk_ids = tag.send("#{platform}_sdks").pluck(:id)
+    #   self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
+    # end
+
     def ad_attribution_sdks
-      tag = Tag.where(id: 24).first
-      return [] unless tag
+      tag = Tag.find_by(name: 'Ad Attribution')
 
       attribution_sdk_ids = tag.send("#{platform}_sdks").pluck(:id)
-      self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
+      installed_sdks.select{ |sdk| attribution_sdk_ids.include? sdk["id"] }
     end
 
     def tag_as_major_app
@@ -109,7 +105,6 @@ module MobileApp
     end
 
     def sdk_history
-
       # TEMPLATE
       resp = {
         installed_sdks: [],

@@ -77,6 +77,11 @@ class IosSdk < ActiveRecord::Base
     IosApp
   end
 
+  # To mirror android_sdk
+  def get_favicon
+    favicon
+  end
+
   def es_client
     @es_client ||= AppsIndex::IosApp
     @es_client
