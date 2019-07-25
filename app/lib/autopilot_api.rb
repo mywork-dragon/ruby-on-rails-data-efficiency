@@ -1,9 +1,10 @@
 class AutopilotApi
   include HTTParty
+  debug_output $stdout
 
-  API_KEY = ENV['API_AUTOPILOT_KEY'].to_s
+  API_KEY = ENV['API_AUTOPILOT_KEY'].freeze
 
-  base_uri 'https://api2.autopilothq.com/v1/contact'
+  base_uri ENV['API_AUTOPILOT_URI'].freeze
 
   def self.post_contact(email)
     # Adds or updates contact
@@ -13,7 +14,7 @@ class AutopilotApi
         'autopilotapikey' => API_KEY,
         'Content-Type' => 'application/json'
       },
-      body: { "contact": { "Email": email } }
+      body: { "contact": { "Email": email } }.to_json
     )
   end
 end
