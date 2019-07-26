@@ -30,7 +30,7 @@ Rails.application.routes.draw do
                                                                            app_identifier: /.*/ }, as: 'app_page'
     get 'sdk/:platform/:sdk_id(/:sdk_name)' => 'welcome#sdk_page', constraints: { platform: /ios|android/i }, as: 'sdk_page' 
     get 'sdk-directory(/:platform)(/:letter)(/:page)' => 'welcome#sdk_directory', as: 'sdk_directory'
-    get 'sdk-category(/:category)' => 'welcome#sdk_category_page', as: 'sdk_category_page'
+    get 'sdk-category/:category_id(/:category)' => 'welcome#sdk_category_page', as: 'sdk_category_page'
     get 'sdk-category-directory' => 'welcome#sdk_category_directory', as: 'sdk_category_directory'
     get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
     get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'

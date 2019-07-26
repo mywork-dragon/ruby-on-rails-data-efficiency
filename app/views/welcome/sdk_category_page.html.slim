@@ -1,0 +1,70 @@
+- content_for :meta_description, @json_category['description']
+- content_for :title, "#{@json_category['name']} SDK Category Apps and Analytics"
+
+#large-header.app-page-content
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .app-header-main.col-md-9.col-xs-12
+      .header-info
+        h1.px-3.py-0 = "#{@json_category['name']} SDK Category"
+        .app-header-details
+          .col-12
+            | <b>Description</b>: #{@json_category['description']}          
+          .col-12
+            | <b>Install base</b>: #{@apps_over_time.first.last} apps
+
+.white-panel
+  .container.sdk-panel
+    .row.mt-4
+      .col-md-6
+        h2 Apps with #{@json_category['name']} SDKs installed
+        #apps
+        br
+        small.text-muted There are #{@apps_over_time.first.last} apps with a #{@json_category['name']} SDK currently installed. As of #{@apps_over_time.last.first}, a #{@json_category['name']} SDK was installed in #{@apps_over_time.last.last} apps. That is a change of #{number_to_percentage((@apps_over_time.last.last.to_f-@apps_over_time.first.last)/@apps_over_time.last.last)} over six months.
+      .col-md-6
+        h2 Monthly installs and uninstalls of #{@json_category['name']} SDKs
+        #installs
+        br
+        small.text-muted A #{@json_category['name']} SDK was installed in #{@installs_over_time.first.last} apps and uninstalled from #{@uninstalls_over_time.first.last.to_i.abs} apps last month. That's a net change of #{@installs_over_time.first.last + @uninstalls_over_time.first.last} apps over the last month.
+
+.gray-panel
+  .container.app-details
+    .row.mt-4
+      .col-6
+        h2 Top iOS #{@json_category['name']} SDKs
+        - IosSdk.first(8).each do |sdk|
+          .col-md-3.mt-3
+            a.app-sdks href=(sdk_page_path 'ios', sdk.id, sdk.name.parameterize) target="_blank"
+              = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
+              = sdk.name
+      .col-6
+        h2 Top Android #{@json_category['name']} SDKs
+        - AndroidSdk.first(8).each do |sdk|
+          .col-md-3.mt-3
+            a.app-sdks href=(sdk_page_path 'android', sdk.id, sdk.name.parameterize) target="_blank"
+              = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
+              = sdk.name
+        
+.white-panel
+  .container.app-details
+    .row.mt-4
+      .col-6
+        h2 Top iOS Apps Using a #{@json_category['name']} SDK
+        - IosApp.first(8).each do |app|
+          .col-md-3.mt-3
+            a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
+              = app.name
+      .col-6
+        h2 Top Android Apps Using a #{@json_category['name']} SDK
+        - AndroidApp.first(8).each do |app|
+          .col-md-3.mt-3
+            a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
+              = app.name
+      
+= render 'welcome/web_form_modal'
+
+javascript: 
+  new Chartkick.LineChart("installs", [{name: "Installs", data: #{@installs_over_time.to_json.html_safe}}, {name: "Uninstalls", data: #{@uninstalls_over_time.to_json.html_safe}}], {stacked: true, legend: false});
+  new Chartkick.LineChart("apps", [{name: "Apps Installed", data: #{@apps_over_time.to_json.html_safe}}], {legend: false});
