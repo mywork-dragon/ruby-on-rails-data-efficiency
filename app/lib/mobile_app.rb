@@ -23,17 +23,10 @@ module MobileApp
       "https://mightysignal.com/a/#{store}/#{app_identifier}"
     end
 
-    # def ad_attribution_sdks
-    #   tag = Tag.find_by(name: 'Ad Attribution')
-    #   attribution_sdk_ids = tag.send("#{platform}_sdks").pluck(:id)
-    #   self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
-    # end
-
     def ad_attribution_sdks
+      sdk_ids = installed_sdks.map{ |sdk| sdk['id'] }
       tag = Tag.find_by(name: 'Ad Attribution')
-
-      attribution_sdk_ids = tag.send("#{platform}_sdks").pluck(:id)
-      installed_sdks.select{ |sdk| attribution_sdk_ids.include? sdk["id"] }
+      tag.send("#{platform}_sdks").where(id: sdk_ids)
     end
 
     def tag_as_major_app
