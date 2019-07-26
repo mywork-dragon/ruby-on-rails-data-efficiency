@@ -78,12 +78,7 @@
     .row.mt-4
       .col-12
         h2 Top Apps Using #{@sdk.name} SDK
-      - IosApp.first(8).each do |app|
-        .col-md-3.mt-3
-          a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
-            = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
-            = app.name
-      /- @sdk.top_200_apps.first(8).each do |app|
+      - @sdk.top_200_apps.first(8).each do |app|
         .col-md-3.mt-3
           a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
             = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
