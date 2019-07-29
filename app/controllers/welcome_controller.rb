@@ -163,6 +163,8 @@ class WelcomeController < ApplicationController
   end
   
   def sdk_category_directory
+    blacklist = ["Major App", "Major Publisher"]
+    @categories = Tag.where.not(name: blacklist)
   end
   
 
