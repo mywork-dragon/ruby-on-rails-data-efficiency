@@ -50,11 +50,11 @@ class GooglePlayDeviceApiService
 
     ret[:category_id] = resp.annotations.app_category.category_id
 
-    ret[:released] = Date.parse(resp.details.appDetails.uploadDate)
+    ret[:released] = (Date.parse(resp.details.appDetails.uploadDate) rescue nil)
 
     ret[:restriction_type] = resp.availability.restriction
 
-    resp.more_offer_details.tags.each do |msg| 
+    resp.more_offer_details.tags.each do |msg|
       if msg.key == 'In-app purchases'
         ret[:in_app_purchases] = true
         ret[:in_app_purchases_range] = msg.value.value.gsub('per item', '').split(' - ').map{ |x| (x.gsub('$', '').strip.to_f*100).to_i }
