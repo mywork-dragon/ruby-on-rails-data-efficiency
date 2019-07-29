@@ -5,13 +5,12 @@
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
-      .header-info
-        h1.px-3.py-0 = "#{@json_category['name']} SDK Category"
-        .app-header-details
-          .col-12
-            | <b>Description</b>: #{@json_category['description']}          
-          .col-12
-            | <b>Install base</b>: #{@apps_over_time.first.last} apps
+      h1.px-3.py-0.text-white = "#{@json_category['name']} SDK Category"
+      .app-header-details
+        .col-12
+          | <b>Description</b>: #{@json_category['description']}          
+        .col-12.mt-3
+          | <b>Install base</b>: #{number_with_delimiter(@apps_over_time.first.last, precision: 0)} apps
 
 .white-panel
   .container.sdk-panel
@@ -31,37 +30,45 @@
   .container.app-details
     .row.mt-4
       .col-6
-        h2 Top iOS #{@json_category['name']} SDKs
-        - IosSdk.first(8).each do |sdk|
-          .col-md-3.mt-3
-            a.app-sdks href=(sdk_page_path 'ios', sdk.id, sdk.name.parameterize) target="_blank"
-              = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
-              = sdk.name
+        .row
+          .col-12
+            h2 Top iOS #{@json_category['name']} SDKs
+          - IosSdk.first(8).each do |sdk|
+            .col-md-3.mt-3
+              a.app-sdks href=(sdk_page_path 'ios', sdk.id, sdk.name.parameterize) target="_blank"
+                = image_tag "https://ui-avatars.com/api/?name=#{sdk.name}", size: '50', class: 'app-icon mr-2 '
+                p.mt-2 #{sdk.name}
       .col-6
-        h2 Top Android #{@json_category['name']} SDKs
-        - AndroidSdk.first(8).each do |sdk|
-          .col-md-3.mt-3
-            a.app-sdks href=(sdk_page_path 'android', sdk.id, sdk.name.parameterize) target="_blank"
-              = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
-              = sdk.name
+        .row
+          .col-12
+            h2 Top Android #{@json_category['name']} SDKs
+          - AndroidSdk.first(8).each do |sdk|
+            .col-md-3.mt-3
+              a.app-sdks href=(sdk_page_path 'android', sdk.id, sdk.name.parameterize) target="_blank"
+                = image_tag "https://ui-avatars.com/api/?name=#{sdk.name}", size: '50', class: 'app-icon mr-2'
+                p.mt-2 #{sdk.name}
         
 .white-panel
   .container.app-details
     .row.mt-4
       .col-6
-        h2 Top iOS Apps Using a #{@json_category['name']} SDK
-        - IosApp.first(8).each do |app|
-          .col-md-3.mt-3
-            a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
-              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
-              = app.name
+        .row
+          .col-12
+            h2 Top iOS Apps Using a #{@json_category['name']} SDK
+          - IosApp.first(8).each do |app|
+            .col-md-3.mt-3
+              a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+                = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon mr-2' 
+                p.mt-2 #{app.name}
       .col-6
-        h2 Top Android Apps Using a #{@json_category['name']} SDK
-        - AndroidApp.first(8).each do |app|
-          .col-md-3.mt-3
-            a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
-              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
-              = app.name
+        .row
+          .col-12
+            h2 Top Android Apps Using a #{@json_category['name']} SDK
+          - AndroidApp.first(8).each do |app|
+            .col-md-3.mt-3
+              a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
+                = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon mr-2' 
+                p.mt-2 #{app.name}
       
 = render 'welcome/web_form_modal'
 
