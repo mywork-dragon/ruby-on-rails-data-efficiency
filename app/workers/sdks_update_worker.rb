@@ -2,7 +2,7 @@ class SdksUpdateWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options queue: :contacts_upload
+  sidekiq_options queue: :skd_update
 
   S3_BUCKET = 'skd-update'
   MAX_FILE_SIZE = 600000
