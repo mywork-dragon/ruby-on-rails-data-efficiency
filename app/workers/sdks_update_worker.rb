@@ -20,7 +20,6 @@ class SdksUpdateWorker
     tags_relationship = []
 
     sdk_model = "#{platform}_sdk".classify.constantize
-    tag2 = Tag.find_by(name: "UI")
     
     begin
       sdk_model.transaction do
