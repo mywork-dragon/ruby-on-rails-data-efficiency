@@ -7,6 +7,10 @@ class SdksUpdateWorker
   S3_BUCKET = 'skd-update'
   MAX_FILE_SIZE = 600000
 
+  def sdk_hotstore
+    @sdk_hotstore ||= SdkHotStore.new
+  end
+
 
   def perform(file_name, file_content, platform)
     skds_data = CSV.parse(file_content, headers: true)
@@ -42,8 +46,9 @@ class SdksUpdateWorker
             logger.error("#{file_name} = Sdk not found #{id}")
             next
           end
-        end
-        sdk_model.import sdks_to_update.compact, on_duplicate_key_update: [:name, :summary, :website]
+        end.compact
+        sdk_model.import sdks_to_update, on_duplicate_key_update: [:name, :summary, :website]
+        sdks_to_update.each {|updated_sdk| sdk_hotstore.write(platform, updated_sdk.id)}
       end
     rescue => error
       logger.error("#{file_name} = #{error.message}")
