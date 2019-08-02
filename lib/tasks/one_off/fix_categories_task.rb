@@ -1,4 +1,4 @@
-class FixCategoriesWorker
+class FixCategoriesTask
   # This class fix the categories for all android and ios apps
 
   ######################## INSTRUCTIONS ################################
@@ -6,9 +6,6 @@ class FixCategoriesWorker
   # This script is executed as follow:
   # FixCategoriesWorker.new.queue_apps
 
-  include Sidekiq::Worker
-    
-  sidekiq_options queue: :category_fix
   STREAM_NAME = 'category_fix'
 
 
@@ -19,21 +16,22 @@ class FixCategoriesWorker
   def apps_hot_store
     @apps_hot_store ||= AppHotStore.new
   end
-  
-  
-  def perform(app, platform='ios')
-    platform == 'ios' ? ios_perform(app) : android_perform(app)
-  end
 
+  def logger
+    @logger ||= ActiveRecord::Base.logger
+  end
+  
   def queue_ios_apps
-    IosApp.find_each.lazy do |iapp|
-      FixCategoriesWorker.new.perform_async("ios", iapp)
+    puts 'queue ios apps'
+    IosApp.find_each(:batch_size => 100) do |ios_app|
+      ios_perform(ios_app)
     end
   end
 
   def queue_android_apps
-    AndroidApp.find_each.lazy do |aapp|
-      FixCategoriesWorker.new.perform_async("android", aapp)
+    puts 'queue android apps'
+    AndroidApp.find_each(:batch_size => 100) do |android_app|
+      android_perform(android_app)
     end
   end
   
@@ -62,11 +60,11 @@ class FixCategoriesWorker
       # update the hotstore
       hs_categories = app.newest_android_app_snapshot.android_app_categories.map{|cateogry| {"id"=>category.id, "name"=> category.name}}
       apps_hot_store.write_attribute(app.id, app.app_identifier, 'android', "categories", hs_categories)
+      puts " done "
     end
-    puts " done "
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{e.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{error.message}")
   end
 
 
@@ -83,7 +81,7 @@ class FixCategoriesWorker
       'ios_app_categories_current_snapshots.ios_app_category_id': [primary_cat, secondary_cat].map{|cat| cat.id if cat}.compact
     ).last
 
-    IosApp.transaction do   
+    IosApp.transaction do
       if correct_last_snapshot
         # Invalidate the corrupted ios app categories snapshots
         invalidate_corrupted_ios_app_categories(correct_last_snapshot.id, primary_cat, secondary_cat)
@@ -100,11 +98,11 @@ class FixCategoriesWorker
       hs_categories = [{"id"=>primary_cat.id, "name"=> primary_cat.name, "type"=>"primary"}]
       hs_categories << {"id"=>secondary_cat.id, "name"=> secondary_cat.name, "type"=>"secondary"} unless secondary_cat.blank?
       apps_hot_store.write_attribute(app.id, app.app_identifier, 'ios', "categories", hs_categories)
+      puts " done "
     end
-    puts " done "
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{e.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{error.message}")
   end
 
 
@@ -141,7 +139,7 @@ class FixCategoriesWorker
   
 
   def create_new_ios_current_snapshot(ios_app)
-    # create a duplicate of the last snapshot with all the parameters and relationships
+    # create a duplicate of the last snapshot with all the parameters and relations
     current_snapshot = ios_app.ios_app_current_snapshots.where(latest: true).last.dup
     current_snapshot = ios_app.ios_app_current_snapshots.last if current_snapshot.blank?
     invalidate_corrupted_snapshots(ios_app)
@@ -153,11 +151,11 @@ class FixCategoriesWorker
 
 
   def create_ios_category_current_snapshot(current_snapshot_id, kind, category)
-    primary_cat_current_snapshot = IosAppCategoriesCurrentSnapshot.new
-    primary_cat_current_snapshot.ios_app_current_snapshot_id = current_snapshot_id
-    primary_cat_current_snapshot.kind = kind
-    primary_cat_current_snapshot.ios_app_category = category
-    primary_cat_current_snapshot.save!
+    cat_current_snapshot = IosAppCategoriesCurrentSnapshot.new
+    cat_current_snapshot.ios_app_current_snapshot_id = current_snapshot_id
+    cat_current_snapshot.kind = kind
+    cat_current_snapshot.ios_app_category = category
+    cat_current_snapshot.save!
   rescue => error
     logger.error("ios category current snapshot creation failed: #{error.message}")
   end
