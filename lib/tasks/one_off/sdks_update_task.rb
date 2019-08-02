@@ -1,6 +1,4 @@
-class SdksUpdateWorker
-
-  include Sidekiq::Worker
+class SdksUpdateTask
   # This class imports and update sdks in hotstore and varys values from a file.
 
   ######################## INSTRUCTIONS ################################
@@ -8,8 +6,6 @@ class SdksUpdateWorker
   # This script is executed as follow:
   # In the rails console: SdksUpdateWorker.enqueue_data(number_of_files, filename_prefix, starting_file, platform, file_name)
   # Ex: SdksUpdateWorker.enqueue_data(10, 'sdk', 1, 'ios')
-
-  sidekiq_options queue: :skd_update
 
   S3_BUCKET = 'skd-update'
   MAX_FILE_SIZE = 600000
