@@ -20,6 +20,14 @@ class FixCategoriesTask
   def logger
     @logger ||= ActiveRecord::Base.logger
   end
+
+  def firehose
+    @firehose ||= MightyAws::Firehose.new
+  end
+
+  def firehose=(firehose)
+    @firehose = firehose
+  end
   
   def queue_ios_apps
     puts 'queue ios apps'
@@ -43,10 +51,15 @@ class FixCategoriesTask
   def android_perform(app)
     print "processing #{app.id} "
     attributes = GooglePlayService.attributes(app.app_identifier)
-    category = AndroidAppCategory.find_or_create_by(category_id: attributes[:category_id], name: attributes[:category_name])
+    category = AndroidAppCategory.find_or_create_by(category_id: attributes[:category_id])
+    if category.name.nil? && attributes[:category_name]
+      category.update!(name: attributes[:category_name])
+    end
 
     AndroidApp.transaction do
       to_remove = []
+
+      raise 'App has never been scanned' if app.newest_android_app_snapshot.nil?
       to_remove = app.newest_android_app_snapshot.android_app_categories.map do |app_category|
         next if app_category.id == category.id
         app_category
@@ -64,7 +77,7 @@ class FixCategoriesTask
     end
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{error.message}")
+    firehose.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{error.message}")
   end
 
 
@@ -73,6 +86,7 @@ class FixCategoriesTask
     # get the app scraped attributes
     primary_cat, secondary_cat = get_ios_real_categories(app)
 
+    raise 'App has never been scanned' if app.ios_app_current_snapshots.empty?
     # search for the latest current snapshot with the correct categories
     correct_last_snapshot = app.ios_app_current_snapshots.where(latest: true)
     .joins(:ios_app_categories_current_snapshots)
@@ -102,7 +116,7 @@ class FixCategoriesTask
     end
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{error.message}")
+    firehose.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{error.message}")
   end
 
 
