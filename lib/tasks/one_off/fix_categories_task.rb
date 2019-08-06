@@ -24,10 +24,6 @@ class FixCategoriesTask
   def firehose
     @firehose ||= MightyAws::Firehose.new
   end
-
-  def firehose=(firehose)
-    @firehose = firehose
-  end
   
   def queue_ios_apps
     puts 'queue ios apps'
@@ -77,16 +73,18 @@ class FixCategoriesTask
     end
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    firehose.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "android, #{app.id}, #{error.message}")
   end
 
 
   def ios_perform(app)
     print "processing #{app.id} "
     # get the app scraped attributes
-    primary_cat, secondary_cat = get_ios_real_categories(app)
-
     raise 'App has never been scanned' if app.ios_app_current_snapshots.empty?
+
+    primary_cat, secondary_cat = get_ios_real_categories(app)
+    raise 'No primary category found' if primary_cat.blank?
+
     # search for the latest current snapshot with the correct categories
     correct_last_snapshot = app.ios_app_current_snapshots.where(latest: true)
     .joins(:ios_app_categories_current_snapshots)
@@ -94,7 +92,7 @@ class FixCategoriesTask
       'ios_app_categories_current_snapshots.kind': kinds.values, 
       'ios_app_categories_current_snapshots.ios_app_category_id': [primary_cat, secondary_cat].map{|cat| cat.id if cat}.compact
     ).last
-
+    
     IosApp.transaction do
       if correct_last_snapshot
         # Invalidate the corrupted ios app categories snapshots
@@ -116,14 +114,14 @@ class FixCategoriesTask
     end
   rescue => error
     logger.error("#{app.id} = #{error.message}")
-    firehose.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios, #{app.id}, #{error.message}")
   end
 
 
   def get_ios_real_categories(app)
     attributes = AppStoreService.attributes(app.app_identifier)
     categories = attributes[:categories]
-    primary_cat = IosAppCategory.find_or_create_by(name: categories[:primary])
+    primary_cat = IosAppCategory.find_or_create_by(name: categories[:primary]) unless categories[:primary].blank?
     secondary_cat = IosAppCategory.find_or_create_by(name: categories[:secondary].first) unless categories[:secondary].blank?
     return primary_cat, secondary_cat
   end

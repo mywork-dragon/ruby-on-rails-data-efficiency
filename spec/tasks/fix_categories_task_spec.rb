@@ -5,168 +5,144 @@ describe FixCategoriesTask do
   let(:kinds) { {primary: 0, secondary: 1} }
   let(:stream_name) { 'category_fix' }
 
-
   describe '.android_perform' do
     let(:android_category_data) { {category_id: 'CAT1', category_name: 'Cat1'} }
 
-    before :each do
-      @android_app = FactoryGirl.create(:android_app)
-      allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
-      allow(MightyAws::Firehose).to receive(:send).and_return(true)
-    end 
+    context "udpate categories" do
+      let(:category) { FactoryGirl.create(:android_app_category, name: 'Test', category_id: 'CAT1') }
+      let(:newest_android_app_snapshot) { FactoryGirl.create(:android_app_snapshot, android_app_categories: [category]) }
+      let(:android_app) { FactoryGirl.create(:android_app, newest_android_app_snapshot: newest_android_app_snapshot) }
 
-    it 'fix android app categories' do
-      subject.android_perform(@android_app)
+      before :each do
+        allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
+        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        subject.android_perform(android_app)
+      end
 
-      expect(@android_app.categories).to eq([android_category_data[:category_name]])
+      it { expect(android_app.categories).to eq([category.name]) }
+      it { expect(android_app.categories).to eq([AndroidAppCategory.find_by(category_id: android_category_data[:category_id]).name]) }
+      it { expect(AndroidAppCategory.find_by(category_id: android_category_data[:category_id]).name).to eq(category.name) }
     end
 
-    it 'android app no newest snaphot' do
-      firehose = instance_double("MightyAws::Firehose")
-      expect(firehose).to receive(:send).with(stream_name: stream_name, data: "android, #{@android_app.id}, App has never been scanned")
+    context "error streaming to firehose" do
+      let(:android_app) { FactoryGirl.create(:android_app, newest_android_app_snapshot: nil) }
 
-      @android_app.newest_android_app_snapshot = nil
-      @android_app.save!
+      before :each do
+        allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
+        allow(MightyAws::Firehose).to receive(:send).with(stream_name: stream_name, data: 'android, #{android_app.id}, App has never been scanned')
+        subject.android_perform(android_app)
+      end
 
-      subject.firehose = firehose
-      subject.android_perform(@android_app)
-
-      # If the app has no ios_app_current_snapshots means it has never been scanned
-      # then we can't update the categories nor create new ones
-      expect(@android_app.categories).to eq([])
-    end
-
-    it 'android category exists with same name and different id ' do
-      cat1 = FactoryGirl.create(:android_app_category, name: 'Test', category_id: 'CAT1')
-      @android_app.newest_android_app_snapshot.android_app_categories = [cat1]
-      @android_app.save!
-
-      subject.android_perform(@android_app)
-      the_category = AndroidAppCategory.find_by(category_id: android_category_data[:category_id])
-
-      expect(@android_app.categories).to eq([cat1.name])
-      expect(the_category.name).to eq(cat1.name)
+      it 'android app no newest snaphot' do 
+        # If the app has no ios_app_current_snapshots means it has never been scanned
+        # then we can't update the categories nor create new ones
+        expect(android_app.categories).to eq([])
+      end
     end
   end
 
   describe '.ios_perform' do
     let(:ios_category_data) { {categories: {primary: 'Cat1', secondary:['Cat2']}} }
-
-    before :each do
-      @ios_app = FactoryGirl.create(:ios_app)
-      allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
-      allow(MightyAws::Firehose).to receive(:send).and_return(true)
-    end
-
-    it 'update ios app primary  category' do
-      test_category_data = {categories: {primary: 'Cat1', secondary:[]}}
-      allow(AppStoreService).to receive(:attributes).and_return(test_category_data)
-
-      subject.ios_perform(@ios_app)
-
-      snapshot = @ios_app.ios_app_current_snapshots.where(latest: true).first
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
+    
+    context "update categories" do
+      let(:ios_app_current_snapshots) { FactoryGirl.create_list(:ios_app_current_snapshot, 3, latest: true) }
+      let(:ios_app) { FactoryGirl.create(:ios_app, ios_app_current_snapshots: ios_app_current_snapshots) }
       
-      expect(@ios_app.categories).to eq([test_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(test_category_data[:categories][:primary])
-      expect(secondary_category).to eq(nil)
+      before :each do
+        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
+        subject.ios_perform(ios_app)
+      end
+
+      it { expect(ios_app.categories).to eq([ios_category_data[:categories][:primary]]) }
+      it { expect(get_ios_expected_category(ios_app, kinds[:primary]).name).to eq(ios_category_data[:categories][:primary]) }
+      it { expect(get_ios_expected_category(ios_app, kinds[:secondary]).name).to eq(ios_category_data[:categories][:secondary].first) }
+      it { expect(ios_app.ios_app_current_snapshots.where(latest: true).count).to eq(1) }
+    end
+    
+    describe "only one category attribute" do
+      let(:ios_app) { FactoryGirl.create(:ios_app) }
+
+      before :each do
+        allow(AppStoreService).to receive(:attributes).and_return(ios_only_cat)
+        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        subject.ios_perform(ios_app)
+      end
+
+      context "primary cat" do 
+        let(:ios_only_cat) { {categories: {primary: 'Cat1', secondary: []}} }
+        it { expect(get_ios_expected_category(ios_app, kinds[:secondary])).to eq(nil) }
+      end
+
+      context "secondary cat" do
+        let(:ios_only_cat) { {categories: {secondary: ['Cat2']}} }
+        it { expect(get_ios_expected_category(ios_app, kinds[:primary])).to eq(nil) }
+      end
     end
 
-    it 'update ios app primary and secondary category' do
-      subject.ios_perform(@ios_app)
+    context "error streaming to firehose" do
+      let(:ios_app) { FactoryGirl.create(:ios_app, ios_app_current_snapshots: [])}
 
-      snapshot = @ios_app.ios_app_current_snapshots.where(latest: true).first
+      before :each do
+        allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
+        allow(MightyAws::Firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{ios_app.id}, App has never been scanned")
+        subject.ios_perform(ios_app)
+      end
 
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
-
-      expect(@ios_app.categories).to eq([ios_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(ios_category_data[:categories][:primary])
-      expect(secondary_category.name).to eq(ios_category_data[:categories][:secondary].first)
+      it 'process ios app no current snaphots' do
+        # If the app has no ios_app_current_snapshots means it has never been scanned
+        # then we can't update the categories nor create new ones
+        expect(ios_app.categories).to eq([])
+      end
     end
 
-    it 'process ios app no current snaphots' do
-      firehose = instance_double("MightyAws::Firehose")
-      expect(firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{@ios_app.id}, App has never been scanned")
-
-      @ios_app.ios_app_current_snapshots = []
-      @ios_app.save!
-
-      subject.firehose = firehose
-      subject.ios_perform(@ios_app)
+    describe "category current snapshot" do 
+      let(:ios_app_current_snapshot) {FactoryGirl.create(:ios_app_current_snapshot)}
+      let(:ios_app) {FactoryGirl.create(:ios_app, ios_app_current_snapshots: [ios_app_current_snapshot])}
       
-      # If the app has no ios_app_current_snapshots means it has never been scanned
-      # then we can't update the categories nor create new ones
-      expect(@ios_app.categories).to eq([])
-    end
+      before :each do
+        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
+        subject.ios_perform(ios_app)
+      end
+      
+      context "no primary and secondary category" do 
+        it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}
+      end
 
-    it 'current snapshot with no primary category' do
-      snapshot = @ios_app.ios_app_current_snapshots.where(latest: true).first
-      IosAppCategoriesCurrentSnapshot
-        .where(ios_app_current_snapshot_id: snapshot.id)
-        .where(kind: kinds[:primary]).destroy_all
+      describe "no category" do
+        let(:ios_app_category_current_snapshot) { FactoryGirl.create(:ios_app_categories_current_snapshot) }
 
-      subject.ios_perform(@ios_app)
+        before :each do
+          ios_app_category_current_snapshot.ios_app_current_snapshot = ios_app_current_snapshot
+          ios_app_category_current_snapshot.kind = kind
+          ios_app_category_current_snapshot.save!
+        end
 
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
-      expect(@ios_app.categories).to eq([ios_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(ios_category_data[:categories][:primary])
-      expect(secondary_category.name).to eq(ios_category_data[:categories][:secondary].first)
-    end
-
-    it 'current snapshot with no secondary category' do
-      remove_ios_category(@ios_app, kinds[:primary])
-
-      subject.ios_perform(@ios_app)
-
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
-      expect(@ios_app.categories).to eq([ios_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(ios_category_data[:categories][:primary])
-      expect(secondary_category.name).to eq(ios_category_data[:categories][:secondary].first)
-    end
-
-    it 'current snapshot with no primary and secondary categories' do
-      remove_ios_category(@ios_app, kinds[:primary])
-      remove_ios_category(@ios_app, kinds[:secondary])
-
-      subject.ios_perform(@ios_app)
-
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
-      expect(@ios_app.categories).to eq([ios_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(ios_category_data[:categories][:primary])
-      expect(secondary_category.name).to eq(ios_category_data[:categories][:secondary].first)
-    end
-
-    it 'clean corrupted categories' do
-      @ios_app.ios_app_current_snapshots << FactoryGirl.create_list(:ios_app_current_snapshot, 3, latest: true)
-
-      expect(@ios_app.ios_app_current_snapshots.where(latest: true).count).to eq(4)
-
-      subject.ios_perform(@ios_app)
-
-      expect(@ios_app.ios_app_current_snapshots.where(latest: true).count).to eq(1)
-
-      primary_category, secondary_category = get_ios_expected_categories(@ios_app)
-      expect(@ios_app.categories).to eq([ios_category_data[:categories][:primary]])
-      expect(primary_category.name).to eq(ios_category_data[:categories][:primary])
-      expect(secondary_category.name).to eq(ios_category_data[:categories][:secondary].first)
+        context "primary" do 
+          let(:kind) { kinds[:primary] }
+          it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}
+        end
+  
+        context "secondary" do
+          let(:kind) { kinds[:secondary] }
+          it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}
+        end
+      end
     end
   end
 end
 
-def remove_ios_category(ios_app, kind)
-    snapshot = ios_app.ios_app_current_snapshots.where(latest: true).first
-    IosAppCategoriesCurrentSnapshot
-      .where(ios_app_current_snapshot_id: snapshot.id)
-      .where(kind: kind).destroy_all
+def check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)
+  expect(ios_app.categories).to eq([ios_category_data[:categories][:primary]])
+  expect(get_ios_expected_category(ios_app, kinds[:primary]).name).to eq(ios_category_data[:categories][:primary])
+  expect(get_ios_expected_category(ios_app, kinds[:secondary]).name).to eq(ios_category_data[:categories][:secondary].first)
 end
 
-def get_ios_expected_categories(ios_app)
+def get_ios_expected_category(ios_app, kind)
   snapshot = ios_app.ios_app_current_snapshots.where(latest: true).first
-  primary_category = IosAppCategoriesCurrentSnapshot
+  category = IosAppCategoriesCurrentSnapshot
     .where(ios_app_current_snapshot_id: snapshot.id)
-    .where(kind: kinds[:primary]).first.ios_app_category
-  secondary_category = IosAppCategoriesCurrentSnapshot
-    .where(ios_app_current_snapshot_id: snapshot.id)
-    .where(kind: kinds[:secondary]).first.andand.ios_app_category
-  return primary_category, secondary_category
+    .where(kind: kind).first.andand.ios_app_category
+  return category
 end
