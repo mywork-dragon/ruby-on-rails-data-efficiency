@@ -138,6 +138,7 @@ class FixCategoriesTask
     ).where.not(ios_app_category_id: secondary_cat.id).destroy_all unless secondary_cat.blank?
   rescue => error
     logger.error("ips app category snapshot invalidation failed: #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ips app category snapshot invalidation failed: #{error.message}")
   end
 
 
@@ -147,6 +148,7 @@ class FixCategoriesTask
     ios_app.ios_app_current_snapshots.where(id: to_invalidate).update_all(latest: nil) unless to_invalidate.blank?
   rescue => error
     logger.error("ips app current snapshot invalidation failed: #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ips app current snapshot invalidation failed: #{error.message}")
   end
   
 
@@ -159,6 +161,7 @@ class FixCategoriesTask
     current_snapshot
   rescue => error
     logger.error("ios current snapshot creation failed: #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios current snapshot creation failed: #{error.message}")
   end
 
 
@@ -170,5 +173,6 @@ class FixCategoriesTask
     cat_current_snapshot.save!
   rescue => error
     logger.error("ios category current snapshot creation failed: #{error.message}")
+    MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ios category current snapshot creation failed: #{error.message}")
   end
 end

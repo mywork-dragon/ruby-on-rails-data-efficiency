@@ -144,5 +144,4 @@ def get_ios_expected_category(ios_app, kind)
   category = IosAppCategoriesCurrentSnapshot
     .where(ios_app_current_snapshot_id: snapshot.id)
     .where(kind: kind).first.andand.ios_app_category
-  return category
 end
