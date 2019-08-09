@@ -9,9 +9,18 @@ class SdksUpdateTask
 
   S3_BUCKET = 'skd-update'
   MAX_FILE_SIZE = 600000
+  STREAM_NAME = 'update_sdks'
 
   def sdk_hotstore
     @sdk_hotstore ||= SdkHotStore.new
+  end
+
+  def firehose
+    @firehose ||= MightyAws::Firehose.new
+  end
+
+  def logger
+    @logger = Rails.logger
   end
 
 
@@ -46,6 +55,7 @@ class SdksUpdateTask
             sdk          
           rescue ActiveRecord::RecordNotFound
             logger.error("#{file_name} = Sdk not found #{id}")
+            firehose.send(stream_name: STREAM_NAME, data: "#{file_name} = Sdk not found #{id}")
             next
           end
         end.compact
@@ -54,6 +64,7 @@ class SdksUpdateTask
       end
     rescue => error
       logger.error("#{file_name} = #{error.message}")
+      firehose.send(stream_name: STREAM_NAME, data: "#{file_name} = #{error.message}")
     end
   end
 
