@@ -74,6 +74,14 @@ module ApplicationHelper
   def jumbotron_mobile
     browser.device.mobile? ? 'jumbotron-mobile' : ''
   end
+  
+  def get_sdk(platform, sdk_id)
+    "#{platform.capitalize}Sdk".constantize.find(sdk_id)
+  end
+  
+  def calculate_percentage_change(array)
+    (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
+  end
 
   private
   def free_data_pages?
