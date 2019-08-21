@@ -1,5 +1,7 @@
 module AndroidCloud
 
+  MAX_API_RETRIES_PER_APP = 5
+
   def perform(apk_snapshot_job_id, android_app_id)
     @apk_snapshot_job = ApkSnapshotJob.find(apk_snapshot_job_id)
     @android_app = AndroidApp.find(android_app_id)
@@ -40,14 +42,28 @@ module AndroidCloud
   # checks if app is still available in the play store
   # side effect: sets attributes instance variable
   def is_available?
-    @attributes = GooglePlayDeviceApiService.attributes(@android_app.app_identifier)
-    true
-  rescue GooglePlayStore::NotFound
-    handle_not_found
-    false
-  rescue GooglePlayStore::Unavailable
-    handle_unavailable
-    false
+    try = 0
+    begin
+      @attributes = GooglePlayDeviceApiService.attributes(@android_app.app_identifier)
+      true
+    rescue GooglePlayDeviceApiService::BadGoogleScrape
+      # This is a flicker. Sometimes can't find the release date.
+      if (try += 1) < MAX_API_RETRIES_PER_APP
+        p '[AndroidCloud] Got GooglePlayDeviceApiService::BadGoogleScrape retrying'
+        sleep(3.seconds)
+        retry
+      else
+        p '[AndroidCloud] Got GooglePlayDeviceApiService::BadGoogleScrape exhausted retries.'
+        #  TODO: handle bad scrape
+        false
+      end
+    rescue GooglePlayStore::NotFound
+      handle_not_found
+      false
+    rescue GooglePlayStore::Unavailable
+      handle_unavailable
+      false
+    end
   end
 
   def is_paid?
