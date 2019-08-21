@@ -7,14 +7,9 @@ module ApkWorker
 
   # The path of the apk_file on the box
   def apk_file_path
-    if Rails.env.production?
-      file_path = '/mnt/apk_files/'
-    elsif Rails.env.development?
-      file_path = '/tmp'
-    else
-      file_path = '/tmp'
-    end
-    file_path
+    apk_file_path = File.join( Rails.root, 'tmp', 'apk_files' )
+    FileUtils.mkdir_p(apk_file_path) unless File.directory?(apk_file_path)
+    apk_file_path
   end
 
   def download_apk_v2(apk_snapshot_job_id, android_app_id, google_account_id: nil)
