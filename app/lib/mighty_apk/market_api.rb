@@ -29,6 +29,8 @@ module MightyApk
       unless httparty_res.code / 200 == 1 # non-200 level code
         raise UnknownCondition, "#{httparty_res.code}: #{httparty_res.body}"
       end
+      raw_resp = MightyApk::ProtocolBuffers::ResponseWrapper.new.parse(httparty_res.body)
+      GooglePlayDeviceApiService.parse_attributes(raw_resp) #Throws error if missing fields      
     end
 
     def bulk_details(app_identifiers, childDocs: false)
