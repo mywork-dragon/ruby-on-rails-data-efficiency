@@ -1,6 +1,6 @@
 module AndroidCloud
 
-  MAX_API_RETRIES_PER_APP = 5
+  MAX_API_RETRIES_PER_APP = 3
 
   def perform(apk_snapshot_job_id, android_app_id)
     @apk_snapshot_job = ApkSnapshotJob.find(apk_snapshot_job_id)
@@ -49,12 +49,10 @@ module AndroidCloud
     rescue GooglePlayDeviceApiService::BadGoogleScrape
       # This is a flicker. Sometimes can't find the release date.
       if (try += 1) < MAX_API_RETRIES_PER_APP
-        p '[AndroidCloud] Got GooglePlayDeviceApiService::BadGoogleScrape retrying'
         sleep(3.seconds)
         retry
       else
-        p '[AndroidCloud] Got GooglePlayDeviceApiService::BadGoogleScrape exhausted retries.'
-        #  TODO: handle bad scrape
+        log_result(reason: :bad_google_scrape)
         false
       end
     rescue GooglePlayStore::NotFound
