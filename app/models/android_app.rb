@@ -82,10 +82,6 @@ class AndroidApp < ActiveRecord::Base
     STORE
   end
 
-  def publisher
-    android_developer
-  end
-
   def es_client
     @es_client ||= AppsIndex::AndroidApp
     @es_client

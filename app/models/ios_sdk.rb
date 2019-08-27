@@ -73,13 +73,11 @@ class IosSdk < ActiveRecord::Base
 
   attr_writer :es_client
 
+  # To mirror android_sdk
+  alias_attribute :get_favicon, :favicon
+
   def self.app_class
     IosApp
-  end
-
-  # To mirror android_sdk
-  def get_favicon
-    favicon
   end
 
   def es_client
