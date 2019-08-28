@@ -1,0 +1,15 @@
+.partial.list-partial id="#{tag_id}"
+  - if browser.device.mobile? || browser.device.tablet?
+    button.navbar-toggler aria-controls="#{tag_id}-collapse" aria-expanded="false" aria-label="Toggle Top Apps" data-target="##{tag_id}-collapse" data-toggle="collapse" type="button"
+      h3.partial-heading #{title}
+    .list-body.collapse.navbar-collapse id="#{tag_id}-collapse"
+      - item_list.each do |item|
+        - list_item_params = sdk_list_item_params(item, input_data_type, @platform ||= platform)
+        = render 'welcome/sdk_pages/list_item', item: list_item_params.item, path: list_item_params.path, target: list_item_params.target
+  - else
+    h3.partial-heading #{title}
+    hr
+    .list-body
+      - item_list.each do |item|
+        - list_item_params = sdk_list_item_params(item, input_data_type, @platform ||= platform)
+        = render 'welcome/sdk_pages/list_item', item: list_item_params.item, path: list_item_params.path, target: list_item_params.target

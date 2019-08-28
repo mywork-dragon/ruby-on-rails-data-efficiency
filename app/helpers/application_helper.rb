@@ -92,4 +92,30 @@ module ApplicationHelper
     'not_found' == action_name
   end
 
+  def sdk_list_item_params(item, input_data_type, platform)
+    case input_data_type
+    when 'app'
+      OpenStruct.new({
+                         item: item,
+                         path: item.mightysignal_public_page_link.to_s,
+                         target: '_blank'
+                     })
+    when 'sdk'
+      OpenStruct.new({
+                         item: item,
+                         path: sdk_page_path(platform, item.id, item.name.parameterize),
+                         target: '_blank'
+                     })
+    when 'array-sdk'
+      item_object = "#{platform.capitalize}Sdk".constantize.find(item)
+      OpenStruct.new({
+                         item: item_object,
+                         path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
+                         target: ''
+                     })
+    else
+      false
+    end
+  end
+
 end

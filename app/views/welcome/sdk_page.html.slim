@@ -1,88 +1,51 @@
 - content_for :meta_description, "#{@sdk.name} SDK is currently installed in #{@apps_over_time.first.last} apps and has a #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} share of the #{@categories.first} SDK market"
 - content_for :title, "#{@sdk.name} SDK Market Share and Analytics"
 
-#large-header.app-page-content
-  .container.app-header
-    canvas#demo-canvas.app-canvas.hidden-xs
-    .app-header-main.col-md-9.col-xs-12
-      .header-info
-        h1.px-3.py-0 = "#{@sdk.name} SDK"
-        .app-header-details
-          .col-12
-            | <b>Description</b>: #{@json_sdk['summary']}          
-          .col-12
-            | <b>Platform</b>: #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'}
-          .col-12
-            | <b>Website</b>: #{@json_sdk['website']}
-          .col-12
-            | <b>Category</b>: #{@categories.andand.join(', ')}
-          .col-12
-            | <b>Install base</b>: #{number_with_delimiter(@sdk.get_current_apps.count)} #{"app".pluralize(@sdk.get_current_apps.count)}
+#sdk-page.content
+  .heading
+    .heading-background
+    .container.heading-content
+      .sdk-card
+        .sdk-img
+          img alt="" src="#{@json_sdk['icon']}"
+        .sdk-installations
+          span.install-base Install Base
+          span.install-count #{number_with_delimiter(@sdk.get_current_apps.count)}
+      .sdk-details
+        .sdk-title #{@sdk.name} SDK
+        .sdk-description #{@json_sdk['summary']}
+        .sdk-platforms
+          - if @sdk.platform == 'ios'
+            i.platform-android.fab.fa-apple
+          - else
+            i.platform-ios.fab.fa-android
+          a alt="#{@sdk.name}" src="#{@json_sdk['website']}"
+            i.sdk-home.fas.fa-globe
+        .sdk-buttons
+          a.analytics alt="" src="" analytics
+          a.tracking alt="" src="" tracking
 
-.white-panel
-  .container.sdk-panel
-    .row.mt-4
-      .col-md-6
-        h2 #{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} apps with #{@sdk.name} SDK installed
-        #apps
-        br
-        small.text-muted #{@sdk.name} is currently installed in #{@apps_over_time.first.last} apps. As of #{@apps_over_time.last.first}, it was installed in #{@apps_over_time.last.last} apps. That is a change of #{number_to_percentage(calculate_percentage_change(@apps_over_time)*100, precision: 2)} over six months.
-      .col-md-6
-        h2 Monthly installs and uninstalls of #{@sdk.name} SDK
-        #installs
-        br
-        small.text-muted #{@sdk.name} was installed in #{@installs_over_time.first.last} apps and uninstalled in #{@uninstalls_over_time.first.last.to_i.abs} apps last month. That's a net change of #{@installs_over_time.first.last + @uninstalls_over_time.first.last} apps over the last month.
-        
-.gray-panel
-  .container.app-description
-    .row.mt-4
-      .col-md-6
-        h2 Category market share of #{@sdk.name} 
-        #share
-        br
-        small.text-muted #{@sdk.name} currently owns #{number_to_percentage(@market_share_over_time.first.last*100, precision: 0)} of the #{@categories.first} SDK market. As of #{@market_share_over_time.last.first}, it owned #{number_to_percentage(@market_share_over_time.last.last*100, precision: 0)} of the #{@categories.first} SDK market. That is a change of #{number_to_percentage(calculate_percentage_change(@market_share_over_time), precision: 0)} over six months.
-      .col-md-6
-        h2 Top 200 app share of #{@sdk.name}
-        .card.p-5
-          h3.text-center #{@sdk.top_200_apps.size} Apps 
-          p.text-center.mb-0 #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'}
-        br
-        small.text-muted #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
+  .container.page-body
+    = render "welcome/sdk_pages/list_partial", tag_id: 'top-apps', input_data_type: 'app', title: 'Top Apps', item_list: @sdk.top_200_apps.first(8)
+    = render "welcome/sdk_pages/card_partial", tag_id: 'platform-apps', chart: 'app', title: "#{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} Apps", body: "#{@sdk.name} is currently installed in #{@apps_over_time.first.last} apps. As of #{@apps_over_time.last.first}, it was installed in #{@apps_over_time.last.last} apps. That is a change of #{number_to_percentage((@apps_over_time.last.last.to_f-@apps_over_time.first.last) /@apps_over_time.last.last)} over six months."
+    = render "welcome/sdk_pages/card_partial", tag_id: 'mounthly-installs', chart: 'installs', title: 'Monthly Installs / Uninstalls', body: "#{@sdk.name} was installed in #{@installs_over_time.first.last} apps and uninstalled in #{@uninstalls_over_time.first.last.to_i.abs} apps last month. That's a net change of #{@installs_over_time.first.last + @uninstalls_over_time.first.last} apps over the last month."
+    = render "welcome/sdk_pages/card_partial", tag_id: 'category-marketshare', chart: 'share', title: 'Category Marketshare', body: "#{@sdk.name} currently owns #{number_to_percentage(@market_share_over_time.first.last* 100, precision: 0)} of the #{@categories.first} SDK market. As of #{@market_share_over_time.last.first}, it owned #{number_to_percentage(@market_share_over_time.last.last* 100, precision: 0)} of the #{@categories.first} SDK market. That is a change of #{number_to_percentage((@market_share_over_time.last.last.to_f-@market_share_over_time.first.last) /@market_share_over_time.last.last, precision: 0)} over six months."
+    #top-200
+      .top-200-heading
+        img src="/lib/images/sdk_pages/top-200.png" alt="Top 200 Apps"
+        .top-200-stats
+          p.total-apps #{@sdk.top_200_apps.size}
+          p.total-of-top-200 #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'} Apps
+      p.top-200-text #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
+    = render "welcome/sdk_pages/list_partial", tag_id: 'simillar-sdk', input_data_type: 'array-sdk', title: 'Similar SDKs', item_list: @similar_sdks
+    = render "welcome/sdk_pages/list_partial", tag_id: 'competing-sdk', input_data_type: 'array-sdk', title: 'Competing SDKs', item_list: @competitive_sdks
 
-.white-panel
-  .container.sdk-panel
-    .row
-      .col-md-6
-        .row
-          .col-md-12
-            h2 SDKs Similar to #{@sdk.name} SDK
-          - @similar_sdks.each do |sdk_id|
-            - similar_sdk = get_sdk(@platform, sdk_id)
-            .col-md-4.mt-3 
-              a href=(sdk_page_path @platform.to_s.downcase, sdk_id, similar_sdk.name.parameterize) 
-                = image_tag "https://ui-avatars.com/api/?name=#{similar_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
-                = similar_sdk.name
-      .col-md-6
-        .row
-          .col-md-12
-            h2 SDKs Competing with #{@sdk.name} SDK
-          - @competitive_sdks.each do |sdk_id|
-            - competitive_sdk = get_sdk(@platform, sdk_id)
-            .col-md-4.mt-3
-              a href=(sdk_page_path @platform, sdk_id, competitive_sdk.name.parameterize)
-                = image_tag "https://ui-avatars.com/api/?name=#{competitive_sdk.name}", size: '50', class: 'app-icon float-left mr-2'
-                = competitive_sdk.name
-        
-.gray-panel
-  .container.app-details
-    .row.mt-4
-      .col-12
-        h2 Top Apps Using #{@sdk.name} SDK
-      - @sdk.top_200_apps.first(8).each do |app|
-        .col-md-3.mt-3
-          a.app-sdks href=app.mightysignal_public_page_link.to_s target="_blank"
-            = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: "#{app.top_200_rank}. #{app.name}", class: 'app-icon float-left mr-2' 
-            = app.name
+  #get-started
+    .container
+      .get-started-content
+        h3 Want more insightful reports on current trends?
+        p Get real-time SDK intelligence in minutes.
+        = render 'contact_us_button', title: 'Get started with MightySignal', button_id: "#{@sdk.name}-sdk-get-started", btn_styles: 'button btn get-started-btn'
       
 = render 'welcome/web_form_modal'
 
