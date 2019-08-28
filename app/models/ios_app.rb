@@ -653,7 +653,8 @@ class IosApp < ActiveRecord::Base
         "uninstalled_sdks",
         "user_base",
         "user_base_by_country",
-        "versions_history"
+        "versions_history",
+        "required_ios_version"
       ]
 
       # List of attributes to pluck from respective collections
@@ -661,7 +662,8 @@ class IosApp < ActiveRecord::Base
       attributes_from_app = [
         "id",
         "released",
-        "user_base"
+        "user_base",
+        "required_ios_version"
       ]
 
       newest_ios_app_snapshot_attributes = [
