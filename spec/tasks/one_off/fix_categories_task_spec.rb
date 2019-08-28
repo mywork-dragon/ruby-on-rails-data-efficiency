@@ -4,6 +4,11 @@ require '/varys/lib/tasks/one_off/fix_categories_task'
 describe FixCategoriesTask do
   let(:kinds) { {primary: 0, secondary: 1} }
   let(:stream_name) { 'category_fix' }
+  let(:firehose) { double(MightyAws::Firehose) }
+
+  before :each do
+    allow(MightyAws::Firehose).to receive(:new).and_return(firehose)
+  end
 
   describe '.android_perform' do
     let(:android_category_data) { {category_id: 'CAT1', category_name: 'Cat1'} }
@@ -15,7 +20,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
-        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(firehose).to receive(:send).and_return(true)
         subject.android_perform(android_app)
       end
 
@@ -29,7 +34,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
-        allow(MightyAws::Firehose).to receive(:send).with(stream_name: stream_name, data: 'android, #{android_app.id}, App has never been scanned')
+        allow(firehose).to receive(:send).with(stream_name: stream_name, data: "android, #{android_app.id}, App has never been scanned")
         subject.android_perform(android_app)
       end
 
@@ -49,7 +54,7 @@ describe FixCategoriesTask do
       let(:ios_app) { FactoryGirl.create(:ios_app, ios_app_current_snapshots: ios_app_current_snapshots) }
       
       before :each do
-        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(firehose).to receive(:send).and_return(true)
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
@@ -65,7 +70,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_only_cat)
-        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(firehose).to receive(:send).and_return(true)
         subject.ios_perform(ios_app)
       end
 
@@ -85,7 +90,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
-        allow(MightyAws::Firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{ios_app.id}, App has never been scanned")
+        allow(firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{ios_app.id}, App has never been scanned")
         subject.ios_perform(ios_app)
       end
 
@@ -101,7 +106,7 @@ describe FixCategoriesTask do
       let(:ios_app) {FactoryGirl.create(:ios_app, ios_app_current_snapshots: [ios_app_current_snapshot])}
       
       before :each do
-        allow(MightyAws::Firehose).to receive(:send).and_return(true)
+        allow(firehose).to receive(:send).and_return(true)
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
