@@ -571,7 +571,7 @@
 #sdk-page.content #get-started {
   width: 100%;
   height: 23.875rem;
-  background-image: url("/lib/images/sdk_page/get-started-bg.png");
+  background-image: url("/lib/images/sdk_pages/get-started-bg.png");
   background-position: top right;
   background-size: cover;
   display: -webkit-box;
@@ -652,6 +652,10 @@
   }
 }
 
+#sdk-page.category .heading .heading-content .sdk-details .sdk-buttons {
+  margin: 0.75rem auto !important;
+}
+
 @media only screen and (min-width: 1200px) {
   #sdk-page.category .page-body .partial.card-item {
     padding-left: 1.5rem;
@@ -667,7 +671,7 @@
         grid-template-columns: 1fr 1fr;
     -ms-grid-rows: auto;
         grid-template-rows: auto;
-        grid-template-areas: "apps-installed monthly-installs" "top-200 top-200" "top-ios-sdks top-android-sdks" "top-ios-apps top-android-apps";
+        grid-template-areas: "apps-installed monthly-installs" "top-ios-sdks top-android-sdks" "top-ios-apps top-android-apps";
   }
   #sdk-page.category .page-body #apps-installed {
     -ms-grid-row: 1;
@@ -680,28 +684,22 @@
     grid-area: monthly-installs;
   }
   #sdk-page.category .page-body #top-ios-sdks {
-    -ms-grid-row: 3;
+    -ms-grid-row: 2;
     -ms-grid-column: 1;
     grid-area: top-ios-sdks;
   }
   #sdk-page.category .page-body #top-android-sdks {
-    -ms-grid-row: 3;
+    -ms-grid-row: 2;
     -ms-grid-column: 2;
     grid-area: top-android-sdks;
   }
-  #sdk-page.category .page-body #top-200 {
-    -ms-grid-row: 2;
-    -ms-grid-column: 1;
-    -ms-grid-column-span: 2;
-    grid-area: top-200;
-  }
   #sdk-page.category .page-body #top-ios-apps {
-    -ms-grid-row: 4;
+    -ms-grid-row: 3;
     -ms-grid-column: 1;
     grid-area: top-ios-apps;
   }
   #sdk-page.category .page-body #top-android-apps {
-    -ms-grid-row: 4;
+    -ms-grid-row: 3;
     -ms-grid-column: 2;
     grid-area: top-android-apps;
   }

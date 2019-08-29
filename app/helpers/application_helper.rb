@@ -108,6 +108,7 @@ module ApplicationHelper
                      })
     when 'array-sdk'
       item_object = "#{platform.capitalize}Sdk".constantize.find(item)
+      # item_object = @similar_sdks_list.select { |sdk| sdk.id == item }.first
       OpenStruct.new({
                          item: item_object,
                          path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),

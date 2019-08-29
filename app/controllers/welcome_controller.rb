@@ -163,10 +163,10 @@ class WelcomeController < ApplicationController
     @apps_over_time = get_last(5, @json_category['apps_over_time'])
 
     platform = 'ios'
-    @top_ios_apps = @top_sdk_f_8.map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}
+    @top_ios_apps = IosSdk.first(8).map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}.first(8).map{|app| OpenStruct.new({name: app['name'], mightysignal_public_page_link: app_page_path(platform: platform, app_identifier: app['app_identifier'])}) }
 
     platform = 'android'
-    @top_android_apps = @top_sdk_f_8.map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}
+    @top_android_apps = @top_ios_apps
   end
 
   def sdk_category_directory
