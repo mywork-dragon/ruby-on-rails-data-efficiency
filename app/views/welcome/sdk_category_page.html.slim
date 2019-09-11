@@ -10,7 +10,7 @@
           img alt="" src="https://ui-avatars.com/api/?background=48B5D6&color=fff&name=#{@category.name.parameterize}"
         .sdk-installations
           span.install-base Install Base
-          span.install-count #{@apps_over_time.first.last}
+          span.install-count #{number_with_delimiter(@apps_over_time.first.last)}
       .sdk-details
         .sdk-title #{@category.name} SDK
         .sdk-description #{@json_category['description']}

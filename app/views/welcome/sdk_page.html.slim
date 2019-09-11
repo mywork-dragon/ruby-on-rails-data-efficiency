@@ -10,7 +10,7 @@
           img alt="" src="#{@json_sdk['icon']}"
         .sdk-installations
           span.install-base Install Base
-          span.install-count #{@apps_over_time.first.last}
+          span.install-count #{number_with_delimiter(@apps_over_time.first.last)}
       .sdk-details
         .sdk-title #{compose_sdk_name(@sdk, @platform)}
         .sdk-description #{@json_sdk['summary']}
