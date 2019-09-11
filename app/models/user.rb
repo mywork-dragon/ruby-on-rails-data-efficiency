@@ -47,6 +47,8 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   after_create :seed_timeline
+  after_create :notify_slack
+  after_create :notify_autopilot
 
   @@kms_key = ENV["SALESFORCE_KMS_KEY_ID"]
 
@@ -74,6 +76,14 @@ class User < ActiveRecord::Base
     account.following.each do |followable|
       self.follow(followable)
     end
+  end
+  
+  def notify_slack
+    UserNotifyWorker.perform_async(:slack, self)
+  end
+  
+  def notify_autopilot
+    UserNotifyWorker.perform_async(:autopilot, self)
   end
 
   def engagement

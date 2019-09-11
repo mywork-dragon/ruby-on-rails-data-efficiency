@@ -6,7 +6,7 @@ FactoryGirl.define do
     flagged           false
     open_source       false
     sdk_company       { build(:sdk_company) }
-    kind              {AndroidSdk.kinds['native']}
+    kind              { AndroidSdk.kinds['native'] }
 
     sequence(:github_repo_identifier) #avoid duplicates
   end
