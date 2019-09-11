@@ -116,6 +116,10 @@ RSpec.configure do |config|
   # So that you dont have to write 'Rspec.describe' in all files. Instead just 'describe'
   config.expose_dsl_globally = true
 
+  config.before :each do
+    allow(Bugsnag).to receive(:notify)
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin

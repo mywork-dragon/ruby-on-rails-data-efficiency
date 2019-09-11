@@ -24,8 +24,7 @@ module MightyApk
 
     def raw_app_details(app_identifier)
       resp = @api.details(app_identifier)
-      raw_details = MightyApk::ProtocolBuffers::ResponseWrapper
-        .new.parse(resp.body)
+      raw_details = MightyApk::ProtocolBuffers::ResponseWrapper.new.parse(resp.body)
       save_permissions_to_hotstore(app_identifier, raw_details.payload.detailsResponse.docV2)
       raw_details
     end
