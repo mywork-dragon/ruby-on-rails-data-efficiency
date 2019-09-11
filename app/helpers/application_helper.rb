@@ -97,21 +97,24 @@ module ApplicationHelper
     when 'app'
       OpenStruct.new({
                          item: item,
-                         path: item.mightysignal_public_page_link.to_s,
-                         target: '_blank'
+                         path: app_page_path(platform, item.app_identifier),
+                         target: '_blank',
+                         icon: item.icon_url
                      })
     when 'sdk'
       OpenStruct.new({
                          item: item,
                          path: sdk_page_path(platform, item.id, item.name.parameterize),
-                         target: '_blank'
+                         target: '_blank',
+                         icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item.name.parameterize}"
                      })
     when 'array-sdk'
       item_object = "#{platform.capitalize}Sdk".constantize.find(item)
       OpenStruct.new({
                          item: item_object,
                          path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
-                         target: ''
+                         target: '',
+                         icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item_object.name.parameterize}"
                      })
     else
       false

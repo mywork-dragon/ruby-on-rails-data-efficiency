@@ -140,6 +140,7 @@ class WelcomeController < ApplicationController
     @categories = @json_sdk['categories'].andand.map {|cat| cat['name']}
     @similar_sdks = JSON.parse(@json_sdk['similar_sdks'])
     @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
+    @top_8_apps = @sdk.top_200_apps.first(8).map{|app| app.id}.map{|app_id| apps_hot_store.read(@platform, app_id) }.map{|app| simplify_json_app(app) }
   end
   
   def sdk_directory
@@ -164,11 +165,9 @@ class WelcomeController < ApplicationController
     @apps_over_time = get_last(5, @json_category['apps_over_time'])
 
     platform = 'ios'
-    @top_ios_apps = IosSdk.first(8).map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}.first(8).map{|app| OpenStruct.new({name: app['name'], mightysignal_public_page_link: app_page_path(platform: platform, app_identifier: app['app_identifier'])}) }
-
-    # platform = 'android'
-    # @top_android_apps = AndroidSdk.first(8).map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}.first(8).map{|app| OpenStruct.new({name: app['name'], mightysignal_public_page_link: app_page_path(platform: platform, app_identifier: app['app_identifier'])}) }
-    @top_android_apps = @top_ios_apps
+    @top_ios_apps = IosSdk.first(8).map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}.first(8).map{|app| simplify_json_app(app) }
+    platform = 'android'
+    @top_android_apps = AndroidSdk.first(8).map{|sdk| "#{platform.capitalize}Sdk".constantize.find(sdk.id).top_200_apps}.flatten.first(8).map{|app| apps_hot_store.read(platform, app.id)}.first(8).map{|app| simplify_json_app(app) }
   end
 
   def sdk_category_directory
