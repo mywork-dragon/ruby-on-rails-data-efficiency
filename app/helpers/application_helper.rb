@@ -29,7 +29,7 @@ module ApplicationHelper
       'https://mightysignal.com/app/app/images/mighty_signal_logo.png'
     end
   end
-  
+
   def meta_description(meta_description)
     meta_description.present? ? "#{meta_description}" : "MightySignal is the leader in SDK intelligence and provides access to the largest database of relationships between mobile apps and the software development kits (SDKs) they install and uninstall"
   end
@@ -74,11 +74,11 @@ module ApplicationHelper
   def jumbotron_mobile
     browser.device.mobile? ? 'jumbotron-mobile' : ''
   end
-  
+
   def get_sdk(platform, sdk_id)
     "#{platform.capitalize}Sdk".constantize.find(sdk_id)
   end
-  
+
   def calculate_percentage_change(array)
     (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
   end
@@ -89,7 +89,7 @@ module ApplicationHelper
   end
 
   def not_found_page?
-    'not_found' == action_name
+    %w(internal_error not_found).include?(action_name)
   end
 
   def sdk_list_item_params(item, input_data_type, platform)
@@ -110,7 +110,6 @@ module ApplicationHelper
       item_object = "#{platform.capitalize}Sdk".constantize.find(item)
       OpenStruct.new({
                          item: item_object,
-                         # path: (sdk_page_path @platform, item_object.sdk_id, item_object.name.parameterize),
                          path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
                          target: ''
                      })
