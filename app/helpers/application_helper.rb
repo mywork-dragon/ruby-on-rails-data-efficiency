@@ -108,15 +108,20 @@ module ApplicationHelper
                      })
     when 'array-sdk'
       item_object = "#{platform.capitalize}Sdk".constantize.find(item)
-      # item_object = @similar_sdks_list.select { |sdk| sdk.id == item }.first
       OpenStruct.new({
                          item: item_object,
+                         # path: (sdk_page_path @platform, item_object.sdk_id, item_object.name.parameterize),
                          path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
                          target: ''
                      })
     else
       false
     end
+  end
+
+  def compose_sdk_name(sdk, platform)
+    platform_name = platform == 'ios' ? "iOS" : "Android"
+    "#{sdk.name} #{platform_name} SDK"
   end
 
 end

@@ -26,8 +26,9 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  padding: 3rem 0;
 }
 
 #sdk-page.content .heading .heading-content .sdk-card,
@@ -46,20 +47,20 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-flow: row nowrap;
-          flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
 }
 
 #sdk-page.content .heading .heading-content .sdk-card .sdk-img {
   -webkit-box-flex: 1.25;
-      -ms-flex: 1.25;
-          flex: 1.25;
+  -ms-flex: 1.25;
+  flex: 1.25;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   border-right: 0.0625rem solid #e1e1e1;
 }
 
@@ -68,14 +69,14 @@
   height: 6.25rem;
   margin: auto;
   -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
 }
 
 @media only screen and (min-width: 768px) {
   #sdk-page.content .heading .heading-content .sdk-card .sdk-img {
     -webkit-box-flex: 1;
-        -ms-flex: 1 1 auto;
-            flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
     border-right: none;
     border-bottom: 0.0625rem solid #e1e1e1;
   }
@@ -83,16 +84,16 @@
 
 #sdk-page.content .heading .heading-content .sdk-card .sdk-installations {
   -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   margin: auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
 }
 
 #sdk-page.content .heading .heading-content .sdk-card .sdk-installations span {
@@ -124,8 +125,8 @@
 @media only screen and (min-width: 768px) {
   #sdk-page.content .heading .heading-content .sdk-card .sdk-installations {
     -webkit-box-flex: 0;
-        -ms-flex: 0 0 3.875rem;
-            flex: 0 0 3.875rem;
+    -ms-flex: 0 0 3.875rem;
+    flex: 0 0 3.875rem;
   }
 }
 
@@ -134,8 +135,8 @@
     height: unset;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-        -ms-flex-flow: column nowrap;
-            flex-flow: column nowrap;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
     width: 9.375rem;
     height: 13.3125rem;
   }
@@ -146,22 +147,21 @@
 }
 
 #sdk-page.content .heading .heading-content .sdk-details .sdk-platforms,
-#sdk-page.content .heading .heading-content .sdk-details .sdk-buttons {
-  width: 50%;
+#sdk-page.content .heading .heading-content .sdk-details .sdk-tags {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: distribute;
-      justify-content: space-around;
+  justify-content: space-around;
   margin: 0.75rem auto;
 }
 
 @media only screen and (min-width: 768px) {
   #sdk-page.content .heading .heading-content .sdk-details .sdk-platforms,
-  #sdk-page.content .heading .heading-content .sdk-details .sdk-buttons {
+  #sdk-page.content .heading .heading-content .sdk-details .sdk-tags {
     -webkit-box-pack: start;
-        -ms-flex-pack: start;
-            justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
     margin: 0.75rem 0;
     width: 100%;
   }
@@ -179,6 +179,10 @@
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.75rem;
+}
+
+#sdk-page.content .heading .heading-content .sdk-details .sdk-platforms {
+  width: 50%;
 }
 
 #sdk-page.content .heading .heading-content .sdk-details .sdk-platforms .platform-android,
@@ -209,8 +213,14 @@
   }
 }
 
-#sdk-page.content .heading .heading-content .sdk-details .sdk-buttons .analytics,
-#sdk-page.content .heading .heading-content .sdk-details .sdk-buttons .tracking {
+#sdk-page.content .heading .heading-content .sdk-details .sdk-tags {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+}
+
+#sdk-page.content .heading .heading-content .sdk-details .sdk-tags .sdk-tag {
   border-radius: 0.625rem;
   border: 0.125rem solid #49b6d6;
   color: #49b6d6;
@@ -218,17 +228,17 @@
   font-weight: 600;
   padding: 0.125rem 1.25rem;
   margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 @media only screen and (min-width: 768px) {
-  #sdk-page.content .heading .heading-content .sdk-details .sdk-buttons .analytics,
-  #sdk-page.content .heading .heading-content .sdk-details .sdk-buttons .tracking {
+  #sdk-page.content .heading .heading-content .sdk-details .sdk-tags .sdk-tag {
     margin-right: 1rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  #sdk-page.content .heading .heading-content .sdk-details .sdk-buttons {
+  #sdk-page.content .heading .heading-content .sdk-details .sdk-tags {
     margin-top: 0;
   }
 }
@@ -242,11 +252,11 @@
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-        -ms-flex-flow: column nowrap;
-            flex-flow: column nowrap;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
     -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
   }
 }
 
@@ -254,11 +264,11 @@
   #sdk-page.content .heading .heading-content {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
-        -ms-flex-flow: row nowrap;
-            flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
   }
 }
 
@@ -325,11 +335,11 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-flow: row nowrap;
-          flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
   -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   margin-bottom: 0.5rem;
   text-decoration: none;
 }
@@ -400,12 +410,6 @@
   line-height: 1.5rem;
 }
 
-@media only screen and (min-width: 1200px) {
-  #sdk-page.content .page-body .partial.list-partial {
-    padding-left: 3rem;
-  }
-}
-
 #sdk-page.content .page-body #top-200 {
   border-radius: 0.3125rem;
   background-color: #f7f7f7;
@@ -414,10 +418,10 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
   -ms-flex-pack: distribute;
-      justify-content: space-around;
+  justify-content: space-around;
   padding: 1rem;
   height: 16rem;
   margin-bottom: 2rem;
@@ -429,8 +433,8 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-flow: row nowrap;
-          flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
 }
 
 #sdk-page.content .page-body #top-200 .top-200-heading img {
@@ -444,8 +448,8 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
   padding: 0.5rem;
 }
 
@@ -521,10 +525,11 @@
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 1fr 1fr 1fr;
-        grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     -ms-grid-rows: auto;
-        grid-template-rows: auto;
-        grid-template-areas: "platform-apps platform-apps top-apps" "mounthly-installs mounthly-installs top-apps" "category-marketshare category-marketshare top-apps" "top-200 top-200 top-apps" "simillar-sdk competing-sdk top-apps";
+    grid-template-rows: auto;
+    grid-column-gap: 2rem;
+    grid-template-areas: "platform-apps platform-apps top-apps" "mounthly-installs mounthly-installs top-apps" "category-marketshare category-marketshare top-apps" "top-200 top-200 top-apps" "simillar-sdk competing-sdk top-apps";
   }
   #sdk-page.content .page-body #top-apps {
     -ms-grid-row: 1;
@@ -579,14 +584,14 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 #sdk-page.content #get-started .container .get-started-content > * {
@@ -652,15 +657,8 @@
   }
 }
 
-#sdk-page.category .heading .heading-content .sdk-details .sdk-buttons {
+#sdk-page.category .heading .heading-content .sdk-details .sdk-tags {
   margin: 0.75rem auto !important;
-}
-
-@media only screen and (min-width: 1200px) {
-  #sdk-page.category .page-body .partial.card-item {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
 }
 
 @media only screen and (min-width: 1200px) {
@@ -668,10 +666,10 @@
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     -ms-grid-rows: auto;
-        grid-template-rows: auto;
-        grid-template-areas: "apps-installed monthly-installs" "top-ios-sdks top-android-sdks" "top-ios-apps top-android-apps";
+    grid-template-rows: auto;
+    grid-template-areas: "apps-installed monthly-installs" "top-ios-sdks top-android-sdks" "top-ios-apps top-android-apps";
   }
   #sdk-page.category .page-body #apps-installed {
     -ms-grid-row: 1;
