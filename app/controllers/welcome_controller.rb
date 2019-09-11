@@ -514,4 +514,17 @@ class WelcomeController < ApplicationController
     return false
   end
 
+  def nil_or_empty?(field)
+    (field.nil? || field.empty?)
+  end
+
+  def simplify_json_app(app)
+    OpenStruct.new({
+                       icon_url: app['icon_url'],
+                       name: app['name'],
+                       app_identifier: app['app_identifier']
+                       # app_store_url: app['app_store_url'].present? ? app['app_store_url'] : "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{app['name']}"
+                   })
+  end
+
 end
