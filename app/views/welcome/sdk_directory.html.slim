@@ -1,7 +1,7 @@
 - content_for :meta_description, "A directory list of all #{@platform} SDKs starting with the letter #{@letter.to_s.capitalize}."
 - content_for :title, "#{@platform} SDK Directory | #{@letter.to_s.capitalize}"
 
-#large-header.app-page-content
+#large-header.app-page-content.mt-4.mt-sm-0
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
@@ -18,7 +18,7 @@
       - if @sdks.count > 0
         - @sdks.each_slice(60) do |group|
           - group.each do |sdk|
-            .col-2.mt-4
+            .col-6.col-md-4.col-xl-2.mt-4.text-break
               a href=(sdk_page_path @platform.to_s.downcase, sdk.id, sdk.name.parameterize)
                 = sdk.name
       - else
