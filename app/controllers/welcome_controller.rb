@@ -498,6 +498,10 @@ class WelcomeController < ApplicationController
     @sdk_categories_hot_store ||= SdkCategoryHotStore.new
   end
 
+  def last_n_months(n)
+    (DateTime.now-n.months..DateTime.now).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
+  end
+
   def get_last(num, chart_data)
     months = last_n_months(num)
     values = Array.new(num+1) { 0 }

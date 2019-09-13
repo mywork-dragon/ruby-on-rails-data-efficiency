@@ -83,10 +83,6 @@ module ApplicationHelper
     (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
   end
   
-  def last_n_months(n)
-    (DateTime.now-n.months..DateTime.now).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
-  end
-
   private
   def free_data_pages?
     %w(ios_app_sdks fastest_growing_sdks top_ios_apps top_ios_sdks top_android_apps top_android_sdks timeline).include?(action_name)
