@@ -82,6 +82,10 @@ module ApplicationHelper
   def calculate_percentage_change(array)
     (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
   end
+  
+  def last_n_months(n)
+    (DateTime.now-n.months..DateTime.now).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
+  end
 
   private
   def free_data_pages?

@@ -499,7 +499,11 @@ class WelcomeController < ApplicationController
   end
 
   def get_last(num, chart_data)
-    chart_json = valid_json?(chart_data.to_s) ? JSON.parse(chart_data) : chart_data
+    months = last_n_months(num)
+    values = Array.new(num+1) { 0 }
+    months_json = Hash[months.zip(values)]
+    hotstore_json = valid_json?(chart_data.to_s) ? JSON.parse(chart_data) : chart_data
+    chart_json = months_json.merge(hotstore_json)
     chart_json.sort_by{ |k,_| k.to_s.to_date }.reverse.first(num)
   end
 
