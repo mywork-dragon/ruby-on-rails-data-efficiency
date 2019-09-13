@@ -499,7 +499,7 @@ class WelcomeController < ApplicationController
   end
 
   def last_n_months(n)
-    (DateTime.now-n.months..DateTime.now).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
+    (DateTime.now-n.months..DateTime.now-1.month).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
   end
 
   def get_last(num, chart_data)
@@ -508,6 +508,7 @@ class WelcomeController < ApplicationController
     months_json = Hash[months.zip(values)]
     hotstore_json = valid_json?(chart_data.to_s) ? JSON.parse(chart_data) : chart_data
     chart_json = months_json.merge(hotstore_json)
+    chart_json.delete("#{Time.now.year}-#{Time.now.strftime('%m')}-01")
     chart_json.sort_by{ |k,_| k.to_s.to_date }.reverse.first(num)
   end
 
