@@ -21,11 +21,8 @@
   .container.page-body
     = render "welcome/sdk_pages/card_partial", tag_id: "apps-installed", chart: 'apps', title: "Apps with #{@json_category['name']} SDKs installed", body: "There are #{number_with_delimiter(@apps_over_time.first.last)} apps with a #{@json_category['name']} SDK currently installed. As of #{@apps_over_time.last.first}, a #{@json_category['name']} SDK was installed in #{number_with_delimiter(@apps_over_time.last.last)} apps. That is a change of #{number_to_percentage((@apps_over_time.last.last.to_f-@apps_over_time.first.last) /@apps_over_time.last.last)} over six months."
     = render "welcome/sdk_pages/card_partial", tag_id: "monthly-installs", chart: 'installs', title: "Monthly installs and uninstalls of #{@json_category['name']} SDKs", body: "A #{@json_category['name']} SDK was installed in #{number_with_delimiter(@installs_over_time.first.last)} apps and uninstalled from #{number_with_delimiter(@uninstalls_over_time.first.last.to_i.abs)} apps last month. That's a net change of #{number_with_delimiter(@installs_over_time.first.last + @uninstalls_over_time.first.last)} apps over the last month."
-
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-ios-sdks', input_data_type: 'sdk', platform: 'ios', title: "Top iOS #{@json_category['name']} SDKs", item_list: IosSdk.first(8)
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-android-sdks', input_data_type: 'sdk', platform: 'android', title: "Top Android #{@json_category['name']} SDKs", item_list: AndroidSdk.first(8)
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-ios-apps', input_data_type: 'app', platform: 'ios', title: "Top iOS Apps Using a #{@json_category['name']} SDK", item_list: @top_ios_apps
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-android-apps', input_data_type: 'app', platform: 'android', title: "Top Android Apps Using a #{@json_category['name']} SDK", item_list: @top_android_apps
+    = render "welcome/sdk_pages/list_partial", tag_id: 'top-ios-sdks', input_data_type: 'sdk', platform: 'ios', title: "Top iOS #{@json_category['name']} SDKs", item_list: @top_ios_sdks
+    = render "welcome/sdk_pages/list_partial", tag_id: 'top-android-sdks', input_data_type: 'sdk', platform: 'android', title: "Top Android #{@json_category['name']} SDKs", item_list: @top_android_sdks
 
   #get-started
     .container
