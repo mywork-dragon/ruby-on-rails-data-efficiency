@@ -75,13 +75,6 @@ module ApplicationHelper
     browser.device.mobile? ? 'jumbotron-mobile' : ''
   end
 
-  def get_sdk(platform, sdk_id)
-    "#{platform.capitalize}Sdk".constantize.find(sdk_id)
-  rescue ActiveRecord::RecordNotFound
-    flash[:error] = "Sorry, that SDK was not found"
-    redirect_to root_path
-  end
-
   def calculate_percentage_change(array)
     (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
   rescue
@@ -119,13 +112,17 @@ module ApplicationHelper
                          icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item.name.parameterize}"
                      })
     when 'array-sdk'
-      item_object = get_sdk(platform, item.id)
-      OpenStruct.new({
-                         item: item_object,
-                         path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
-                         target: '',
-                         icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item_object.name.parameterize}"
-                     })
+      item_object = "#{platform.capitalize}Sdk".constantize.find(item) rescue ActiveRecord::RecordNotFound false
+      if item_object
+        OpenStruct.new({
+                           item: item_object,
+                           path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
+                           target: '',
+                           icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item_object.name.parameterize}"
+                       })
+      else
+        false
+      end
     else
       false
     end
