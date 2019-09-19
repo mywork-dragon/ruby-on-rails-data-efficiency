@@ -114,7 +114,7 @@ module ApplicationHelper
     when 'sdk'
       OpenStruct.new({
                          item: item,
-                         path: sdk_page_path(platform, item.id, item.name.parameterize),
+                         path: sdk_page_path(platform, item, item.name.parameterize),
                          target: '_blank',
                          icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item.name.parameterize}"
                      })
