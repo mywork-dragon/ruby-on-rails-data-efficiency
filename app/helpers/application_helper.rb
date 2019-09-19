@@ -112,15 +112,15 @@ module ApplicationHelper
                          icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item.name.parameterize}"
                      })
     when 'array-sdk'
-      item_object = "#{platform.capitalize}Sdk".constantize.find(item) rescue ActiveRecord::RecordNotFound false
-      if item_object
+      begin 
+        item_object = "#{platform.capitalize}Sdk".constantize.find(item) 
         OpenStruct.new({
                            item: item_object,
                            path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
                            target: '',
                            icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item_object.name.parameterize}"
                        })
-      else
+      rescue ActiveRecord::RecordNotFound
         false
       end
     else
