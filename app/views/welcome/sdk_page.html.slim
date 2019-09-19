@@ -12,7 +12,7 @@
           span.install-base Install Base
           span.install-count #{number_with_delimiter(@apps_installed_now)}
       .sdk-details
-        .sdk-title #{sdk.name} #{pretty_platform(@sdk)} SDK
+        .sdk-title #{@sdk.name} #{pretty_platform(@sdk.platform)} SDK
         .sdk-description #{@json_sdk['summary']}
         .sdk-platforms
           - if @sdk.platform == 'ios'
