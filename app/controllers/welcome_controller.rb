@@ -130,9 +130,9 @@ class WelcomeController < ApplicationController
   
   def sdk_page
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
-    @sdk = "#{@platform.capitalize}Sdk".constantize.find(params[:sdk_id])
+    @sdk = get_sdk(@platform, params[:sdk_id])
     @json_sdk = sdks_hot_store.read(@platform, @sdk.id)
-    @json_sdk['summary'] = nil_or_empty?(@json_sdk['summary']) ? "We do not yet have a description for this SDK." : @json_sdk['summary']
+    @json_sdk['summary'] = @json_sdk['summary'].blank? ? "We do not yet have a description for this SDK." : @json_sdk['summary']
     @installs_over_time = get_last(5, @json_sdk['installs_over_time'])
     @uninstalls_over_time = get_last(5, @json_sdk['uninstalls_over_time'])
     @apps_over_time = get_last(5, @json_sdk['apps_over_time'])
@@ -140,7 +140,16 @@ class WelcomeController < ApplicationController
     @categories = @json_sdk['categories'].andand.map {|cat| cat['name']}
     @similar_sdks = JSON.parse(@json_sdk['similar_sdks'])
     @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
-    @top_8_apps = @sdk.top_200_apps.first(8).map{|app| app.id}.map{|app_id| apps_hot_store.read(@platform, app_id) }.map{|app| simplify_json_app(app) }
+    @top_8_apps = @sdk.top_200_apps.first(8).map{|app| simplify_json_app(apps_hot_store.read(@platform, app.id))}
+    @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
+    @apps_start = @apps_over_time.to_h.keys.last rescue 'this month'
+    @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
+    @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
+    @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @market_share_now = @market_share_over_time.to_h.values.first.to_i rescue 0
+    @market_share_start = @market_share_over_time.to_h.values.last.to_i rescue 0
+    @market_share_start_month = @market_share_over_time.to_h.keys.last.to_i rescue 0
+    @market_share_now_month = @market_share_over_time.to_h.keys.first.to_i rescue 0
   end
   
   def sdk_directory
@@ -158,12 +167,19 @@ class WelcomeController < ApplicationController
   def sdk_category_page
     @category = Tag.find params[:category_id]
     @json_category = sdk_categories_hot_store.read(@category.name)
-    @json_category['description'] = nil_or_empty?(@json_category['description']) ? "We do not yet have a description for this SDK category." : @json_category['description']
+    @json_category['description'] = @json_category['description'].blank? ? "We do not yet have a description for this SDK category." : @json_category['description']
     @installs_over_time = get_last(5, @json_category['installs_over_time'])
     @uninstalls_over_time = get_last(5, @json_category['uninstalls_over_time'])
     @apps_over_time = get_last(5, @json_category['apps_over_time'])
-    @top_ios_sdks = IosSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| IosSdk.find(sdk.id).top_200_apps}.flatten.sample(8).map{|app| apps_hot_store.read('ios', app.id)}.first(8).map{|app| simplify_json_app(app) }
-    @top_android_sdks = AndroidSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| AndroidSdk.find(sdk.id).top_200_apps}.flatten.sample(8).map{|app| apps_hot_store.read('android', app.id)}.first(8).map{|app| simplify_json_app(app) }
+    @top_ios_sdks = get_top(5, IosSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('ios', sdk.id)})
+    @top_android_sdks = get_top(5, AndroidSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('android', sdk.id)})
+    @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
+    @apps_start = @apps_over_time.to_h.keys.last rescue 'this month'
+    @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
+    @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
+    @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @sdks_start = @installs_over_time.to_h.keys.last rescue 'this month'
+    @sdks_installed_start = @installs_over_time.to_h.values.last.to_i rescue 0
   end
 
   def sdk_category_directory
@@ -501,26 +517,23 @@ class WelcomeController < ApplicationController
   def last_n_months(n)
     (DateTime.now-n.months..DateTime.now-1.month).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
   end
+  
+  def get_top(num, sdks)
+    pre_sort = sdks.inject({}) do |hash, sdk|
+      hash[sdk['id']] = get_last(1, sdk['apps_over_time']).flatten.last
+      hash
+    end
+    pre_sort.sort_by {|k, v| -v}.first(num).to_h.keys
+  end
 
   def get_last(num, chart_data)
     months = last_n_months(num)
     values = Array.new(num+1) { 0 }
     months_json = Hash[months.zip(values)]
-    hotstore_json = valid_json?(chart_data.to_s) ? JSON.parse(chart_data) : chart_data
+    hotstore_json = JSON.parse(chart_data) rescue {}
     chart_json = months_json.merge(hotstore_json)
     chart_json.delete("#{Time.now.year}-#{Time.now.strftime('%m')}-01")
     chart_json.sort_by{ |k,_| k.to_s.to_date }.reverse.first(num)
-  end
-
-  def valid_json?(json)
-    JSON.parse(json)
-    return true
-  rescue JSON::ParserError => e
-    return false
-  end
-
-  def nil_or_empty?(field)
-    (field.nil? || field.empty?)
   end
 
   def simplify_json_app(app)

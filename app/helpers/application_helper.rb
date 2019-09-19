@@ -77,13 +77,23 @@ module ApplicationHelper
 
   def get_sdk(platform, sdk_id)
     "#{platform.capitalize}Sdk".constantize.find(sdk_id)
+  rescue ActiveRecord::RecordNotFound
+    flash[:error] = "Sorry, that SDK was not found"
+    redirect_to root_path
   end
 
   def calculate_percentage_change(array)
     (array.last.last.to_f-array.first.last.to_f)/array.last.last.to_f
+  rescue
+    0.0
+  end
+  
+  def pretty_platform(platform)
+    platform == 'ios' ? 'iOS' : 'Android'
   end
   
   private
+  
   def free_data_pages?
     %w(ios_app_sdks fastest_growing_sdks top_ios_apps top_ios_sdks top_android_apps top_android_sdks timeline).include?(action_name)
   end
@@ -109,7 +119,7 @@ module ApplicationHelper
                          icon: "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{item.name.parameterize}"
                      })
     when 'array-sdk'
-      item_object = "#{platform.capitalize}Sdk".constantize.find(item)
+      item_object = get_sdk(platform, item.id)
       OpenStruct.new({
                          item: item_object,
                          path: sdk_page_path(platform, item_object.id, item_object.name.parameterize),
@@ -120,10 +130,4 @@ module ApplicationHelper
       false
     end
   end
-
-  def compose_sdk_name(sdk, platform)
-    platform_name = platform == 'ios' ? "iOS" : "Android"
-    "#{sdk.name} #{platform_name} SDK"
-  end
-
 end

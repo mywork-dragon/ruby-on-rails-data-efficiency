@@ -1,4 +1,4 @@
-- content_for :meta_description, "#{@sdk.name} SDK is currently installed in #{@apps_over_time.first.last} apps and has a #{number_to_percentage(@market_share_over_time.first.last* 100, precision: 0)} share of the #{@categories.first} SDK market"
+- content_for :meta_description, "#{@sdk.name} SDK is currently installed in #{@apps_installed_now} apps and has a #{number_to_percentage(@market_share_now * 100, precision: 0)} market share of the #{@categories.try(:first)} SDK market"
 - content_for :title, "#{@sdk.name} SDK Market Share and Analytics"
 
 #sdk-page.content
@@ -10,9 +10,9 @@
           img alt="" src="#{@json_sdk['icon']}"
         .sdk-installations
           span.install-base Install Base
-          span.install-count #{number_with_delimiter(@apps_over_time.first.last)}
+          span.install-count #{number_with_delimiter(@apps_installed_now)}
       .sdk-details
-        .sdk-title #{compose_sdk_name(@sdk, @platform)}
+        .sdk-title #{sdk.name} #{pretty_platform(@sdk)} SDK
         .sdk-description #{@json_sdk['summary']}
         .sdk-platforms
           - if @sdk.platform == 'ios'
@@ -26,9 +26,9 @@
       /     a.sdk-tag alt='' href='' #{tag['name']}
 
   .container.page-body
-    = render "welcome/sdk_pages/card_partial", tag_id: 'platform-apps', chart: 'apps', title: "#{@json_sdk['platform'] == 'ios' ? 'iOS' : 'Android'} Apps", body: "#{@sdk.name} is currently installed in #{number_with_delimiter(@apps_over_time.first.last)} apps. As of #{@apps_over_time.last.first}, it was installed in #{number_with_delimiter(@apps_over_time.last.last)} apps. That is a change of #{number_to_percentage((@apps_over_time.last.last.to_f-@apps_over_time.first.last) /@apps_over_time.last.last)} over six months."
-    = render "welcome/sdk_pages/card_partial", tag_id: 'mounthly-installs', chart: 'installs', title: 'Monthly Installs / Uninstalls', body: "#{@sdk.name} was installed in #{number_with_delimiter(@installs_over_time.first.last)} apps and uninstalled in #{number_with_delimiter(@uninstalls_over_time.first.last.to_i.abs)} apps last month. That's a net change of #{number_with_delimiter(@installs_over_time.first.last + @uninstalls_over_time.first.last)} apps over the last month."
-    = render "welcome/sdk_pages/card_partial", tag_id: 'category-marketshare', chart: 'share', title: 'Category Marketshare', body: "#{@sdk.name} currently owns #{number_to_percentage(@market_share_over_time.first.last* 100, precision: 0)} of the #{@categories.first} SDK market. As of #{@market_share_over_time.last.first}, it owned #{number_to_percentage(@market_share_over_time.last.last* 100, precision: 0)} of the #{@categories.first} SDK market. That is a change of #{number_to_percentage((@market_share_over_time.last.last.to_f-@market_share_over_time.first.last) /@market_share_over_time.last.last, precision: 0)} over six months."
+    = render "welcome/sdk_pages/card_partial", tag_id: 'platform-apps', chart: 'apps', title: "#{pretty_platform(@json_sdk['platform'])} Apps", body: "#{@sdk.name} is currently installed in #{number_with_delimiter(@apps_installed_now)} apps. As of #{@apps_start}, it was installed in #{number_with_delimiter(@apps_installed_start)} apps. That is a change of #{number_to_percentage((@apps_installed_start.to_f-@apps_installed_now) / @apps_installed_start)} over six months."
+    = render "welcome/sdk_pages/card_partial", tag_id: 'mounthly-installs', chart: 'installs', title: 'Monthly Installs / Uninstalls', body: "#{@sdk.name} was installed in #{number_with_delimiter(@sdks_installed_now)} apps and uninstalled in #{number_with_delimiter(@sdks_uninstalled_now.to_i.abs)} apps last month. That's a net change of #{number_with_delimiter(@sdks_installed_now + @sdks_uninstalled_now)} apps over the last month."
+    = render "welcome/sdk_pages/card_partial", tag_id: 'category-marketshare', chart: 'share', title: 'Category Marketshare', body: "#{@sdk.name} currently owns #{number_to_percentage(@market_share_now * 100, precision: 0)} of the #{@categories.try(:first)} SDK market. As of #{@market_share_now_month}, it owned #{number_to_percentage(@market_share_start * 100, precision: 0)} of the #{@categories.try(:first)} SDK market. That is a change of #{number_to_percentage((@market_share_start.to_f-@market_share_now) /@market_share_start, precision: 0)} over six months."
     #top-200
       .top-200-heading
         img src="/lib/images/sdk_pages/top-200.png" alt="Top 200 Apps"
@@ -37,7 +37,7 @@
           p.total-of-top-200 apps in the #{link_to 'top 200', top_ios_apps_path, target: '_blank'} apps
       p.top-200-text #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} in the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
     = render "welcome/sdk_pages/list_partial", tag_id: 'top-apps', input_data_type: 'app', title: 'Top Apps', item_list: @top_8_apps
-    = render "welcome/sdk_pages/list_partial", tag_id: 'simillar-sdk', input_data_type: 'array-sdk', title: 'Similar SDKs', item_list: @similar_sdks
+    = render "welcome/sdk_pages/list_partial", tag_id: 'similar-sdk', input_data_type: 'array-sdk', title: 'Similar SDKs', item_list: @similar_sdks
     = render "welcome/sdk_pages/list_partial", tag_id: 'competing-sdk', input_data_type: 'array-sdk', title: 'Competing SDKs', item_list: @competitive_sdks
 
   #get-started

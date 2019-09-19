@@ -531,7 +531,7 @@
     -ms-grid-rows: auto;
     grid-template-rows: auto;
     grid-column-gap: 2rem;
-    grid-template-areas: "platform-apps platform-apps top-apps" "mounthly-installs mounthly-installs top-apps" "category-marketshare category-marketshare top-apps" "top-200 top-200 top-apps" "simillar-sdk competing-sdk top-apps";
+    grid-template-areas: "platform-apps platform-apps top-apps" "mounthly-installs mounthly-installs top-apps" "category-marketshare category-marketshare top-apps" "top-200 top-200 top-apps" "similar-sdk competing-sdk top-apps";
   }
   #sdk-page.content .page-body #top-apps {
     -ms-grid-row: 1;
@@ -563,10 +563,10 @@
     -ms-grid-column-span: 2;
     grid-area: top-200;
   }
-  #sdk-page.content .page-body #simillar-sdk {
+  #sdk-page.content .page-body #similar-sdk {
     -ms-grid-row: 5;
     -ms-grid-column: 1;
-    grid-area: simillar-sdk;
+    grid-area: similar-sdk;
   }
   #sdk-page.content .page-body #competing-sdk {
     -ms-grid-row: 5;
