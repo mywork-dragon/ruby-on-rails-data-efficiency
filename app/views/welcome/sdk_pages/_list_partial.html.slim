@@ -4,12 +4,12 @@
       h3.partial-heading #{title}
     .list-body.collapse.navbar-collapse id="#{tag_id}-collapse"
       - item_list.each do |item|
-        - list_item_params = sdk_list_item_params(item, input_data_type, @platform ||= platform)
+        - list_item_params = sdk_list_item_params(item, input_data_type, platform)
         = render 'welcome/sdk_pages/list_item', item: list_item_params.item, path: list_item_params.path, target: list_item_params.target, icon: list_item_params.icon if list_item_params
   - else
     h3.partial-heading #{title}
     hr
     .list-body
       - item_list.each do |item|
-        - list_item_params = sdk_list_item_params(item, input_data_type, @platform ||= platform)
+        - list_item_params = sdk_list_item_params(item, input_data_type, platform)
         = render 'welcome/sdk_pages/list_item', item: list_item_params.item, path: list_item_params.path, target: list_item_params.target, icon: list_item_params.icon if list_item_params
