@@ -153,8 +153,7 @@ class WelcomeController < ApplicationController
   end
   
   def sdk_directory
-    platform = params[:platform] || 'ios'
-    @platform = platform == 'ios' ? 'iOS' : 'Android'
+    @platform = params[:platform] || 'ios'
     @letter = params[:letter] || 'a'
     @page = params[:page] || 1
     if platform == 'ios'
