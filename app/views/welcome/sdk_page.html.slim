@@ -35,7 +35,7 @@
         .top-200-stats
           p.total-apps #{number_with_delimiter(@sdk.top_200_apps.size)}
           p.total-of-top-200 apps in the #{link_to 'top 200', top_ios_apps_path, target: '_blank'} apps
-      p.top-200-text #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} in the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
+      p.top-200-text #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
     = render "welcome/sdk_pages/list_partial", tag_id: 'top-apps', input_data_type: 'app', title: 'Top Apps', item_list: @top_8_apps, platform: @sdk.platform if @top_8_apps.size > 0
     = render "welcome/sdk_pages/list_partial", tag_id: 'similar-sdk', input_data_type: 'array-sdk', title: 'Similar SDKs', item_list: @similar_sdks, platform: @sdk.platform if @similar_sdks.size > 0
     = render "welcome/sdk_pages/list_partial", tag_id: 'competing-sdk', input_data_type: 'array-sdk', title: 'Competing SDKs', item_list: @competitive_sdks, platform: @sdk.platform if @competitive_sdks.size > 0
