@@ -10,6 +10,8 @@ describe FixCategoriesTask do
     allow(MightyAws::Firehose).to receive(:new).and_return(firehose)
   end
 
+  before { allow(MightyAws::Firehose).to receive_message_chain(:new, :send) }
+
   describe '.android_perform' do
     let(:android_category_data) { {category_id: 'CAT1', category_name: 'Cat1'} }
 
@@ -34,11 +36,11 @@ describe FixCategoriesTask do
 
       before :each do
         allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
-        allow(firehose).to receive(:send).with(stream_name: stream_name, data: "android, #{android_app.id}, App has never been scanned")
+
         subject.android_perform(android_app)
       end
 
-      it 'android app no newest snaphot' do 
+      it 'android app no newest snaphot' do
         # If the app has no ios_app_current_snapshots means it has never been scanned
         # then we can't update the categories nor create new ones
         expect(android_app.categories).to eq([])
@@ -48,13 +50,16 @@ describe FixCategoriesTask do
 
   describe '.ios_perform' do
     let(:ios_category_data) { {categories: {primary: 'Cat1', secondary:['Cat2']}} }
-    
+
     context "update categories" do
       let(:ios_app_current_snapshots) { FactoryGirl.create_list(:ios_app_current_snapshot, 3, latest: true) }
       let(:ios_app) { FactoryGirl.create(:ios_app, ios_app_current_snapshots: ios_app_current_snapshots) }
-      
+
       before :each do
+<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
+=======
+>>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
@@ -64,17 +69,20 @@ describe FixCategoriesTask do
       it { expect(get_ios_expected_category(ios_app, kinds[:secondary]).name).to eq(ios_category_data[:categories][:secondary].first) }
       it { expect(ios_app.ios_app_current_snapshots.where(latest: true).count).to eq(1) }
     end
-    
+
     describe "only one category attribute" do
       let(:ios_app) { FactoryGirl.create(:ios_app) }
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_only_cat)
+<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
+=======
+>>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         subject.ios_perform(ios_app)
       end
 
-      context "primary cat" do 
+      context "primary cat" do
         let(:ios_only_cat) { {categories: {primary: 'Cat1', secondary: []}} }
         it { expect(get_ios_expected_category(ios_app, kinds[:secondary])).to eq(nil) }
       end
@@ -90,7 +98,10 @@ describe FixCategoriesTask do
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
+<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{ios_app.id}, App has never been scanned")
+=======
+>>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         subject.ios_perform(ios_app)
       end
 
@@ -101,17 +112,20 @@ describe FixCategoriesTask do
       end
     end
 
-    describe "category current snapshot" do 
+    describe "category current snapshot" do
       let(:ios_app_current_snapshot) {FactoryGirl.create(:ios_app_current_snapshot)}
       let(:ios_app) {FactoryGirl.create(:ios_app, ios_app_current_snapshots: [ios_app_current_snapshot])}
-      
+
       before :each do
+<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
+=======
+>>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
-      
-      context "no primary and secondary category" do 
+
+      context "no primary and secondary category" do
         it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}
       end
 
@@ -124,11 +138,11 @@ describe FixCategoriesTask do
           ios_app_category_current_snapshot.save!
         end
 
-        context "primary" do 
+        context "primary" do
           let(:kind) { kinds[:primary] }
           it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}
         end
-  
+
         context "secondary" do
           let(:kind) { kinds[:secondary] }
           it {check_expect_category_current_snapshot(ios_app, ios_category_data, kinds)}

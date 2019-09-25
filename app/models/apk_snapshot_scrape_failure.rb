@@ -16,5 +16,5 @@ class ApkSnapshotScrapeFailure < ActiveRecord::Base
   belongs_to :android_app
   belongs_to :apk_snapshot_job
 
-  enum reason: [:unchanged_version, :paid, :not_found, :unavailable]
+  enum reason: [:unchanged_version, :paid, :not_found, :unavailable, :bad_google_scrape]
 end
