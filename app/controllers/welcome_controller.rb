@@ -142,14 +142,14 @@ class WelcomeController < ApplicationController
     @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
     @top_8_apps = @sdk.top_200_apps.first(8).map{|app| simplify_json_app(apps_hot_store.read(@platform, app.id))}
     @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
-    @apps_start = @apps_over_time.to_h.keys.last rescue 'this month'
+    @apps_start = @apps_over_time.to_h.keys.last rescue 'a few months ago'
     @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
     @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
     @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
     @market_share_now = (@market_share_over_time.to_h.values.first.to_f) rescue 0
     @market_share_start = (@market_share_over_time.to_h.values.last.to_f) rescue 0
-    @market_share_start_month = @market_share_over_time.to_h.keys.last.to_i rescue 0
-    @market_share_now_month = @market_share_over_time.to_h.keys.first.to_i rescue 0
+    @market_share_start_month = @market_share_over_time.to_h.keys.last rescue 'a few months ago'
+    @market_share_now_month = @market_share_over_time.to_h.keys.first rescue 'this month'
   end
   
   def sdk_directory
