@@ -146,8 +146,8 @@ class WelcomeController < ApplicationController
     @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
     @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
     @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
-    @market_share_now = @market_share_over_time.to_h.values.first.to_i rescue 0
-    @market_share_start = @market_share_over_time.to_h.values.last.to_i rescue 0
+    @market_share_now = (@market_share_over_time.to_h.values.first.to_f) rescue 0
+    @market_share_start = (@market_share_over_time.to_h.values.last.to_f) rescue 0
     @market_share_start_month = @market_share_over_time.to_h.keys.last.to_i rescue 0
     @market_share_now_month = @market_share_over_time.to_h.keys.first.to_i rescue 0
   end
@@ -156,7 +156,7 @@ class WelcomeController < ApplicationController
     @platform = params[:platform] || 'ios'
     @letter = params[:letter] || 'a'
     @page = params[:page] || 1
-    if platform == 'ios'
+    if @platform == 'ios'
       @sdks = IosSdk.where("name like ?", "#{@letter.to_s}%")
     else 
       @sdks = AndroidSdk.where("name like ?", "#{@letter.to_s}%")
