@@ -167,18 +167,28 @@ class WelcomeController < ApplicationController
     @category = Tag.find params[:category_id]
     @json_category = sdk_categories_hot_store.read(@category.name)
     @json_category['description'] = @json_category['description'].blank? ? "We do not yet have a description for this SDK category." : @json_category['description']
-    @installs_over_time = get_last(5, @json_category['installs_over_time'])
-    @uninstalls_over_time = get_last(5, @json_category['uninstalls_over_time'])
-    @apps_over_time = get_last(5, @json_category['apps_over_time'])
+    @android_installs_over_time = get_last(5, @json_category['android_installs_over_time'])
+    @android_uninstalls_over_time = get_last(5, @json_category['android_uninstalls_over_time'])
+    @ios_installs_over_time = get_last(5, @json_category['ios_installs_over_time'])
+    @ios_uninstalls_over_time = get_last(5, @json_category['ios_uninstalls_over_time'])
+    @android_apps_over_time = get_last(5, @json_category['android_apps_over_time'])
+    @ios_apps_over_time = get_last(5, @json_category['ios_apps_over_time'])
     @top_ios_sdks = get_top(5, IosSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('ios', sdk.id)})
     @top_android_sdks = get_top(5, AndroidSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('android', sdk.id)})
-    @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
-    @apps_start = @apps_over_time.to_h.keys.last rescue 'this month'
-    @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
-    @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
-    @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
-    @sdks_start = @installs_over_time.to_h.keys.last rescue 'this month'
-    @sdks_installed_start = @installs_over_time.to_h.values.last.to_i rescue 0
+    @android_apps_installed_now = @android_apps_over_time.to_h.values.first.to_i rescue 0
+    @android_apps_start = @android_apps_over_time.to_h.keys.last rescue 'this month'
+    @android_apps_installed_start = @android_apps_over_time.to_h.values.last.to_i rescue 0
+    @android_sdks_installed_now = @android_installs_over_time.to_h.values.first.to_i rescue 0
+    @android_sdks_uninstalled_now = @android_uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @android_sdks_start = @android_installs_over_time.to_h.keys.last rescue 'this month'
+    @android_sdks_installed_start = @android_installs_over_time.to_h.values.last.to_i rescue 0
+    @ios_apps_installed_now = @ios_apps_over_time.to_h.values.first.to_i rescue 0
+    @ios_apps_start = @ios_apps_over_time.to_h.keys.last rescue 'this month'
+    @ios_apps_installed_start = @ios_apps_over_time.to_h.values.last.to_i rescue 0
+    @ios_sdks_installed_now = @ios_installs_over_time.to_h.values.first.to_i rescue 0
+    @ios_sdks_uninstalled_now = @ios_uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @ios_sdks_start = @ios_installs_over_time.to_h.keys.last rescue 'this month'
+    @ios_sdks_installed_start = @ios_installs_over_time.to_h.values.last.to_i rescue 0
   end
 
   def sdk_category_directory
