@@ -23,7 +23,7 @@
             i.sdk-home.fas.fa-globe
       	.sdk-tags
 	    		- @sdk.tags.each do |tag|
-						a.sdk-tag alt="#{tag.name}" href=(sdk_category_page_path tag.id, tag.name.parameterize) "#{tag.name} SDK Category"
+						a.sdk-tag alt="#{tag.name}" href=(sdk_category_page_path tag.id, tag.name.parameterize) #{tag.name} SDK Category
 
   .container.page-body
     = render "welcome/sdk_pages/card_partial", tag_id: 'platform-apps', chart: 'apps', title: "#{pretty_platform(@json_sdk['platform'])} Apps", body: "#{@sdk.name} is currently installed in #{number_with_delimiter(@apps_installed_now)} apps. As of #{@apps_start}, it was installed in #{number_with_delimiter(@apps_installed_start)} apps. That is a change of #{number_to_percentage((@apps_installed_start.to_f-@apps_installed_now) / @apps_installed_start)} over six months."
