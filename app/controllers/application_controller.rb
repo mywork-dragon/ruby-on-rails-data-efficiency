@@ -192,5 +192,11 @@ class ApplicationController < ActionController::Base
     payload[:headers].delete('HTTP_CONNECTION')
     payload[:headers].delete('HTTP_X_AMZN_TRACE_ID')
   end
-
+  
+  def get_sdk(platform, sdk_id)
+    "#{platform.capitalize}Sdk".constantize.find(sdk_id)
+  rescue ActiveRecord::RecordNotFound
+    flash[:error] = "Sorry, that SDK was not found"
+    redirect_to root_path
+  end
 end

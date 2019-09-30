@@ -124,6 +124,10 @@ class IosSdk < ActiveRecord::Base
   def cluster
     IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
   end
+  
+  def self.platform
+    'ios'
+  end
 
   def as_json(options={})
     batch_json = {
