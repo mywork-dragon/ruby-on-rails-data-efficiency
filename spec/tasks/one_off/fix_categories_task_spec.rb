@@ -56,10 +56,7 @@ describe FixCategoriesTask do
       let(:ios_app) { FactoryGirl.create(:ios_app, ios_app_current_snapshots: ios_app_current_snapshots) }
 
       before :each do
-<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
-=======
->>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
@@ -75,10 +72,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_only_cat)
-<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
-=======
->>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         subject.ios_perform(ios_app)
       end
 
@@ -98,10 +92,7 @@ describe FixCategoriesTask do
 
       before :each do
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
-<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).with(stream_name: stream_name, data: "ios, #{ios_app.id}, App has never been scanned")
-=======
->>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         subject.ios_perform(ios_app)
       end
 
@@ -117,10 +108,7 @@ describe FixCategoriesTask do
       let(:ios_app) {FactoryGirl.create(:ios_app, ios_app_current_snapshots: [ios_app_current_snapshot])}
 
       before :each do
-<<<<<<< HEAD:spec/tasks/one_off/fix_categories_task_spec.rb
         allow(firehose).to receive(:send).and_return(true)
-=======
->>>>>>> master:spec/tasks/fix_categories_task_spec.rb
         allow(AppStoreService).to receive(:attributes).and_return(ios_category_data)
         subject.ios_perform(ios_app)
       end
