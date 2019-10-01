@@ -1,6 +1,7 @@
 require 'sidekiq/testing'
 
 describe AndroidLiveScanServiceWorker do
+
   let(:job_double)       { instance_double(ApkSnapshotJob, id: 1) }
   let(:android_app)      { create(:android_app) }
 
