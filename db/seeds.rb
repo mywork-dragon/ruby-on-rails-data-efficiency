@@ -20,6 +20,7 @@ require_relative 'seed_helpers/seed_clearbit_contacts'
 require_relative "seed_helpers/seed_fb_ads"
 require_relative "seed_helpers/seed_sdks"
 require_relative "seed_helpers/seed_tags"
+require_relative "seed_helpers/seed_rankings"
 
 ActiveRecord::Base.transaction do
   seed_categories
@@ -34,6 +35,7 @@ ActiveRecord::Base.transaction do
   seed_fb_ads
   seed_sdks
   seed_tags
+  seed_rankings
 end
 
 account = Account.create(
