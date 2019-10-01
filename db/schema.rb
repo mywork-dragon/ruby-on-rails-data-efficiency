@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190606005846) do
+ActiveRecord::Schema.define(version: 20190830212846) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -248,6 +248,8 @@ ActiveRecord::Schema.define(version: 20190606005846) do
     t.integer  "display_type",                   limit: 4,   default: 0
     t.integer  "android_developer_id",           limit: 4
     t.string   "regions",                        limit: 191, default: "[]"
+    t.integer  "mau",                            limit: 4
+    t.integer  "mau_monthly_change",             limit: 4
   end
 
   add_index "android_apps", ["android_developer_id"], name: "index_android_apps_on_android_developer_id", using: :btree
@@ -1506,6 +1508,8 @@ ActiveRecord::Schema.define(version: 20190606005846) do
     t.integer  "ios_developer_id",           limit: 4
     t.integer  "source",                     limit: 4
     t.integer  "fb_app_id",                  limit: 8
+    t.integer  "mau",                        limit: 4
+    t.integer  "mau_monthly_change",         limit: 4
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree

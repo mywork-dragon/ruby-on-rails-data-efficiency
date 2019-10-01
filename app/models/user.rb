@@ -77,13 +77,13 @@ class User < ActiveRecord::Base
       self.follow(followable)
     end
   end
-  
+
   def notify_slack
-    UserNotifyWorker.perform_async(:slack, self)
+    UserNotifyWorker.perform_async(:slack, self.id)
   end
-  
+
   def notify_autopilot
-    UserNotifyWorker.perform_async(:autopilot, self)
+    UserNotifyWorker.perform_async(:autopilot, self.id)
   end
 
   def engagement

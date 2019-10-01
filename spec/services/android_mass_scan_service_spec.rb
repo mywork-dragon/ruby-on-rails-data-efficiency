@@ -19,7 +19,6 @@ describe AndroidMassScanService do
 
         before(:all) do
 
-          puts "=====================ALL======================="
           DatabaseCleaner.start
           # slice_size * multiplier = 2_000
           create_list(:android_app, 2_000, :recently_updated)
@@ -30,8 +29,6 @@ describe AndroidMassScanService do
         end
 
         before(:each) do
-          puts '=================EACH===================='
-          puts "count: #{SidekiqBatchQueueWorker.jobs.size}"
           SidekiqBatchQueueWorker.clear
         end
 

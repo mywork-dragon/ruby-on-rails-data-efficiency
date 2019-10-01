@@ -73,6 +73,9 @@ class IosSdk < ActiveRecord::Base
 
   attr_writer :es_client
 
+  # To mirror android_sdk
+  alias_attribute :get_favicon, :favicon
+
   def self.app_class
     IosApp
   end
@@ -123,6 +126,10 @@ class IosSdk < ActiveRecord::Base
 
   def cluster
     IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
+  end
+  
+  def self.platform
+    'ios'
   end
 
   def as_json(options={})
