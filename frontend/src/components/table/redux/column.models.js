@@ -80,6 +80,8 @@ export const headerNames = {
   USER_BASE: 'User Base',
   WEEKLY_CHANGE: '1 Week Rank Change',
   TOTAL_CONTACTS: 'Total Contacts',
+  MAU: 'MAU',
+  MAU_CHANGE: 'MAU Monthly Change',
 };
 
 export const columnModels = [
@@ -356,6 +358,22 @@ export const columnModels = [
     Header: headerNames.TOTAL_CONTACTS,
     id: headerNames.TOTAL_CONTACTS,
     accessor: 'total_contacts',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => cell.value,
+  },
+  {
+    Header: headerNames.MAU,
+    id: headerNames.MAU,
+    accessor: 'mau',
+    headerClassName: 'small-cell',
+    className: 'small-cell',
+    Cell: cell => cell.value,
+  },
+  {
+    Header: headerNames.MAU_CHANGE,
+    id: headerNames.MAU_CHANGE,
+    accessor: 'mau',
     headerClassName: 'small-cell',
     className: 'small-cell',
     Cell: cell => cell.value,
