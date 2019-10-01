@@ -108,6 +108,10 @@ class AndroidSdk < ActiveRecord::Base
   def android_apps
     apk_snapshots.map(&:android_app)
   end
+  
+  def self.platform
+    'android'
+  end
 
   def as_json(options={})
     batch_json = {

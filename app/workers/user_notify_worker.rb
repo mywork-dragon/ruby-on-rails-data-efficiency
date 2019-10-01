@@ -1,7 +1,7 @@
 class UserNotifyWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :default
+  sidekiq_options queue: :mailers
 
   def perform(method, user_id)
     user = User.find(user_id)

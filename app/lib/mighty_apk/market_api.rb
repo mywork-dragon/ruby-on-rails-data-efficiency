@@ -29,6 +29,7 @@ module MightyApk
       unless httparty_res.code / 200 == 1 # non-200 level code
         raise UnknownCondition, "#{httparty_res.code}: #{httparty_res.body}"
       end
+      true
     end
 
     def bulk_details(app_identifiers, childDocs: false)

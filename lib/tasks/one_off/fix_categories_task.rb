@@ -24,7 +24,7 @@ class FixCategoriesTask
   def firehose
     @firehose ||= MightyAws::Firehose.new
   end
-  
+
   def queue_ios_apps
     puts 'queue ios apps'
     IosApp.find_each(:batch_size => 100) do |ios_app|
@@ -38,7 +38,7 @@ class FixCategoriesTask
       android_perform(android_app)
     end
   end
-  
+
   def queue_apps
     queue_ios_apps
     queue_android_apps
@@ -89,10 +89,10 @@ class FixCategoriesTask
     correct_last_snapshot = app.ios_app_current_snapshots.where(latest: true)
     .joins(:ios_app_categories_current_snapshots)
     .where(
-      'ios_app_categories_current_snapshots.kind': kinds.values, 
+      'ios_app_categories_current_snapshots.kind': kinds.values,
       'ios_app_categories_current_snapshots.ios_app_category_id': [primary_cat, secondary_cat].map{|cat| cat.id if cat}.compact
     ).last
-    
+
     IosApp.transaction do
       if correct_last_snapshot
         # Invalidate the corrupted ios app categories snapshots
@@ -129,11 +129,11 @@ class FixCategoriesTask
 
   def invalidate_corrupted_ios_app_categories(correct_last_snapshot_id, primary_cat, secondary_cat)
     IosAppCategoriesCurrentSnapshot.where(
-      ios_app_current_snapshot_id: correct_last_snapshot_id, 
+      ios_app_current_snapshot_id: correct_last_snapshot_id,
       kind: kinds[:primary]
     ).where.not(ios_app_category_id: primary_cat.id).destroy_all
     IosAppCategoriesCurrentSnapshot.where(
-      ios_app_current_snapshot_id: correct_last_snapshot_id, 
+      ios_app_current_snapshot_id: correct_last_snapshot_id,
       kind: kinds[:secondary]
     ).where.not(ios_app_category_id: secondary_cat.id).destroy_all unless secondary_cat.blank?
   rescue => error
@@ -150,7 +150,7 @@ class FixCategoriesTask
     logger.error("ips app current snapshot invalidation failed: #{error.message}")
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "ips app current snapshot invalidation failed: #{error.message}")
   end
-  
+
 
   def create_new_ios_current_snapshot(ios_app)
     # create a duplicate of the last snapshot with all the parameters and relations
