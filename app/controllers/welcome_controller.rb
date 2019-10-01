@@ -127,6 +127,75 @@ class WelcomeController < ApplicationController
     end
     @categories = @json_app['categories'].andand.map {|cat| cat['name']}
   end
+  
+  def sdk_page
+    @platform = params[:platform] == 'ios' ? 'ios' : 'android'
+    @sdk = get_sdk(@platform, params[:sdk_id])
+    @json_sdk = sdks_hot_store.read(@platform, @sdk.id)
+    @json_sdk['summary'] = @json_sdk['summary'].blank? ? "We do not yet have a description for this SDK." : @json_sdk['summary']
+    @installs_over_time = get_last(5, @json_sdk['installs_over_time'])
+    @uninstalls_over_time = get_last(5, @json_sdk['uninstalls_over_time'])
+    @apps_over_time = get_last(5, @json_sdk['apps_over_time'])
+    @market_share_over_time = get_last(5, @json_sdk['market_share_over_time'])
+    @categories = @json_sdk['categories'].andand.map {|cat| cat['name']}
+    @similar_sdks = JSON.parse(@json_sdk['similar_sdks'])
+    @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
+    @top_8_apps = @sdk.top_200_apps.first(8).map{|app| simplify_json_app(apps_hot_store.read(@platform, app.id))}
+    @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
+    @apps_start = @apps_over_time.to_h.keys.last rescue 'a few months ago'
+    @apps_installed_start = @apps_over_time.to_h.values.last.to_i rescue 0
+    @sdks_installed_now = @installs_over_time.to_h.values.first.to_i rescue 0
+    @sdks_uninstalled_now = @uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @market_share_now = (@market_share_over_time.to_h.values.first.to_f) rescue 0
+    @market_share_start = (@market_share_over_time.to_h.values.last.to_f) rescue 0
+    @market_share_start_month = @market_share_over_time.to_h.keys.last rescue 'a few months ago'
+    @market_share_now_month = @market_share_over_time.to_h.keys.first rescue 'this month'
+  end
+  
+  def sdk_directory
+    @platform = params[:platform] || 'ios'
+    @letter = params[:letter] || 'a'
+    @page = params[:page] || 1
+    if @platform == 'ios'
+      @sdks = IosSdk.where("name like ?", "#{@letter.to_s}%")
+    else 
+      @sdks = AndroidSdk.where("name like ?", "#{@letter.to_s}%")
+    end
+  end
+  
+  def sdk_category_page
+    @category = Tag.find params[:category_id]
+    @json_category = sdk_categories_hot_store.read(@category.name)
+    @json_category['description'] = @json_category['description'].blank? ? "We do not yet have a description for this SDK category." : @json_category['description']
+    @android_installs_over_time = get_last(5, @json_category['android_installs_over_time'])
+    @android_uninstalls_over_time = get_last(5, @json_category['android_uninstalls_over_time'])
+    @ios_installs_over_time = get_last(5, @json_category['ios_installs_over_time'])
+    @ios_uninstalls_over_time = get_last(5, @json_category['ios_uninstalls_over_time'])
+    @android_apps_over_time = get_last(5, @json_category['android_apps_over_time'])
+    @ios_apps_over_time = get_last(5, @json_category['ios_apps_over_time'])
+    @top_ios_sdks = get_top(5, IosSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('ios', sdk.id)})
+    @top_android_sdks = get_top(5, AndroidSdk.joins(:tags).where('tags.id = ?', @category).map{|sdk| sdks_hot_store.read('android', sdk.id)})
+    @android_apps_installed_now = @android_apps_over_time.to_h.values.first.to_i rescue 0
+    @android_apps_start = @android_apps_over_time.to_h.keys.last rescue 'this month'
+    @android_apps_installed_start = @android_apps_over_time.to_h.values.last.to_i rescue 0
+    @android_sdks_installed_now = @android_installs_over_time.to_h.values.first.to_i rescue 0
+    @android_sdks_uninstalled_now = @android_uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @android_sdks_start = @android_installs_over_time.to_h.keys.last rescue 'this month'
+    @android_sdks_installed_start = @android_installs_over_time.to_h.values.last.to_i rescue 0
+    @ios_apps_installed_now = @ios_apps_over_time.to_h.values.first.to_i rescue 0
+    @ios_apps_start = @ios_apps_over_time.to_h.keys.last rescue 'this month'
+    @ios_apps_installed_start = @ios_apps_over_time.to_h.values.last.to_i rescue 0
+    @ios_sdks_installed_now = @ios_installs_over_time.to_h.values.first.to_i rescue 0
+    @ios_sdks_uninstalled_now = @ios_uninstalls_over_time.to_h.values.first.to_i rescue 0
+    @ios_sdks_start = @ios_installs_over_time.to_h.keys.last rescue 'this month'
+    @ios_sdks_installed_start = @ios_installs_over_time.to_h.values.last.to_i rescue 0
+  end
+
+  def sdk_category_directory
+    blacklist = ["Major App", "Major Publisher"]
+    @categories = Tag.where.not(name: blacklist)
+  end
+  
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids
@@ -444,6 +513,45 @@ class WelcomeController < ApplicationController
 
   def apps_hot_store
     @apps_hot_store ||= AppHotStore.new
+  end
+  
+  def sdks_hot_store
+    @sdks_hot_store ||= SdkHotStore.new
+  end
+  
+  def sdk_categories_hot_store
+    @sdk_categories_hot_store ||= SdkCategoryHotStore.new
+  end
+
+  def last_n_months(n)
+    (DateTime.now-n.months..DateTime.now-1.month).map{|d| "#{d.year}-#{d.strftime('%m')}-01"}.uniq
+  end
+  
+  def get_top(num, sdks)
+    pre_sort = sdks.inject({}) do |hash, sdk|
+      hash[sdk['id']] = get_last(1, sdk['apps_over_time']).flatten.last
+      hash
+    end
+    pre_sort.sort_by {|k, v| -v}.first(num).to_h.keys
+  end
+
+  def get_last(num, chart_data)
+    months = last_n_months(num)
+    values = Array.new(num+1) { 0 }
+    months_json = Hash[months.zip(values)]
+    hotstore_json = JSON.parse(chart_data) rescue {}
+    chart_json = months_json.merge(hotstore_json)
+    chart_json.delete("#{Time.now.year}-#{Time.now.strftime('%m')}-01")
+    chart_json.sort_by{ |k,_| k.to_s.to_date }.reverse.first(num)
+  end
+
+  def simplify_json_app(app)
+    OpenStruct.new({
+                       icon_url: app['icon_url'],
+                       name: app['name'],
+                       app_identifier: app['app_identifier']
+                       # app_store_url: app['app_store_url'].present? ? app['app_store_url'] : "https://ui-avatars.com/api/?background=64c5e0&color=fff&name=#{app['name']}"
+                   })
   end
 
 end
