@@ -25,7 +25,7 @@ module MobileApp
       else
         store = 'ios'
       end
-      "https://mightysignal.com/a/#{store}/#{app_identifier}"
+      "https://mightysignal.com/a/#{store}/#{app_identifier}/#{name.parameterize}"
     end
 
     def ad_attribution_sdks
