@@ -20,11 +20,11 @@
           .col-xl-6.media
             .pull-left
               span.sdk-rank= "#{index + 1 + (([params[:page].to_i, 1].max - 1) * 20)}."
-              a href=sdk.website
+              a href=sdk_page_path('ios', sdk.id, sdk.name.to_s.parameterize)
                 = image_tag sdk.favicon, size: '16', class: 'media-object my-1 mr-1'
             .media-body.text-break
               h4.media-heading
-                => link_to sdk.name.titleize, sdk.website, target: '_blank', class: ""
+                => link_to sdk.name.titleize, sdk_page_path('ios', sdk.id, sdk.name.to_s.parameterize), target: '_blank', class: ""
                 span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of #{link_to 'Top 200', top_ios_apps_path, target: '_blank'})
               = sdk.summary
           .col-xl-6

@@ -196,6 +196,12 @@ class WelcomeController < ApplicationController
     @categories = Tag.where.not(name: blacklist)
   end
   
+  def sdk_category_directory_sdks
+    @category = Tag.find params[:category_id]
+    @json_category = sdk_categories_hot_store.read(@category.name)
+    @ios_sdks = @category.ios_sdks
+    @android_sdks = @category.android_sdks
+  end  
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids
