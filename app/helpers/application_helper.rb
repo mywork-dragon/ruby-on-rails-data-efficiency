@@ -121,4 +121,8 @@ module ApplicationHelper
                      })
     end
   end
+
+  def force_https_url(url)
+    url[/\Ahttps:\/\//] ? url : url.gsub('http', 'https')
+  end
 end
