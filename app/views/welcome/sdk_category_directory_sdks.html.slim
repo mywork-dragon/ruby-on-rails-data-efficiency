@@ -5,17 +5,16 @@
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
-      .header-info
-        h1.py-0 
-          |#{@category.name} Category SDK directory
-        .app-header-details
-          = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize), class: 'text-white small'
+      h1.py-0.text-white 
+        |List of #{@category.name} SDKs
+      .app-header-details
+        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize), class: 'text-white small'
 
 .white-panel
   .container.sdk-panel
     .row.mt-4
       .col-12
-        h4 #{@category.name} iOS SDKs 
+        h4 iOS #{@category.name} SDKs 
     .row
       - if @ios_sdks.count > 0
         - @ios_sdks.each_slice(60) do |group|
@@ -30,7 +29,7 @@
   .container.sdk-panel
     .row.mt-4
       .col-12
-        h4 #{@category.name} Android SDKs 
+        h4 Android #{@category.name} SDKs 
     .row
       - if @android_sdks.count > 0
         - @android_sdks.each_slice(60) do |group|
