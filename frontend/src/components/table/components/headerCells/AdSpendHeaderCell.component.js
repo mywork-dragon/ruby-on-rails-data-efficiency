@@ -11,7 +11,6 @@ const AdSpendHeaderCell = () => {
   return (
     <span>
       Ad Spend
-      {' '}
       <OverlayTrigger overlay={helpTooltip} placement="right">
         <span className="fa fa-question-circle" />
       </OverlayTrigger>
