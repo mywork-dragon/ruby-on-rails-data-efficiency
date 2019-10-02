@@ -373,9 +373,9 @@ export const columnModels = [
   {
     Header: headerNames.MAU_CHANGE,
     id: headerNames.MAU_CHANGE,
-    accessor: 'mau',
+    accessor: 'mau_change',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => cell.value,
+    Cell: cell => (cell.value ? cell.value.toFixed(2) + '%' : ''),
   },
 ];
