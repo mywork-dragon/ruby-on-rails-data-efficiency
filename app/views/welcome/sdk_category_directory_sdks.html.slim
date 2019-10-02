@@ -6,10 +6,9 @@
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       .header-info
-        h1.py-0
-          | #{@json_category['name']} Category SDK directory
-			.app-header-details
-				= link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.parameterize), class: 'text-white mr-2'
+        h1.py-0 #{@json_category['name']} Category SDK directory
+      .app-header-details
+        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.parameterize), class: 'text-white mr-2'
 
 .white-panel
   .container.sdk-panel
