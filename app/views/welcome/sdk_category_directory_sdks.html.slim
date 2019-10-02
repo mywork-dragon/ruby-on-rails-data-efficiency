@@ -1,20 +1,21 @@
-- content_for :meta_description, "A list of all iOS and Android SDKs in the #{@json_category['name']} category."
-- content_for :title, "#{@json_category['name']} Category SDK Directory"
+- content_for :meta_description, "A list of all iOS and Android SDKs in the #{@category.name} category."
+- content_for :title, "#{@category.name} Category SDK Directory"
 
 #large-header.app-page-content.mt-4.mt-sm-0
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       .header-info
-        h1.py-0 #{@json_category['name']} Category SDK directory
-      .app-header-details
-        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.parameterize), class: 'text-white mr-2'
+        h1.py-0 
+          |#{@category.name} Category SDK directory
+        .app-header-details
+          = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize), class: 'text-white small'
 
 .white-panel
   .container.sdk-panel
     .row.mt-4
       .col-12
-        h4 #{@json_category['name']} iOS SDKs 
+        h4 #{@category.name} iOS SDKs 
     .row
       - if @ios_sdks.count > 0
         - @ios_sdks.each_slice(60) do |group|
@@ -23,13 +24,13 @@
               a href=(sdk_page_path 'ios', sdk.id, sdk.name.parameterize)
                 = sdk.name
       - else
-        p.lead Sorry, no iOS SDKs found in the #{@json_category['name']} SDK category.
+        p.lead Sorry, no iOS SDKs found in the #{@category.name} SDK category.
 				
 .gray-panel
   .container.sdk-panel
     .row.mt-4
       .col-12
-        h4 #{@json_category['name']} Android SDKs 
+        h4 #{@category.name} Android SDKs 
     .row
       - if @android_sdks.count > 0
         - @android_sdks.each_slice(60) do |group|
@@ -38,4 +39,4 @@
               a href=(sdk_page_path 'android', sdk.id, sdk.name.parameterize)
                 = sdk.name
       - else
-        p.lead Sorry, no Android SDKs found in the #{@json_category['name']} SDK category.
+        p.lead Sorry, no Android SDKs found in the #{@category.name} SDK category.

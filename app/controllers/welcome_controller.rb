@@ -198,7 +198,6 @@ class WelcomeController < ApplicationController
   
   def sdk_category_directory_sdks
     @category = Tag.find params[:category_id]
-    @json_category = sdk_categories_hot_store.read(@category.name)
     @ios_sdks = @category.ios_sdks
     @android_sdks = @category.android_sdks
   end  
