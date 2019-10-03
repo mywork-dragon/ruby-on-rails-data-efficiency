@@ -19,10 +19,11 @@ class AndroidLiveScanServiceWorker
     )
 
     # Perform Async: To be or not to be, that is the question.
-    designate(self, android_app.id, job.id) #Utils::Workers
+    designate(self, job.id, android_app.id) #Utils::Workers
 
     job.id
   rescue => e
+    p "[Error] #{e.message}"
     log_app_scan_status_to_redshift(android_app, :failed, :live, error: e.message )
   end
 

@@ -15,6 +15,7 @@ module Android
 
         meets_all_conditions?
       rescue => e
+        p "[Error] #{e.message}"
         apk_snapshot_job.update!(
           ls_lookup_code: :failed
         ) if update_live_scan_job_status? && apk_snapshot_job
