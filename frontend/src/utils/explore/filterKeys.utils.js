@@ -13,6 +13,7 @@ export const appFilterKeys = {
   rating: 'all_version_rating',
   releaseDate: 'released',
   downloads: 'downloaded',
+  mau_change: 'mau_change',
   appPermissions: 'has_permission',
 };
 

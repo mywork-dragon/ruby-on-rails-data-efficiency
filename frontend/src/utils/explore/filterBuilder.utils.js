@@ -394,7 +394,7 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
       return ['not', [filterType]];
     }
     return [filterType];
-  } else if (['ratingsCount', 'rating', 'downloads', 'adNetworkCount', 'rank', 'trend_week', 'trend_month'].includes(type)) {
+  } else if (['ratingsCount', 'rating', 'downloads', 'mau_change', 'adNetworkCount', 'rank', 'trend_week', 'trend_month'].includes(type)) {
     if (value.value.every(x => !x && typeof x !== 'number')) {
       return null;
     }
@@ -419,7 +419,7 @@ function generatePredicate(type, { value, value: { operator, condition } }) {
 
     const filter = [filterType].concat(values);
 
-    if (type === 'downloads') {
+    if (type === 'downloads' || type === 'mau_change') {
       return [
         'or',
         filter,

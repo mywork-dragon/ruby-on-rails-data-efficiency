@@ -23,6 +23,7 @@ function updateSearchForm(state, action) {
     case 'rating':
     case 'releaseDate':
     case 'downloads':
+    case 'mau_change':
     case 'rankings':
     case 'categories':
     case 'appPermissions':
@@ -69,6 +70,7 @@ function updateFilters (filters, { parameter, value, options }) {
     case 'rating':
     case 'releaseDate':
     case 'downloads':
+    case 'mau_change':
     case 'rankings':
     case 'categories':
     case 'appPermissions':

@@ -6,6 +6,7 @@ import { panelFilterCount, formatCategoriesForSelect } from 'utils/explore/gener
 import AvailableCountriesFilter from './AvailableCountriesFilter.component';
 import CategoriesFilter from '../CategoriesFilter.component';
 import DownloadsFilter from './DownloadsFilter.component';
+import MauChangeFilter from './MauChangeFilter.component';
 import FilterCountLabel from '../FilterCountLabel.component';
 import InAppPurchaseFilter from './InAppPurchaseFilter.component';
 import MobilePriorityFilter from './MobilePriorityFilter.component';
@@ -29,6 +30,7 @@ const AppFilterPanel = ({
     rating,
     releaseDate,
     downloads,
+    mau_change,
     appPermissions,
   },
   iosCategories,
@@ -70,6 +72,7 @@ const AppFilterPanel = ({
           <RatingFilter filter={rating} panelKey={panelKey} {...rest} />
           <RatingsCountFilter filter={ratingsCount} panelKey={panelKey} {...rest} />
           <DownloadsFilter filter={downloads} panelKey={panelKey} {...rest} />
+          <MauChangeFilter filter={mau_change} panelKey={panelKey} {...rest} />
           <ReleaseDateFilter filter={releaseDate} panelKey={panelKey} {...rest} />
         </ul>
       </Panel.Body>
