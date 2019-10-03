@@ -7,7 +7,7 @@
     .container.heading-content
       .sdk-card
         .sdk-img
-          img alt="" src="#{@json_category['icon']}"
+          = image_tag @json_category['icon']
         .sdk-installations
           span.install-base Install Base
           span.install-count #{number_with_delimiter(@ios_apps_installed_now+@android_apps_installed_now)}
