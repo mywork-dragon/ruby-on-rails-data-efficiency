@@ -35,9 +35,11 @@ module Android
             snapshot = download_and_save
             success = true
           rescue MightyApk::MarketApi::NotFound, MightyApk::MarketApi::UnsupportedCountry => e
+            p "[Error] #{e.message}"
             exception = e
             break # do not retry in these cases (no-op)
           rescue => e
+          p "[Error] Retrying. #{e.message}"
             exception = e
             tries += 1
             apk_snapshot_job.update!(ls_download_code: :retrying) if update_live_scan_status_code?
@@ -55,16 +57,20 @@ module Android
         MightyApk::Market.new(google_account)
           .download!(android_app.app_identifier, filepath)
       rescue MightyApk::MarketApi::NotFound => e
+        p "[Error] #{e.merge}"
         # Might not be taken down but incompatible version of phone.
         # android_app.update!(display_type: :taken_down)
         raise e
       rescue MightyApk::MarketApi::UnsupportedCountry => e
+        p "[Error] #{e.merge}"
         raise e
       rescue MightyApk::MarketApi::Unauthorized => e
+        p "[Error] #{e.merge}"
         google_account.update!(blocked: true)
         notify_blocked_account(google_account)
         raise e
       rescue MightyApk::MarketApi::IncompatibleDevice => e
+        p "[Error] #{e.merge}"
         @failed_devices << google_account.device
         raise e
       end

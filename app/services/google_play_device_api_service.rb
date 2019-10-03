@@ -11,16 +11,22 @@ class GooglePlayDeviceApiService
   def get_response(app_identifier)
     @market_api.raw_app_details(app_identifier)
   rescue MightyApk::MarketApi::NotFound
+    Rails.logger.debug '[Error] MightyApk::MarketApi::NotFound'
     raise GooglePlayStore::NotFound
   rescue MightyApk::MarketApi::Unauthorized
+    Rails.logger.debug '[Error] MightyApk::MarketApi::Unauthorized'
     raise GooglePlayStore::Unavailable
   rescue MightyApk::MarketApi::Forbidden
+    Rails.logger.debug '[Error] MightyApk::MarketApi::Forbidden'
     raise GooglePlayStore::Unavailable
   rescue MightyApk::MarketApi::UnsupportedCountry
+    Rails.logger.debug '[Error] MightyApk::MarketApi::UnsupportedCountry'
     raise GooglePlayStore::Unavailable
   rescue MightyApk::MarketApi::RateLimited
+    Rails.logger.debug '[Error] MightyApk::MarketApi::RateLimited'
     raise MightyApk::MarketApi::RateLimited
   rescue MightyApk::MarketApi::MarketError
+    Rails.logger.debug '[Error] MightyApk::MarketApi::MarketError'
     raise GooglePlayStore::UnknownCondition
   end
 

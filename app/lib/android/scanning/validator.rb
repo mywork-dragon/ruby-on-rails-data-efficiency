@@ -12,7 +12,7 @@ module Android
         self.apk_snapshot_job = ApkSnapshotJob.find(apk_snapshot_job_id)
         self.android_app      = AndroidApp.find(android_app_id)
         self.app_attributes   = pull_attributes
-
+        
         meets_all_conditions?
       rescue => e
         p "[Error] #{e.message}"
@@ -30,14 +30,19 @@ module Android
       end
 
       def meets_all_conditions?
-        return false unless app_attributes.present?
+        unless app_attributes.present?
+          Rails.logger.debug 'Couldnt retrieve attributes'
+          return false 
+        end
 
         if is_paid?
+          Rails.logger.debug 'Is paid app'
           handle_paid
           return false
         end
 
         if nothing_to_update?
+          Rails.logger.debug 'Nothing to update'
           handle_unchanged
           return false
         end
@@ -51,18 +56,23 @@ module Android
         begin
           GooglePlayDeviceApiService.attributes(android_app.app_identifier)
         rescue GooglePlayDeviceApiService::BadGoogleScrape
+          Rails.logger.debug '[Error] BadGoogleScrape'
           # This is a workaround for a flicker. Sometimes can't find the release date.
           if (try += 1) < MAX_API_RETRIES_PER_APP
+            Rails.logger.debug '[Error] Will retry'
             sleep(3.seconds)
             retry
           else
+            Rails.logger.debug '[Error] Exhausted retries'
             log_result(reason: :bad_google_scrape)
             nil
           end
         rescue GooglePlayStore::NotFound
+          Rails.logger.debug '[Error] NotFound'
           handle_not_found
           nil
         rescue GooglePlayStore::Unavailable
+          Rails.logger.debug '[Error] Unavailable'
           handle_unavailable
           nil
         end
