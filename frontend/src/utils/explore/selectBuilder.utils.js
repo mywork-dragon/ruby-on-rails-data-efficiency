@@ -73,6 +73,8 @@ export const selectMap = (type) => {
       [headerNames.DOWNLOADS]: ['downloads'],
       [headerNames.RANK]: ['rankings'],
       [headerNames.AD_SDKS]: ['sdk_activity'],
+      [headerNames.MAU]: ['mau'],
+      [headerNames.MAU_CHANGE]: ['mau_change'],
     };
   } else if (type === 'publisher') {
     return {
@@ -160,6 +162,8 @@ export const csvSelect = (facebookOnly, resultType, form) => {
       earliest_newcomer_chart: rankingsParams.newcomers,
       latest_newcomer_value: rankingsParams.newcomers,
       latest_newcomer_chart: rankingsParams.newcomers,
+      mau: true,
+      mau_change: true,
     };
 
     if (facebookOnly) {
