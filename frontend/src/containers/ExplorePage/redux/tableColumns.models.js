@@ -25,6 +25,8 @@ export function appColumns () {
     headerNames.RATINGS_COUNT,
     headerNames.RELEASE_DATE,
     headerNames.LAST_UPDATED,
+    headerNames.MAU,
+    headerNames.MAU_CHANGE,
   ];
 
   const initialColumns = [
