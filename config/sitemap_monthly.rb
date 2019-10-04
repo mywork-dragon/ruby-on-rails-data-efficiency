@@ -13,6 +13,9 @@ SitemapGenerator::Sitemap.create do
     add sdk_intelligence_path
     add user_acquisition_path
     add lead_generation_ad_affiliate_networks_path
+    add sdk_category_directory_path
+    add sdk_directory_path('ios')
+    add sdk_directory_path('android')
   end
   
   group(:sitemaps_path => 'ios_sdks/', :filename => :ios_sdks, :changefreq => 'monthly', :priority => 0.8) do
@@ -30,6 +33,7 @@ SitemapGenerator::Sitemap.create do
   group(:sitemaps_path => 'sdk_categories/', :filename => :sdk_categories, :changefreq => 'monthly', :priority => 0.8) do
     Tag.find_each do |tag|
       add sdk_category_page_path(tag.id, tag.name.to_s.parameterize)
+      add sdk_category_directory_sdks_path(tag.id, tag.name.to_s.parameterize)
     end
   end
 end
