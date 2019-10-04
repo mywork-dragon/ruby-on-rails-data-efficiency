@@ -1,5 +1,9 @@
 class WelcomeController < ApplicationController
   include AppsHelper
+  include SeoLinks
+
+  before_action :retrieve_canonical_url
+  before_action :retrieve_prev_next_url, only: [:top_ios_sdks, :top_android_sdks]
 
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url}, expires_in: 24.hours, layout: false
@@ -251,6 +255,7 @@ class WelcomeController < ApplicationController
     end
 
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
+    public_next_prev_links(@sdks, top_ios_sdks_path, params[:tag])
   end
 
   def top_ios_apps
@@ -275,6 +280,7 @@ class WelcomeController < ApplicationController
       @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
     end
     @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
+    public_next_prev_links(@sdks, top_android_sdks_path, params[:tag])
   end
 
   def top_android_apps
