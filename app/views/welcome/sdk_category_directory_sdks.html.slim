@@ -7,8 +7,8 @@
     .col-md-9.col-xs-12
       h1.py-0.text-white 
         |List of #{@category.name} SDKs
-      .app-header-details.text-white.small
-        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize)
+      .app-header-details
+        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize), class: 'text-white small'
 
 .white-panel
   .container.sdk-panel
