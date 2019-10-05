@@ -142,8 +142,10 @@ class WelcomeController < ApplicationController
     @apps_over_time = get_last(5, @json_sdk['apps_over_time'])
     @market_share_over_time = get_last(5, @json_sdk['market_share_over_time'])
     @categories = @json_sdk['categories'].andand.map {|cat| cat['name']}
-    @similar_sdks = JSON.parse(@json_sdk['similar_sdks'])
-    @competitive_sdks = JSON.parse(@json_sdk['competitive_sdks'])
+    similars = @json_sdk['similar_sdks'] || '{}'
+    @similar_sdks = JSON.parse(similars)
+    competitives = @json_sdk['competitive_sdks'] || '{}'
+    @competitive_sdks = JSON.parse(competitives)
     @top_8_apps = @sdk.top_200_apps.first(8).map{|app| simplify_json_app(apps_hot_store.read(@platform, app.id))}
     @apps_installed_now = @apps_over_time.to_h.values.first.to_i rescue 0
     @apps_start = @apps_over_time.to_h.keys.last rescue 'a few months ago'
@@ -199,6 +201,12 @@ class WelcomeController < ApplicationController
     blacklist = ["Major App", "Major Publisher"]
     @categories = Tag.where.not(name: blacklist)
   end
+  
+  def sdk_category_directory_sdks
+    @category = Tag.find params[:category_id]
+    @ios_sdks = @category.ios_sdks
+    @android_sdks = @category.android_sdks
+  end  
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get 'sdk-directory(/:platform)(/:letter)(/:page)' => 'welcome#sdk_directory', as: 'sdk_directory'
     get 'sdk-category/:category_id(/:category)' => 'welcome#sdk_category_page', as: 'sdk_category_page'
     get 'sdk-category-directory' => 'welcome#sdk_category_directory', as: 'sdk_category_directory'
+    get 'sdk-category-directory/sdks/:category_id(/:category)' => 'welcome#sdk_category_directory_sdks', as: 'sdk_category_directory_sdks'
     get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
     get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
     get 'timeline' => 'welcome#timeline', as: 'timeline'
