@@ -7,16 +7,18 @@
     .container.heading-content
       .sdk-card
         .sdk-img
-          img alt="" src="https://ui-avatars.com/api/?background=48B5D6&color=fff&name=#{@category.name.parameterize}"
+          = image_tag @json_category['icon']
         .sdk-installations
           span.install-base Install Base
-          span.install-count #{number_with_delimiter(@apps_installed_now)}
+          span.install-count #{number_with_delimiter(@ios_apps_installed_now+@android_apps_installed_now)}
       .sdk-details
         .sdk-title #{@category.name} SDK
         .sdk-description #{@json_category['description']}
-      / .sdk-tags
-      /     - @tags.each do |tag|
-      /       a.sdk-tag alt='' href='' #{tag['name']}
+        .sdk-tags
+					a.sdk-tag alt='' href=(sdk_category_directory_sdks_path @category.id, @category.name.to_s.parameterize) 
+						| #{@category.ios_sdks.count} iOS SDKs
+					a.sdk-tag alt='' href=(sdk_category_directory_sdks_path @category.id, @category.name.to_s.parameterize)
+						| #{@category.android_sdks.count} Android SDKs
 
   .container.page-body
     = render "welcome/sdk_pages/card_partial", tag_id: "ios-apps-installed", chart: 'ios_apps', title: "iOS Apps with #{@json_category['name']} SDKs installed", body: "There are #{number_with_delimiter(@ios_apps_installed_now)} iOS apps with a #{@json_category['name']} SDK currently installed. As of #{@ios_apps_start}, a #{@json_category['name']} SDK was installed in #{number_with_delimiter(@ios_apps_installed_start)} iOS apps. That is a change of #{number_to_percentage((@ios_apps_installed_start.to_f-@ios_apps_installed_now) / @ios_apps_installed_start)} over six months."
