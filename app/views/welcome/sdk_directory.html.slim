@@ -7,7 +7,7 @@
     .app-header-main.col-md-9.col-xs-12
       .header-info
         h1.py-0
-          | #{pretty_platform(@platform)} SDK directory
+          |#{pretty_platform(@platform)} SDK directory
       .app-header-details
         - (('a'..'z').to_a + ('0'..'9').to_a).each do |letter|
           = link_to letter.capitalize, sdk_directory_path(@platform.to_s.downcase, letter), class: 'text-white mr-2'
