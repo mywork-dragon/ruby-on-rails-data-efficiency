@@ -29,7 +29,7 @@ class AndroidLiveScanServiceWorker
 
   def perform(apk_snapshot_job_id, android_app_id)
     will_perform = valid_job?(apk_snapshot_job_id, android_app_id)
-    Rails.logger.debug "Won't perform scanning. Invalid job"
+    Rails.logger.debug "Won't perform scanning. Invalid job" unless will_perform
     start_job if will_perform
   end
 
