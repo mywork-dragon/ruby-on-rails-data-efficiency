@@ -2,17 +2,87 @@ class GooglePlayDeviceApiService
   class BadGoogleScrape < StandardError; end
 
   REQURED_KEYS = [:name, :released].freeze
-  
+
   class << self
 
-    def attributes(app_identifier, proxy_type: :general)
-      self.new.attributes(app_identifier, proxy_type: proxy_type)
+    def fetch_app_details_from_api(app_identifier)
+      return nil unless available_accounts?
+      raw_resp = get_response(app_identifier)
+      parse_attributes(raw_resp) if raw_resp
+    end
+
+
+    # TODO: DRY it out
+    def get_response(app_identifier)
+      try = 0
+      blacklisted_account_ids = []
+
+      begin
+        next_available_google_acct = available_accounts.not(id: blacklisted_account_ids).first
+        google_account = GoogleAccountReserver.new.reserve(:full)
+        market_api = MightyApk::Market.new(google_account)
+        market_api.raw_app_details(app_identifier)
+      rescue MightyApk::MarketApi::NotFound
+        Rails.logger.debug '[Error] MightyApk::MarketApi::NotFound'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      rescue MightyApk::MarketApi::Unauthorized
+        Rails.logger.debug '[Error] MightyApk::MarketApi::Unauthorized'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      rescue MightyApk::MarketApi::Forbidden
+        Rails.logger.debug '[Error] MightyApk::MarketApi::Forbidden'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      rescue MightyApk::MarketApi::UnsupportedCountry
+        Rails.logger.debug '[Error] MightyApk::MarketApi::UnsupportedCountry'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      rescue MightyApk::MarketApi::RateLimited
+        Rails.logger.debug '[Error] MightyApk::MarketApi::RateLimited'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      rescue MightyApk::MarketApi::MarketError
+        Rails.logger.debug '[Error] MightyApk::MarketApi::MarketError'
+        blacklisted_account_ids << next_available_google_acct.id
+        if (try += 1) < account_retries
+          Rails.logger.debug '[Error] Will retry'
+          sleep(1.seconds)
+          retry
+        end
+        nil
+      end
     end
 
     def parse_attributes(raw_resp)
       ret = {}
       resp = raw_resp.payload.detailsResponse.docV2
-      
+
       ret[:name]             = resp.title
       ret[:description]      = resp.descriptionHtml
       ret[:currency_code]    = resp.offer[0].currencyCode
@@ -84,38 +154,27 @@ class GooglePlayDeviceApiService
       ret
     end
 
+    private
+
+    def account_retries
+      @retries ||= available_accounts_size - 1
+    end
+
+    def available_accounts_size
+      @available_accounts_size ||= available_accounts.count
+    end
+
+    def available_accounts(params = {})
+      query = { blocked: false,
+                scrape_type: GoogleAccount.scrape_types[:full] }
+
+      @available_accounts ||= GoogleAccount.where(query.merge(params))
+    end
+
+    def available_accounts?
+      available_accounts_size > 0
+    end
+
   end
 
-  def initialize
-    @google_account = GoogleAccountReserver.new.reserve(:full)
-    @market_api = MightyApk::Market.new(@google_account)
-  end
-  
-  def attributes(app_identifier, proxy_type: :general)
-    raw_resp = get_response(app_identifier)
-    self.class.parse_attributes(raw_resp)
-  end
-
-  def get_response(app_identifier)
-    @market_api.raw_app_details(app_identifier)
-  rescue MightyApk::MarketApi::NotFound
-    Rails.logger.debug '[Error] MightyApk::MarketApi::NotFound'
-    raise GooglePlayStore::NotFound
-  rescue MightyApk::MarketApi::Unauthorized
-    Rails.logger.debug '[Error] MightyApk::MarketApi::Unauthorized'
-    raise GooglePlayStore::Unavailable
-  rescue MightyApk::MarketApi::Forbidden
-    Rails.logger.debug '[Error] MightyApk::MarketApi::Forbidden'
-    raise GooglePlayStore::Unavailable
-  rescue MightyApk::MarketApi::UnsupportedCountry
-    Rails.logger.debug '[Error] MightyApk::MarketApi::UnsupportedCountry'
-    raise GooglePlayStore::Unavailable
-  rescue MightyApk::MarketApi::RateLimited
-    Rails.logger.debug '[Error] MightyApk::MarketApi::RateLimited'
-    raise MightyApk::MarketApi::RateLimited
-  rescue MightyApk::MarketApi::MarketError
-    Rails.logger.debug '[Error] MightyApk::MarketApi::MarketError'
-    raise GooglePlayStore::UnknownCondition
-  end
-  
 end
