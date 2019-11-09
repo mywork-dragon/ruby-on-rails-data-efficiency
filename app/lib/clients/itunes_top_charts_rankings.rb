@@ -27,7 +27,6 @@ class ItunesTopChartsRankings
         IOS_POPULARITY_TABS_INDEX.first(2).each do |popularity_id, tab_index| #first 2 for testing pursposes remove if forgot
           begin
             res = proxy_request { get(ENDPOINT, query: req_params(category, tab_index), headers: req_headers(storefront_id)) }
-            # File.open(filename, 'w') { |f| f.write(get_csv(res.body)) }
             ranking_list = res.body.scan /<key>item-id<\/key><integer>(\d+)<\/integer>/
             csv_str = CSV.generate do |csv|
               ranking_list.flatten.map.with_index(1) { |app_id, rank|  csv << [app_id, rank, Time.now.to_i] }
@@ -42,8 +41,8 @@ class ItunesTopChartsRankings
           rescue => e
             Bugsnag.notify(e)
           end
-        end# IOS_CATEGORY_IDS
-      end # File.open
+        end # IOS_POPULARITY_TABS_INDEX
+      end # IOS_CATEGORY_IDS
       true
     end
 
