@@ -2,6 +2,9 @@ class ItunesTopChartsRankings
   include HTTParty
   include ProxyParty
 
+  ENDPOINT = 'https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop'.freeze
+  BUCKET_NAME = 'itunes-top-charts-rankings'.freeze
+
   # from mightylib.rankings.hardcoded.categories import ios_categories
   IOS_CATEGORY_IDS = %w( 6011 7012 6010 7011 7014 7019 6013 7009 7016 6012 7018 7017
                          7001 6015 7003 7002 7005 7004 6014 6006 6007 6004 6005 6002
@@ -18,14 +21,10 @@ class ItunesTopChartsRankings
                                 '38' => '2'
                               }.freeze
 
-  ENDPOINT = 'https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop'.freeze
-
-  BUCKET_NAME =
-
   class << self
     def request_for(storefront_id)
-      IOS_CATEGORY_IDS.each do |category|  #first 2 for testing pursposes remove if forgot
-        IOS_POPULARITY_TABS_INDEX.each do |popularity_id, tab_index| #first 2 for testing pursposes remove if forgot
+      IOS_CATEGORY_IDS.first(2).each do |category|  #first 2 for testing pursposes remove if forgot
+        IOS_POPULARITY_TABS_INDEX.first(2).each do |popularity_id, tab_index| #first 2 for testing pursposes remove if forgot
           begin
             res = proxy_request { get(ENDPOINT, query: req_params(category, tab_index), headers: req_headers(storefront_id)) }
             # File.open(filename, 'w') { |f| f.write(get_csv(res.body)) }
@@ -36,7 +35,7 @@ class ItunesTopChartsRankings
 
             filename = "#{storefront_id}_#{category}_#{popularity_id}_#{tab_index}_tmp.csv"
             MightyAws::S3.new.store(
-              bucket: 'itunes-top-charts-rankings',
+              bucket: BUCKET_NAME,
               key_path: filename,
               data_str: csv_str
             )

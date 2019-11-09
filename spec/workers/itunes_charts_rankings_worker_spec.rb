@@ -13,11 +13,6 @@ describe ItunesChartsRankingsWorker do
   end
 
   context 'expecuting' do
-    before do
-
-      allow(ItunesTopChartsRankings).to receive(:request_for)  #test separately
-    end
-
     it do
       expect(ItunesTopChartsRankings).to receive(:request_for)
       Sidekiq::Testing.inline!{ subject }

@@ -11,7 +11,5 @@ describe Api::ItunesChartsRankingsController, type: :request do
       expect(ItunesChartService).to receive(:get_storefront_charts).with(storefront_id)
       subject
     end
-
-
   end
 end
