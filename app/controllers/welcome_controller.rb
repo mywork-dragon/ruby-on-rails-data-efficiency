@@ -199,7 +199,7 @@ class WelcomeController < ApplicationController
 
   def sdk_category_directory
     blacklist = ["Major App", "Major Publisher"]
-    @categories = Tag.where.not(name: blacklist)
+    @categories = Tag.where.not(name: blacklist).order(:name)
   end
   
   def sdk_category_directory_sdks
