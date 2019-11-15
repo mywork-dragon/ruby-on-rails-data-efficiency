@@ -132,7 +132,7 @@ class WelcomeController < ApplicationController
     @platform = params[:platform] == 'ios' ? 'ios' : 'android'
     @sdk = get_sdk(@platform, params[:sdk_id])
     @json_sdk = sdks_hot_store.read(@platform, @sdk.id)
-    @json_sdk['summary'] = @json_sdk['summary'].blank? ? "We do not yet have a description for this SDK." : @json_sdk['summary']
+    @json_sdk['summary'] = @json_sdk['summary'].blank? ? "" : @json_sdk['summary']
     @installs_over_time = get_last(5, @json_sdk['installs_over_time'])
     @uninstalls_over_time = get_last(5, @json_sdk['uninstalls_over_time'])
     @apps_over_time = get_last(5, @json_sdk['apps_over_time'])
@@ -193,7 +193,7 @@ class WelcomeController < ApplicationController
 
   def sdk_category_directory
     blacklist = ["Major App", "Major Publisher"]
-    @categories = Tag.where.not(name: blacklist)
+    @categories = Tag.where.not(name: blacklist).order(:name)
   end
   
 
