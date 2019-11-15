@@ -15,7 +15,7 @@ class UserNotifyWorker
   end
 
   def slack(user)
-    Slackiq.message("USER ADDED! #{user.account.name} now has #{user.account.users.count} users and their limit is #{user.account.seats_count}.", webhook_name: :new_users)
+    Slackiq.message("USER ADDED! #{user.account.name} now has #{user.account.users.where(access_revoked: false).count} users and their limit is #{user.account.seats_count}.", webhook_name: :new_users)
   end
 
 end
