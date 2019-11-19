@@ -6,7 +6,7 @@
       .header-info.text-break
         #app-name
           h1.px-3.py-0 = @json_app['name']
-        - if @json_app['publisher'].present
+        - if @json_app['publisher'].present?
           h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'] 
         .app-header-details
           .col-12
