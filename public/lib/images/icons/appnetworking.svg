@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M27.9 32H4.2C1.9 32 0 30.1631 0 27.9396V4.06042C0 1.83686 1.9 0 4.2 0H27.8C30.1 0 32 1.83686 32 4.06042V27.9396C32 30.1631 30.2 32 27.9 32Z" fill="#2DB6D8"/>
+<g filter="url(#filter0_d)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M26.35 5.15C26.55 4.95 26.85 4.95 27.05 5.15C27.25 5.35 27.25 5.65 27.05 5.85L23.45 9.45C24.75 11.15 24.65 13.55 23.15 15.15L21.05 17.25L19.95 16.15L21.35 14.75C21.65 14.45 21.65 13.85 21.35 13.55C21.05 13.25 20.45 13.25 20.15 13.55L18.75 14.95L17.25 13.45L18.65 12.05C18.95 11.75 18.95 11.15 18.65 10.85C18.35 10.55 17.75 10.55 17.45 10.85L16.05 12.25L14.95 11.15L17.05 9.05C18.65 7.45 21.05 7.35 22.75 8.75L26.35 5.15ZM14.95 18.65L16.55 17.05C16.85 16.75 17.45 16.75 17.75 17.05C18.05 17.35 18.05 17.95 17.75 18.25L16.15 19.85L17.25 20.95C17.25 20.95 16.25 21.95 15.65 22.55C15.35 22.85 15.15 23.05 15.15 23.05C13.55 24.65 11.15 24.75 9.45 23.35L5.85 26.95C5.65 27.15 5.35 27.15 5.15 26.95C4.95 26.75 4.95 26.45 5.15 26.25L8.75 22.65C7.45 20.95 7.55 18.55 9.05 16.95L11.15 14.85L12.25 15.95L13.85 14.35C14.15 14.05 14.75 14.05 15.05 14.35C15.35 14.65 15.35 15.25 15.05 15.55L13.45 17.15L14.95 18.65Z" fill="white"/>
+</g>
+<defs>
+<filter id="filter0_d" x="5" y="5" width="22.2" height="23.1" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
+</defs>
+</svg>
