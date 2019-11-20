@@ -4,6 +4,5 @@ class ItunesChartsRankingsWorker
 
   def perform(storefront_id)
     ItunesTopChartsRankings.request_for(storefront_id) if storefront_id.present?
-    true
   end
 end

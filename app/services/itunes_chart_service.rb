@@ -9,7 +9,8 @@ class ItunesChartService
 
     def get_storefront_charts(storefront_id)
       # This Worker scrapes all the categories pages, to build the charts.
-      ItunesChartsRankingsWorker.perform_async(storefront_id)
+      ItunesChartsRankingsWorker.perform_async(storefront_id) if storefront_id.present?
+      true
     end
   end
 
