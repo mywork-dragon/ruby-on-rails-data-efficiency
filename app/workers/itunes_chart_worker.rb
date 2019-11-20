@@ -1,6 +1,6 @@
 class ItunesChartWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :itunes_charts, retry: 5
 
   def perform(method, *args)
@@ -21,7 +21,7 @@ class ItunesChartWorker
     end
 
     store_free_app_ranks(ranked_app_identifiers)
-    
+
     true
   end
 
@@ -96,7 +96,7 @@ class ItunesChartWorker
 
   def us_scrape_ios_app(ios_app)
     ios_app_id = ios_app.id
-    
+
     if Rails.env.production?
       AppStoreSnapshotLiveServiceWorker.perform_async(nil, ios_app_id)
     else

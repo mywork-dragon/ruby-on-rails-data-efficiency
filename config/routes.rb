@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     root 'welcome#index'
     get 'apps/ios/:app_identifier' => 'welcome#ios_app_sdks'
     get 'apps/android/:app_identifier' => 'welcome#android_app_sdks'
-    get 'a/:platform/:app_identifier(/:app_name)' => 'welcome#app_page', as: 'app_page'
+    get 'a/:platform/:app_identifier(/:app_name)' => 'welcome#app_page', constraints: { app_identifier: /.*/ }, as: 'app_page'
     get 'sdk/:platform/:sdk_id(/:sdk_name)' => 'welcome#sdk_page', as: 'sdk_page' 
     get 'sdk-directory(/:platform)(/:letter)(/:page)' => 'welcome#sdk_directory', as: 'sdk_directory'
     get 'sdk-category/:category_id(/:category)' => 'welcome#sdk_category_page', as: 'sdk_category_page'
@@ -235,6 +235,10 @@ Rails.application.routes.draw do
 
       scope '/historical_app_rankings' do
         get 'get_app_rankings' => 'historical_app_rankings#get_historical_app_rankings'
+      end
+
+      scope 'itunes_charts_rankings' do
+        get 'request_charts_rankings' => 'itunes_charts_rankings#request_charts_rankings'
       end
 
     end
