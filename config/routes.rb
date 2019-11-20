@@ -237,6 +237,10 @@ Rails.application.routes.draw do
         get 'get_app_rankings' => 'historical_app_rankings#get_historical_app_rankings'
       end
 
+      scope 'itunes_charts_rankings' do
+        get 'request_charts_rankings' => 'itunes_charts_rankings#request_charts_rankings'
+      end
+
     end
 
     # TODO: change from ewok to extension name
