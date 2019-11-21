@@ -3,10 +3,11 @@
     canvas#demo-canvas.app-canvas.hidden-xs
     .app-header-main.col-md-9.col-xs-12
       img.app-logo.lg-logo.hidden-xs src = @json_app['icon_url']
-      .header-info
+      .header-info.text-break
         #app-name
           h1.px-3.py-0 = @json_app['name']
-        h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name']
+        - if @json_app['publisher'].present?
+          h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'] 
         .app-header-details
           .col-12
             | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}

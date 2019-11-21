@@ -1,4 +1,8 @@
 class Buttercms::PostsController < Buttercms::BaseController
+  include SeoLinks
+
+  before_action :retrieve_canonical_url
+  before_action :retrieve_prev_next_url, only: :index
 
   def index
     @current_slug = params[:category]
@@ -12,6 +16,7 @@ class Buttercms::PostsController < Buttercms::BaseController
     end
 
     @paginatable_array = Kaminari.paginate_array([], total_count: @posts.meta.count).page(params[:page]).per(4)
+    blog_next_prev_links(@paginatable_array, buttercms_posts_path)
 
     if @posts.count > 0
       @related_posts = related_posts(@posts)
