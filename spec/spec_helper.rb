@@ -30,9 +30,13 @@ require 'rails_helper'
 #
 # Dir[Rails.root.join('spec', 'support', 'database_cleaner.rb')].each { |f| require f }
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'shared_examples', '**', '*.rb')].each { |f| require f }
 
 
 RSpec.configure do |config|
+
+  # Needed to test modules
+  config.extend DummyClassHelpers
 
   # Include create and build methods instead of FactoryGirl.create
   config.include FactoryGirl::Syntax::Methods
@@ -115,6 +119,10 @@ RSpec.configure do |config|
 
   # So that you dont have to write 'Rspec.describe' in all files. Instead just 'describe'
   config.expose_dsl_globally = true
+
+  config.before :each do
+    allow(Bugsnag).to receive(:notify)
+  end
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.

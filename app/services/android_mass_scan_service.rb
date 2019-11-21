@@ -1,53 +1,14 @@
 class AndroidMassScanService
+  extend  Android::Scanning::RedshiftStatusLogger
+
   class << self
 
-    def apps_updated_since_job(previous_job_id)
-      date = if previous_job_id
-             ApkSnapshotJob.find(previous_job_id).created_at
-           else
-             1.week.ago
-           end
-      query = AndroidApp
-        .select(:id)
-        .joins(:newest_android_app_snapshot)
-        .where('released >= ? or android_apps.created_at >= ?', date, date)
-        .where(display_type: [AndroidApp.display_types[:normal], AndroidApp.display_types[:foreign]])
-
-      query
-    end
-
-    def queue_apps_for_scan(apk_snapshot_job, batch, apps)
-      apps.pluck(:id).each_slice(1000) do |app_ids|
-        args = app_ids.map { |app_id| [apk_snapshot_job.id, app_id] }
-        SidekiqBatchQueueWorker.perform_async(
-          AndroidMassScanServiceWorker.to_s,
-          args,
-          batch.bid
-        )
-      end
-      log_events(apps)
-    end
-
-    def log_events(apps)
-      logger = RedshiftLogger.new
-      apps.map do |app|
-        {
-          name: 'android_scan_attempt',
-          android_scan_type: 'mass',
-          android_app_id: app.id,
-          android_app_identifier: app.app_identifier
-        }
-      end.each { |d| logger.add(d) }
-      logger.send!
-    rescue => e
-      Bugsnag.notify(e)
-    end
-
     def run_recently_updated(automated: false)
-      apps_to_scan = apps_updated_since_job(nil)
+      # App records only come with :id and :app_identifier fields
+      apps_to_scan = apps_updated_since(1.week.ago)
+
       unless automated
         count = apps_to_scan.count
-
         print "Going to scan #{count} apps. Is that ok? [y/n]: "
         ans = gets.chomp
         return unless ans.include?('y')
@@ -66,8 +27,19 @@ class AndroidMassScanService
         'job_id' => current_job.id
       )
       batch.jobs do
-        queue_apps_for_scan(current_job, batch, apps_to_scan)
+        # Create 1 SidekiqBatchQueueWorker job for each 1000 apps
+        # that in turn will create 1000 AndroidMassScanServiceWorker jobs
+        apps_to_scan.each_slice(1000) do |andr_apps|
+          args = andr_apps.map { |andr_app| [current_job.id, andr_app.id] }
+          SidekiqBatchQueueWorker.perform_async(
+            AndroidMassScanServiceWorker.to_s,
+            args,
+            batch.bid
+          )
+        end
       end
+
+      log_multiple_app_scan_status_to_redshift(apps_to_scan, :attempt, :mass)
     end
 
     def run_by_ids(android_app_ids, use_batch: true)
@@ -98,21 +70,17 @@ class AndroidMassScanService
       end
     end
 
-    def scan_successful
-      batch = Sidekiq::Batch.new
-      batch.description = 'Google Play Mass Classification'
-      batch.on(:complete, 'AndroidMassScanService#on_complete_classify')
+    private
 
-      batch.jobs do
-        ApkSnapshot.where(
-          status: ApkSnapshot.statuses[:success],
-          scan_status: nil
-        ).pluck(:id).each do |id|
-          AndroidClassificationServiceWorker.perform_async(id)
-        end
-      end
+    def apps_updated_since(date)
+      AndroidApp
+        .select(:id, :app_identifier)
+        .joins(:newest_android_app_snapshot)
+        .where('released >= ? or android_apps.created_at >= ?', date, date)
+        .where(display_type: [AndroidApp.display_types[:normal], AndroidApp.display_types[:foreign]])
     end
-  end
+
+  end ## Class methods
 
   def on_complete(status, options)
     apk_snapshot_job = ApkSnapshotJob.find(options['job_id'])
@@ -135,9 +103,5 @@ class AndroidMassScanService
       '# of Apps Attempted' => attempted,
       'Successes' => successful
     )
-  end
-
-  def on_complete_classify(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed Android classification for mass scan')
   end
 end
