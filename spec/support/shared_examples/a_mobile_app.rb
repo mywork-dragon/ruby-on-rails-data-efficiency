@@ -30,7 +30,7 @@ RSpec.shared_examples 'a mobile app' do |platform, snap_prefix|
       let(:mobile_app) { build(mobile_app_key.to_sym, app_identifier: identifier) }
       subject          { mobile_app.mightysignal_public_page_link }
 
-      it { expect(subject).to eq("https://mightysignal.com/a/#{mobile_app.store}/#{identifier}")}
+      it { expect(subject).to match /https:\/\/mightysignal.com\/a\/#{mobile_app.store}\/#{identifier}/ }
     end
 
     describe '#sdk_history' do

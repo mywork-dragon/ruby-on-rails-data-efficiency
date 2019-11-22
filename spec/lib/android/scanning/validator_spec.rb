@@ -106,31 +106,6 @@ module Android
             end
           end
         end
-
-        context 'errors' do
-
-        end
-      end
-
-      describe '.pull_attributes' do
-        before { allow(validatable).to receive(:android_app).and_return(android_app) }
-
-        context 'success' do
-          before { allow(GooglePlayDeviceApiService).to receive(:attributes).and_return(attrs) }
-
-          subject { validatable.pull_attributes }
-
-          it { expect(subject).to eq attrs }
-        end
-
-        context 'failure' do
-          context 'bad Google Scrape' do
-            before { allow(GooglePlayDeviceApiService).to receive(:attributes).and_raise(completar) }
-          end
-          context 'app not found'
-          context 'app unavailable'
-        end
-
       end
     end
   end
