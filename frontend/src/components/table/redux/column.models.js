@@ -80,7 +80,7 @@ export const headerNames = {
   USER_BASE: 'User Base',
   WEEKLY_CHANGE: '1 Week Rank Change',
   TOTAL_CONTACTS: 'Total Contacts',
-  MAU: 'MAU',
+  MAU: 'Monthly Active Users',
   MAU_CHANGE: 'MAU Monthly Change',
 };
 
@@ -368,7 +368,7 @@ export const columnModels = [
     accessor: 'mau',
     headerClassName: 'small-cell',
     className: 'small-cell',
-    Cell: cell => cell.value,
+    Cell: cell => (typeof cell.value !== 'number' ? "" : numberShorthand(cell.value) + "+"),
   },
   {
     Header: headerNames.MAU_CHANGE,
