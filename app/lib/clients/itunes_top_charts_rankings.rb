@@ -23,8 +23,8 @@ class ItunesTopChartsRankings
 
   class << self
     def request_for(storefront_id)
-      IOS_CATEGORY_IDS.first(2).each do |category|  #first 2 for testing pursposes remove if forgot
-        IOS_POPULARITY_TABS_INDEX.first(2).each do |popularity_id, tab_index| #first 2 for testing pursposes remove if forgot
+      IOS_CATEGORY_IDS.each do |category|  #first 2 for testing pursposes remove if forgot
+        IOS_POPULARITY_TABS_INDEX.each do |popularity_id, tab_index| #first 2 for testing pursposes remove if forgot
           begin
             res = proxy_request { get(ENDPOINT, query: req_params(category, tab_index), headers: req_headers(storefront_id)) }
             ranking_list = res.body.scan /<key>item-id<\/key><integer>(\d+)<\/integer>/
