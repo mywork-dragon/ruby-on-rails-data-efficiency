@@ -12,6 +12,7 @@ class SidekiqBatchQueueWorker
   sidekiq_options queue: :sidekiq_batcher, retry: false
 
   def perform(class_name, args, bid, specified_queue = nil)
+
     batch = Sidekiq::Batch.new(bid) #what's the reason of reusing the batch?
 
     worker_class = class_name.constantize

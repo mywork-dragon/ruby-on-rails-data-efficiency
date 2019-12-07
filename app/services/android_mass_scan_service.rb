@@ -1,4 +1,6 @@
 class AndroidMassScanService
+  # include Sidekiq::Worker
+  extend  Utils::Workers
   extend  Android::Scanning::RedshiftStatusLogger
 
   class << self
@@ -26,16 +28,18 @@ class AndroidMassScanService
         'AndroidMassScanService#on_complete',
         'job_id' => current_job.id
       )
+
       batch.jobs do
         # Create 1 SidekiqBatchQueueWorker job for each 1000 apps
         # that in turn will create 1000 AndroidMassScanServiceWorker jobs
         apps_to_scan.each_slice(1000) do |andr_apps|
           args = andr_apps.map { |andr_app| [current_job.id, andr_app.id] }
-          SidekiqBatchQueueWorker.perform_async(
-            AndroidMassScanServiceWorker.to_s,
-            args,
-            batch.bid
-          )
+          delegate_perform(SidekiqBatchQueueWorker, AndroidMassScanServiceWorker.to_s, args, batch.bid)
+          # SidekiqBatchQueueWorker.perform_async(
+          #   AndroidMassScanServiceWorker.to_s,
+          #   args,
+          #   batch.bid
+          # )
         end
       end
 

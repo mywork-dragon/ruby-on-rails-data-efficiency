@@ -1,7 +1,8 @@
 class AndroidLiveScanServiceWorker
   include Sidekiq::Worker
-  include Android::Scanning::Validator
   extend  Utils::Workers
+  include Android::Scanning::Validator
+  include Android::Scanning::ApkWorker
   extend  Android::Scanning::RedshiftStatusLogger
 
   RETRIES = 2
@@ -19,7 +20,7 @@ class AndroidLiveScanServiceWorker
     )
 
     # Perform Async: To be or not to be, that is the question.
-    designate(self, job.id, android_app.id) #Utils::Workers
+    delegate_perform(self, job.id, android_app.id) #Utils::Workers
 
     job.id
   rescue => e
@@ -36,7 +37,7 @@ class AndroidLiveScanServiceWorker
   def start_job
     @retry = 0
     @apk_snapshot_job.update!(ls_lookup_code: :initiated)
-    perform_scan(@apk_snapshot_job.id, nil, @android_app.id)
+    perform_scan(@apk_snapshot_job.id, nil, @android_app.id) # Android::Scanning::ApkWorker
   end
 
   private
