@@ -53,16 +53,16 @@ module Android
       end
 
       def is_paid?
-        attributes[:price] != 0
+        app_attributes[:price] != 0
       end
 
       def nothing_to_update?
         scrape_version = app_attributes[:version]
         last_scan_version = android_app.newest_apk_snapshot.version if android_app.newest_apk_snapshot_id # latest_snapshot_could_not_exist
 
-        return true if scrape_version.nil? || last_scan_version.nil? || scrape_version.match(/Varies/i)
+        return true if scrape_version.nil? #|| last_scan_version.nil? || scrape_version.match(/Varies/i)
 
-        scrape_version != last_scan_version
+        scrape_version == last_scan_version
       end
 
       def handle_unavailable
@@ -85,8 +85,8 @@ module Android
 
       def handle_unchanged
         log_result(reason: :unchanged_version)
-        @android_app.newest_apk_snapshot.update!(good_as_of_date: Time.now)
-        @apk_snapshot_job.update!(ls_lookup_code: :unchanged) if update_live_scan_job_status?
+        android_app.newest_apk_snapshot.update!(good_as_of_date: Time.now)
+        apk_snapshot_job.update!(ls_lookup_code: :unchanged) if update_live_scan_job_status?
       end
 
       def log_result(reason:)

@@ -15,7 +15,7 @@ class AndroidMassScanService
         ans = gets.chomp
         return unless ans.include?('y')
       end
-
+      
       current_job = ApkSnapshotJob.create!(
         notes: "Mass Scrape for #{Date.today}",
         job_type: :weekly_mass
@@ -31,15 +31,10 @@ class AndroidMassScanService
 
       batch.jobs do
         # Create 1 SidekiqBatchQueueWorker job for each 1000 apps
-        # that in turn will create 1000 AndroidMassScanServiceWorker jobs
+        # that in turn will create 1000 AndroidMassScanServiceWorker jobs in redis at once
         apps_to_scan.each_slice(1000) do |andr_apps|
           args = andr_apps.map { |andr_app| [current_job.id, andr_app.id] }
           delegate_perform(SidekiqBatchQueueWorker, AndroidMassScanServiceWorker.to_s, args, batch.bid)
-          # SidekiqBatchQueueWorker.perform_async(
-          #   AndroidMassScanServiceWorker.to_s,
-          #   args,
-          #   batch.bid
-          # )
         end
       end
 

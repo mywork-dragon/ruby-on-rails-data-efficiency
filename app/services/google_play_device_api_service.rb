@@ -18,7 +18,7 @@ class GooglePlayDeviceApiService
       blacklisted_account_ids = []
 
       begin
-        next_available_google_acct = available_accounts.not(id: blacklisted_account_ids).first
+        next_available_google_acct = available_accounts.where.not(id: blacklisted_account_ids).first
         google_account = GoogleAccountReserver.new.reserve(:full)
         market_api = MightyApk::Market.new(google_account)
         market_api.raw_app_details(app_identifier)

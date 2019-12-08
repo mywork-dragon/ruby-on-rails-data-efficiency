@@ -39,7 +39,7 @@ module Android
             exception = e
             break # do not retry in these cases (no-op)
           rescue => e
-          p "[Error] Retrying. #{e.message}"
+            p "[Error] Retrying. #{e.message}"
             exception = e
             tries += 1
             apk_snapshot_job.update!(ls_download_code: :retrying) if update_live_scan_status_code?
@@ -92,7 +92,6 @@ module Android
                             scrape_type,
                             forbidden_google_account_ids: @attempted_google_account_ids,
                             excluded_devices: @failed_devices)
-                          .account
         snapshot.update!(google_account_id: google_account.id)
         @attempted_google_account_ids << google_account.id
         region = download_from_play_store(apk_filename, google_account)
@@ -103,7 +102,7 @@ module Android
       rescue => e
         ApkSnapshotException.create!(
           apk_snapshot_id: snapshot.id,
-          apk_snapshot_job_id: apk_snapshot_job_id,
+          apk_snapshot_job_id: apk_snapshot_job.id,
           name: e.message,
           backtrace: e.backtrace
         )
