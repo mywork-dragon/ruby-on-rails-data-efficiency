@@ -116,7 +116,7 @@ export const sortMap = (form) => {
         },
       },
       [headerNames.MAU]: { field: 'mau', object: 'app'},
-      [headerNames.MAU]: { field: 'mau_change', object: 'app'},
+      [headerNames.MAU_CHANGE]: { field: 'mau_change', object: 'app'},
     };
   } else if (resultType === 'publisher') {
     return {
