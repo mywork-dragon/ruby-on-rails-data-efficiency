@@ -65,9 +65,9 @@ class IosSdk < ActiveRecord::Base
 
   enum kind: [:native, :js]
   validates :kind, presence: true
-  scope :active, -> {where(deprecated: false)}
+  scope :active, -> {where(deprecated: false, flagged: false)}
 
-  update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.where(flagged: false).find_by_id(self.id) } if Rails.env.production?
+  update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.find_by_id(self.id) } if Rails.env.production?
 
   attr_writer :es_client
 
@@ -171,7 +171,7 @@ class IosSdk < ActiveRecord::Base
   class << self
 
     def display_sdks
-      IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL')
+      IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL').active
     end
 
     def sdk_clusters(ios_sdk_ids:)
