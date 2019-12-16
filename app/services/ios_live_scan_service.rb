@@ -13,7 +13,9 @@ class IosLiveScanService
         international_enabled: international_enabled
       )
 
-      IosLiveScanServiceWorker.perform_async(job.id, ios_app_id)
+      IosLiveScanServiceWorker.new.perform(job.id, ios_app_id)
+      #TODO:  Implement/use delegate_perform(IosLiveScanServiceWorker, job.id, ios_app_id)
+      
       RedshiftLogger.new(records: [{
         name: 'ios_scan_attempt',
         ios_scan_type: 'live',

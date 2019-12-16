@@ -65,7 +65,7 @@ module Android
         p "[Error] #{e.merge}"
         raise e
       rescue MightyApk::MarketApi::Unauthorized => e
-        p "[Error] #{e.merge}"
+        p "[Error] #{e.merge}" #undefined method `merge' for #<MightyApk::MarketApi::Unauthorized:0x0000000a6a1940>"
         google_account.update!(blocked: true)
         notify_blocked_account(google_account)
         raise e

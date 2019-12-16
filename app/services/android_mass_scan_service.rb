@@ -59,12 +59,12 @@ class AndroidMassScanService
 
         batch.jobs do
           android_app_ids.each do |id|
-            AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+            delegate_perform(AndroidMassScanServiceWorker, apk_snapshot_job.id, id)
           end
         end
       else
         android_app_ids.each do |id|
-          AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+          delegate_perform(AndroidMassScanServiceWorker, apk_snapshot_job.id, id)
         end
       end
     end
