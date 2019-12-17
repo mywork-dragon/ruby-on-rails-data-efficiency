@@ -1,0 +1,7 @@
+- if @canonical.present?
+  link rel="canonical" href=@canonical
+- if @pagination.present?
+  - if @pagination.prev
+    link rel="prev" href=@pagination.prev
+  - if @pagination.next
+    link rel="next" href=@pagination.next

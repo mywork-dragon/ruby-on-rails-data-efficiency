@@ -27,7 +27,7 @@
                 i.fa.fa-arrow-down aria-hidden="true"
                 = app.ranking_change * -1
             a.app-sdks target="_blank" href=app.mightysignal_public_page_link.to_s
-              = image_tag app.icon_url, size: '100'
+              = image_tag force_https_url(app.icon_url), size: '100'
             br
             span
               a.app-name target="_blank" href=app.mightysignal_public_page_link.to_s

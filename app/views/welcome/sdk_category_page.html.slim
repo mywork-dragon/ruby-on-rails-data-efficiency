@@ -1,5 +1,5 @@
 - content_for :meta_description, @json_category['description']
-- content_for :title, "#{@json_category['name']} SDK Category Apps and Analytics"
+- content_for :title, "#{@category.name} SDK Category Apps and Analytics"
 
 #sdk-page.category.content
   .heading
@@ -7,31 +7,33 @@
     .container.heading-content
       .sdk-card
         .sdk-img
-          img alt="" src="https://ui-avatars.com/api/?background=48B5D6&color=fff&name=#{@category.name.parameterize}"
+          = image_tag @json_category['icon']
         .sdk-installations
           span.install-base Install Base
-          span.install-count #{number_with_delimiter(@apps_installed_now)}
+          span.install-count #{number_with_delimiter(@ios_apps_installed_now+@android_apps_installed_now)}
       .sdk-details
         .sdk-title #{@category.name} SDK
         .sdk-description #{@json_category['description']}
-      / .sdk-tags
-      /     - @tags.each do |tag|
-      /       a.sdk-tag alt='' href='' #{tag['name']}
+        .sdk-tags
+					a.sdk-tag alt='' href=(sdk_category_directory_sdks_path @category.id, @category.name.to_s.parameterize) 
+						| #{@category.ios_sdks.count} iOS SDKs
+					a.sdk-tag alt='' href=(sdk_category_directory_sdks_path @category.id, @category.name.to_s.parameterize)
+						| #{@category.android_sdks.count} Android SDKs
 
   .container.page-body
-    = render "welcome/sdk_pages/card_partial", tag_id: "ios-apps-installed", chart: 'ios_apps', title: "iOS Apps with #{@json_category['name']} SDKs installed", body: "There are #{number_with_delimiter(@ios_apps_installed_now)} iOS apps with a #{@json_category['name']} SDK currently installed. As of #{@ios_apps_start}, a #{@json_category['name']} SDK was installed in #{number_with_delimiter(@ios_apps_installed_start)} iOS apps. That is a change of #{number_to_percentage((@ios_apps_installed_start.to_f-@ios_apps_installed_now) / @ios_apps_installed_start)} over six months."
-    = render "welcome/sdk_pages/card_partial", tag_id: "ios-monthly-installs", chart: 'ios_installs', title: "Monthly installs and uninstalls of iOS #{@json_category['name']} SDKs", body: "A #{@json_category['name']} SDK was installed in #{number_with_delimiter(@ios_sdks_installed_now)} iOS apps and uninstalled from #{number_with_delimiter(@ios_sdks_uninstalled_now.to_i.abs)} iOS apps last month. That's a net change of #{number_with_delimiter(@ios_sdks_installed_now + @ios_sdks_uninstalled_now)} apps over the last month."
-    = render "welcome/sdk_pages/card_partial", tag_id: "android-apps-installed", chart: 'android_apps', title: "Android Apps with #{@json_category['name']} SDKs installed", body: "There are #{number_with_delimiter(@android_apps_installed_now)} iOS apps with a #{@json_category['name']} SDK currently installed. As of #{@android_apps_start}, a #{@json_category['name']} SDK was installed in #{number_with_delimiter(@android_apps_installed_start)} iOS apps. That is a change of #{number_to_percentage((@android_apps_installed_start.to_f-@android_apps_installed_now) / @android_apps_installed_start)} over six months."
-    = render "welcome/sdk_pages/card_partial", tag_id: "android-monthly-installs", chart: 'android_installs', title: "Monthly installs and uninstalls of Android #{@json_category['name']} SDKs", body: "A #{@json_category['name']} SDK was installed in #{number_with_delimiter(@android_sdks_installed_now)} iOS apps and uninstalled from #{number_with_delimiter(@android_sdks_uninstalled_now.to_i.abs)} iOS apps last month. That's a net change of #{number_with_delimiter(@android_sdks_installed_now + @android_sdks_uninstalled_now)} apps over the last month."
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-ios-sdks', input_data_type: 'array-sdk', platform: 'ios', title: "Top iOS #{@json_category['name']} SDKs", item_list: @top_ios_sdks if @top_ios_sdks.size > 0
-    = render "welcome/sdk_pages/list_partial", tag_id: 'top-android-sdks', input_data_type: 'array-sdk', platform: 'android', title: "Top Android #{@json_category['name']} SDKs", item_list: @top_android_sdks if @top_android_sdks.size > 0
+    = render "welcome/sdk_pages/card_partial", tag_id: "ios-apps-installed", chart: 'ios_apps', title: "iOS Apps with #{@category.name} SDKs installed", body: "There are #{number_with_delimiter(@ios_apps_installed_now)} iOS apps with a #{@category.name} SDK currently installed. As of #{@ios_apps_start}, a #{@category.name} SDK was installed in #{number_with_delimiter(@ios_apps_installed_start)} iOS apps. That is a change of #{number_to_percentage(((@ios_apps_installed_now.to_f-@ios_apps_installed_start) / @ios_apps_installed_start)*100, precision: 0)} over six months."
+    = render "welcome/sdk_pages/card_partial", tag_id: "ios-monthly-installs", chart: 'ios_installs', title: "Monthly installs and uninstalls of iOS #{@category.name} SDKs", body: "A #{@category.name} SDK was installed in #{number_with_delimiter(@ios_sdks_installed_now)} iOS apps and uninstalled from #{number_with_delimiter(@ios_sdks_uninstalled_now.to_i.abs)} iOS apps last month. That's a net change of #{number_with_delimiter(@ios_sdks_installed_now - @ios_sdks_uninstalled_now)} apps over the last month."
+    = render "welcome/sdk_pages/card_partial", tag_id: "android-apps-installed", chart: 'android_apps', title: "Android Apps with #{@category.name} SDKs installed", body: "There are #{number_with_delimiter(@android_apps_installed_now)} Android apps with a #{@category.name} SDK currently installed. As of #{@android_apps_start}, a #{@category.name} SDK was installed in #{number_with_delimiter(@android_apps_installed_start)} Android apps. That is a change of #{number_to_percentage(((@android_apps_installed_now.to_f-@android_apps_installed_start) / @android_apps_installed_start)*100, precision: 0)} over six months."
+    = render "welcome/sdk_pages/card_partial", tag_id: "android-monthly-installs", chart: 'android_installs', title: "Monthly installs and uninstalls of Android #{@category.name} SDKs", body: "A #{@category.name} SDK was installed in #{number_with_delimiter(@android_sdks_installed_now)} Android apps and uninstalled from #{number_with_delimiter(@android_sdks_uninstalled_now.to_i.abs)} Android apps last month. That's a net change of #{number_with_delimiter(@android_sdks_installed_now - @android_sdks_uninstalled_now)} apps over the last month."
+    = render "welcome/sdk_pages/list_partial", tag_id: 'top-ios-sdks', input_data_type: 'array-sdk', platform: 'ios', title: "Top iOS #{@category.name} SDKs", item_list: @top_ios_sdks if @top_ios_sdks.size > 0
+    = render "welcome/sdk_pages/list_partial", tag_id: 'top-android-sdks', input_data_type: 'array-sdk', platform: 'android', title: "Top Android #{@category.name} SDKs", item_list: @top_android_sdks if @top_android_sdks.size > 0
 
   #get-started
     .container
       .get-started-content
         h3 Want more insightful reports on current trends?
         p Get real-time SDK intelligence in minutes.
-        = render 'contact_us_button', title: 'Get started with MightySignal', button_id: "#{@json_category['name']}-sdk-category-get-started", btn_styles: 'button btn get-started-btn'
+        = render 'contact_us_button', title: 'Get started with MightySignal', button_id: "#{@category.name}-sdk-category-get-started", btn_styles: 'button btn get-started-btn'
 
 = render 'welcome/web_form_modal'
 

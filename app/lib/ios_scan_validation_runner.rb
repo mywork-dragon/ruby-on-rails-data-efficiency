@@ -89,10 +89,11 @@ class IosScanValidationRunner
     expiration_time = options[:recently_queued_expiration] || 24.hours.to_i
     redis.setex(recent_key, expiration_time, @app_info['version'])
     a = select_apple_account(options[:classification_priority])
+    email_hash =  a.email.gsub(/[^0-9a-zA-Z]/, '_')
     queue_url = if options[:classification_priority] == :high
-                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_live_scan_download_requests"
+                  "https://sqs.us-east-1.amazonaws.com/250424072945/decryption-queue-high-priority-#{email_hash}"
                 else
-                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_mass_scan_download_requests"
+                  "https://sqs.us-east-1.amazonaws.com/250424072945/decryption-queue-low-priority-#{email_hash}"
                 end
     client = Aws::SQS::Client.new(region: 'us-east-1')
     # make sure message has all necessary attributes

@@ -25,7 +25,7 @@
           - if batch.activity_type == 'install'
             .card.mb-3 class="batch-#{batch.id}"
               .card-heading.px-3.py-2
-                = image_tag app.icon_url, size: '30x30', class: 'mr-2'
+                = image_tag force_https_url(app.icon_url), size: '30x30', class: 'mr-2'
                 = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} installed ".html_safe
                 span.subtext= "#{pluralize(batch.sorted_activities.count, 'new SDK', 'new SDks')}"
               //div id="collapse-#{batch.id}" class="panel-collapse collapse"
@@ -38,7 +38,7 @@
           - elsif batch.activity_type == 'entered_top_apps'
             .card.mb-3 class="batch-#{batch.id}"
               .card-heading.px-3.py-2
-                = image_tag app.icon_url, size: '30x30', class: 'mr-2'
+                = image_tag force_https_url(app.icon_url), size: '30x30', class: 'mr-2'
                 = "#{link_to(app.name, app.mightysignal_public_page_link, target: '_blank')} entered the Top 200 at ".html_safe
                 span.subtext= "Rank #{batch.other_owner.try(:rank)}"
 
