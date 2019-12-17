@@ -1,6 +1,7 @@
 class AndroidMassScanServiceWorker
   include Android::Scanning::Validator
   include Android::Scanning::ApkWorker
+  include Utils::Workers
   include Sidekiq::Worker
   sidekiq_options queue: :android_mass_scan, retry: false
 
@@ -8,6 +9,7 @@ class AndroidMassScanServiceWorker
 
   def perform(apk_snapshot_job_id, android_app_id)
     # TODO: Validate exponential backoff here too
+    p "Will try to scan: #{android_app_id}"
     start_job if valid_job?(apk_snapshot_job_id, android_app_id)
   end
 
@@ -28,7 +30,7 @@ class AndroidMassScanServiceWorker
   end
 
   def classify_if_necessary(apk_ss_id)
-    AndroidClassificationServiceWorker.new.perform(apk_ss_id)
+    delegate_perform(AndroidClassificationServiceWorker, apk_ss_id)
   end
 
   def scrape_type
