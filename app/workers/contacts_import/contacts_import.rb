@@ -90,7 +90,6 @@ class ContactsImport
       end
     end
   rescue StandardError => e
-    #byebug
     ActiveRecord::Base.logger = old_logger
     logger.error("#{file_name} = #{e.message}")
     MightyAws::Firehose.new.send(stream_name: STREAM_NAME, data: "#{file_name} - Error: #{e.message}")

@@ -35,7 +35,16 @@ class OneOffAppScanner
         end
       end
       AndroidMassScanService.run_by_ids(android_ids, use_batch: true)
-      IosMassScanService.run_ids('Scan by request', ios_ids, use_batch: false)
+      
+      # IosMassScanService.run_ids('Scan by request', ios_ids, use_batch: true)
+      
+      ios_ids.each do |ios_id|
+        begin
+          IosLiveScanService.scan_ios_app(ios_app_id: ios_id, job_type: :one_off, international_enabled: true)
+        rescue => e 
+          print e.message
+        end
+      end
     end
     
     private

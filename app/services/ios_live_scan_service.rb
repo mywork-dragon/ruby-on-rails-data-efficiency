@@ -1,4 +1,6 @@
 class IosLiveScanService
+  extend  Utils::Workers
+  
   class << self
     def scan_ios_app(ios_app_id:, job_type: :one_off, international_enabled: false)
 
@@ -12,9 +14,8 @@ class IosLiveScanService
         notes: "running a single live scan job on app #{ios_app_id} with type #{job_type}",
         international_enabled: international_enabled
       )
-
-      IosLiveScanServiceWorker.new.perform(job.id, ios_app_id)
-      #TODO:  Implement/use delegate_perform(IosLiveScanServiceWorker, job.id, ios_app_id)
+      
+      delegate_perform(IosLiveScanServiceWorker, job.id, ios_app_id)
       
       RedshiftLogger.new(records: [{
         name: 'ios_scan_attempt',
