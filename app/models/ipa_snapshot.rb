@@ -46,6 +46,16 @@ class IpaSnapshot < ActiveRecord::Base
 
   before_create :set_dates
 
+  # Mirror apk_snapshot
+  def version_code
+    version
+  end
+
+  # Mirror apk_snapshot
+  def version_code=(version)
+    self.version = version
+  end
+
   def set_dates
     x = Time.now
     self.good_as_of_date = x
@@ -71,5 +81,5 @@ class IpaSnapshot < ActiveRecord::Base
 
     activities.each { |a| a.invalidate! }
   end
-  
+
 end

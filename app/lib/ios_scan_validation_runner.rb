@@ -16,14 +16,14 @@ class IosScanValidationRunner
     @ipa_snapshot_job_id = ipa_snapshot_job_id
     @ios_app_id = ios_app_id
     @options = options
+    @priority = options[:classification_priority]
     @app_info = nil
     @app_store_id = nil
     @redis = nil
   end
 
   def redis
-    return @redis if @redis
-    @redis = Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
+    @redis ||= Redis.new(host: ENV['VARYS_REDIS_URL'], port: ENV['VARYS_REDIS_PORT'])
   end
 
   def recent_key
@@ -31,6 +31,7 @@ class IosScanValidationRunner
   end
 
   def run
+    p "Will try to run #{@ios_app_id}"
     @app_info = lookup_app
     validate_itunes_response!
     validate_ios!
@@ -67,7 +68,8 @@ class IosScanValidationRunner
       start_job_v2
     end
 
-  rescue
+  rescue => e 
+    puts e.message
     update_job(status: :failed) if @options[:update_job_status]
     raise
   end
@@ -82,46 +84,34 @@ class IosScanValidationRunner
       app_store_id: @app_store_id,
       download_status: :starting
     )
+    
     cd = ClassDump.create!(
       ipa_snapshot: ipa_snapshot,
       complete: false
     )
+    
     expiration_time = options[:recently_queued_expiration] || 24.hours.to_i
     redis.setex(recent_key, expiration_time, @app_info['version'])
-    a = select_apple_account(options[:classification_priority])
-    queue_url = if options[:classification_priority] == :high
-                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_live_scan_download_requests"
-                else
-                  "https://sqs.us-east-1.amazonaws.com/250424072945/itunes_app_mass_scan_download_requests"
-                end
+    
+    a = @potential_accounts.sample
+    raise NoDevicesAvailable, "app store id: #{@app_store_id}" if a.nil?
+    
+    email_hash =  a.email.gsub(/[^0-9a-zA-Z]/, '_')
+                
     client = Aws::SQS::Client.new(region: 'us-east-1')
     # make sure message has all necessary attributes
     client.send_message(
-      queue_url: queue_url,
+      queue_url: get_queue_for(@priority, email_hash),
       message_body: JSON.dump({
-        classification_priority: options[:classification_priority],
+        classification_priority: @priority,
         itunes_user: a.email,
         itunes_password: a.password,
-        app_identifier: IosApp.find(@ios_app_id).app_identifier.to_s,
+        app_identifier: ios_app.app_identifier.to_s,
         varys_cd_id: cd.id,
       }))
     update_job(status: :initiated) if @options[:update_job_status]
   rescue => e
     Bugsnag.notify(e)
-  end
-
-  def select_apple_account(priority)
-    if priority == :high
-      potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['one_off_scan_v2']).map {|x| x.apple_account}.uniq.compact
-    else
-      potential_accounts = IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes['scan_v2']).map {|x| x.apple_account}.uniq.compact
-    end
-    potential_accounts = potential_accounts.select {|x| x.app_store_id == @app_store_id}
-    a = potential_accounts.sample
-    if a.nil?
-      raise NoDevicesAvailable, "app store id: #{@app_store_id}"
-    end
-    a
   end
 
   def start_job
@@ -165,7 +155,7 @@ class IosScanValidationRunner
 
   def should_update?
     version = @app_info['version']
-    last_snap = IosApp.find(@ios_app_id).newest_ipa_snapshot
+    last_snap = ios_app.newest_ipa_snapshot
     return true if version.blank? or last_snap.nil? or last_snap.version.nil? or last_snap.version.chomp != version.chomp
 
     last_snap.update!(good_as_of_date: Time.now)
@@ -174,10 +164,10 @@ class IosScanValidationRunner
 
   def validate_ios!
     # mac apps are 'mac-software'
-    if not (@app_info['wrapperType'] == 'software' && @app_info['kind'] == 'software')
+    unless (@app_info['wrapperType'] == 'software' && @app_info['kind'] == 'software')
       log_result(reason: :not_ios) if @options[:log_result]
       update_job(status: :not_available) if @options[:update_job_status]
-      IosApp.find(@ios_app_id).update!(display_type: :not_ios)
+      ios_app.update!(display_type: :not_ios)
       raise NotIos
     end
   end
@@ -186,7 +176,7 @@ class IosScanValidationRunner
     if @app_info['price'].to_f > 0
       log_result(reason: :paid) if @options[:log_result]
       update_job(status: :paid) if @options[:update_job_status]
-      IosApp.find(@ios_app_id).update!(display_type: :paid)
+      ios_app.update!(display_type: :paid)
       raise NotFree
     end
   end
@@ -197,7 +187,7 @@ class IosScanValidationRunner
     if not (devices & available_devices).any?
       log_result(reason: :device_incompatible) if @options[:log_result]
       update_job(status: :device_incompatible) if @options[:update_job_status]
-      IosApp.find(@ios_app_id).update!(display_type: :device_incompatible)
+      ios_app.update!(display_type: :device_incompatible)
       raise NotDeviceCompatible
     end
   end
@@ -215,22 +205,33 @@ class IosScanValidationRunner
   end
 
   def lookup_app
-    app_identifier = IosApp.find(@ios_app_id).app_identifier
+    app_identifier = ios_app.app_identifier
     start = Time.now
     stores = AppStore.joins(:ios_apps)
-      .where('ios_apps.id = ?', @ios_app_id)
-      .where(enabled: true, tos_valid: true).where.not(priority: nil)
-      .order(:priority)
+                      .where('ios_apps.id = ?', @ios_app_id)
+                      .where(enabled: true, tos_valid: true)
+                      .where.not(priority: nil)
+                      .order(:priority)
+      
+    puts "Found in #{stores.count} stores"
+    
     duration = Time.now - start
     Rails.logger.info "lookup_app took #{duration}s"
-    if not @options[:enable_international]
+    
+    unless @options[:enable_international]
       stores = stores.select { |store| store.country_code == 'US' } # us only
     end
+    
+    qry = ->(purpose) { IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes[purpose]).map(&:apple_account).uniq.compact  }
 
-    return NoRegisteredStores unless stores.present?
+    potential_accounts = (@priority == :high) ? qry.call('one_off_scan_v2') : qry.call('scan_v2')
+    viable_stores_ids = potential_accounts.map(&:app_store_id) & stores.map(&:id)
+    @potential_accounts = potential_accounts.select{|pa| viable_stores_ids.include?(pa.app_store_id) }
+    
+    return NoRegisteredStores unless viable_stores_ids.present?
 
     res = nil
-    available_store = stores.find do |store|
+    available_store = stores.where(id: viable_stores_ids).find do |store|
       res = ItunesApi.lookup_app_info(
         app_identifier,
         country_code: store.country_code.downcase
@@ -251,7 +252,7 @@ class IosScanValidationRunner
       name: 'ios_scan_validation_result',
       ios_app_id: @ios_app_id,
       ios_app_version: version,
-      ios_app_identifier: IosApp.find(@ios_app_id).app_identifier.to_s,
+      ios_app_identifier: ios_app.app_identifier.to_s,
       cause: reason,
       created_at: DateTime.now
     }]).send!
@@ -262,4 +263,18 @@ class IosScanValidationRunner
   def update_job(status:)
     job = IpaSnapshotJob.find(@ipa_snapshot_job_id).update!(live_scan_status: status)
   end
+  
+  private
+  
+  def get_queue_for(priority, email_hash)
+    prio = priority == :high ? 'high' : 'low'
+    "https://sqs.us-east-1.amazonaws.com/250424072945/decryption-queue-#{prio}-priority-#{email_hash}"
+  end
+  
+  def ios_app 
+    # Dont memoize.
+    IosApp.find(@ios_app_id)
+  end
+  
+  
 end

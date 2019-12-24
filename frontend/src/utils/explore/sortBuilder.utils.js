@@ -115,6 +115,8 @@ export const sortMap = (form) => {
           inputs: [buildRankingsSort('default', form)],
         },
       },
+      [headerNames.MAU]: { field: 'mau', object: 'app'},
+      [headerNames.MAU_CHANGE]: { field: 'mau_change', object: 'app'},
     };
   } else if (resultType === 'publisher') {
     return {

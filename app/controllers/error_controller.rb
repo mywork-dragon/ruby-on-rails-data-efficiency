@@ -9,7 +9,7 @@ class ErrorController < ApplicationController
   def internal_error
     respond_to do |format|
       format.any(:json, :all) { render json: { error: 'Internal Server Error' }, status: 500 }
-      format.html { render file: 'public/500.html', status: 500, layout: false }
+      format.html { render 'error/internal_error', status: 500, layout: 'marketing' }
     end
   end
 end

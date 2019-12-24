@@ -24,6 +24,8 @@ class IosApp < ActiveRecord::Base
 
   class NoESData; end
 
+  STORE = 'ios'.freeze
+
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
 
@@ -53,6 +55,7 @@ class IosApp < ActiveRecord::Base
   has_many :app_store_backups, source: :app_store, through: :app_store_ios_apps_backups
 
   belongs_to :ios_developer
+  alias_attribute :publisher, :ios_developer
 
   has_many :weekly_batches, as: :owner
   has_many :activities, through: :weekly_batches
@@ -81,6 +84,10 @@ class IosApp < ActiveRecord::Base
   WHITELISTED_APPS = Rails.env.production? ? [404249815, 297606951, 447188370, 368677368, 324684580, 477128284, 529479190, 547702041,591981144,618783545,317469184,401626263,1094591345,886427730] : IosApp.pluck(:id).sample(14)
 
   attr_writer :es_client
+
+  def store
+    STORE
+  end
 
   def es_client
     @es_client ||= AppsIndex::IosApp
@@ -653,7 +660,8 @@ class IosApp < ActiveRecord::Base
         "uninstalled_sdks",
         "user_base",
         "user_base_by_country",
-        "versions_history"
+        "versions_history",
+        "required_ios_version"
       ]
 
       # List of attributes to pluck from respective collections
@@ -661,7 +669,8 @@ class IosApp < ActiveRecord::Base
       attributes_from_app = [
         "id",
         "released",
-        "user_base"
+        "user_base",
+        "required_ios_version"
       ]
 
       newest_ios_app_snapshot_attributes = [

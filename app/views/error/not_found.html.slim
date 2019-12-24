@@ -19,12 +19,27 @@ css:
     flex-shrink: 0;
   }
 
+  .elephant {
+    max-width: 80%;
+  }
+
+  #large-header {
+    padding: 0;
+    background: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    .elephant {
+      max-width: 50%;
+    }
+  }
+
 #not-found-main
   main
     section.wrapper
       .content onsubmit="onSubmit(event)"
         h1 Uh-oh. Signal was lost!
-        p We're sorry, the page you were looking for could not be found. Error
+        p We're sorry, the page you were looking for could not be found.
         p
           | You can return to our
           a<> href="/" home page,

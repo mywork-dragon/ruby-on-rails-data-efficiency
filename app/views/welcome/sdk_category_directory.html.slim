@@ -1,0 +1,21 @@
+- content_for :meta_description, "A directory list of all SDK categories."
+- content_for :title, "SDK Category Directory"
+
+#large-header.app-page-content
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .app-header-main.col-md-9.col-xs-12
+      .header-info
+        h1.py-0
+          |SDK Category Directory
+
+.white-panel
+  .container.sdk-panel
+    .row.mt-4
+      - if @categories.count > 0
+        - @categories.each do |category|
+          .col-2.mt-4
+            a href=(sdk_category_page_path category.id, category.name.parameterize)
+              = "#{category.name} SDKs"
+      - else
+        p.lead Sorry, we couldn't find any SDK categories.

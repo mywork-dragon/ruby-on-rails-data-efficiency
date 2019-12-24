@@ -1,0 +1,25 @@
+- content_for :meta_description, "A directory list of all #{@platform} SDKs starting with the letter #{@letter.to_s.capitalize}."
+- content_for :title, "#{@platform} SDK Directory | #{@letter.to_s.capitalize}"
+
+#large-header.app-page-content.mt-4.mt-sm-0
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .app-header-main.col-md-9.col-xs-12
+      .header-info
+        h1.py-0
+          |#{pretty_platform(@platform)} SDK directory
+      .app-header-details
+        - (('a'..'z').to_a + ('0'..'9').to_a).each do |letter|
+          = link_to letter.capitalize, sdk_directory_path(@platform.to_s.downcase, letter), class: 'text-white mr-2'
+
+.white-panel
+  .container.sdk-panel
+    .row.mt-4
+      - if @sdks.count > 0
+        - @sdks.each_slice(60) do |group|
+          - group.each do |sdk|
+            .col-6.col-md-4.col-xl-2.mt-4.text-break
+              a href=(sdk_page_path @platform.to_s.downcase, sdk.id, sdk.name.parameterize)
+                = sdk.name
+      - else
+        p.lead Sorry, no SDKs found starting with #{@letter.to_s.capitalize}.

@@ -1,0 +1,41 @@
+- content_for :meta_description, "A list of all iOS and Android SDKs in the #{@category.name} category."
+- content_for :title, "#{@category.name} Category SDK Directory"
+
+#large-header.app-page-content.mt-4.mt-sm-0
+  .container.app-header
+    canvas#demo-canvas.app-canvas.hidden-xs
+    .col-md-9.col-xs-12
+      h1.py-0.text-white 
+        |List of #{@category.name} SDKs
+      .app-header-details
+        = link_to 'Back to category', sdk_category_page_path(@category.id, @category.name.to_s.parameterize), class: 'text-white small'
+
+.white-panel
+  .container.sdk-panel
+    .row.mt-4
+      .col-12
+        h4 iOS #{@category.name} SDKs 
+    .row
+      - if @ios_sdks.count > 0
+        - @ios_sdks.each_slice(60) do |group|
+          - group.each do |sdk|
+            .col-6.col-md-4.col-xl-2.mt-4.text-break
+              a href=(sdk_page_path 'ios', sdk.id, sdk.name.parameterize)
+                = sdk.name
+      - else
+        p.lead Sorry, no iOS SDKs found in the #{@category.name} SDK category.
+				
+.gray-panel
+  .container.sdk-panel
+    .row.mt-4
+      .col-12
+        h4 Android #{@category.name} SDKs 
+    .row
+      - if @android_sdks.count > 0
+        - @android_sdks.each_slice(60) do |group|
+          - group.each do |sdk|
+            .col-6.col-md-4.col-xl-2.mt-4.text-break
+              a href=(sdk_page_path 'android', sdk.id, sdk.name.parameterize)
+                = sdk.name
+      - else
+        p.lead Sorry, no Android SDKs found in the #{@category.name} SDK category.

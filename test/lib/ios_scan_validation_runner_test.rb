@@ -64,11 +64,12 @@ class IosScanValidationRunnerTest < ActiveSupport::TestCase
     assert_equal true, @runner.should_update?
     x.reload
     assert_in_delta previous_date, x.good_as_of_date, 1.second
-
+    
     # snapshot has identical version
     x.update!(version: @runner.app_info['version'])
     assert_equal false, @runner.should_update?
     x.reload
+
     assert x.good_as_of_date > previous_date
   end
 
