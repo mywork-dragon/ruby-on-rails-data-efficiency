@@ -272,7 +272,8 @@ class IosScanValidationRunner
   end
   
   def ios_app 
-    @ios_app ||= IosApp.find(@ios_app_id)
+    # Dont memoize.
+    IosApp.find(@ios_app_id)
   end
   
   
