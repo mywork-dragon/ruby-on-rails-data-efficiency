@@ -1,4 +1,4 @@
-require "rails_helper"
+require "spec_helper"
 
 describe "Ios Publisher", :type => :request do
 
@@ -21,7 +21,7 @@ describe "Ios Publisher", :type => :request do
       expected_result = ["clearbitId", "givenName", "familyName", "fullName", "title", "email", "linkedin"]
 
       get "/ios/publisher/1/contacts", headers
-  
+
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
       json_response = JSON.parse(response.body)
@@ -32,7 +32,7 @@ describe "Ios Publisher", :type => :request do
     it "returns error developer not found" do
 
       get "/ios/publisher/5/contacts", headers
-  
+
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:not_found)
     end

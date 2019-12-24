@@ -3,45 +3,30 @@ class AndroidLiveScanService
   class UnregisteredCondition < RuntimeError; end
 
   class << self
+    include Android::Scanning::RedshiftStatusLogger
+
+    STATUS_MAP = {
+      preparing:   0,
+      downloading: 1,
+      scanning:    2,
+      complete:    3,
+      failed:      4, # 500
+      unavailable: 5, # 404
+      paid:        6, # 402
+      unchanged:   7  # 304
+    }.freeze
+
+
+
+    # DONE
     def start_scan(android_app_id)
       android_app = AndroidApp.find(android_app_id)
-      job = ApkSnapshotJob.create!(
-        notes: "SINGLE: #{android_app.app_identifier}",
-        job_type: :one_off,
-        ls_lookup_code: :preparing
-      )
-      if Rails.env.production?
-        AndroidLiveScanServiceWorker.perform_async(job.id, android_app.id)
-      else
-        AndroidLiveScanServiceWorker.new.perform(job.id, android_app.id)
-      end
-
-      begin
-            RedshiftLogger.new(records: [{
-              name: 'android_scan_attempt',
-              android_scan_type: 'live',
-              android_app_id: android_app.id,
-              android_app_identifier: android_app.app_identifier
-            }]).send!
-      rescue => e
-        Bugsnag.notify(e)
-      end
-
-      job.id
+      log_app_scan_status_to_redshift(android_app, :attempt, :live)
+      AndroidLiveScanServiceWorker.new_job_for!(android_app.id)
     end
 
-    def status_map
-      {
-        preparing: 0,
-        downloading: 1,
-        scanning: 2,
-        complete: 3,
-        failed: 4, # 500
-        unavailable: 5, # 404
-        paid: 6, # 402
-        unchanged: 7 # 304
-      }
-    end
+    #  ==========================TODO: Refactor================================
+    # Below code mostly don't belong to this class but ApkSnapshotJob
 
     def check_status(job_id:)
       job = ApkSnapshotJob.find(job_id)
@@ -57,7 +42,7 @@ class AndroidLiveScanService
                      raise UnregisteredCondition
                    end
 
-      status = status_map[status_sym]
+      status = STATUS_MAP[status_sym]
       raise UnregisteredCondition, "status: #{status_sym}" unless status
       status
     end
@@ -119,4 +104,5 @@ class AndroidLiveScanService
       end
     end
   end
+
 end

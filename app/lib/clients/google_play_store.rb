@@ -18,9 +18,10 @@ class GooglePlayStore
   end
 
   def self.validate(http_res)
-    return if http_res.code == 200
-    raise NotFound if http_res.code == 404
+    return            if http_res.code == 200
+    raise NotFound    if http_res.code == 404
     raise Unavailable if http_res.code == 403
+
     raise UnknownCondition, "Response code: #{http_res.code}"
   end
 end

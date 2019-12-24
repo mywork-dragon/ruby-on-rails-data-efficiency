@@ -110,18 +110,15 @@ module AndroidClassification
   end
 
   def should_log_activities
-      (
-        Rails.env.production? and not rescan
-      ) and
-      (
-        @apk_snapshot.version_code.nil? or
-        @apk_snapshot.android_app.current_version_code.nil? or
-        @apk_snapshot.version_code > @apk_snapshot.android_app.current_version_code
-      )
+      return false if rescan
+
+      ( @apk_snapshot.version_code.nil? ||
+        @apk_snapshot.android_app.current_version_code.nil? ||
+        @apk_snapshot.version_code > @apk_snapshot.android_app.current_version_code )
   end
 
   def log_activities
-    ActivityWorker.perform_async(:log_android_sdks, @apk_snapshot.android_app_id)
+    delegate_perform(ActivityWorker, :log_android_sdks, @apk_snapshot.android_app_id)
   end
 
 

@@ -23,55 +23,56 @@
 class IosSdk < ActiveRecord::Base
   include Sdk
 
-  has_many :owner_twitter_handles, as: :owner
-  has_many :twitter_handles, through: :owner_twitter_handles
-
-	belongs_to :sdk_company
-  belongs_to :ios_sdk_source_group
-
-  has_many :sdk_packages
-  has_many :cocoapod_metrics
-
+  # This group is for SDK classifications
 	has_many :ios_sdks_ipa_snapshots
   has_many :ipa_snapshots, through: :ios_sdks_ipa_snapshots
-
   has_many :cocoapods
   has_many :cocoapod_source_datas, through: :cocoapods
-
   has_many :ios_sdk_source_datas
   has_many :ios_classification_frameworks
 
+  # This is for timelines
+  has_many :weekly_batches, as: :owner
+  
+  # This is for categories
+  has_many :tags, through: :tag_relationships
+  has_many :tag_relationships, as: :taggable
+
+  ## 12/6/19 @rbucks: These all appear to be deprecated.
+  # The last created_at dates are at least a year old and
+  # we have added many new iOS SDKs since then.
+  belongs_to :sdk_company
+  belongs_to :ios_sdk_source_group
+  has_many :sdk_packages
+  has_many :cocoapod_metrics
   has_many :dll_regexes
   has_many :js_tag_regexes
   has_many :sdk_file_regexes
   has_many :header_regexes
   has_many :sdk_regexes   # packages
   has_many :sdk_string_regexes
-
   has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
   has_many :source_matches, through: :ios_sdk_source_matches, source: :match_sdk
-
   has_one :outbound_sdk_link, class_name: 'IosSdkLink', foreign_key: :source_sdk_id
   has_one :outbound_sdk, through: :outbound_sdk_link, source: :dest_sdk
-
   has_many :inbound_sdk_links, class_name: 'IosSdkLink', foreign_key: :dest_sdk_id
   has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
-
-  has_many :weekly_batches, as: :owner
-  has_many :tags, through: :tag_relationships
-  has_many :tag_relationships, as: :taggable
-
   has_many :owner_twitter_handles, as: :owner
   has_many :twitter_handles, through: :owner_twitter_handles
+  ## 12/6/19 @rbucks END
 
   enum source: [:cocoapods, :package_lookup, :manual]
 
   enum kind: [:native, :js]
   validates :kind, presence: true
+  scope :active, -> {where(deprecated: false, flagged: false)}
 
-  update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.where(flagged: false).find_by_id(self.id) } if Rails.env.production?
+  update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.find_by_id(self.id) } if Rails.env.production?
 
   attr_writer :es_client
+
+  # To mirror android_sdk
+  alias_attribute :get_favicon, :favicon
 
   def self.app_class
     IosApp
@@ -173,7 +174,7 @@ class IosSdk < ActiveRecord::Base
   class << self
 
     def display_sdks
-      IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL')
+      IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL').active
     end
 
     def sdk_clusters(ios_sdk_ids:)
