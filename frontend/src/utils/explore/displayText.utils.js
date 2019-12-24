@@ -36,6 +36,10 @@ function getDisplayText (parameter, value) {
       return `Released ${generateDateText(value.dateRange, value.dates)}`;
     case 'downloads':
       return rangeText('Downloads', value);
+    case 'mau':
+      return rangeText('Monthly Active Users', value);
+    case 'mau_change':
+      return rangeText('MAU Monthly Change', value);
     case 'rankings':
       return rankingsText(value);
     case 'appPermissions':

@@ -65,11 +65,11 @@ class AndroidSdk < ActiveRecord::Base
   end
 
   def get_favicon
-    if self.website.present?
-      host = URI(self.website).host
+    if website.present?
+      host = URI(website).host
       "https://www.google.com/s2/favicons?domain=#{host}"
     else
-      self.favicon
+      favicon
     end
   end
 

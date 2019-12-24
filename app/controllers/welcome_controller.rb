@@ -163,7 +163,7 @@ class WelcomeController < ApplicationController
     @letter = params[:letter] || 'a'
     @page = params[:page] || 1
     if @platform == 'ios'
-      @sdks = IosSdk.where(flagged: false).where("name like ?", "#{@letter.to_s}%")
+      @sdks = IosSdk.where(deprecated: false).where("name like ?", "#{@letter.to_s}%")
     else 
       @sdks = AndroidSdk.where(flagged: false).where("name like ?", "#{@letter.to_s}%")
     end
