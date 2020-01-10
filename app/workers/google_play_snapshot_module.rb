@@ -81,7 +81,7 @@ module GooglePlaySnapshotModule
     SNAPSHOT_ATTRIBUTES.each do |sca|
       value = @attributes[sca]
 
-      if value.present? && AndroidAppSnapshot.columns_hash[sca].type == :string  # if it's a string and is too big
+      if value.present? && AndroidAppSnapshot.columns_hash[sca.to_s].type == :string  # if it's a string and is too big
         value = DbSanitizer.truncate_string(value)
       end
 
