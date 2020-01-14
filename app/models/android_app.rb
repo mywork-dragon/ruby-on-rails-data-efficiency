@@ -21,6 +21,8 @@ class AndroidApp < ActiveRecord::Base
 
   class NoESData; end
 
+  STORE = 'google-play'.freeze
+
   validates :app_identifier, uniqueness: true
   validate :validate_regions
   belongs_to :app
@@ -45,6 +47,8 @@ class AndroidApp < ActiveRecord::Base
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
 
   belongs_to :android_developer
+  alias_attribute :publisher, :android_developer
+
   has_many :android_app_rankings
 
   has_many :sdk_js_tags
@@ -73,6 +77,10 @@ class AndroidApp < ActiveRecord::Base
   # update_index('apps#android_app') { self } if Rails.env.production?
 
   attr_writer :es_client
+
+  def store
+    STORE
+  end
 
   def es_client
     @es_client ||= AppsIndex::AndroidApp
@@ -518,6 +526,25 @@ class AndroidApp < ActiveRecord::Base
 
   def downloads_history
     run_length_encode_app_snapshot_fields(android_app_snapshots, [:downloads_min, :downloads_max])
+  end
+
+  def filter_older_versions_from_android_apk_snapshots(snaps)
+    snaps = snaps.sort_by {|x| x.good_as_of_date}
+    latest_app_versions = []
+    max_versioncode = 0
+    snaps.each do |snap|
+      # Only include app versions which are incrementing on
+      # the highest version_code
+      if snap.scan_status == "scan_success"
+        if snap.version_code.nil? or (snap.version_code >= max_versioncode)
+          latest_app_versions.append(snap)
+          if !snap.version_code.nil?
+            max_versioncode = snap.version_code
+          end
+        end
+      end
+    end
+    latest_app_versions
   end
 
   def as_external_dump_json(extra_white_list: [], extra_from_app: [], extra_sdk_fields: [], extra_publisher_fields: [], include_sdk_history: true)

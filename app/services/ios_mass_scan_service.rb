@@ -1,4 +1,6 @@
 class IosMassScanService
+  
+  extend Utils::Workers
 
   class << self
 
@@ -15,12 +17,14 @@ class IosMassScanService
 
         batch.jobs do
           apps.each do |ios_app|
-            IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
+            delegate_perform(IosMassScanServiceWorker, ipa_snapshot_job.id, ios_app.id)
           end
         end
       else
         apps.each do |ios_app|
-          IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
+          p '--------------------------------------------------------------'
+          p "will try to scan #{ios_app.id}"
+          delegate_perform(IosMassScanServiceWorker, ipa_snapshot_job.id, ios_app.id)
         end
       end
 
@@ -92,7 +96,7 @@ class IosMassScanService
 
       batch.jobs do
         IpaSnapshot.where(ipa_snapshot_job: IpaSnapshotJob.where(job_type: 2)).where(success: true).where(scan_status: nil).pluck(:id).each do |id|
-          IosMassClassificationServiceWorker.perform_async(id)
+          delegate_perform(IosMassClassificationServiceWorker, id)
         end
       end
     end
