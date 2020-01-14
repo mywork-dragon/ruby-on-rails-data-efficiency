@@ -11,7 +11,7 @@ task :rename_sdks => [:environment] do
             if row['Destroy?'] == 'TRUE'
                 begin
                     sdk = AndroidSdk.find row['ID']
-                    sdk.destroy
+                    sdk.destroy!
                     hose['action'] = 'destroyed'
                 rescue Exception => e
                     hose['error'] = e
@@ -19,7 +19,7 @@ task :rename_sdks => [:environment] do
             else
                 begin
                     sdk = AndroidSdk.find row['ID']
-                    sdk.update(name: row['Name'], summary: row['Summary'], website: row['Website'])
+                    sdk.update!(name: row['Name'], summary: row['Summary'], website: row['Website'])
                     tag = Tag.find_by_name(row['Category'])
                     if tag.present? && sdk.tags.empty?
                         sdk.tags << tag
