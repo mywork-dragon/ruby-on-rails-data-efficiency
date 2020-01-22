@@ -2,7 +2,7 @@ class GooglePlaySnapshotLiveWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
 
-  sidekiq_options queue: :live, retry: false
+  sidekiq_options queue: :google_play_snapshot_live_worker, retry: false
 
   def perform(android_app_snapshot_job_id, android_app_id, create_developer = false)
     take_snapshot(

@@ -8,7 +8,6 @@ module GooglePlaySnapshotModule
   class FailedLookup < RuntimeError; end
   include Utils::Workers
 
-
   def take_snapshot(android_app_snapshot_job_id, android_app_id, options={})
     android_app = AndroidApp.find(android_app_id)
     snapshot_attributes = fetch_attributes_for(android_app, options)
