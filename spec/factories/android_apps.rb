@@ -9,5 +9,8 @@ FactoryGirl.define do
     trait :recently_updated do
       newest_android_app_snapshot { build(:android_app_snapshot, released: 2.days.ago) }
     end
+    trait :without_newest_android_app_snapshot do
+      newest_android_app_snapshot { nil }
+    end
   end
 end

@@ -4,13 +4,14 @@ class GooglePlaySnapshotLiveWorker
 
   sidekiq_options queue: :live, retry: false
 
-  def proxy_type
-    :general
-  end
-
-  # no-op
-  def scrape_new_similar_apps(similar_apps)
-    nil
+  def perform(android_app_snapshot_job_id, android_app_id, create_developer = false)
+    take_snapshot(
+      android_app_snapshot_job_id,
+      android_app_id,
+      create_developer: create_developer,
+      scrape_new_similar_apps: false,
+      proxy_type: :general
+    )
   end
 
   class << self

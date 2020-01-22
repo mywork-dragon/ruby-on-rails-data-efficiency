@@ -6,16 +6,13 @@ class GooglePlaySnapshotMassWorker
 
   sidekiq_options queue: :google_play_snapshot_mass_worker, retry: false
 
-  def proxy_type
-    :temporary_proxies
-  end
-
-  def scrape_new_similar_apps(similar_apps)
-      similar_apps.each do |android_app|
-        GooglePlaySnapshotMassWorker.perform_async(
-          @android_app_snapshot_job_id,
-          android_app.id
-        )
-      end
+  def perform(android_app_snapshot_job_id, android_app_id, create_developer = false)
+    take_snapshot(
+      android_app_snapshot_job_id,
+      android_app_id,
+      create_developer: create_developer,
+      scrape_new_similar_apps: true,
+      proxy_type: :temporary_proxies
+    )
   end
 end

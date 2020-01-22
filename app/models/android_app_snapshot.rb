@@ -45,6 +45,25 @@ class AndroidAppSnapshot < ActiveRecord::Base
 
   enum status: [:failure, :success]
 
+  SNAPSHOT_ATTRIBUTES = %i[
+    name
+    description
+    price
+    seller
+    seller_url
+    released
+    size
+    top_dev
+    required_android_version
+    version
+    content_rating
+    ratings_all_stars
+    ratings_all_count
+    in_app_purchases
+    icon_url_300x300
+    developer_google_play_identifier
+  ].freeze
+
   def api_json(_options = {})
     {
       name: name,
