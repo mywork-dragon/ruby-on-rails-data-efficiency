@@ -5,6 +5,25 @@ module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
   class FailedLookup; end
 
+  SNAPSHOT_ATTRIBUTES = %i[
+    name
+    description
+    price
+    seller
+    seller_url
+    released
+    size
+    top_dev
+    required_android_version
+    version
+    content_rating
+    ratings_all_stars
+    ratings_all_count
+    in_app_purchases
+    icon_url_300x300
+    developer_google_play_identifier
+  ].freeze
+
   def perform(android_app_snapshot_job_id, android_app_id, create_developer = false)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
@@ -59,14 +78,14 @@ module GooglePlaySnapshotModule
   end
 
   def load_attributes_into_snapshot
-    single_column_attributes.each do |sca|
-      value = @attributes[sca.to_sym]
+    SNAPSHOT_ATTRIBUTES.each do |sca|
+      value = @attributes[sca]
 
-      if value.present? && AndroidAppSnapshot.columns_hash[sca].type == :string  # if it's a string and is too big
+      if value.present? && AndroidAppSnapshot.columns_hash[sca.to_s].type == :string  # if it's a string and is too big
         value = DbSanitizer.truncate_string(value)
       end
 
-      @snapshot.send("#{sca}=", value)
+      @snapshot.assign_attributes(sca => value)
     end
 
     if iapr = @attributes[:in_app_purchases_range]
@@ -77,7 +96,7 @@ module GooglePlaySnapshotModule
     if downloads = @attributes[:downloads]
       @snapshot.downloads_min = downloads.min
       # handle when google play specifies lower bound like "100+"
-      @snapshot.downloads_max = downloads.max if downloads.max != downloads.min else nil
+      @snapshot.downloads_max = downloads.max != downloads.min ? downloads.max : nil
     end
 
     if seller_email = @attributes[:seller_email]
@@ -186,24 +205,4 @@ module GooglePlaySnapshotModule
                     end
   end
 
-  def single_column_attributes
-    %w(
-      name
-      description
-      price
-      seller
-      seller_url
-      released
-      size
-      top_dev
-      required_android_version
-      version
-      content_rating
-      ratings_all_stars
-      ratings_all_count
-      in_app_purchases
-      icon_url_300x300
-      developer_google_play_identifier
-    )
-  end
 end
