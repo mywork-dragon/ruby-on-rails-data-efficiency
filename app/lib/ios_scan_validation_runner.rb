@@ -219,7 +219,7 @@ class IosScanValidationRunner
     Rails.logger.info "lookup_app took #{duration}s"
     
     unless @options[:enable_international]
-      stores = stores.select { |store| store.country_code == 'US' } # us only
+      stores = stores.where(country_code: 'US') # us only
     end
     
     qry = ->(purpose) { IosDevice.where.not(:disabled => true).where(:purpose => IosDevice.purposes[purpose]).map(&:apple_account).uniq.compact  }
