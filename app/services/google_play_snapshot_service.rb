@@ -1,5 +1,7 @@
 class GooglePlaySnapshotService
   class InvalidDom < RuntimeError; end
+  
+  extend Utils::Workers
 
   class << self
 
@@ -32,7 +34,7 @@ class GooglePlaySnapshotService
         )
 
         new_app_rows.map(&:id).compact.each do |app_id|
-          GooglePlaySnapshotMassWorker.perform_async(j.id, app_id)
+          delegate_perform(GooglePlaySnapshotMassWorker, j.id, app_id)
         end
       end
     end
@@ -50,7 +52,7 @@ class GooglePlaySnapshotService
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
       AndroidApp.where(query).pluck(:id).each do |app_id|
-        GooglePlaySnapshotMassWorker.perform_async(j.id, app_id)
+        delegate_perform(GooglePlaySnapshotMassWorker, j.id, app_id)
       end
     end
 

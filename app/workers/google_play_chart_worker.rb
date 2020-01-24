@@ -18,13 +18,18 @@ class GooglePlayChartWorker
 
   def load_top_free
     rankings = latest_rankings
-
-    return Slackiq.message('No new Google Play top free scrape available', webhook_name: :main) if already_processed?(rankings)
+    
+    if already_processed?(rankings)
+      msg = 'No new Google Play top free scrape available'
+      puts msg
+      return Slackiq.message(msg, webhook_name: :main) 
+    end
 
     validate!(rankings)
     new_app_ids = extract_new_apps(rankings)
 
     if new_app_ids.present?
+      puts new_app_ids
       scrape_app_metadata(new_app_ids)
       scrape_sdks(new_app_ids)
     end
