@@ -1,6 +1,7 @@
 class GooglePlaySnapshotLiveWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
+  extend Utils::Workers
 
   sidekiq_options queue: :google_play_snapshot_live_worker, retry: false
 
@@ -18,7 +19,7 @@ class GooglePlaySnapshotLiveWorker
 
     def live_scrape_apps(android_app_ids)
       android_app_ids.each do |id|
-        GooglePlaySnapshotLiveWorker.perform_async(nil, id)
+        delegate_perform(GooglePlaySnapshotLiveWorker, nil, id)
       end
     end
 
