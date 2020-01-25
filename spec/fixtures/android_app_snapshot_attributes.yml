@@ -1,0 +1,25 @@
+name: A nice Android App
+description: This is used to simulate a snaphot attributes fetch
+price: 0.0
+seller:  Fun Easy Learn
+seller_url: http://bravolol.com/
+seller_email: tio@bravo.com
+category_name: Android Wear
+category_id: ANDROID_WEAR
+released: 2015-02-04
+size: 3565158
+top_dev: 0 # 0 or 1
+in_app_purchases: 1 # 0 or 1
+in_app_purchases_range:
+required_android_version: 2.3 and up
+version: 1.2.3
+downloads: !ruby/range 500..1000
+content_rating: Everyone
+ratings_all_stars: 3.94
+ratings_all_count: 549
+similar_apps:
+  - com.wFitnessTrainer
+  - it.juanpalmy.ceraunavolta
+screenshot_urls:
+icon_url_300x300: //lh4.ggpht.com/SoulCgj9VmSjS8Lpt2REVxXGWk1WTT6U5hPvT5mT2dzQuedbpBsOnaPpXiV-Vhp3Dbo=w300
+developer_google_play_identifier: AlmaTimeDev

@@ -836,13 +836,26 @@ class AndroidApp < ActiveRecord::Base
       # }
       #
 
-      attributes_to_pluck = snapshot_attributes.map { |a| "android_app_snapshots.#{a}" } + category_attributes.map { |a| "android_app_categories.#{a}" }
-      snaps_and_categories = AndroidAppSnapshot.where(:id => apps.map(&:newest_android_app_snapshot_id)).joins(:android_app_categories).pluck(*attributes_to_pluck)
-      snapshots_history_attributes = AndroidAppSnapshot.where(:android_app_id => ids).pluck(*historical_attributes)
+      attributes_to_pluck = snapshot_attributes.map { |a| "android_app_snapshots.#{a}" }
+      attributes_to_pluck.push *category_attributes.map { |a| "android_app_categories.#{a}" }
+
+      newest_app_snapshots_ids = apps.map(&:newest_android_app_snapshot_id)
+
+      # Brings only latest snapshots of the apps with their categories
+      snaps_and_categories = AndroidAppSnapshot
+                              .where(:id => newest_app_snapshots_ids)
+                              .joins(:android_app_categories)
+                              .pluck(*attributes_to_pluck)
+
+      # Bring all snapshots of the apps
+      snapshots_history_attributes = AndroidAppSnapshot
+                                      .where(:android_app_id => ids)
+                                      .select(*historical_attributes)
 
       snapshots_history_attributes_map = {}
       snapshots_history_attributes.each do |snapshot|
-        app_id = snapshot[historical_attributes.index("android_app_id")]
+        app_id = snapshot.android_app_id
+
         if snapshots_history_attributes_map[app_id]
           snapshots_history_attributes_map[app_id] << snapshot
         else
@@ -856,7 +869,11 @@ class AndroidApp < ActiveRecord::Base
       #   developer_id => "developer_name"
       # }
 
-      android_developers = AndroidDeveloper.where(:id => apps.map(&:android_developer_id)).pluck(:id, :name)
+      app_developers_ids = apps.map(&:android_developer_id)
+      android_developers = AndroidDeveloper
+                            .where(:id => app_developers_ids)
+                            .pluck(:id, :name)
+
       android_developers = Hash[*android_developers.flatten] # converts tuples in to {:id => :name} dict
 
 
@@ -872,18 +889,23 @@ class AndroidApp < ActiveRecord::Base
       #   ]
       # }
 
-      developer_id_to_website_id = AndroidDevelopersWebsite.where(:android_developer_id => android_developers.keys).pluck(:android_developer_id, :website_id)
+      developer_id_to_website_id = AndroidDevelopersWebsite
+                                    .where(:android_developer_id => android_developers.keys)
+                                    .pluck(:android_developer_id, :website_id)
 
+
+      # will map to smthg like: { 52262 => [ 1538908, 1823294, 2642867, 3562461, 3572781], 1003940 => [ 5296715 ] }
       developer_id_to_website_id_map = {}
       developer_id_to_website_id.each do |dw|
-        if developer_id_to_website_id_map[dw[0]]
-          developer_id_to_website_id_map[dw[0]] << dw[1]
+        # dw => [52262, 1538908]
+        if developer_id_to_website_id_map[dw.first]
+          developer_id_to_website_id_map[dw.first] << dw.last
         else
-          developer_id_to_website_id_map[dw[0]] = [ dw[1] ]
+          developer_id_to_website_id_map[dw.first] = [ dw.last ]
         end
       end
 
-      website_ids = developer_id_to_website_id.map{ |a| a[1] }
+      website_ids = developer_id_to_website_id.map{ |a| a.last }
       website_id_to_domain_datum_id = WebsitesDomainDatum.where(:website_id => website_ids).pluck(:website_id, :domain_datum_id)
       website_id_to_domain_datum_id = Hash[*website_id_to_domain_datum_id.flatten] # again, convert into map. okay cause a website has a single domain datum
 
