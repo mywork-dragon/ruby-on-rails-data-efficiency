@@ -733,7 +733,7 @@ class ApiController < ApplicationController
 
     self.response_body = Enumerator.new do |y|
       y << header.to_csv
-      get_contacts_to_export(domains, quality) do |row| 
+      get_contacts_to_export(domains, quality) do |row|
         y << row.to_csv
       end
     end
@@ -772,39 +772,6 @@ class ApiController < ApplicationController
       apps << app_hash
 
     end
-
-    # ---------------- ANDROID ----------------
-=begin
-    header = ['MightySignal App ID', 'Android App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Total Ratings', 'Min Downloads', 'Max Downloads']
-
-    results = AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').where(mobile_priority: [0]).where(user_base: [0, 1]).joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', ["Travel & Local", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photography"]).group('android_apps.id').order('android_app_snapshots.name ASC').to_a
-
-    results_json = []
-    results.each do |app|
-      # li "CREATING HASH FOR #{app.id}"
-      company = app.get_company
-      newest_snapshot = app.newest_android_app_snapshot
-
-      # Android
-      app_hash = [
-          app.id,
-          app.app_identifier,
-          newest_snapshot.present? ? newest_snapshot.name : nil,
-          newest_snapshot.present? ? newest_snapshot.seller : nil,
-          company.present? ? company.fortune_1000_rank : nil,
-          app.mobile_priority,
-          app.android_fb_ad_appearances.present? ? 'Yes' : 'No',
-          app.user_base,
-          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(', ') : nil,
-          newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil,
-          newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
-          newest_snapshot.present? ? newest_snapshot.downloads_max : nil
-      ]
-
-      apps << app_hash
-
-    end
-=end
 
     list_csv = CSV.generate do |csv|
       csv << header
