@@ -25,7 +25,6 @@ class SdkHotStoreTest < ::HotStoreSchemaTestBase
   test 'writes sdks with correct schema and values' do
     @hot_store.write("ios", @sdk_1.id)
     stored_attributes = @hot_store.read("ios", @sdk_1.id)
-    ap stored_attributes
     validate(sdk_schema, stored_attributes)
 
     assert_equal @redis.sismember("sdk_keys", "sdk:ios:#{@sdk_1.id}"), "1"

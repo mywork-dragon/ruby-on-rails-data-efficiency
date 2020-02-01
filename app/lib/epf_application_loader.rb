@@ -53,7 +53,7 @@ class EpfApplicationLoader
               end
 
       next if entry.nil? || entry['application_id'].to_i == 0
-      
+
       if existing_identifiers.include?(entry['application_id'].to_i)
         existing_apps_index += 1
         existing_app_identifiers << entry['application_id'].to_i
@@ -86,8 +86,6 @@ class EpfApplicationLoader
       trigger_existing_app_scrapes(existing_app_identifiers) if @options[:trigger_existing_app_scrapes]
     end
 
-    puts "Added #{new_apps_index} apps"
-    puts "Found #{existing_apps_index} existing apps"
     {
       new_apps_count: new_apps_index,
       existing_apps_count: existing_apps_index

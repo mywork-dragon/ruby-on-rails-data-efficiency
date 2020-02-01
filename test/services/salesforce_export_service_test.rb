@@ -3,27 +3,27 @@ require 'mocha/mini_test'
 
 class SalesforceExportServiceTest < ActiveSupport::TestCase
 
-  def setup 
+  def setup
     salesforce_token = 'wadawdjkawdjkawjd'
     salesforce_refresh_token = 'awdawdowadjiow'
 
     @account = Account.create!(
-      name: 'MightySignal', 
-      salesforce_token: salesforce_token, 
+      name: 'MightySignal',
+      salesforce_token: salesforce_token,
       salesforce_refresh_token: salesforce_refresh_token,
       salesforce_uid: '0050a00000ForTZAAZ',
       salesforce_settings: {"is_sandbox"=>true,'tier'=>'pro',},
       salesforce_instance_url: 'https://cs17.salesforce.com',
-    ) 
+    )
 
     @account2 = Account.create!(
-      name: 'Adjust', 
-      salesforce_token: salesforce_token, 
+      name: 'Adjust',
+      salesforce_token: salesforce_token,
       salesforce_refresh_token: salesforce_refresh_token,
       salesforce_uid: '0050a00000ForTZAAZ',
       salesforce_settings: {"is_sandbox"=>true, 'tier'=>'pro', 'custom_website_fields' => {'Lead' => ['Email_Domain__c']}},
       salesforce_instance_url: 'https://cs17.salesforce.com',
-    ) 
+    )
 
     @user = User.create!(account_id: @account.id, email: 'matt@mightysignal.com', password: '12345')
     @user2 = User.create!(account_id: @account2.id, email: 'bob@mightysignal.com', password: '12345')
@@ -39,7 +39,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
 
     @ios_app = IosApp.create!(app_identifier: 1, ios_developer_id: @ios_developer.id)
     @android_app = AndroidApp.create!(app_identifier: 1, android_developer_id: @android_developer.id)
-   
+
   end
 
   def test_create_app_fields
@@ -118,7 +118,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
   end
 
   def test_create_main_fields
-    fields = { 
+    fields = {
       "Publisher Name" => {length: 255, type: 'Text', label: "MightySignal Publisher Name"},
       "Website" => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
       "MightySignal iOS Publisher ID" => {type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
@@ -144,7 +144,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
 
   def test_that_domain_mapping_updates_salesforce
     DomainLinker.any_instance.stub(:domain_to_publisher) { [@ios_developer, @android_developer] }
-    
+
     mock = Minitest::Mock.new
     mock.expect(:Id, '12345')
     mock.expect(:Id, '123456789')
@@ -179,15 +179,15 @@ end
   def test_that_custom_website_field_works
     mock = Minitest::Mock.new
     mock2 = Minitest::Mock.new
-    
+
     mock.expect(:Id, '12345')
     mock2.expect(:Id, '123456789')
-    
+
     mock.expect(:Website, 'https://3comma.studio')
-    
+
     mock2.expect(:[], 'https://test2.23', ['Email_Domain__c'])
     mock2.expect(:[], 'https://3comma2.studio', ['Website'])
-    
+
     mock.expect(:MightySignal_Android_Publisher_ID__c, nil)
     mock.expect(:MightySignal_iOS_Publisher_ID__c, nil)
 
@@ -196,7 +196,7 @@ end
 
     @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from Account where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and Website != null and CreatedDate > TODAY").returns([mock])
     @sf2.client.expects(:query).with("select Id, Website, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c, Email_Domain__c from Lead where (MightySignal_iOS_Publisher_ID__c = null or MightySignal_Android_Publisher_ID__c = null) and (Website != null or Email_Domain__c != null) and IsConverted = false and CreatedDate > TODAY").returns([mock2])
-    
+
     UrlHelper.expects(:url_with_domain_only).with('https://3comma.studio')
     UrlHelper.expects(:url_with_domain_only).with('https://test2.23')
 
@@ -207,22 +207,22 @@ end
 
   def test_that_sync_all_objects_queues_jobs
     mock1 = Minitest::Mock.new
-    
+
     mock1.expect(:Id, '12345')
     mock1.expect(:Id, '123456789')
-   
+
     # Account
     mock1.expect(:MightySignal_Android_Publisher_ID__c, @android_developer.id)
     mock1.expect(:MightySignal_iOS_Publisher_ID__c, @ios_developer2.id)
     mock1.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
-    # Lead 
+    # Lead
     mock1.expect(:MightySignal_Android_Publisher_ID__c, @android_developer2.id)
     mock1.expect(:MightySignal_iOS_Publisher_ID__c, @ios_developer.id)
     mock1.expect(:MightySignal_Last_Synced__c, '2018-04-13')
 
     mock2 = Minitest::Mock.new
-    
+
     mock2.expect(:Id, '3453')
     mock2.expect(:Id, '57645645')
 
@@ -239,14 +239,14 @@ end
 
     @sf.client.stub(:query, [mock1, mock2]) do
       # Account
-      SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer.id, '12345', @user.id, 'Account') 
-      SalesforceWorker.expects(:perform_async).with(:export_ios_publisher, @ios_developer2.id, '12345', @user.id, 'Account') 
+      SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer.id, '12345', @user.id, 'Account')
+      SalesforceWorker.expects(:perform_async).with(:export_ios_publisher, @ios_developer2.id, '12345', @user.id, 'Account')
       SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer2.id, '3453', @user.id, 'Account')
 
       # Lead
       SalesforceWorker.expects(:perform_async).with(:export_ios_publisher, @ios_developer.id, '123456789', @user.id, 'Lead')
       SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer2.id, '123456789', @user.id, 'Lead')
-      SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer.id, '57645645', @user.id, 'Lead') 
+      SalesforceWorker.expects(:perform_async).with(:export_android_publisher, @android_developer.id, '57645645', @user.id, 'Lead')
 
       account_publisher_array = [
         {publisher_id: @ios_developer2.id, platform: 'ios', export_id: '12345'},
@@ -263,9 +263,9 @@ end
       SalesforceWorker.expects(:perform_async).with(:export_publishers_apps, account_publisher_array, @user.id, 'Account')
       SalesforceWorker.expects(:perform_async).with(:export_publishers_apps, lead_publisher_array, @user.id, 'Lead')
 
-      @sf.sync_all_objects     
+      @sf.sync_all_objects
     end
-    
+
   end
 
   def test_that_default_mapping_maps_ios_fields
@@ -297,9 +297,9 @@ end
 
   def test_that_account_search_returns_correct_results
     mock = Minitest::Mock.new
-    
+
     mock.expect(:Id, '12345')
-    
+
     mock.expect(:Name, 'MightySignal')
 
     @sf.client.stubs(:query).returns([mock])
@@ -312,7 +312,7 @@ end
     @sf = SalesforceExportService.sf_for('MightySignal', 'Lead')
 
     mock = Minitest::Mock.new
-    
+
     mock.expect(:Id, '12345')
     mock.expect(:Company, '3 Comma Studio')
     mock.expect(:Title, 'Founder')
@@ -322,7 +322,7 @@ end
     assert_equal @sf.search('google'), [{
                                          name: "Founder\n3 Comma Studio",
                                          title: "Founder",
-                                         id: '12345', 
+                                         id: '12345',
      }]
 
   end
@@ -338,7 +338,7 @@ end
 
     new_object = {
                   "MightySignal_Last_Synced__c" => Date.today,
-                  "MightySignal_iOS_Publisher_ID__c" => @ios_developer.id, 
+                  "MightySignal_iOS_Publisher_ID__c" => @ios_developer.id,
                   "MightySignal_iOS_Link__c" => "https://mightysignal.com/app/app#/publisher/ios/#{@ios_developer.id}?utm_source=salesforce",
                   "MightySignal_iOS_SDK_Summary__c" => "123",
                   "MightySignal_iOS_Ratings_Count__c" => 0,
@@ -348,8 +348,6 @@ end
 
     SalesforceWorker.expects(:perform_async)
     @sf.client.expects(:create!).with('Account', new_object)
-
-    puts @sf.default_mapping(app: @ios_app)
 
     fields = { 
       "Publisher Name" => {data: '123', length: 255, type: 'Text', label: "MightySignal Publisher Name"},
@@ -377,7 +375,7 @@ end
 
   def test_that_blacklisting_sdk_tags_works
     @sf.instance_variable_set(:@upsert_records, {MightySignal_App__c: [{Platform__c: 'ios', MightySignal_App_ID__c: @ios_app.id}]}.with_indifferent_access)
-      
+
     Account.any_instance.stub(:blacklisted_sdk_tags) {
       [1]
     }
@@ -391,17 +389,17 @@ end
     @sf.expects(:import_sdk).with(
       platform: 'ios',
       sdk: {
-        "id"=>92, 
-        "name"=>"Amplitude-iOS", 
-        "website"=>"https://amplitude.com", 
-        "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com", 
-        "first_seen_date"=>"2015-12-01T18:14:43.000-08:00", 
+        "id"=>92,
+        "name"=>"Amplitude-iOS",
+        "website"=>"https://amplitude.com",
+        "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com",
+        "first_seen_date"=>"2015-12-01T18:14:43.000-08:00",
         "last_seen_date"=>"2018-01-25T13:04:23.000-08:00"
       },
       category: {
-        "name"=>"Analytics", 
+        "name"=>"Analytics",
         "id"=>1
-      } 
+      }
     ).never
     @sf.expects(:import_sdk).with(
       platform: 'ios',
@@ -414,28 +412,28 @@ end
         "last_seen_date"=>"2017-02-02T15:05:56.000-08:00",
       },
       category: {
-        "name"=>"Infrastructure", 
+        "name"=>"Infrastructure",
         "id"=>5
-      } 
+      }
     )
 
     IosApp.any_instance.stub(:tagged_sdk_response) {
       {
         "installed_sdks" => [{
           "name"=>"Analytics",
-          "id"=>1, 
+          "id"=>1,
           "sdks"=>[{
-            "id"=>92, 
-            "name"=>"Amplitude-iOS", 
-            "website"=>"https://amplitude.com", 
-            "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com", 
-            "first_seen_date"=>"2015-12-01T18:14:43.000-08:00", 
+            "id"=>92,
+            "name"=>"Amplitude-iOS",
+            "website"=>"https://amplitude.com",
+            "favicon"=>"https://www.google.com/s2/favicons?domain=amplitude.com",
+            "first_seen_date"=>"2015-12-01T18:14:43.000-08:00",
             "last_seen_date"=>"2018-01-25T13:04:23.000-08:00"
           }]
         }],
         "uninstalled_sdks" => [{
-          "name"=>"Infrastructure", 
-          "id"=>5, 
+          "name"=>"Infrastructure",
+          "id"=>5,
           "sdks"=>[{
             "id"=>1648,
             "name"=>"KVOController",
@@ -451,5 +449,5 @@ end
     @sf.run_app_imports
   end
 
-  
+
 end
