@@ -40,8 +40,10 @@ class SalesforceWorker
 
   def sync_domain_mapping(account_id, date = nil, queue = :salesforce_syncer)
     account = Account.find(account_id)
+    puts "Will use user: #{account.users.first.id}"
     sf = SalesforceExportService.new(user: account.users.first)
-
+    puts ''
+    puts "sf.under_api_limit?: #{sf.under_api_limit?}"
     if sf.under_api_limit?(uses_bulk_api: true)
       sf.sync_domain_mapping(date: date, queue: queue)
     else
@@ -52,6 +54,8 @@ class SalesforceWorker
   # for bulk exporting
   def export_ios_publisher(publisher_id, export_id, user_id, model_name)
     sf = SalesforceExportService.new(user: User.find(user_id), model_name: model_name)
+    puts ''
+    puts "sf.under_api_limit?: #{sf.under_api_limit?}"
 
     if sf.under_api_limit?
       dev = IosDeveloper.find(publisher_id)
@@ -112,7 +116,7 @@ class SalesforceWorker
     end
   end
 
-  private 
+  private
 
   def frequency_to_relative_time(frequency)
     mapping = {
