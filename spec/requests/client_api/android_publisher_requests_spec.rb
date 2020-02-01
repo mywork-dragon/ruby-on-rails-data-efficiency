@@ -15,12 +15,14 @@ describe "Android Publisher", :type => :request do
     allow_any_instance_of(ApplicationController).to receive(:bill_api_request).and_return(true)
   end
 
+  let!(:publisher) { FactoryGirl.create(:android_developer) }
+
   within_subdomain :api do
     it "returns the publisher contacts" do
-      FactoryGirl.create(:android_developer)
+
       expected_result = ["clearbitId", "givenName", "familyName", "fullName", "title", "email", "linkedin"]
 
-      get "/android/publisher/1/contacts", headers
+      get "/android/publisher/#{publisher.id}/contacts", headers
 
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
@@ -31,7 +33,7 @@ describe "Android Publisher", :type => :request do
 
     it "returns error developer not found" do
 
-      get "/android/publisher/5/contacts", headers
+      get "/android/publisher/#{AndroidDeveloper.last.id.to_i + 1}/contacts", headers
 
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:not_found)
