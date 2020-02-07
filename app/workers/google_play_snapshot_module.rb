@@ -43,15 +43,11 @@ module GooglePlaySnapshotModule
   end
 
   def fetch_attributes_for(app,options)
-    # APPMONSTA: Replace this for AppMonsta API call
-    GooglePlayService.attributes(
-      app.app_identifier,
-      proxy_type: options[:proxy_type]
-    )
-  rescue GooglePlayStore::NotFound
+    GooglePlayService.attributes(app.app_identifier)
+  rescue GooglePlayStore::NotFound #APPMONSTA: Deprecated
     app.update!(display_type: :taken_down)
     raise FailedLookup
-  rescue GooglePlayStore::Unavailable
+  rescue GooglePlayStore::Unavailable #APPMONSTA: Deprecated
     app.update!(display_type: :taken_down)
     raise FailedLookup
   end
