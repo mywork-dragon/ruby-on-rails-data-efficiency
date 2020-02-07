@@ -3,8 +3,6 @@ module ProxyBase
   def select_proxy(proxy_type: nil, region: nil)
     if proxy_type == :android_classification
       android_proxies(region)
-    # elsif proxy_type == :appmonsta
-      # return appmonsta_api_url
     else
       general_proxies
     end

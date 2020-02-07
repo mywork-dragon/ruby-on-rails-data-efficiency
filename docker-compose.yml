@@ -34,8 +34,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - APPMONSTA_BASE_URI=https://api.appmonsta.com/v1
-      - APPMONSTA_USER=230449922fbf0ef4416e6beec23de22279ee7011
       - RAILS_ENVIRONMENT=development
       - VARYS_DATABASE_PASSWORD=root
       - VARYS_DATABASE_USER=root
