@@ -35,13 +35,13 @@ module AppmonstaApi
     end
 
 
+
     def to_h
       FIELDS_MAP.inject({}) do | memo, (k,v) |
         memo[k] = send("mapped_#{k}".to_sym)
         memo
       end
     end
-    alias_method :to_hash, :to_h
 
 
     private
@@ -74,8 +74,13 @@ module AppmonstaApi
 
     def mapped_released
       date_text = response.send(FIELDS_MAP[:released])
-      date = Date.parse(date_text)
-      raise 'Release date is in the future' if date.future?
+      date = Date.parse(date_text.to_s) rescue nil
+
+      if date.andand.future?
+        Rails.logger.error('Date is the future')
+        return nil
+      end
+
       date
     end
 
@@ -100,6 +105,8 @@ module AppmonstaApi
       max = 10**(Math.log10(min).floor + 1)
       max = max / 2 == min ? max : max / 2
       min..max
+    rescue
+      nil
     end
 
     def mapped_similar_apps

@@ -9,14 +9,12 @@ module AppmonstaApi
 
     base_uri BASE_URI
 
-    def self.get_single_app_attributes(platform, app_identifier, country='ALL')
+    def self.get_single_app_details(platform, app_identifier, country='ALL')
       case platform.to_s
       when 'android'
-        response = get_single_app_details(:android, app_identifier, country)
-        AppmonstaAndroidSingleResponse.new(response.parsed_response)
+        request_single_app_details(:android, app_identifier, country)
       when 'ios'
-        response = get_single_app_details(:itunes, app_identifier, country)
-        AppmonstaIosSingleResponse.new(response.parsed_response)
+        request_single_app_details(:itunes, app_identifier, country)
       else
         raise StandardError.new("Platform not provided or wrong")
       end
@@ -25,9 +23,11 @@ module AppmonstaApi
 
     private
 
-    def self.get_single_app_details(platform, app_identifier, country)
+    def self.request_single_app_details(platform, app_identifier, country)
       raise StandardError.new("Platform not allowed: #{platform}") unless %i(android itunes).include?(platform)
-      get("/stores/#{platform}/details/#{app_identifier}.json?country=#{country}", basic_auth: BASIC_AUTH)
+      resp = get("/stores/#{platform}/details/#{app_identifier}.json?country=#{country}", basic_auth: BASIC_AUTH)
+      # Returns a Hash
+      resp.parsed_response
     end
   end
 end

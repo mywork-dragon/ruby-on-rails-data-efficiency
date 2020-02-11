@@ -43,7 +43,7 @@ module GooglePlaySnapshotModule
   end
 
   def fetch_attributes_for(app,options)
-    GooglePlayService.attributes(app.app_identifier)
+    GooglePlayService.single_app_details(app.app_identifier)
   rescue GooglePlayStore::NotFound #APPMONSTA: Deprecated
     app.update!(display_type: :taken_down)
     raise FailedLookup

@@ -8,55 +8,35 @@ class GooglePlayService
     end
   end
 
-  def self.attributes(app_identifier)
-    response = AppmonstaApi::Base.get_single_app_attributes(:android, app_identifier)
-    AndroidMapper.new(response).to_h
-  end
-
-  # alias to_h
-  def get_mapped_hash
-
-
-
-    # methods.each do |method|
-    #   key = method.to_sym
-    #
-    #   next if key == :in_app_purchases_range && !ret[:in_app_purchases]
-    #
-    #   begin
-    #     attribute = send(method.to_sym)
-    #     ret[key] = attribute
-    #   rescue
-    #     ret[key] = nil
-    #   end
-    # end
-
-    # Added to prevent bad snaps from getting into DB.
-    incorrect = validate_attrs(ret)
-    if incorrect.present?
-      raise BadGoogleScrape.new(app_identifier, incorrect)
-    end
-
-    ret
+  def self.single_app_details(app_identifier)
+    response = AppmonstaApi::Base.get_single_app_details(:android, app_identifier)
+    details_hash = AppmonstaApi::AndroidMapper.new(response).to_h
+    validate_details!(app_identifier, details_hash)
+    details_hash
   end
 
   private
 
-  def validate_attrs(res)
+  def self.validate_details!(app_identifier, res)
     failed_attributes = []
     failed_attributes << :name unless res[:name].present?
-    failed_attributes << :released if res[:released].nil?
+    failed_attributes << :released if res[:released].blank?
     failed_attributes << :category_id unless res[:category_id].present?
     failed_attributes << :developer_google_play_identifier unless res[:developer_google_play_identifier].present?
-    failed_attributes << :description if res[:description].nil?
+    failed_attributes << :description if res[:description].blank?
     failed_attributes << :seller unless res[:seller].present?
-    if d = res[:downloads]
-      failed_attributes << :downloads if d.min.nil? || d.max.nil?
+
+    d = res[:downloads]
+    unless d &&
+      d.is_a?(Range) &&
+      d.min.present? &&  #nil if min == max
+      d.max.present?
+      failed_attributes << :downloads
     end
-    if res[:similar_apps].present?
-      failed_attributes << :similar_apps if res[:similar_apps].select { |x| /[^\w.]/.match(x) }.present?
+
+    if failed_attributes.present?
+      raise BadGoogleScrape.new(app_identifier, failed_attributes)
     end
-    failed_attributes
   end
 
 end

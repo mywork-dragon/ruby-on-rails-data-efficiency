@@ -54,7 +54,7 @@ describe GooglePlaySnapshotModule do
 
       context 'proxy_type' do
         before do
-          allow(GooglePlayService).to receive(:attributes) { snapshot_attributes }
+          allow(GooglePlayService).to receive(:single_app_details) { snapshot_attributes }
           allow(instance).to receive(:fetch_attributes_for).and_call_original
         end
 

@@ -21,7 +21,7 @@ describe FixCategoriesTask do
       let(:android_app) { FactoryGirl.create(:android_app, newest_android_app_snapshot: newest_android_app_snapshot) }
 
       before :each do
-        allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
+        allow(GooglePlayService).to receive(:single_app_details).and_return(android_category_data)
         allow(firehose).to receive(:send).and_return(true)
         subject.android_perform(android_app)
       end
@@ -35,7 +35,7 @@ describe FixCategoriesTask do
       let(:android_app) { FactoryGirl.create(:android_app, newest_android_app_snapshot: nil) }
 
       before :each do
-        allow(GooglePlayService).to receive(:attributes).and_return(android_category_data)
+        allow(GooglePlayService).to receive(:single_app_details).and_return(android_category_data)
 
         subject.android_perform(android_app)
       end
