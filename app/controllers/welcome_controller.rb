@@ -111,25 +111,29 @@ class WelcomeController < ApplicationController
     app_identifier = params[:app_identifier]
     @app = "#{@platform.capitalize}App".constantize.find_by!(app_identifier: app_identifier)
     @json_app = apps_hot_store.read(@platform, @app.id)
-    @json_publisher = publisher_hot_store.read(@platform, @app.publisher.id)
-    @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
-    most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
-    @last_update_date = latest_release_of(most_recent_app).to_date
-    @latest_update = (Date.current - @last_update_date).to_i
-    @sdks = @json_app['sdk_activity']
-    @sdk_installed = @sdks.count {|sdk| sdk['installed']}
-    @sdk_uninstalled = @sdks.count {|sdk| !sdk['installed']}
-    @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-      next memo unless sdk['installed'] && sdk['categories']
-      sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
-      memo
+    @json_publisher = publisher_hot_store.read(@platform, @app&.publisher&.id)
+    if @app.present? && @json_app.present? && @json_publisher.present?
+      @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
+      most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
+      @last_update_date = latest_release_of(most_recent_app).to_date
+      @latest_update = (Date.current - @last_update_date).to_i
+      @sdks = @json_app['sdk_activity']
+      @sdk_installed = @sdks.count {|sdk| sdk['installed']}
+      @sdk_uninstalled = @sdks.count {|sdk| !sdk['installed']}
+      @installed_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+        next memo unless sdk['installed'] && sdk['categories']
+        sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
+        memo
+      end
+      @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
+        next memo unless !sdk['installed'] && sdk['categories']
+        sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
+        memo
+      end
+      @categories = @json_app['categories'].andand.map {|cat| cat['name']}
+    else
+      redirect_to root_path, notice: "Sorry, we couldn't find that app."
     end
-    @uninstalled_sdk_categories = @sdks.reduce({}) do |memo, sdk|
-      next memo unless !sdk['installed'] && sdk['categories']
-      sdk['categories'].each {|cat| memo[cat] ? memo[cat] += 1 : memo[cat] = 1}
-      memo
-    end
-    @categories = @json_app['categories'].andand.map {|cat| cat['name']}
   end
   
   def sdk_page
