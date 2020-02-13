@@ -65,6 +65,25 @@ describe GooglePlaySnapshotModule do
           subject
         end
       end
+
+      context 'ClientErrors' do
+        describe 'NotFound' do
+          before do
+            allow(instance).to receive(:fetch_attributes_for).and_call_original
+            allow(GooglePlayService).to receive(:single_app_details).and_raise(RequestErrors::NotFound)
+          end
+          it 'takes down the app' do
+            expect(android_app.reload.display_type).not_to eq(:taken_down)
+            subject
+            expect(android_app.reload.display_type).to eq('taken_down')
+          end
+
+          it 'notifies Bugsnag' do
+            expect(Bugsnag).to receive(:notify).with(an_instance_of(GooglePlaySnapshotModule::FailedLookup))
+            subject
+          end
+        end
+      end
     end
 
     context 'Mass scan' do

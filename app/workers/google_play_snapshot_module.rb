@@ -30,7 +30,8 @@ module GooglePlaySnapshotModule
       scrape_new_similar_apps(android_app_snapshot_job_id, similar_apps, options)
     end
     true
-  rescue FailedLookup
+  rescue FailedLookup => e
+    Bugsnag.notify(e)
     nil
   end
 
@@ -44,12 +45,9 @@ module GooglePlaySnapshotModule
 
   def fetch_attributes_for(app,options)
     GooglePlayService.single_app_details(app.app_identifier)
-  rescue GooglePlayStore::NotFound #APPMONSTA: Deprecated
+  rescue RequestErrors::NotFound #APPMONSTA: Deprecated
     app.update!(display_type: :taken_down)
-    raise FailedLookup
-  rescue GooglePlayStore::Unavailable #APPMONSTA: Deprecated
-    app.update!(display_type: :taken_down)
-    raise FailedLookup
+    raise FailedLookup, "App Not Found: #{app.id} | #{app.app_identifier}"
   end
 
   def build_new_snapshot(attributes, app, job_id)
