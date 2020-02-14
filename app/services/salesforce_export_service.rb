@@ -291,7 +291,7 @@ class SalesforceExportService
     api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-api-limit')
     bulk_api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-bulk-api-limit')
 
-    threshold = 0.4
+    threshold = 0.1
     current_limits = nil
 
     under_api_limit = if api_throttler.status[:current] > 0 #cached limit check
