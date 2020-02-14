@@ -27,7 +27,6 @@ class AppHotStoreTest < ::HotStoreSchemaTestBase
       version: "osman1.0",
       released: @date2,
       android_app_id: @app.id,
-      google_plus_likes: 1123,
       top_dev: true,
       in_app_purchases: false,
       required_android_version: "osman2.0",
@@ -58,7 +57,6 @@ class AppHotStoreTest < ::HotStoreSchemaTestBase
       version: "osman0.1",
       released: @date2,
       android_app_id: @app.id,
-      google_plus_likes: 1123,
       top_dev: true,
       in_app_purchases: false,
       required_android_version: "osman2.0",
@@ -183,7 +181,7 @@ class AppHotStoreTest < ::HotStoreSchemaTestBase
   test 'writes android attributes with correct schema and values' do
     @hot_store.write("android", [@app.id])
     stored_attributes = @hot_store.read("android", @app.id)
-    
+
     # Manually fill in last stop dates, since test will fail if they are nil
     stored_attributes["ratings_history"][stored_attributes["ratings_history"].length - 1]["stop_date"] = ""
     stored_attributes["downloads_history"][stored_attributes["downloads_history"].length - 1]["stop_date"] = ""

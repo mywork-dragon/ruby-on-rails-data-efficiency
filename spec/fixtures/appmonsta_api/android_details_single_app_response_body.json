@@ -1,0 +1,82 @@
+{
+  "content_rating": "Everyone",
+  "app_name": "Messenger – Text and Video Chat for Free",
+  "top_developer": false,
+  "publisher_id_num": "5629993546372213086",
+  "requires_os": "Varies with device",
+  "related": {
+    "related_apps": [
+      "com.soundcloud.android",
+      "com.spotify.music",
+      "com.facebook.workchat",
+      "com.facebook.lite",
+      "com.whatsapp",
+      "com.viber.voip"
+    ],
+    "more_from_developer": [
+      "com.facebook.katana",
+      "com.facebook.mlite",
+      "com.facebook.study",
+      "com.facebook.viewpoints"
+    ]
+  },
+  "video_urls": [
+    "https://someurl.com"
+  ],
+  "file_size": "Varies with device",
+  "publisher_name": "Facebook",
+  "id": "com.facebook.orca",
+  "price_currency": "USD",
+  "genres": [
+    "Communication"
+  ],
+  "app_type": "APPLICATION",
+  "icon_url": "https://lh3.googleusercontent.com/rkBi-WHAI-dzkAIYjGBSMUToUoi6SWKoy9Fu7QybFb6KVOJweb51NNzokTtjod__MzA",
+  "content_rating_info": "",
+  "interactive_elements": "Users Interact, Shares Location, Digital Purchases",
+  "version": "Varies with device",
+  "publisher_url": "https://www.facebook.com/games/fbmessenger_android/",
+  "contains_ads": false,
+  "whats_new": "In efforts to make it easier to connect with businesses on Messenger, we are focusing on more contextual...",
+  "publisher_id": "Facebook",
+  "price": "Free",
+  "screenshot_urls": [
+    "https://lh3.googleusercontent.com/AG0QK9DwMCnhIMxBzqmCvB8T7YINdg6HzhInEoW5r72f2KaKhJ63TLwnb0GYNrOMICc",
+    "https://lh3.googleusercontent.com/f-d7nreVZFtpS7d1Fxc6n2RjYeCN1DzXsorep0iv0thslN0akBNk4ATma5FFPK1jnzaQ"
+  ],
+  "status": "updated",
+  "publisher_email": "android-support@fb.com",
+  "description": "Be together whenever with a simple way to text, video chat and rally the group...",
+  "price_value": 0,
+  "all_rating": 4.2,
+  "store_url": "https://play.google.com/store/apps/details?id=com.facebook.orca",
+  "downloads": "1,000,000,000+",
+  "publisher_address": "1 Hacker Way\nMenlo Park, CA 94025",
+  "status_unix_timestamp": 1578526140,
+  "genre": "Communication",
+  "privacy_url": "https://m.facebook.com/policy.php",
+  "editors_choice": true,
+  "genre_ids": [
+    "COMMUNICATION"
+  ],
+  "iap_price_range": "$0.99 - $399.99 per item",
+  "all_histogram": {
+    "1": 7649347,
+    "3": 4624657,
+    "2": 2246616,
+    "5": 48309851,
+    "4": 7605518
+  },
+  "release_date": "2014-01-30",
+  "all_rating_count": 70435991,
+  "bundle_id": "com.facebook.orca",
+  "permissions": [
+    "receive text messages (SMS)",
+    "change your audio settings",
+    "control Near Field Communication",
+    "read the contents of your USB storage",
+    "control vibration"
+  ],
+  "status_date": "January 8, 2020",
+  "genre_id": "COMMUNICATION"
+}
