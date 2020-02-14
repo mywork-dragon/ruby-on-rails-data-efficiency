@@ -30,8 +30,8 @@ class GooglePlayService
       d = res[:downloads]
       unless d &&
         d.is_a?(Range) &&
-        d.min.present? &&  #nil if min == max
-        d.max.present?
+        d.min.present? &&  # nil if min == max
+        d.max.present?     # same
         failed_attributes << :downloads
       end
 
