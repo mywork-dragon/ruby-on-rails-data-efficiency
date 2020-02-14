@@ -8,6 +8,8 @@ module ProxyBase
     end
   end
 
+  private
+
   def general_proxies
     { ip: ENV['MICRO_PROXY_URL'], port: ENV['MICRO_PROXY_PORT'] }
   end
