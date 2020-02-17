@@ -7,6 +7,7 @@ class SalesforceExportService
     @model_name = model_name
     @logging = logging
     @is_sandbox = @account.salesforce_sandbox?
+    @platforms = ['ios', 'android']
 
     @app_model = 'MightySignal_App__c'
     @sdk_model = 'MightySignal_SDK__c'
@@ -149,7 +150,7 @@ class SalesforceExportService
     end
   end
 
-  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
+  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: @platforms, date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
