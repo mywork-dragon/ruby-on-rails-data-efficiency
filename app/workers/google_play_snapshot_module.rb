@@ -15,7 +15,6 @@ module GooglePlaySnapshotModule
 
     snapshot = build_new_snapshot(snapshot_attributes, android_app, android_app_snapshot_job_id)
     build_snapshot_category_assoc(snapshot_attributes, snapshot)
-
     android_app.newest_android_app_snapshot = snapshot
 
     if options[:create_developer]

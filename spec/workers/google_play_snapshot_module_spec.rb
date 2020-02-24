@@ -52,6 +52,15 @@ describe GooglePlaySnapshotModule do
         ).to eq 'primary'
       end
 
+      it 'sets the right android_app_id on the snapshot' do
+        subject
+        android_app.reload
+        expect(android_app.id).not_to be_nil
+        expect(android_app.newest_android_app_snapshot).not_to be_nil
+        expect(android_app.newest_android_app_snapshot.android_app_id)
+          .to eq(android_app.id)
+      end
+
       context 'proxy_type' do
         before do
           allow(GooglePlayService).to receive(:attributes) { snapshot_attributes }
