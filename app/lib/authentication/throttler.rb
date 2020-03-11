@@ -8,7 +8,7 @@ class Throttler
   # period: duration of request window in seconds (positive integer or object with to_i method)
   def initialize(unique_id, count, period, options={})
     @unique_id = unique_id
-    @count = count
+    @count = count.to_i
     @period = period.to_i
     @options = options
   end

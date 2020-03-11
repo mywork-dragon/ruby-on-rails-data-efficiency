@@ -4,10 +4,9 @@ module AppmonstaApi
     include HTTParty
 
     BASE_URI = ENV['APPMONSTA_BASE_URI'].freeze
-    PORT = ENV['APPMONSTA_BASE_PORT'] || 80
     BASIC_AUTH = {username: ENV['APPMONSTA_USER'], password: ''} #Currently doesn't use password
 
-    base_uri "#{BASE_URI}:#{PORT}"
+    base_uri BASE_URI
 
     def self.get_single_app_details(platform, app_identifier, country='ALL')
       case platform.to_s
@@ -25,9 +24,21 @@ module AppmonstaApi
 
     def self.request_single_app_details(platform, app_identifier, country)
       raise "Platform not allowed: #{platform}" unless %i(android itunes).include?(platform)
-      resp = get("/stores/#{platform}/details/#{app_identifier}.json?country=#{country}", basic_auth: BASIC_AUTH)
+      req = -> { get("/stores/#{platform}/details/#{app_identifier}.json?country=#{country}", basic_auth: BASIC_AUTH) }
+      resp = send_request(req)
       raise_error_if_any!(resp.code)
       resp.parsed_response # Returns a Hash
+    end
+    
+    def self.send_request(req)
+      period = 1
+      allowed_requests = 10
+      throttler = Throttler.new("appmonsta_api_throttler", allowed_requests, period)
+      throttler.increment
+      req.call 
+    rescue Throttler::LimitExceeded
+      sleep(period/3)
+      retry
     end
 
     def self.raise_error_if_any!(code)

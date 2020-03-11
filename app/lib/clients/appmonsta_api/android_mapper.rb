@@ -92,7 +92,7 @@ module AppmonstaApi
       iap_s = response.send(FIELDS_MAP[:in_app_purchases])
       return unless iap_s.present?
       iap_a = iap_s.gsub('per item', '').split(' - ').map{ |x| (x.gsub('$', '').strip.to_f*100).to_i }
-      return iap_a[0]..iap_a[1]
+      return iap_a[0]..(iap_a[1] || iap_a[0]) # Just use same price if not range. "$2.99 per item"
     end
 
     def mapped_downloads
