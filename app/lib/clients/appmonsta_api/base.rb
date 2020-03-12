@@ -31,14 +31,8 @@ module AppmonstaApi
     end
 
     def self.send_request(req)
-      period = 1
-      allowed_requests = 5
-      throttler = Throttler.new("appmonsta_api_throttler", allowed_requests, period)
-      throttler.increment
+      sleep(1/5)
       req.call
-    rescue Throttler::LimitExceeded
-      sleep(period/3)
-      retry
     end
 
     def self.raise_error_if_any!(code)
