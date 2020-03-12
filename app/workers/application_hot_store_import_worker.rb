@@ -1,5 +1,7 @@
 class ApplicationHotStoreImportWorker
   include Sidekiq::Worker
+  include Utils::Workers
+  
   sidekiq_options queue: :hot_store_application_import, retry: 2
 
   def initialize
@@ -12,13 +14,13 @@ class ApplicationHotStoreImportWorker
 
   def queue_ios_apps
     IosApp.where.not(:display_type => IosApp.display_types[:not_ios]).pluck(:id).each_slice(100) do |ids|
-      ApplicationHotStoreImportWorker.perform_async("ios", ids)
+      delegate_perform(ApplicationHotStoreImportWorker, 'ios', ids)
     end
   end
 
   def queue_android_apps
     AndroidApp.pluck(:id).each_slice(1000) do |ids|
-      ApplicationHotStoreImportWorker.perform_async("android", ids)
+      delegate_perform(ApplicationHotStoreImportWorker, 'android', ids)
     end
   end
   

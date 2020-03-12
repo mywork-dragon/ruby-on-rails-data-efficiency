@@ -14,7 +14,6 @@
 #  released                         :date
 #  description                      :text(65535)
 #  android_app_id                   :integer
-#  google_plus_likes                :integer
 #  top_dev                          :boolean
 #  in_app_purchases                 :boolean
 #  required_android_version         :string(191)

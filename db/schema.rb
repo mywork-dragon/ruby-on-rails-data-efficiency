@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190830212846) do
+ActiveRecord::Schema.define(version: 20200127210535) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -197,7 +197,6 @@ ActiveRecord::Schema.define(version: 20190830212846) do
     t.date     "released"
     t.text     "description",                      limit: 65535
     t.integer  "android_app_id",                   limit: 4
-    t.integer  "google_plus_likes",                limit: 4
     t.boolean  "top_dev"
     t.boolean  "in_app_purchases"
     t.string   "required_android_version",         limit: 191

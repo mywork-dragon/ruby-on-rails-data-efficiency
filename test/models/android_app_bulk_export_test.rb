@@ -23,7 +23,6 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
       version: "osman1.0",
       released: @date2,
       android_app_id: @app.id,
-      google_plus_likes: 1123,
       top_dev: true,
       in_app_purchases: false,
       required_android_version: "osman2.0",
@@ -107,7 +106,7 @@ class AndroidAppBulkExportTest < ActiveSupport::TestCase
 
   test 'single app' do
     result = AndroidApp.bulk_export(ids: [@app.id])[@app.id]
-         
+
     assert_equal result["app_identifier"], "com.mightysignal.osman"
     assert_equal result["user_base"], "elite"
     assert_equal result["taken_down"], false
