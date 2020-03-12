@@ -484,6 +484,7 @@ class AppStoreService
     # @author Jason Lew
     # @param id The App Store identifier
     def attributes(id, country_code: 'us', lookup: true, scrape: true)
+      #APPMONSTA : Replace with AppmonstaApi
       self.new.attributes(id, country_code: country_code, lookup: lookup, scrape: scrape)
     end
 

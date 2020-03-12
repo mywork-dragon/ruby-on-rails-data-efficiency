@@ -46,7 +46,7 @@ class FixCategoriesTask
 
   def android_perform(app)
     print "processing #{app.id} "
-    attributes = GooglePlayService.attributes(app.app_identifier)
+    attributes = GooglePlayService.single_app_details(app.app_identifier)
     category = AndroidAppCategory.find_or_create_by(category_id: attributes[:category_id])
     if category.name.nil? && attributes[:category_name]
       category.update!(name: attributes[:category_name])
