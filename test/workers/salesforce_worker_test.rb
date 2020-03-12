@@ -179,11 +179,11 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     SalesforceExportService.stubs(:new).with(user: @user, model_name: 'Account').returns(@sf)
     @sf.client.stubs(:limits).returns({
       'DailyApiRequests' => {
-        'Remaining' => 400,
+        'Remaining' => 100,
         'Max' => 1100
       },
       'DailyBulkApiRequests' => {
-        'Remaining' => 400,
+        'Remaining' => 100,
         'Max' => 1100
       }
     })
@@ -294,11 +294,11 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     
      @sf.client.stubs(:limits).returns({
       'DailyApiRequests' => {
-        'Remaining' => 200,
+        'Remaining' => 100,
         'Max' => 1100
       },
       'DailyBulkApiRequests' => {
-        'Remaining' => 200,
+        'Remaining' => 100,
         'Max' => 1100
       }
     })
@@ -333,11 +333,11 @@ class SalesforceWorkerTest < ActiveSupport::TestCase
     
      @sf.client.stubs(:limits).returns({
       'DailyApiRequests' => {
-        'Remaining' => 200,
+        'Remaining' => 100,
         'Max' => 1100
       },
       'DailyBulkApiRequests' => {
-        'Remaining' => 200,
+        'Remaining' => 100,
         'Max' => 1100
       }
     })

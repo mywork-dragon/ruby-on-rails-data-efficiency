@@ -34,15 +34,15 @@ class SalesforceExportService
     )
 
     @metadata_client ||= Metaforce.new(
-                          session_id: @account.salesforce_token, 
+                          session_id: @account.salesforce_token,
                           authentication_handler: method(:update_metadata_token),
-                          metadata_server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0", 
+                          metadata_server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
                           server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
                           host: host
-                        ) 
+                        )
     if Rails.env.production?
       begin
-        @client.query('select Id from Account limit 1') 
+        @client.query('select Id from Account limit 1')
       rescue => exception
         Bugsnag.notify(exception)
       end
@@ -55,11 +55,11 @@ class SalesforceExportService
   end
 
   def install
-    @metadata_client.create(:custom_object, 
-      full_name: @app_model, 
+    @metadata_client.create(:custom_object,
+      full_name: @app_model,
       deploymentStatus: 'Deployed',
       sharingModel: 'ReadWrite',
-      label: 'MightySignal App', 
+      label: 'MightySignal App',
       pluralLabel: 'MightySignal Apps',
       nameField: {
         label: 'App Name',
@@ -71,11 +71,11 @@ class SalesforceExportService
       create_app_fields
     }.perform
 
-    @metadata_client.create(:custom_object, 
-      full_name: @sdk_model, 
+    @metadata_client.create(:custom_object,
+      full_name: @sdk_model,
       deploymentStatus: 'Deployed',
       sharingModel: 'ReadWrite',
-      label: 'MightySignal SDK', 
+      label: 'MightySignal SDK',
       pluralLabel: 'MightySignal SDKs',
       nameField: {
         label: 'SDK Name',
@@ -87,11 +87,11 @@ class SalesforceExportService
       create_sdk_fields
     }.perform
 
-    @metadata_client.create(:custom_object, 
-      full_name: @sdk_join_model, 
+    @metadata_client.create(:custom_object,
+      full_name: @sdk_join_model,
       deploymentStatus: 'Deployed',
       sharingModel: 'ReadWrite',
-      label: 'MightySignal SDKApp', 
+      label: 'MightySignal SDKApp',
       pluralLabel: 'MightySignal SDKApps',
       nameField: {
         label: 'SDKApp Name',
@@ -103,11 +103,11 @@ class SalesforceExportService
       create_sdkapp_fields
     }.perform
 
-    @metadata_client.create(:custom_object, 
-      full_name: @app_ownership_model, 
+    @metadata_client.create(:custom_object,
+      full_name: @app_ownership_model,
       deploymentStatus: 'Deployed',
       sharingModel: 'ReadWrite',
-      label: 'MightySignal AppOwnership', 
+      label: 'MightySignal AppOwnership',
       pluralLabel: 'MightySignal AppOwnerships',
       nameField: {
         label: 'MightySignal AppOwnership Name',
@@ -136,15 +136,15 @@ class SalesforceExportService
     return true unless last_synced && use_true_update?
     if platform == 'ios'
       publisher = IosDeveloper.find(publisher_id)
-      publisher.apps.limit(500).any?{|app| 
+      publisher.apps.limit(500).any?{|app|
         first_valid_date = app.get_last_ipa_snapshot(scan_success: true).try(:first_valid_date)
-        first_valid_date && first_valid_date >= last_synced 
+        first_valid_date && first_valid_date >= last_synced
       }
     else
       publisher = AndroidDeveloper.find(publisher_id)
-      publisher.apps.limit(500).any?{|app| 
+      publisher.apps.limit(500).any?{|app|
         first_valid_date = app.newest_successful_apk_snapshot ? app.newest_successful_apk_snapshot.first_valid_date : nil
-        first_valid_date && first_valid_date >= last_synced 
+        first_valid_date && first_valid_date >= last_synced
       }
     end
   end
@@ -154,7 +154,7 @@ class SalesforceExportService
     sync_models.each do |model|
       @model_name = model
       model_query = @account.syncing_query(model)
-      
+
       query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c, MightySignal_Last_Synced__c from #{model} where"
 
       if platforms.include?('ios') && platforms.include?('android')
@@ -291,43 +291,40 @@ class SalesforceExportService
     api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-api-limit')
     bulk_api_throttler = Throttler.new(@account.id, 1, 6.hours, prefix: 'salesforce-bulk-api-limit')
 
-    threshold = 0.4
+    threshold = 0.1
     current_limits = nil
 
     under_api_limit = if api_throttler.status[:current] > 0 #cached limit check
-      false
-    else 
-      puts 'will check under api limit'
-      current_limits ||= limits
-      under_limit = current_limits[:daily_api_calls]/current_limits[:daily_api_calls_max].to_f >= threshold
-      unless under_limit
-        api_throttler.increment
-      end
-      
-      under_limit
-    end
+                        puts 'on if'
+                        false
+                      else
+                        puts 'on else'
+                        current_limits ||= limits
+                        under_limit = current_limits[:daily_api_calls]/current_limits[:daily_api_calls_max].to_f >= threshold
+                        api_throttler.increment unless under_limit
+                        under_limit
+                      end
 
-    return under_api_limit if !under_api_limit || !uses_bulk_api 
+    puts "will return? #{under_api_limit} : #{!under_api_limit || !uses_bulk_api}"
 
-    under_bulk_api_limit = if bulk_api_throttler.status[:current] > 0 #cached limit check
-      false
-    else 
-      puts 'will check under bulk api limit'
-      current_limits ||= limits
-      under_limit = current_limits[:daily_bulk_api_calls]/current_limits[:daily_bulk_api_calls_max].to_f.to_f >= threshold
-      unless under_limit
-        bulk_api_throttler.increment
-      end
-      
-      under_limit
-    end
+    return under_api_limit if !under_api_limit || !uses_bulk_api
 
+    under_bulk_api_limit =  if bulk_api_throttler.status[:current] > 0 #cached limit check
+                              false
+                            else
+                              puts 'will check under bulk api limit'
+                              current_limits ||= limits
+                              under_limit = current_limits[:daily_bulk_api_calls]/current_limits[:daily_bulk_api_calls_max].to_f.to_f >= threshold
+                              bulk_api_throttler.increment unless under_limit
+                              under_limit
+                            end
+    puts "Reached end, returns #{under_api_limit && (under_bulk_api_limit || !uses_bulk_api)}"
     under_api_limit && (under_bulk_api_limit || !uses_bulk_api)
   end
 
   def uninstall
-    @metadata_client.delete(:custom_object, 
-      @app_model, 
+    @metadata_client.delete(:custom_object,
+      @app_model,
     ).on_complete { |job| puts "Custom object deleted." }.perform
   end
 
@@ -416,11 +413,11 @@ class SalesforceExportService
     initial_mapping = default_mapping(app: app, publisher: publisher).with_indifferent_access
 
     mapping = if mapping
-      custom_mapping = JSON.parse(mapping).with_indifferent_access 
+      custom_mapping = JSON.parse(mapping).with_indifferent_access
       custom_mapping = initial_mapping.merge(custom_mapping)
       custom_mapping
-    else 
-      initial_mapping 
+    else
+      initial_mapping
     end
 
     update_default_mapping(mapping)
@@ -432,11 +429,11 @@ class SalesforceExportService
 
     mapping.each do |field, map|
 
-      # Skip if is 
+      # Skip if is
       next if should_skip_field?(field, map, data, existing_object)
 
       add_custom_field(@model_name, data[field].except(:data)) if data[field][:type]
-      
+
       new_object[map["id"]] = if map['data']
         map['data']
       else
@@ -448,7 +445,7 @@ class SalesforceExportService
 
     Throttler.new(@user.id, 25, 1.month, prefix: 'salesforce-user-export').increment if basic_access?
 
-    puts "Import #{new_object.inspect}" if @logging 
+    puts "Import #{new_object.inspect}" if @logging
 
     export = if object_id.present?
       @client.update!(@model_name, new_object)
@@ -508,7 +505,7 @@ class SalesforceExportService
 
     @upsert_records[@app_model] ||= []
     unless @upsert_records[@app_model].any?{|app| app['MightySignal_Key__c'] == new_app['MightySignal_Key__c']}
-      @upsert_records[@app_model] << new_app 
+      @upsert_records[@app_model] << new_app
     end
   end
 
@@ -557,7 +554,7 @@ class SalesforceExportService
 
   def import_publishers_apps(imports)
     @app_export_id_map = {}
-    
+
     imports.each do |import|
       import = import.with_indifferent_access
       publisher = import[:publisher]
@@ -596,12 +593,12 @@ class SalesforceExportService
   def run_app_imports
     @sdk_app_map = {}
     results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
-    puts "App imports #{results.inspect}" if @logging 
+    puts "App imports #{results.inspect}" if @logging
     results['batches'].first['response'].each_with_index do |app, i|
       next unless app["id"] #record failed to import
       app_id = app["id"].first
       record = @upsert_records[@app_model][i]
-      
+
       # leads use app ownership, accounts have id directly on app object
       # adjust will use app ownership on accounts as well (maybe all accounts in the future)
       if lead_import? || account_app_ownership?
@@ -610,7 +607,7 @@ class SalesforceExportService
           import_app_ownership(app_id, export_id)
         end
       end
-      
+
       app = (record['Platform__c'] == 'ios') ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
 
       sdk_response = app.tagged_sdk_response.with_indifferent_access
@@ -640,7 +637,7 @@ class SalesforceExportService
   def run_sdk_imports
     if @upsert_records[@sdk_model].present?
       results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
-      puts "SDK imports #{results.inspect}" if @logging 
+      puts "SDK imports #{results.inspect}" if @logging
       results['batches'].first['response'].each_with_index do |sdk, i|
         next unless sdk["id"] # failed to import
 
@@ -660,7 +657,7 @@ class SalesforceExportService
     if @upsert_records[@sdk_join_model].try(:any?)
       @upsert_records[@sdk_join_model].each_slice(10_000) do |slice|
         results = @bulk_client.upsert(@sdk_join_model, slice, 'MightySignal_Key__c')
-        puts "SDK app imports #{results.inspect}" if @logging 
+        puts "SDK app imports #{results.inspect}" if @logging
       end
     end
   end
@@ -669,7 +666,7 @@ class SalesforceExportService
     if @upsert_records[@app_ownership_model].try(:any?)
       @upsert_records[@app_ownership_model].each_slice(10_000) do |slice|
         results = @bulk_client.upsert(@app_ownership_model, slice, 'MightySignal_Key__c')
-        puts "SDK app imports #{results.inspect}" if @logging 
+        puts "SDK app imports #{results.inspect}" if @logging
       end
     end
   end
@@ -693,7 +690,7 @@ class SalesforceExportService
       'Category__c' => category[:name],
       'Category_ID__c' => category[:id]
     }
-    
+
     @upsert_records[@sdk_model] ||= []
     @upsert_records[@sdk_model] << new_sdk unless @upsert_records[@sdk_model].include?(new_sdk)
   end
@@ -706,7 +703,7 @@ class SalesforceExportService
       'Installed__c' => installed,
       'Uninstalled__c' => uninstalled
     }
-    
+
     @upsert_records[@sdk_join_model] ||= []
     @upsert_records[@sdk_join_model] << new_sdk_app unless @upsert_records[@sdk_join_model].include?(new_sdk_app)
   end
@@ -725,7 +722,7 @@ class SalesforceExportService
 
     return if object_has_field?(model, field_options[:fullName].split('.').last)
 
-    @metadata_client.create(:custom_field, 
+    @metadata_client.create(:custom_field,
       field_options
     ).on_complete{|job|
       update_field_permissions(field_options[:fullName])
@@ -737,9 +734,9 @@ class SalesforceExportService
   def update_field_permissions(field_full_name)
     @profiles ||= @metadata_client.list_metadata(:profile)
     @profiles.in_groups_of(10) {|group|
-      metadata = group.compact.map{|profile| {fullName: profile["full_name"], 
-                                      fieldPermissions: [{field: field_full_name, 
-                                                          editable: true, 
+      metadata = group.compact.map{|profile| {fullName: profile["full_name"],
+                                      fieldPermissions: [{field: field_full_name,
+                                                          editable: true,
                                                           readable: true,
                                                          }]
                                      }}
@@ -749,11 +746,13 @@ class SalesforceExportService
 
   def self.sf_for(account_name, model_name = 'Account', logging = false)
     account = Account.where(name: account_name).first
+    puts ''
+    puts "account for: #{account.id}"
     SalesforceExportService.new(user: account.users.first, model_name: model_name, logging: logging)
   end
 
   def sync_domain_mapping(models: supported_models, date: nil, queue: :salesforce_syncer, update_mappings: false)
-    
+
     models.each do |model|
       @model_name = model
       model_query = @account.domain_mapping_query(model)
@@ -763,7 +762,7 @@ class SalesforceExportService
       website_filter = " and Website != null"
 
       if custom_website_fields.present?
-        select_fields += ", " + custom_website_fields.join(', ') 
+        select_fields += ", " + custom_website_fields.join(', ')
         website_filter = " and (Website != null or #{custom_website_fields.join(' != null or ')} != null)"
       end
 
@@ -790,7 +789,7 @@ class SalesforceExportService
 
         ios_publisher = publishers[:ios_publisher]
         android_publisher = publishers[:android_publisher]
-        
+
         if (!record.MightySignal_iOS_Publisher_ID__c || update_mappings) && ios_publisher
           new_record[:MightySignal_iOS_Publisher_ID__c] = ios_publisher.id
           SalesforceLogger.new('Domain Mapping', @account, ios_publisher, @model_name, false).send! if Rails.env.production?
@@ -806,9 +805,6 @@ class SalesforceExportService
 
           SalesforceWorker.set(queue: queue).perform_async(:export_android_publisher, android_publisher.id, record_id, @user.id, @model_name) if date
         end
-
-        puts "Website is #{website}"
-        puts new_record if new_record.size > 1
 
         @update_records[model] ||= []
         @update_records[model] << new_record if new_record.size > 1
@@ -853,7 +849,7 @@ class SalesforceExportService
   ANDROID_RATINGS_SCORE = "MightySignal Android Ratings Score"
 
   def data_fields(app: nil, publisher: nil)
-    fields = { 
+    fields = {
       PUBLISHER_NAME => {length: 255, type: 'Text', label: "MightySignal Publisher Name"},
       WEBSITE => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
       IOS_PUB_ID => {type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
@@ -943,7 +939,7 @@ class SalesforceExportService
     dl = DomainLinker.new
 
     domain = UrlHelper.url_with_domain_only(website)
-    
+
     publishers = dl.domain_to_publisher(domain)
 
     valid_publishers = publishers.select{|publisher| publisher.valid_websites.pluck(:url).map{|url| UrlHelper.url_with_domain_only(url)}.include?(domain)}

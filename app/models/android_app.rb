@@ -965,27 +965,61 @@ class AndroidApp < ActiveRecord::Base
         # Gather versions, ratings, and download history if any
 
         historical_snapshots = snapshots_history_attributes_map[app.id]
-        if historical_snapshots
-          historical_download_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("downloads_min")], s[historical_attributes.index("downloads_max")], s[historical_attributes.index("created_at")]] }
-          app_download_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_download_snapshots, [:downloads_min, :downloads_max, :created_at])
+
+        if historical_snapshots.present?
+
+          historical_download_snapshots = historical_snapshots.map do |hsnap|
+            [
+              hsnap.downloads_min,
+              hsnap.downloads_max,
+              hsnap.created_at
+            ]
+          end
+
+          app_download_history = app.run_length_encode_app_snapshot_fields_from_fetched(
+                                    historical_download_snapshots,
+                                    [:downloads_min, :downloads_max, :created_at]
+                                  )
+
           result["downloads_history"] = app_download_history.as_json
 
-          historical_ratings_snapshots = historical_snapshots.map { |s| [s[historical_attributes.index("ratings_all_count")], s[historical_attributes.index("ratings_all_stars")], s[historical_attributes.index("created_at")]] }
-          app_ratings_history = app.run_length_encode_app_snapshot_fields_from_fetched(historical_ratings_snapshots, [:ratings_all_count, :ratings_all_stars, :created_at])
+          historical_ratings_snapshots = historical_snapshots.map do |hsnap|
+            [
+              hsnap.ratings_all_count,
+              hsnap.ratings_all_stars,
+              hsnap.created_at
+            ]
+          end
+
+          app_ratings_history = app.run_length_encode_app_snapshot_fields_from_fetched(
+                                  historical_ratings_snapshots,
+                                  [:ratings_all_count, :ratings_all_stars, :created_at]
+                                )
+
+
           app_ratings_history.each do |ratings_history_entry|
             ratings_history_entry[:ratings_all_stars] = ratings_history_entry[:ratings_all_stars].to_f if ratings_history_entry[:ratings_all_stars]
           end
           result["ratings_history"] = app_ratings_history.as_json
 
-          app_versions_history = historical_snapshots.map{|s|[s[historical_attributes.index("version")],s[historical_attributes.index("released")]]}.uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
+          app_versions_history = historical_snapshots.map do |hsnap|
+            [
+              hsnap.version,
+              hsnap.released
+            ]
+          end.uniq.select { |x| x[0] and x[1] }.map { |x| {version: x[0], released: x[1]} }
+
           result["versions_history"] = app_versions_history.as_json
 
           # Take the earlier of the created_at or min(released) field as the
           # first scraped
           first_scraped_date = [
-            historical_snapshots.map{|s|s[historical_attributes.index("released")]}.compact.min,
+            historical_snapshots.map do |hsnap|
+              hsnap.released
+            end.compact.min,
             app.created_at
           ].compact.min
+
           if first_scraped_date
             result['first_scraped'] = first_scraped_date.to_date.iso8601
           end

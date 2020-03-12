@@ -7,7 +7,7 @@ class AndroidLiveScanServiceWorker
 
   RETRIES = 2
 
-  sidekiq_options queue: :live, retry: false
+  sidekiq_options queue: :android_live_scan, retry: false
 
 
   def self.new_job_for!(android_app_id)

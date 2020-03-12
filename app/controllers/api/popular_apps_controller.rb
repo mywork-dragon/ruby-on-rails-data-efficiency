@@ -23,7 +23,7 @@ class Api::PopularAppsController < ApplicationController
 
     apps = enrich_trending(trending)
 
-    render json: {apps: apps, total: trending['total']}
+    render json: {apps: apps.uniq, total: trending['total']}
   end
 
   def trending
@@ -51,7 +51,7 @@ class Api::PopularAppsController < ApplicationController
                                                 )
     apps = enrich_trending(trending)
 
-    render json: {apps: apps, total: trending['total']}
+    render json: {apps: apps.uniq, total: trending['total']}
   end
 
   def top_app_chart
@@ -73,7 +73,7 @@ class Api::PopularAppsController < ApplicationController
 
     apps = enrich_trending(trending)
 
-    render json: {apps: apps, total: trending['total']}
+    render json: {apps: apps.uniq, total: trending['total']}
   end
 
   private 
