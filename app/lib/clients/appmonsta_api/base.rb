@@ -29,13 +29,13 @@ module AppmonstaApi
       raise_error_if_any!(resp.code)
       resp.parsed_response # Returns a Hash
     end
-    
+
     def self.send_request(req)
       period = 1
-      allowed_requests = 10
+      allowed_requests = 5
       throttler = Throttler.new("appmonsta_api_throttler", allowed_requests, period)
       throttler.increment
-      req.call 
+      req.call
     rescue Throttler::LimitExceeded
       sleep(period/3)
       retry
