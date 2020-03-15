@@ -8,8 +8,6 @@
   meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"
 - content_for :own_links do
   link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/cookies_eu.css" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/sdk_pages.css" media="all" rel="stylesheet"
   script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js"
@@ -19,10 +17,6 @@
   javascript: 
     Chartkick.CustomChart = function (element, dataSource, options) {};
   script data-turbolinks-track="true" src="/lib/cookies_eu.js?body=1"
-  script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
-  script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"
-  script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"
-  script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
   = render 'shared/ga'
   = render 'shared/autopilot'
   = render 'shared/leadbooster'
@@ -58,11 +52,6 @@
     javascript:
         $(document).ready(function () {
 
-            if (window.location.hash) {
-                $('html, body').stop().animate({
-                    scrollTop: $(window.location.hash).offset().top - 80
-                }, 1500, 'easeInOutExpo');
-            }
             $('.lead-form-btn').bind('click', function (event) {
                 var form = $(this).closest('form')
                 var serializedForm = form.serializeArray()
