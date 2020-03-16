@@ -68,6 +68,7 @@ module Varys
     config.exceptions_app = self.routes
     config.dark_side_json_log_path = '/tmp/sidekiq.json.log'
     config.middleware.use 'RequestIdMiddleware'
+    config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
   end
 end
 

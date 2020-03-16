@@ -13,21 +13,12 @@ html
     = yield(:own_meta)
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon"
     link data-turbolinks-track="true" href="/lib/bootstrap_additional.css" media="all" rel="stylesheet"
-    script crossorigin="anonymous" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
     link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" rel="stylesheet"
-    script data-turbolinks-track="true" src="/lib/jquery-2.1.3.min.js?body=1"
     = yield(:own_links)
-    script src="//maxcdn.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js"
     link data-turbolinks-track="true" href="/lib/hosting.css?body=1" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/easy-autocomplete.min.css" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/easy-autocomplete.themes.min.css" media="all" rel="stylesheet"
     link data-turbolinks-track="true" href="/lib/main.css" media="all" rel="stylesheet"
     link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet"
-    script data-turbolinks-track="true" src="/lib/appSearch.js?body=1"
-    script data-turbolinks-track="true" src="/lib/jquery.easy-autocomplete.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/jquery.ddslick.min.js?body=1"
-    script data-turbolinks-track="true" src="/lib/web_form_modal.js?body=1"
-    script data-turbolinks-track="true" src="/lib/ahoy.js?body=1"
-    script src="/lib/script.js"
     = render 'shared/canonical_links'
   = yield(:body)
