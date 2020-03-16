@@ -6,7 +6,6 @@
       = render 'shared/top_list_nav'
   .row.top-200.top-apps.marketing-row
     .col.block
-      .addthis_sharing_toolbox.d-flex.justify-content-center.my-2 data-title="SDKs Used in Top 200 Free iOS Apps @MightySignal"
       = image_tag '/lib/images/apple-app-store-icon.png', class: 'app-store-icon'
       h1 SDKs Used in Top 200 Free iOS Apps
       = render "welcome/subscribe_free_data", text: 'Report last updated', last_updated: @last_updated, form: 'top-ios-apps', message: "Top iOS Apps page"
