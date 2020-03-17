@@ -1,5 +1,11 @@
 - content_for :meta_description, @json_category['description']
 - content_for :title, "#{@category.name} SDK Category Apps and Analytics"
+- content_for :own_links do
+  script src="//cdnjs.cloudflare.com/ajax/libs/chartkick/2.3.0/chartkick.min.js"
+  script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"
+  script src="//www.gstatic.com/charts/loader.js"
+  javascript: 
+    Chartkick.CustomChart = function (element, dataSource, options) {};
 
 #sdk-page.category.content
   .heading
