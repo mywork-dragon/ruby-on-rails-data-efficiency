@@ -15,7 +15,7 @@
   link data-turbolinks-track="true" href="/lib/blogs.css" media="all" rel="stylesheet"
   = render 'shared/ga'
   = render 'shared/autopilot'
-  = render 'shared/leadbooster'
+
 
 - content_for :own_scripts do
 - content_for :body do
@@ -30,6 +30,5 @@
     - if @related_posts
       = render 'buttercms/related_reads'
     = render 'layouts/footer', styles: "m-0"
-    script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad" type="text/javascript"
 
 = render :file => 'layouts/application'

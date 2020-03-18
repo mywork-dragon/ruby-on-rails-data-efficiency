@@ -6,33 +6,21 @@
   meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
   meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
   meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"
+
 - content_for :own_links do
-  link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/flexslider.css?body=1" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/normalize.css?body=1" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/font-icons.css" media="all" rel="stylesheet"
-  link data-turbolinks-track="true" href="/lib/featherlight.css" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/cookies_eu.css" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/sdk_pages.css" media="all" rel="stylesheet"
   script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js"
-  script src="//cdnjs.cloudflare.com/ajax/libs/chartkick/2.3.0/chartkick.min.js"
-  script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"
-  script src="//www.gstatic.com/charts/loader.js"
-  javascript: 
-    Chartkick.CustomChart = function (element, dataSource, options) {};
   script data-turbolinks-track="true" src="/lib/cookies_eu.js?body=1"
-  script data-turbolinks-track="true" src="/lib/featherlight.js?body=1"
-  script data-turbolinks-track="true" src="/lib/EasePack.min.js?body=1"
-  script data-turbolinks-track="true" src="/lib/TweenLite.min.js?body=1"
-  script data-turbolinks-track="true" src="/lib/demo-1.js?body=1"
   = render 'shared/ga'
   = render 'shared/autopilot'
-  = render 'shared/leadbooster'
+
 - content_for :own_scripts do
   = render 'shared/linkedin_insight_tag'
   = render 'shared/facebook_pixel_1'
   = yield :web_form_modal
+
 - content_for :body do
   body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     noscript
@@ -43,29 +31,17 @@
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
           |×
         = content_tag :div, msg.split(",").join("\n"), :id => "flash_#{name}"
-
     = render 'layouts/header'
-
     .content-wrapper class="#{free_data_margin_normalize}"
       = yield
-
-    /! ============== Footer ==============
     - if params[:action] == 'app_page'
       = render 'layouts/footer', styles: "m-0"
     - else
       = render 'layouts/footer'
-
-    /! ==========ONE PAGE SCROLLING SCRIPTS STARTS===============
-    /! =============ONE PAGE SCROLLING SCRIPTS ENDS============
-    /! =============BACK TO TOP STARTS============
+    = render 'layouts/footer_js'
     javascript:
         $(document).ready(function () {
 
-            if (window.location.hash) {
-                $('html, body').stop().animate({
-                    scrollTop: $(window.location.hash).offset().top - 80
-                }, 1500, 'easeInOutExpo');
-            }
             $('.lead-form-btn').bind('click', function (event) {
                 var form = $(this).closest('form')
                 var serializedForm = form.serializeArray()
@@ -105,7 +81,6 @@
             console.log('Hi! We like people like you. Check out https://mightysignal.com/challenge');
             ahoy.trackAll();
         });
-    script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
     = yield(:own_scripts)
 
 = render :file => 'layouts/application'

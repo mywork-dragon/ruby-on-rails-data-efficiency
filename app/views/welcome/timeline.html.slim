@@ -14,7 +14,6 @@
           span Follow our Twitter bot
                                 <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-size="large" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
         .col-md-2.d-flex.align-items-center.my-2
-          div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS and Android Apps? @MightyTimeline"
       = render "welcome/subscribe_free_data", text: "What's happening in the Top 200 Apps?", last_updated: @last_updated, form: 'timeline', message: "Timeline"
 
       - @batches_by_week.each do |week, batches|
