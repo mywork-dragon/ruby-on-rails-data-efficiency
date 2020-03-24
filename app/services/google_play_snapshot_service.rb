@@ -1,6 +1,6 @@
 class GooglePlaySnapshotService
   class InvalidDom < RuntimeError; end
-  
+
   extend Utils::Workers
 
   class << self
@@ -51,6 +51,8 @@ class GooglePlaySnapshotService
 
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
+      # remove taken down apps from query
+      query.merge!({display_type: AndroidApp.display_types.except(:taken_down).values })
       AndroidApp.where(query).pluck(:id).each do |app_id|
         delegate_perform(GooglePlaySnapshotMassWorker, j.id, app_id)
       end
