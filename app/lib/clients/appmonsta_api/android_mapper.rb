@@ -10,7 +10,7 @@ module AppmonstaApi
       category_name:                              :genre_id,
       price:                                      :price,
       category_id:                                :genre_id,
-      released:                                   :release_date,
+      released:                                   :status_date,
       size:                                       :file_size,
       top_dev:                                    :top_developer,
       in_app_purchases:                           :iap_price_range,

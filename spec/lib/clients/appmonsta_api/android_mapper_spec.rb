@@ -22,7 +22,7 @@ module AppmonstaApi
         expect(subject[:seller_email]).to       eq('android-support@fb.com')
         expect(subject[:category_name]).to      eq('COMMUNICATION')
         expect(subject[:price]).to              eq('Free')
-        expect(subject[:released]).to           eq('2014-01-30'.to_date)
+        expect(subject[:released]).to           eq('January 8, 2020'.to_date)
         expect(subject[:size]).to               be nil
         expect(subject[:top_dev]).to            be false
         expect(subject[:in_app_purchases]).to   be true
