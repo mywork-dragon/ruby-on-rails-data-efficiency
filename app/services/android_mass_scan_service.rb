@@ -9,13 +9,6 @@ class AndroidMassScanService
       # App records only come with :id and :app_identifier fields
       apps_to_scan = apps_updated_since(1.week.ago)
 
-      unless automated
-        count = apps_to_scan.count
-        print "Going to scan #{count} apps. Is that ok? [y/n]: "
-        ans = gets.chomp
-        return unless ans.include?('y')
-      end
-      
       current_job = ApkSnapshotJob.create!(
         notes: "Mass Scrape for #{Date.today}",
         job_type: :weekly_mass
