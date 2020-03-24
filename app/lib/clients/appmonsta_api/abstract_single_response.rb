@@ -42,6 +42,10 @@ module AppmonstaApi
 
     def assign_attributes(new_attributes)
       new_attributes.each { |key, value| public_send("#{key}=", value) }
+    rescue => e
+      Bugsnag.notify(e) do |report|
+        report.add_tab(:content, { attrs: new_attributes })
+      end
     end
   end
 end
