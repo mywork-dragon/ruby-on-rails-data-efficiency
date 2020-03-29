@@ -129,7 +129,7 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal Android SDK Summary" => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"},
       "MightySignal Last Synced" => {type: 'Date', label: "MightySignal Last Synced"},
       "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
-      "MightySignal iOS Ratings SCore" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
+      "MightySignal iOS Ratings Score" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
       "MightySignal Android Ratings Score" => {type: 'Number', label: 'MightySignal Android Ratings Score', precision: 18, scale: 2},
       "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
