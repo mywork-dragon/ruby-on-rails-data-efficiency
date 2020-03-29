@@ -910,7 +910,7 @@ class SalesforceExportService
         #TODO
         fields[IOS_APP_COUNT][:data] = publisher.apps.normal.count
         fields[IOS_MAU_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
-        fields[IOS_SDK_COUNT][:data] = publisher.tagged_sdk_summary[:installed_sdks].count
+        fields[IOS_SDK_COUNT][:data] = count_sdks(publisher)
       when 'android'
         fields[ANDROID_PUB_ID][:data] = publisher.try(:id)
         #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
@@ -924,13 +924,13 @@ class SalesforceExportService
         #TODO
         fields[ANDROID_APP_COUNT][:data] = publisher.apps.normal.count
         fields[ANDROID_MAU_COUNT][:data] = fields[ANDROID_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
-        fields[ANDROID_SDK_COUNT][:data] = publisher.tagged_sdk_summary[:installed_sdks].count
+        fields[ANDROID_SDK_COUNT][:data] = count_sdks(publisher)
       end
 
       fields[LAST_SYNCED][:data] = Date.today
-      fields[TOTAL_MAU_COUNT][:data] = fields[IOS_MAU_COUNT][:data] + fields[ANDROID_MAU_COUNT][:data]
-      fields[TOTAL_APP_COUNT][:data] = fields[IOS_APP_COUNT][:data] + fields[ANDROID_APP_COUNT][:data]
-      fields[TOTAL_SDK_COUNT][:data] = fields[IOS_SDK_COUNT][:data] + fields[ANDROID_SDK_COUNT][:data]
+      fields[TOTAL_MAU_COUNT][:data] = fields[IOS_MAU_COUNT][:data].to_i + fields[ANDROID_MAU_COUNT][:data].to_i
+      fields[TOTAL_APP_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i + fields[ANDROID_APP_COUNT][:data].to_i
+      fields[TOTAL_SDK_COUNT][:data] = fields[IOS_SDK_COUNT][:data].to_i + fields[ANDROID_SDK_COUNT][:data].to_i
       #fields[COMPANY_ID][:data] = publisher.try(:company_id)
 
       if @model_name == 'Lead'
@@ -1047,6 +1047,10 @@ class SalesforceExportService
       mau += app.mau.to_i
     end
     mau
+  end
+  
+  def count_sdks(publisher)
+    publisher.tagged_sdk_summary.try(:[], 'installed_sdks').count
   end
 
   def h1_css

@@ -347,6 +347,7 @@ end
     SalesforceLogger.stubs(:new).returns(mock)
     @sf.stubs(:sdk_display).returns("123")
     @sf.stubs(:count_total_mau).returns("123")
+    @sf.stubs(:count_sdks).returns("123")
 
     new_object = {
                   "MightySignal_Last_Synced__c" => Date.today,
