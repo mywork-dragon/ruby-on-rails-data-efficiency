@@ -58,7 +58,8 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
-      {label: 'Account Name', type: 'Lookup', fullName: "MightySignal_App__c.Account__c", referenceTo: 'Account', relationshipName: 'Apps'}
+      {label: 'Account Name', type: 'Lookup', fullName: "MightySignal_App__c.Account__c", referenceTo: 'Account', relationshipName: 'Apps'},
+      {label: 'Installed SDK Count', type: 'Number', precision: 18, scale: 0}
     ]
 
     new_fields.each do |field|
@@ -132,7 +133,17 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal iOS Ratings Score" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       "MightySignal Android Ratings Count" => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
       "MightySignal Android Ratings Score" => {type: 'Number', label: 'MightySignal Android Ratings Score', precision: 18, scale: 2},
-      "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
+      "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0},
+      "MightySignal iOS MAU Count" => {type: 'Number', label: 'MightySignal iOS MAU Count', precision: 18, scale: 0},
+      "MightySignal Android MAU Count" => {type: 'Number', label: 'MightySignal Android MAU Count', precision: 18, scale: 0},
+      "MightySignal Total MAU Count" => {type: 'Number', label: 'MightySignal Total MAU Count', precision: 18, scale: 0},
+      "MightySignal iOS App Count" => {type: 'Number', label: 'MightySignal iOS App Count', precision: 18, scale: 0},
+      "MightySignal Android App Count" => {type: 'Number', label: 'MightySignal Android App Count', precision: 18, scale: 0},
+      "MightySignal Total App Count" => {type: 'Number', label: 'MightySignal Total App Count', precision: 18, scale: 0},
+      "MightySignal iOS SDK Count" => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0},
+      "MightySignal Android SDK Count" => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0},
+      "MightySignal Total SDK Count" => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0},
+      "MightySignal Company ID" => {type: 'Text', label: "MightySignal Company ID", length: 255}
     }
     fields.each do |field_key, field|
       @sf.expects(:add_custom_field).with('Account', field)
@@ -335,6 +346,7 @@ end
     @sf.stubs(:object_has_field?).returns(true)
     SalesforceLogger.stubs(:new).returns(mock)
     @sf.stubs(:sdk_display).returns("123")
+    @sf.stubs(:count_total_mau).returns("123")
 
     new_object = {
                   "MightySignal_Last_Synced__c" => Date.today,
