@@ -1054,7 +1054,7 @@ class SalesforceExportService
   end
   
   def count_sdks(publisher)
-    publisher.tagged_sdk_summary.try(:[], 'installed_sdks')&.count.to_i
+    publisher.tagged_sdk_summary.try(:[], :installed_sdks)&.count.to_i
   end
 
   def h1_css
@@ -1100,6 +1100,19 @@ class SalesforceExportService
   def update_metadata_token(client, options)
     @client.authenticate!
     options[:session_id] = @client.options[:oauth_token]
+  end
+  
+  def truncate_custom_objects
+    return "For MS account only" unless @user.account.id == 1
+    [@app_model, @sdk_model, @sdk_join_model, @app_ownership_model].each do |model|
+      puts "running #{model}"
+      qry = "select Id from #{model}"
+      results = @client.query(qry)
+      results.each do |i|
+        puts "destroying #{i.Id}"
+        i.destroy
+      end
+    end
   end
 
 end
