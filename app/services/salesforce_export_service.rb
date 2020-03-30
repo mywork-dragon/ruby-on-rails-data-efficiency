@@ -914,7 +914,7 @@ class SalesforceExportService
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[IOS_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[IOS_RATINGS_SCORE][:data] = publisher.ratings_score
-        fields[IOS_APP_COUNT][:data] = publisher.apps.normal.count
+        fields[IOS_APP_COUNT][:data] = publisher&.apps&.normal&.count.to_i
         fields[IOS_MAU_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
         fields[IOS_SDK_COUNT][:data] = count_sdks(publisher)
       when 'android'
@@ -927,7 +927,7 @@ class SalesforceExportService
         fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[ANDROID_DOWNLOADS_COUNT][:data] = publisher.downloads_count
         fields[ANDROID_RATINGS_SCORE][:data] = publisher.ratings_score
-        fields[ANDROID_APP_COUNT][:data] = publisher.apps.normal.count
+        fields[ANDROID_APP_COUNT][:data] = publisher&.apps&.normal&.count.to_i
         fields[ANDROID_MAU_COUNT][:data] = fields[ANDROID_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
         fields[ANDROID_SDK_COUNT][:data] = count_sdks(publisher)
       end
@@ -1054,7 +1054,7 @@ class SalesforceExportService
   end
   
   def count_sdks(publisher)
-    publisher.tagged_sdk_summary.try(:[], 'installed_sdks').count
+    publisher.tagged_sdk_summary.try(:[], 'installed_sdks')&.count.to_i
   end
 
   def h1_css
