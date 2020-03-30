@@ -1048,7 +1048,7 @@ class SalesforceExportService
     mau = 0
     publisher.apps.normal.pluck(:id).each do |id|
       app = @apps_hot_store.read(publisher.platform.to_s, id.to_i)
-      mau += app.mau.to_i
+      mau += app['mau'].to_i
     end
     mau
   end
