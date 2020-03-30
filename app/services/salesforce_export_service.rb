@@ -361,6 +361,10 @@ class SalesforceExportService
     mapping = {}
     mapping[WEBSITE] = {"id"=>"Website", "name"=>"Website"}
     mapping[LAST_SYNCED] = {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"}
+    mapping[TOTAL_MAU_COUNT] = {"id"=>'MightySignal_Total_MAU_Count__c', "name"=>'MightySignal Total MAU Count'}
+    mapping[TOTAL_APP_COUNT] = {"id"=>'MightySignal_Total_App_Count__c', "name"=>'MightySignal Total App Count'}
+    mapping[TOTAL_SDK_COUNT] = {"id"=>'MightySignal_Total_SDK_Count__c', "name"=>'MightySignal Total SDK Count'}
+    mapping[COMPANY_ID] = {"id"=>"MightySignal_Company_ID__c", "name"=>"MightySignal Company ID"}
 
     platform = app.try(:platform) || publisher.try(:platform)
 
@@ -372,6 +376,9 @@ class SalesforceExportService
       mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
       mapping[IOS_RATINGS_COUNT] = {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
       mapping[IOS_RATINGS_SCORE] = {"id"=>"MightySignal_iOS_Ratings_Score__c", "name"=>"New Field: MightySignal iOS Ratings Score"}
+      mapping[IOS_APP_COUNT] = {"id"=>'MightySignal_iOS_App_Count__c', "name"=>'MightySignal iOS App Count'}
+      mapping[IOS_SDK_COUNT] = {"id"=>'MightySignal_iOS_SDK_Count__c', "name"=>'MightySignal iOS SDK Count'}
+      mapping[IOS_MAU_COUNT] = {"id"=>'MightySignal_iOS_MAU_Count__c', "name"=>'MightySignal iOS MAU Count'}
     when 'android'
       mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
       #mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
@@ -380,6 +387,9 @@ class SalesforceExportService
       mapping[ANDROID_RATINGS_COUNT] = {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
       mapping[ANDROID_RATINGS_SCORE] = {"id"=>"MightySignal_Android_Ratings_Score__c", "name"=>"New Field: MightySignal Android Ratings Score"}
       mapping[ANDROID_DOWNLOADS_COUNT] = {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"}
+      mapping[ANDROID_APP_COUNT] = {"id"=>'MightySignal_Android_App_Count__c', "name"=>'MightySignal Android App Count'}
+      mapping[ANDROID_SDK_COUNT] = {"id"=>'MightySignal_Android_SDK_Count__c', "name"=>'MightySignal Android SDK Count'}
+      mapping[ANDROID_MAU_COUNT] = {"id"=>'MightySignal_Android_MAU_Count__c', "name"=>'MightySignal Android MAU Count'}
     end
 
     case @model_name
@@ -907,7 +917,6 @@ class SalesforceExportService
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[IOS_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[IOS_RATINGS_SCORE][:data] = publisher.ratings_score
-        #TODO
         fields[IOS_APP_COUNT][:data] = publisher.apps.normal.count
         fields[IOS_MAU_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
         fields[IOS_SDK_COUNT][:data] = count_sdks(publisher)
@@ -921,7 +930,6 @@ class SalesforceExportService
         fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[ANDROID_DOWNLOADS_COUNT][:data] = publisher.downloads_count
         fields[ANDROID_RATINGS_SCORE][:data] = publisher.ratings_score
-        #TODO
         fields[ANDROID_APP_COUNT][:data] = publisher.apps.normal.count
         fields[ANDROID_MAU_COUNT][:data] = fields[ANDROID_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
         fields[ANDROID_SDK_COUNT][:data] = count_sdks(publisher)
