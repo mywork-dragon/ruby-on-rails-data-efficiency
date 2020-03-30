@@ -364,7 +364,6 @@ class SalesforceExportService
     mapping[TOTAL_MAU_COUNT] = {"id"=>'MightySignal_Total_MAU_Count__c', "name"=>'MightySignal Total MAU Count'}
     mapping[TOTAL_APP_COUNT] = {"id"=>'MightySignal_Total_App_Count__c', "name"=>'MightySignal Total App Count'}
     mapping[TOTAL_SDK_COUNT] = {"id"=>'MightySignal_Total_SDK_Count__c', "name"=>'MightySignal Total SDK Count'}
-    mapping[COMPANY_ID] = {"id"=>"MightySignal_Company_ID__c", "name"=>"MightySignal Company ID"}
 
     platform = app.try(:platform) || publisher.try(:platform)
 
@@ -872,7 +871,6 @@ class SalesforceExportService
   IOS_SDK_COUNT = "MightySignal iOS SDK Count"
   ANDROID_SDK_COUNT = "MightySignal Android SDK Count"
   TOTAL_SDK_COUNT = "MightySignal Total SDK Count"
-  COMPANY_ID = "MightySignal Company ID"
 
   def data_fields(app: nil, publisher: nil)
     fields = {
@@ -900,8 +898,7 @@ class SalesforceExportService
       TOTAL_APP_COUNT => {type: 'Number', label: 'MightySignal Total App Count', precision: 18, scale: 0},
       IOS_SDK_COUNT => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0},
       ANDROID_SDK_COUNT => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0},
-      TOTAL_SDK_COUNT => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0},
-      COMPANY_ID => {type: 'Text', label: "MightySignal Company ID", length: 255}
+      TOTAL_SDK_COUNT => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0}
     }
 
     publisher ||= app.try(:publisher)
@@ -939,7 +936,6 @@ class SalesforceExportService
       fields[TOTAL_MAU_COUNT][:data] = fields[IOS_MAU_COUNT][:data].to_i + fields[ANDROID_MAU_COUNT][:data].to_i
       fields[TOTAL_APP_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i + fields[ANDROID_APP_COUNT][:data].to_i
       fields[TOTAL_SDK_COUNT][:data] = fields[IOS_SDK_COUNT][:data].to_i + fields[ANDROID_SDK_COUNT][:data].to_i
-      #fields[COMPANY_ID][:data] = publisher.try(:company_id)
 
       if @model_name == 'Lead'
         fields['Title'] = {label: 'Title'}
