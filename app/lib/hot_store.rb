@@ -16,6 +16,9 @@ class HotStore
     @redis_store = redis_store if redis_store
   end
 
+  EXPIRATION_TIME_IN_SECS = Time.now.minus_with_coercion(2.months.ago).to_i
+  TIME_OF_RELEVANCE = 2.years.ago
+
 private
 
   def to_class(platform)
@@ -39,7 +42,9 @@ private
       end
     end
 
-    raise MissingHotStoreField.new("Type: #{type} Platform: #{platform} Id: #{id}") unless all_required_fields_exist?(attributes)
+    unless all_required_fields_exist?(attributes)
+      raise MissingHotStoreField.new("Type: #{type} Platform: #{platform} Id: #{id}")
+    end
 
     # Send separate requests for compressed and uncompressed fields since the write will fail
     # with an encoding error if
@@ -63,9 +68,21 @@ private
     return if attributes_array.empty? and compressed_attributes_array.empty?
 
     with_connection do |connection|
-      connection.hmset(entry_key, attributes_array) if attributes_array.any?
-      connection.hmset(entry_key, compressed_attributes_array) if compressed_attributes_array.any?
-      connection.sadd(@key_set, entry_key)
+      if attributes_array.any?
+        # Can't use multi in cluster setup
+        if connection.hmset(entry_key, attributes_array)
+          connection.expire(entry_key, EXPIRATION_TIME_IN_SECS)
+          connection.sadd(@key_set, entry_key)
+        end
+      end
+
+      if compressed_attributes_array.any?
+        # Can't use multi in cluster setup
+        if connection.hmset(entry_key, compressed_attributes_array)
+          connection.expire(entry_key, EXPIRATION_TIME_IN_SECS)
+          connection.sadd(@key_set, entry_key)
+        end
+      end
     end
   end
 
@@ -91,7 +108,7 @@ private
       connection.srem(@key_set, entry_key)
       connection.del(entry_key)
     end
-    
+
   end
 
   def read_scanned_attributes(type, entry_key, entry_cursor, entry_attributes, connection)

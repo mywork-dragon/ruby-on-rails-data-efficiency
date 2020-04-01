@@ -1,29 +1,39 @@
 class ApplicationHotStoreImportWorker
   include Sidekiq::Worker
   include Utils::Workers
-  
+
   sidekiq_options queue: :hot_store_application_import, retry: 2
 
+  attr_reader :hot_store
+
+  BATCH_SIZE = 500
+
   def initialize
-    @hot_store = AppHotStore.new
+    @hot_store ||= AppHotStore.new
   end
 
-  def perform(platform, application_id)
-    @hot_store.write(platform, application_id)
+  def perform(platform, application_ids)
+    hot_store.write(platform, application_ids)
   end
 
   def queue_ios_apps
-    IosApp.where.not(:display_type => IosApp.display_types[:not_ios]).pluck(:id).each_slice(100) do |ids|
-      delegate_perform(ApplicationHotStoreImportWorker, 'ios', ids)
+    IosApp
+      .relevant_since(HotStore::TIME_OF_RELEVANCE)
+      .select("#{IosApp.table_name}.id")
+      .find_in_batches(batch_size: BATCH_SIZE) do |group|
+        delegate_perform(self.class, 'ios', group.map(&:id))
     end
   end
 
   def queue_android_apps
-    AndroidApp.pluck(:id).each_slice(1000) do |ids|
-      delegate_perform(ApplicationHotStoreImportWorker, 'android', ids)
+    AndroidApp
+      .relevant_since(HotStore::TIME_OF_RELEVANCE)
+      .select("#{AndroidApp.table_name}.id")
+      .find_in_batches(batch_size: BATCH_SIZE) do |group|
+        delegate_perform(self.class, 'android', group.map(&:id))
     end
   end
-  
+
   def queue_apps
     queue_ios_apps
     queue_android_apps

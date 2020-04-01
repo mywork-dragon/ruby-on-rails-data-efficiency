@@ -4,6 +4,12 @@ describe AndroidApp, type: :model do
 
   it_behaves_like 'a mobile app', 'android', 'apk'
 
+  context 'scopes' do
+    describe 'recent_and_relevant' do
+
+    end
+  end
+
   context 'instance methods' do
 
     describe '#filter_older_versions_from_android_apk_snapshots' do
