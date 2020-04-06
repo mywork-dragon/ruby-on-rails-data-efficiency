@@ -136,13 +136,10 @@ class SalesforceExportServiceTest < ActiveSupport::TestCase
       "MightySignal Android Downloads Count" => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0},
       "MightySignal iOS MAU Count" => {type: 'Number', label: 'MightySignal iOS MAU Count', precision: 18, scale: 0},
       "MightySignal Android MAU Count" => {type: 'Number', label: 'MightySignal Android MAU Count', precision: 18, scale: 0},
-      "MightySignal Total MAU Count" => {type: 'Number', label: 'MightySignal Total MAU Count', precision: 18, scale: 0},
       "MightySignal iOS App Count" => {type: 'Number', label: 'MightySignal iOS App Count', precision: 18, scale: 0},
       "MightySignal Android App Count" => {type: 'Number', label: 'MightySignal Android App Count', precision: 18, scale: 0},
-      "MightySignal Total App Count" => {type: 'Number', label: 'MightySignal Total App Count', precision: 18, scale: 0},
       "MightySignal iOS SDK Count" => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0},
-      "MightySignal Android SDK Count" => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0},
-      "MightySignal Total SDK Count" => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0}
+      "MightySignal Android SDK Count" => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0}
     }
     fields.each do |field_key, field|
       @sf.expects(:add_custom_field).with('Account', field)
@@ -291,9 +288,6 @@ end
       "MightySignal iOS App Count" => {"id"=>'MightySignal_iOS_App_Count__c', "name"=>'MightySignal iOS App Count'},
       "MightySignal iOS SDK Count" => {"id"=>'MightySignal_iOS_SDK_Count__c', "name"=>'MightySignal iOS SDK Count'},
       "MightySignal iOS MAU Count" => {"id"=>'MightySignal_iOS_MAU_Count__c', "name"=>'MightySignal iOS MAU Count'},
-      "MightySignal Total MAU Count" => {"id"=>'MightySignal_Total_MAU_Count__c', "name"=>'MightySignal Total MAU Count'},
-      "MightySignal Total App Count" => {"id"=>'MightySignal_Total_App_Count__c', "name"=>'MightySignal Total App Count'},
-      "MightySignal Total SDK Count" => {"id"=>'MightySignal_Total_SDK_Count__c', "name"=>'MightySignal Total SDK Count'}
     }
   end
 
@@ -311,9 +305,6 @@ end
       "MightySignal Android SDK Count" => {"id"=>'MightySignal_Android_SDK_Count__c', "name"=>'MightySignal Android SDK Count'},
       "MightySignal Android MAU Count" => {"id"=>'MightySignal_Android_MAU_Count__c', "name"=>'MightySignal Android MAU Count'},
       "Publisher Name" => {"id"=>"Name", "name"=>"Name"},
-      "MightySignal Total MAU Count" => {"id"=>'MightySignal_Total_MAU_Count__c', "name"=>'MightySignal Total MAU Count'},
-      "MightySignal Total App Count" => {"id"=>'MightySignal_Total_App_Count__c', "name"=>'MightySignal Total App Count'},
-      "MightySignal Total SDK Count" => {"id"=>'MightySignal_Total_SDK_Count__c', "name"=>'MightySignal Total SDK Count'}
     }
   end
 
@@ -368,9 +359,6 @@ end
                   "MightySignal_iOS_Ratings_Count__c" => 0,
                   "MightySignal_iOS_Ratings_Score__c" => 0,
                   "Name" => "3 Comma Studio LLC",
-                  "MightySignal_Total_MAU_Count__c" => 123,
-                  "MightySignal_Total_App_Count__c" => 1,
-                  "MightySignal_Total_SDK_Count__c" => 123,
                   "MightySignal_iOS_SDK_Count__c" => 123,
                   "MightySignal_iOS_MAU_Count__c" => 123,
                   "MightySignal_iOS_App_Count__c" => 1,
@@ -388,9 +376,6 @@ end
       "MightySignal iOS Ratings Count" => {type: 'Number', label: 'MightySignal iOS Ratings Count', precision: 18, scale: 0},
       "MightySignal iOS Ratings Score" => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       "MightySignal Last Synced" => {:type => "Date", :label => "MightySignal Last Synced"},
-      "MightySignal Total MAU Count" => {data: 123, type: 'Number', label: 'MightySignal Total MAU Count', precision: 18, scale: 0},
-      "MightySignal Total App Count" => {type: 'Number', label: 'MightySignal Total App Count', precision: 18, scale: 0},
-      "MightySignal Total SDK Count" => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0},
       "MightySignal iOS MAU Count" => {data: 123, type: 'Number', label: 'MightySignal iOS MAU Count', precision: 18, scale: 0},
       'MightySignal iOS App Count' => {type: 'Number', label: 'MightySignal iOS App Count', precision: 18, scale: 0},
       'MightySignal iOS SDK Count' => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0}
