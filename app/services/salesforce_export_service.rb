@@ -1,13 +1,14 @@
 class SalesforceExportService
   attr_reader :client, :metadata_client, :bulk_client, :update_records, :create_records, :upsert_records
 
+  PLATFORMS = ['ios', 'android'].freeze
+
   def initialize(user:, model_name: 'Account', logging: false)
     @user = user
     @account = @user.account
     @model_name = model_name
     @logging = logging
     @is_sandbox = @account.salesforce_sandbox?
-    @platforms = ['ios', 'android']
 
     @app_model = 'MightySignal_App__c'
     @sdk_model = 'MightySignal_SDK__c'
@@ -152,7 +153,7 @@ class SalesforceExportService
     end
   end
 
-  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: @platforms, date: nil)
+  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: PLATFORMS, date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
@@ -225,7 +226,6 @@ class SalesforceExportService
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
       {label: 'Account Name', type: 'Lookup', fullName: "#{@app_model}.Account__c", referenceTo: 'Account', relationshipName: 'Apps'},
-      #added Apr 2020
       {label: 'Installed SDK Count', type: 'Number', precision: 18, scale: 0}
     ]
     new_fields.each do |field|
@@ -361,9 +361,6 @@ class SalesforceExportService
     mapping = {}
     mapping[WEBSITE] = {"id"=>"Website", "name"=>"Website"}
     mapping[LAST_SYNCED] = {"id"=>"MightySignal_Last_Synced__c", "name"=>"New Field: MightySignal Last Synced"}
-    mapping[TOTAL_MAU_COUNT] = {"id"=>'MightySignal_Total_MAU_Count__c', "name"=>'MightySignal Total MAU Count'}
-    mapping[TOTAL_APP_COUNT] = {"id"=>'MightySignal_Total_App_Count__c', "name"=>'MightySignal Total App Count'}
-    mapping[TOTAL_SDK_COUNT] = {"id"=>'MightySignal_Total_SDK_Count__c', "name"=>'MightySignal Total SDK Count'}
 
     platform = app.try(:platform) || publisher.try(:platform)
 
@@ -861,16 +858,12 @@ class SalesforceExportService
   IOS_RATINGS_SCORE = "MightySignal iOS Ratings Score"
   ANDROID_DOWNLOADS_COUNT = "MightySignal Android Downloads Count"
   ANDROID_RATINGS_SCORE = "MightySignal Android Ratings Score"
-  #added Apr 2020
   IOS_MAU_COUNT = "MightySignal iOS MAU Count"
   ANDROID_MAU_COUNT = "MightySignal Android MAU Count"
-  TOTAL_MAU_COUNT = "MightySignal Total MAU Count"
   IOS_APP_COUNT = "MightySignal iOS App Count"
   ANDROID_APP_COUNT = "MightySignal Android App Count"
-  TOTAL_APP_COUNT = "MightySignal Total App Count"
   IOS_SDK_COUNT = "MightySignal iOS SDK Count"
   ANDROID_SDK_COUNT = "MightySignal Android SDK Count"
-  TOTAL_SDK_COUNT = "MightySignal Total SDK Count"
 
   def data_fields(app: nil, publisher: nil)
     fields = {
@@ -892,13 +885,10 @@ class SalesforceExportService
       ANDROID_DOWNLOADS_COUNT => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0},
       IOS_MAU_COUNT => {type: 'Number', label: 'MightySignal iOS MAU Count', precision: 18, scale: 0},
       ANDROID_MAU_COUNT => {type: 'Number', label: 'MightySignal Android MAU Count', precision: 18, scale: 0},
-      TOTAL_MAU_COUNT => {type: 'Number', label: 'MightySignal Total MAU Count', precision: 18, scale: 0},
       IOS_APP_COUNT => {type: 'Number', label: 'MightySignal iOS App Count', precision: 18, scale: 0},
       ANDROID_APP_COUNT => {type: 'Number', label: 'MightySignal Android App Count', precision: 18, scale: 0},
-      TOTAL_APP_COUNT => {type: 'Number', label: 'MightySignal Total App Count', precision: 18, scale: 0},
       IOS_SDK_COUNT => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0},
       ANDROID_SDK_COUNT => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0},
-      TOTAL_SDK_COUNT => {type: 'Number', label: 'MightySignal Total SDK Count', precision: 18, scale: 0}
     }
 
     publisher ||= app.try(:publisher)
@@ -933,9 +923,6 @@ class SalesforceExportService
       end
 
       fields[LAST_SYNCED][:data] = Date.today
-      fields[TOTAL_MAU_COUNT][:data] = fields[IOS_MAU_COUNT][:data].to_i + fields[ANDROID_MAU_COUNT][:data].to_i
-      fields[TOTAL_APP_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i + fields[ANDROID_APP_COUNT][:data].to_i
-      fields[TOTAL_SDK_COUNT][:data] = fields[IOS_SDK_COUNT][:data].to_i + fields[ANDROID_SDK_COUNT][:data].to_i
 
       if @model_name == 'Lead'
         fields['Title'] = {label: 'Title'}
@@ -1101,18 +1088,4 @@ class SalesforceExportService
     @client.authenticate!
     options[:session_id] = @client.options[:oauth_token]
   end
-  
-  def truncate_custom_objects
-    return "For MS account only" unless @user.account.id == 1
-    [@app_model, @sdk_model, @sdk_join_model, @app_ownership_model].each do |model|
-      puts "running #{model}"
-      qry = "select Id from #{model}"
-      results = @client.query(qry)
-      results.each do |i|
-        puts "destroying #{i.Id}"
-        i.destroy
-      end
-    end
-  end
-
 end
