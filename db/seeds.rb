@@ -48,9 +48,9 @@ account = Account.create(
   can_view_ios_live_scan: true,
   is_admin_account: true
 )
-user = User.create(email: 'juanca@mightysignal.com', account_id: account.id, password: '12345')
-user = User.create(email: 'julian@mightysignal.com', account_id: account.id, password: '12345')
-user = User.create(email: 'ryan@mightysignal.com', account_id: account.id, password: '12345')
+user = User.create(email: 'juanca@mightysignal.com', account_id: account.id, password: '12345', google_uid: 'xxxxxxxxxxxxxxx')
+user = User.create(email: 'julian@mightysignal.com', account_id: account.id, password: '12345', google_uid: 'xxxxxxxxxxxxxxx')
+user = User.create(email: 'ryan@mightysignal.com', account_id: account.id, password: '12345', google_uid: 'xxxxxxxxxxxxxxx')
 
 
 #

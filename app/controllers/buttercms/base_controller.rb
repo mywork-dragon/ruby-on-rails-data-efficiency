@@ -17,6 +17,9 @@ class Buttercms::BaseController < ActionController::Base
 
   def categories
     @categories = ButterCMS::Category.all
+  rescue => e
+    Bugsnag.notify(e)
+    []
   end
 
   def view_context
