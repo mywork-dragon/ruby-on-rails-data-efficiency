@@ -1,6 +1,8 @@
 class SalesforceExportService
   attr_reader :client, :metadata_client, :bulk_client, :update_records, :create_records, :upsert_records
 
+  PLATFORMS = ['ios', 'android'].freeze
+
   def initialize(user:, model_name: 'Account', logging: false)
     @user = user
     @account = @user.account
@@ -47,6 +49,8 @@ class SalesforceExportService
         Bugsnag.notify(exception)
       end
     end
+    
+    @apps_hot_store ||= AppHotStore.new
 
     @bulk_client = SalesforceBulkApi::Api.new(@client)
     @bulk_client.connection.set_status_throttle(30)
@@ -149,7 +153,7 @@ class SalesforceExportService
     end
   end
 
-  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: ['ios', 'android'], date: nil)
+  def sync_all_objects(batch_size: 50, batch_limit: nil, models: supported_models, platforms: PLATFORMS, date: nil)
     sync_models = models & supported_models
     sync_models.each do |model|
       @model_name = model
@@ -221,7 +225,8 @@ class SalesforceExportService
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
-      {label: 'Account Name', type: 'Lookup', fullName: "#{@app_model}.Account__c", referenceTo: 'Account', relationshipName: 'Apps'}
+      {label: 'Account Name', type: 'Lookup', fullName: "#{@app_model}.Account__c", referenceTo: 'Account', relationshipName: 'Apps'},
+      {label: 'Installed SDK Count', type: 'Number', precision: 18, scale: 0}
     ]
     new_fields.each do |field|
       add_custom_field(@app_model, field)
@@ -367,6 +372,9 @@ class SalesforceExportService
       mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
       mapping[IOS_RATINGS_COUNT] = {"id"=>"MightySignal_iOS_Ratings_Count__c", "name"=>"New Field: MightySignal iOS Ratings Count"}
       mapping[IOS_RATINGS_SCORE] = {"id"=>"MightySignal_iOS_Ratings_Score__c", "name"=>"New Field: MightySignal iOS Ratings Score"}
+      mapping[IOS_APP_COUNT] = {"id"=>'MightySignal_iOS_App_Count__c', "name"=>'MightySignal iOS App Count'}
+      mapping[IOS_SDK_COUNT] = {"id"=>'MightySignal_iOS_SDK_Count__c', "name"=>'MightySignal iOS SDK Count'}
+      mapping[IOS_MAU_COUNT] = {"id"=>'MightySignal_iOS_MAU_Count__c', "name"=>'MightySignal iOS MAU Count'}
     when 'android'
       mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
       #mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
@@ -375,6 +383,9 @@ class SalesforceExportService
       mapping[ANDROID_RATINGS_COUNT] = {"id"=>"MightySignal_Android_Ratings_Count__c", "name"=>"New Field: MightySignal Android Ratings Count"}
       mapping[ANDROID_RATINGS_SCORE] = {"id"=>"MightySignal_Android_Ratings_Score__c", "name"=>"New Field: MightySignal Android Ratings Score"}
       mapping[ANDROID_DOWNLOADS_COUNT] = {"id"=>"MightySignal_Android_Downloads_Count__c", "name"=>"New Field: MightySignal Android Downloads Count"}
+      mapping[ANDROID_APP_COUNT] = {"id"=>'MightySignal_Android_App_Count__c', "name"=>'MightySignal Android App Count'}
+      mapping[ANDROID_SDK_COUNT] = {"id"=>'MightySignal_Android_SDK_Count__c', "name"=>'MightySignal Android SDK Count'}
+      mapping[ANDROID_MAU_COUNT] = {"id"=>'MightySignal_Android_MAU_Count__c', "name"=>'MightySignal Android MAU Count'}
     end
 
     case @model_name
@@ -847,6 +858,12 @@ class SalesforceExportService
   IOS_RATINGS_SCORE = "MightySignal iOS Ratings Score"
   ANDROID_DOWNLOADS_COUNT = "MightySignal Android Downloads Count"
   ANDROID_RATINGS_SCORE = "MightySignal Android Ratings Score"
+  IOS_MAU_COUNT = "MightySignal iOS MAU Count"
+  ANDROID_MAU_COUNT = "MightySignal Android MAU Count"
+  IOS_APP_COUNT = "MightySignal iOS App Count"
+  ANDROID_APP_COUNT = "MightySignal Android App Count"
+  IOS_SDK_COUNT = "MightySignal iOS SDK Count"
+  ANDROID_SDK_COUNT = "MightySignal Android SDK Count"
 
   def data_fields(app: nil, publisher: nil)
     fields = {
@@ -865,7 +882,13 @@ class SalesforceExportService
       ANDROID_RATINGS_COUNT => {type: 'Number', label: 'MightySignal Android Ratings Count', precision: 18, scale: 0},
       IOS_RATINGS_SCORE => {type: 'Number', label: 'MightySignal iOS Ratings Score', precision: 18, scale: 2},
       ANDROID_RATINGS_SCORE => {type: 'Number', label: 'MightySignal Android Ratings Score', precision: 18, scale: 2},
-      ANDROID_DOWNLOADS_COUNT => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0}
+      ANDROID_DOWNLOADS_COUNT => {type: 'Number', label: 'MightySignal Android Downloads Count', precision: 18, scale: 0},
+      IOS_MAU_COUNT => {type: 'Number', label: 'MightySignal iOS MAU Count', precision: 18, scale: 0},
+      ANDROID_MAU_COUNT => {type: 'Number', label: 'MightySignal Android MAU Count', precision: 18, scale: 0},
+      IOS_APP_COUNT => {type: 'Number', label: 'MightySignal iOS App Count', precision: 18, scale: 0},
+      ANDROID_APP_COUNT => {type: 'Number', label: 'MightySignal Android App Count', precision: 18, scale: 0},
+      IOS_SDK_COUNT => {type: 'Number', label: 'MightySignal iOS SDK Count', precision: 18, scale: 0},
+      ANDROID_SDK_COUNT => {type: 'Number', label: 'MightySignal Android SDK Count', precision: 18, scale: 0},
     }
 
     publisher ||= app.try(:publisher)
@@ -881,6 +904,9 @@ class SalesforceExportService
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
         fields[IOS_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[IOS_RATINGS_SCORE][:data] = publisher.ratings_score
+        fields[IOS_APP_COUNT][:data] = publisher&.apps&.normal&.count.to_i
+        fields[IOS_MAU_COUNT][:data] = fields[IOS_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
+        fields[IOS_SDK_COUNT][:data] = count_sdks(publisher)
       when 'android'
         fields[ANDROID_PUB_ID][:data] = publisher.try(:id)
         #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
@@ -891,6 +917,9 @@ class SalesforceExportService
         fields[ANDROID_RATINGS_COUNT][:data] = publisher.ratings_all_count
         fields[ANDROID_DOWNLOADS_COUNT][:data] = publisher.downloads_count
         fields[ANDROID_RATINGS_SCORE][:data] = publisher.ratings_score
+        fields[ANDROID_APP_COUNT][:data] = publisher&.apps&.normal&.count.to_i
+        fields[ANDROID_MAU_COUNT][:data] = fields[ANDROID_APP_COUNT][:data].to_i > 0 ? count_total_mau(publisher) : ''
+        fields[ANDROID_SDK_COUNT][:data] = count_sdks(publisher)
       end
 
       fields[LAST_SYNCED][:data] = Date.today
@@ -1001,6 +1030,19 @@ class SalesforceExportService
     end
     text
   end
+  
+  def count_total_mau(publisher)
+    mau = 0
+    publisher.apps.normal.pluck(:id).each do |id|
+      app = @apps_hot_store.read(publisher.platform.to_s, id.to_i)
+      mau += app['mau'].to_i
+    end
+    mau
+  end
+  
+  def count_sdks(publisher)
+    publisher.tagged_sdk_summary.try(:[], :installed_sdks)&.count.to_i
+  end
 
   def h1_css
     "style='font-size: 14px;color:#3F4245;font-weight: 700;'"
@@ -1046,5 +1088,4 @@ class SalesforceExportService
     @client.authenticate!
     options[:session_id] = @client.options[:oauth_token]
   end
-
 end
