@@ -70,7 +70,7 @@ class GooglePlayChartWorker
 
   def validate!(rankings)
     rankings_list = rankings['rankings'].keys
-    raise InvalidRankings, "Expected >= 200 apps, got #{rankings_list.count}" if rankings_list.count < 200
+    raise InvalidRankings, "Expected >= 200 apps, got #{rankings_list.count}" if rankings_list.count < 50
   end
 
   def store_rankings(rankings)
