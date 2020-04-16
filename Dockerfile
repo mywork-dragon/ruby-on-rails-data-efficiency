@@ -13,10 +13,8 @@ RUN bundle config build.nokogiri --use-system-libraries &&\
 
 # install frontend dependencies
 RUN mkdir -p /tmp/frontend
-COPY frontend/package.json /tmp/frontend/package.json
-COPY frontend/yarn.lock /tmp/frontend/yarn.lock
-RUN cd /tmp/frontend && yarn install --frozen-lockfile
 COPY frontend /tmp/frontend
+RUN cd /tmp/frontend && yarn install --frozen-lockfile
 RUN cd /tmp/frontend && yarn build
 
 # copy in rest of code

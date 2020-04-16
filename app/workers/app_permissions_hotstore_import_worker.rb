@@ -7,9 +7,7 @@ class AppPermissionsHotstoreImportWorker
   end
 
   def perform(app_ids)
-    app_ids.each do |id|
-      @importer.import_ios(id)
-    end
+    app_ids.each { |id| @importer.import_ios(id) }
   end
 
   def queue_ios_apps

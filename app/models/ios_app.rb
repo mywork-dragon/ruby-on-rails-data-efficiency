@@ -25,6 +25,7 @@ class IosApp < ActiveRecord::Base
   class NoESData; end
 
   STORE = 'ios'.freeze
+  PLATFORM_NAME = 'ios'.freeze
 
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
@@ -77,6 +78,19 @@ class IosApp < ActiveRecord::Base
   enum source: [:epf_weekly, :ewok, :itunes_top_200, :epf_incremental, :ad_intel, :rankings]
 
   scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}
+
+  scope :relevant_since, ->(some_time_ago) do
+    joins(:newest_ios_app_snapshot)
+      .is_ios
+      .where.not(display_type: IosApp.display_types[:taken_down])
+      .where(
+        IosApp
+          .arel_table[:updated_at]
+          .gteq(some_time_ago)
+          .or( IosAppSnapshot.arel_table[:updated_at].gteq(some_time_ago) )
+      )
+  end
+
 
   ad_table :ios_fb_ads
   # update_index('apps#ios_app') { self } if Rails.env.production?
@@ -166,7 +180,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def self.platform
-    'ios'
+    PLATFORM_NAME
   end
 
 

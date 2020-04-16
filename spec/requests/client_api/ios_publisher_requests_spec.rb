@@ -16,11 +16,12 @@ describe "Ios Publisher", :type => :request do
   end
 
   within_subdomain :api do
+    let!(:contact) { create(:ios_developer) }
     it "returns the publisher contacts" do
-      FactoryGirl.create(:ios_developer)
+
       expected_result = ["clearbitId", "givenName", "familyName", "fullName", "title", "email", "linkedin"]
 
-      get "/ios/publisher/1/contacts", headers
+      get "/ios/publisher/#{contact.id}/contacts", headers
 
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)

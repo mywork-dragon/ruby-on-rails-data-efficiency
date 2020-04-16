@@ -1,5 +1,7 @@
 class PublisherHotStore < HotStore
 
+  KEY_TYPE = 'publisher'.freeze
+
   def initialize(redis_store: nil)
     super(redis_store: redis_store)
 
@@ -19,15 +21,15 @@ class PublisherHotStore < HotStore
   def write(platform, publisher_id)
     publisher_class = to_class(platform)
     publisher_attributes = publisher_class.find(publisher_id).hotstore_json
-    write_entry("publisher", platform, publisher_id, publisher_attributes)
+    write_entry(KEY_TYPE, platform, publisher_id, publisher_attributes)
   end
 
   def read(platform, publisher_id)
-    read_entry("publisher", platform, publisher_id)
+    read_entry(KEY_TYPE, platform, publisher_id)
   end
 
   def delete(platform, publisher_id)
-    delete_entry("publisher", platform, publisher_id)
+    delete_entry(KEY_TYPE, platform, publisher_id)
   end
 
 end
