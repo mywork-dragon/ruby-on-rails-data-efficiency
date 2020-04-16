@@ -36,15 +36,15 @@ class MajorAppHotStoreWriter
   end
 
   def write_major_publisher_tag
-    major_devs = (
+    major_publishers = (
       Tag.find_by(name: "Major Publisher")
         .android_developers +
       Tag.find_by(name: "Major Publisher")
         .ios_developers
     )
 
-    major_apps = major_devs.reduce([]) do |memo, dev|
-      memo.concat(dev.apps.relevant_since(AppHotStore::TIME_OF_RELEVANCE))
+    major_apps = major_publishers.reduce([]) do |memo, publisher|
+      memo.concat(publisher.apps.relevant_since(AppHotStore::TIME_OF_RELEVANCE))
     end
 
     send_to_hotstore(major_apps)
@@ -62,7 +62,7 @@ class MajorAppHotStoreWriter
     domain_linker = DomainLinker.new
     DomainDatum.where.not(:fortune_1000_rank => nil).uniq.map do |dd|
       domain_linker.domain_to_publisher(dd.domain).map do |publisher|
-        send_to_hotstore(publisher.apps) #TODO: Select relevan apps
+        send_to_hotstore(publisher.apps.relevant_since(AppHotStore::TIME_OF_RELEVANCE)) #TODO: Select relevan apps
         nil
       end
       nil

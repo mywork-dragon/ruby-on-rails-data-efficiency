@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'sidekiq/testing'
 
 describe ApplicationHotStoreImportWorker do
   context 'only process relevan apps' do
@@ -38,20 +39,24 @@ describe ApplicationHotStoreImportWorker do
 
 
     describe '.queue_android_apps' do
-      it 'queue relevant apps' do
-        expect_any_instance_of(described_class)
-        .to receive(:perform)
-        .with('android', relevant_android_apps.map(&:id))
-        subject.queue_android_apps
-      end
+        it 'queue relevant apps' do
+          Sidekiq::Testing.inline! do
+            expect_any_instance_of(described_class)
+            .to receive(:perform)
+            .with('android', relevant_android_apps.map(&:id))
+            subject.queue_android_apps
+          end
+        end
     end
 
     describe '.queue_ios_apps' do
       it 'queue relevant apps' do
-        expect_any_instance_of(described_class)
-        .to receive(:perform)
-        .with('ios', relevant_ios_apps.map(&:id))
-        subject.queue_ios_apps
+        Sidekiq::Testing.inline! do
+          expect_any_instance_of(described_class)
+          .to receive(:perform)
+          .with('ios', relevant_ios_apps.map(&:id))
+          subject.queue_ios_apps
+        end
       end
     end
   end
