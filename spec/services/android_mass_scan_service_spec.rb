@@ -9,7 +9,6 @@ describe AndroidMassScanService do
     before do
       allow(ApkSnapshotJob).to receive(:create!) { job_double }
       allow(ENV).to receive(:[]).with(anything).and_call_original
-      # allow(ENV).to receive(:[]).with('JOBS_PERFORM_INLINE') { false }
       allow(ENV).to receive(:[]).with('JOBS_PERFORM_INLINE').and_return(false)
     end
 

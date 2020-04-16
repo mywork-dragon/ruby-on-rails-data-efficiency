@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'sidekiq/testing'
 
 describe PublisherHotStoreImportWorker do
-  # subject { described_class.perform_async(platform, publisher_id) }
 
   describe '.perform' do
     let(:num_of_records){ 5 }
