@@ -6,7 +6,12 @@ describe AndroidMassScanService do
     let(:job_double_id)    { '123' }
     let(:job_double)       { instance_double(ApkSnapshotJob, id: job_double_id) }
 
-    before { allow(ApkSnapshotJob).to receive(:create!) { job_double } }
+    before do
+      allow(ApkSnapshotJob).to receive(:create!) { job_double }
+      allow(ENV).to receive(:[]).with(anything).and_call_original
+      # allow(ENV).to receive(:[]).with('JOBS_PERFORM_INLINE') { false }
+      allow(ENV).to receive(:[]).with('JOBS_PERFORM_INLINE').and_return(false)
+    end
 
     subject { described_class.run_recently_updated(automated: automated) }
 

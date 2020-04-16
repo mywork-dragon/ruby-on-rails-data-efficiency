@@ -12,7 +12,7 @@ describe ItunesChartsRankingsWorker do
     end
   end
 
-  context 'expecuting' do
+  context 'executing' do
     it do
       expect(ItunesTopChartsRankings).to receive(:request_for)
       Sidekiq::Testing.inline!{ subject }

@@ -46,7 +46,7 @@ class MajorAppHotStoreWriter
     major_apps = major_devs.reduce([]) do |memo, dev|
       memo.concat(dev.apps.relevant_since(AppHotStore::TIME_OF_RELEVANCE))
     end
-    
+
     send_to_hotstore(major_apps)
     true
   end
@@ -57,7 +57,7 @@ class MajorAppHotStoreWriter
   def write_fortune_1000
     # nils prevent returning which can cause OOM
 
-    #TODO: refactor to send only relevant apps
+    #TODO: refactor to send only relevant appStores
     # and use batches to query the db
     domain_linker = DomainLinker.new
     DomainDatum.where.not(:fortune_1000_rank => nil).uniq.map do |dd|

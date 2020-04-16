@@ -61,36 +61,5 @@ class MightyBot
   def access_token_secret
     ENV['TWITTER_BOT_ACCESS_TOKEN_SECRET'].to_s
   end
-  # def self.search_sdk_handles
-  #   regex = %r{https://www.twitter.com/([^/]+)}
-  #   IosSdk.select(:id, :name).joins(:tag_relationships).where(id: 67).each do |sdk|
-  #     matching_url = SdkService.google_search(q: sdk.name, site: 'twitter.com', limit: 10).find do |url|
-  #       regex.match(url)
-  #     end
-  #     next unless matching_url
-  #     handle = regex.match(matching_url)[1]
-  #     handle_row = TwitterHandle.find_or_create!(handle: handle)
-  #     OwnerTwitterHandle.create!(
-  #       owner: sdk,
-  #       twitter_handle: handle_row
-  #     )
-  #   end
-  # end
 
-  # def self.import(add: false)
-  #   contents = File.open('/tmp/list.txt') {|f| f.read }
-  #   lines = contents.split(/\n/)
-  #   lines.each do |line|
-  #     parts = line.split(/\t/)
-  #     next unless parts.count == 3
-  #     puts "#{parts.second} --> #{parts.third}"
-  #     next unless add
-  #     sdk = IosSdk.find(parts.first)
-  #     handle = TwitterHandle.find_or_create_by(handle: parts.third)
-  #     OwnerTwitterHandle.find_or_create_by(
-  #       owner: sdk,
-  #       twitter_handle: handle
-  #     )
-  #   end
-  # end
 end

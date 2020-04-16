@@ -153,7 +153,7 @@ describe MajorAppHotStoreWriter do
 
           end
 
-          xit 'sends alarm when too little apps'
+          xit 'sends alarm when too few apps'
         end
 
         context 'for ios' do
@@ -168,7 +168,7 @@ describe MajorAppHotStoreWriter do
               .map { |app| assert(platform, app) }
           end
 
-          xit 'sends alarm when too little apps'
+          xit 'sends alarm when too few apps'
         end
       end
 
