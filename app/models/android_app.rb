@@ -22,6 +22,7 @@ class AndroidApp < ActiveRecord::Base
   class NoESData; end
 
   STORE = 'google-play'.freeze
+  PLATFORM_NAME = 'android'.freeze
 
   validates :app_identifier, uniqueness: true
   validate :validate_regions
@@ -77,6 +78,20 @@ class AndroidApp < ActiveRecord::Base
   # update_index('apps#android_app') { self } if Rails.env.production?
 
   attr_writer :es_client
+
+  # Apps that are recent and not taken down
+  # "SELECT `android_apps`.* FROM `android_apps` INNER JOIN `android_app_snapshots` ON `android_app_snapshots`.`id` = `android_apps`.`newest_android_app_snapshot_id` WHERE (`android_apps`.`display_type` != 1) AND (`android_apps`.`updated_at` >= '2018-04-07 13:09:45' OR `android_app_snapshots`.`updated_at` >= '2018-04-07 13:09:45')"
+  # some_time_ago should be like `2.years.ago`
+  scope :relevant_since, ->(some_time_ago) do
+    joins(:newest_android_app_snapshot)
+      .where.not(display_type: AndroidApp.display_types[:taken_down])
+      .where(
+        AndroidApp
+          .arel_table[:updated_at]
+          .gteq(some_time_ago)
+          .or( AndroidAppSnapshot.arel_table[:updated_at].gteq(some_time_ago) )
+      )
+  end
 
   def store
     STORE
@@ -225,7 +240,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def self.platform
-    'android'
+    PLATFORM_NAME
   end
 
   def last_scanned
