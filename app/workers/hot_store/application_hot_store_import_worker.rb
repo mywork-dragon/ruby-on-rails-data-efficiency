@@ -16,6 +16,11 @@ class ApplicationHotStoreImportWorker
     hot_store.write(platform, application_ids)
   end
 
+  def queue_apps
+    queue_ios_apps
+    queue_android_apps
+  end
+
   def queue_ios_apps
     IosApp
       .relevant_since(HotStore::TIME_OF_RELEVANCE)
@@ -34,9 +39,6 @@ class ApplicationHotStoreImportWorker
     end
   end
 
-  def queue_apps
-    queue_ios_apps
-    queue_android_apps
-  end
+
 
 end
