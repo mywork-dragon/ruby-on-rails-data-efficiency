@@ -1,10 +1,16 @@
 class PublisherHotStoreImportWorker
   include Sidekiq::Worker
+  include Utils::Workers
   sidekiq_options queue: :hot_store_application_import, retry: 2
 
+  attr_reader :hs
+
+  def initialize
+    @hs = PublisherHotStore.new
+  end
+
   def perform(platform, publisher_id)
-    @hs ||= PublisherHotStore.new
-    @hs.write(platform, publisher_id)
+    hs.write(platform, publisher_id)
   end
 
   def queue_publishers
@@ -20,7 +26,7 @@ class PublisherHotStoreImportWorker
         # Returns [#<IosApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exception: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |iosd| self.class.perform_async('ios', iosd.id) }
+        group.each { |iosd| delegate_perform(self.class, 'ios', iosd.id) }
       end
   end
 
@@ -32,7 +38,7 @@ class PublisherHotStoreImportWorker
         # Returns [#<AndroidApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exeption: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |andrd| self.class.perform_async('android', andrd.id) }
+        group.each { |andrd| delegate_perform(self.class, 'android', andrd.id) }
       end
   end
 end

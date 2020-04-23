@@ -9,7 +9,7 @@ class ApplicationHotStoreImportWorker
   BATCH_SIZE = 500
 
   def initialize
-    @hot_store ||= AppHotStore.new
+    @hot_store = AppHotStore.new
   end
 
   def perform(platform, application_ids)
