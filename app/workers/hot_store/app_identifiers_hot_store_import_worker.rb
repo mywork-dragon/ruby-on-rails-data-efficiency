@@ -34,13 +34,22 @@ class AppIdentifiersHotStoreImportWorker
         delegate_perform(
           self.class,
           AndroidApp::PLATFORM_NAME,
-          group.map { |app| [app.app_identifier, app.id]} # TODO(Julian): identifier, id
+          group.map { |app| [app.app_identifier, app.id]}
         )
       end
   end
 
   def import_ios_map
+    table = IosApp.table_name
+    IosApp
+      .relevant_since(HotStore::TIME_OF_RELEVANCE)
+      .select("#{table}.app_identifier, #{table}.id")
+      .find_in_batches(batch_size: BATCH_SIZE) do |group|
+        delegate_perform(
+          self.class,
+          IosApp::PLATFORM_NAME,
+          group.map { |app| [app.app_identifier, app.id]}
+        )
+      end
   end
-
-
 end
