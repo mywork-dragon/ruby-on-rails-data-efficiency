@@ -31,11 +31,15 @@ module Varys
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.autoload_paths << "#{config.root}/app/services"
-    #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
 
     # Add all subdirectories in app/lib (note: not lib)
-    Dir.glob(Rails.root.join('app/lib/**/')).each do |folder|
+    Dir.glob(Rails.root.join('app/workers/**/*')).each do |folder|
+      config.autoload_paths << folder
+    end
+
+    # Add all subdirectories in app/lib (note: not lib)
+    Dir.glob(Rails.root.join('app/lib/**/*')).each do |folder|
       config.autoload_paths << folder
     end
 

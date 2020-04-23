@@ -6,6 +6,8 @@ class HotStore
   class MissingHotStoreField < RuntimeError; end
   class MalformedHotStoreField < RuntimeError; end
 
+  require_relative 'hot_store_thread_pool'
+
   @@STARTUP_NODES = [
     {:host => ENV['HOT_STORE_REDIS_URL'], :port => ENV['HOT_STORE_REDIS_PORT'] }
   ]
