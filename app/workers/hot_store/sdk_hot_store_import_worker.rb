@@ -20,13 +20,13 @@ class SdkHotStoreImportWorker
 
   def queue_ios_sdks
     IosSdk.pluck(:id).map do |id|
-      delegate_perform(self.class, 'ios', id)
+      delegate_perform(self.class, IosApp::PLATFORM_NAME, id)
     end
   end
 
   def queue_android_sdks
     AndroidSdk.pluck(:id).map do |id|
-      delegate_perform(self.class, 'android', id)
+      delegate_perform(self.class, AndroidApp::PLATFORM_NAME, id)
     end
   end
 

@@ -10,6 +10,7 @@ class PublisherHotStoreImportWorker
   end
 
   def perform(platform, publisher_id)
+    # TODO(Julian): Refactor this to use sidekiq batch and receive an array of ids.
     hs.write(platform, publisher_id)
   end
 
