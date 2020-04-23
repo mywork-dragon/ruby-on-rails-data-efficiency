@@ -14,7 +14,10 @@ class AppIdentifiersHotStoreImportWorker
     @hs = AppIdentifierHotStore.new
   end
 
-  def perform(platform, ids)
+  def perform(platform, ids_maps)
+    ids_maps.each do |map|
+      hs.write(platform, map.first, map.last)
+    end
   end
 
   def import_map
@@ -28,7 +31,11 @@ class AppIdentifiersHotStoreImportWorker
       .relevant_since(HotStore::TIME_OF_RELEVANCE)
       .select("#{table}.app_identifier, #{table}.id")
       .find_in_batches(batch_size: BATCH_SIZE) do |group|
-        delegate_perform(self.class, AndroidApp::PLATFORM_NAME, group.map(&:id))
+        delegate_perform(
+          self.class,
+          AndroidApp::PLATFORM_NAME,
+          group.map { |app| [app.app_identifier, app.id]} # TODO(Julian): identifier, id
+        )
       end
   end
 
