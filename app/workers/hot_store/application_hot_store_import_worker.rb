@@ -6,7 +6,7 @@ class ApplicationHotStoreImportWorker
 
   attr_reader :hot_store
 
-  BATCH_SIZE = 500
+  BATCH_SIZE = 1000
 
   def initialize
     @hot_store = AppHotStore.new

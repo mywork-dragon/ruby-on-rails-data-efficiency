@@ -5,6 +5,8 @@ class PublisherHotStoreImportWorker
 
   attr_reader :hs
 
+  BATCH_SIZE = 1000
+
   def initialize
     @hs = PublisherHotStore.new
   end
@@ -22,7 +24,7 @@ class PublisherHotStoreImportWorker
     IosApp.relevant_since(HotStore::TIME_OF_RELEVANCE)
       .joins(:ios_developer)
       .select('DISTINCT ios_developer_id as id')
-      .find_in_batches(start:1, batch_size: 1000) do |group|
+      .find_in_batches(start:1, batch_size: BATCH_SIZE) do |group|
         # Returns [#<IosApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exception: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
@@ -34,7 +36,7 @@ class PublisherHotStoreImportWorker
     AndroidApp.relevant_since(HotStore::TIME_OF_RELEVANCE)
       .joins(:android_developer)
       .select('DISTINCT android_developer_id as id')
-      .find_in_batches(start:1, batch_size: 1000) do |group|
+      .find_in_batches(start:1, batch_size: BATCH_SIZE) do |group|
         # Returns [#<AndroidApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exeption: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
