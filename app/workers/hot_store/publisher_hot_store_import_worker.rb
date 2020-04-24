@@ -9,9 +9,8 @@ class PublisherHotStoreImportWorker
     @hs = PublisherHotStore.new
   end
 
-  def perform(platform, publisher_id)
-    # TODO(Julian): Refactor this to use sidekiq batch and receive an array of ids.
-    hs.write(platform, publisher_id)
+  def perform(platform, publisher_ids)
+    publisher_ids.each { |publisher_id| hs.write(platform, publisher_id) }
   end
 
   def queue_publishers
@@ -27,7 +26,7 @@ class PublisherHotStoreImportWorker
         # Returns [#<IosApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exception: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |iosd| delegate_perform(self.class, 'ios', iosd.id) }
+        delegate_perform(self.class, IosApp::PLATFORM_NAME, group.map(&:id))
       end
   end
 
@@ -39,7 +38,7 @@ class PublisherHotStoreImportWorker
         # Returns [#<AndroidApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exeption: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |andrd| delegate_perform(self.class, 'android', andrd.id) }
+        delegate_perform(self.class, AndroidApp::PLATFORM_NAME, group.map(&:id))
       end
   end
 end
