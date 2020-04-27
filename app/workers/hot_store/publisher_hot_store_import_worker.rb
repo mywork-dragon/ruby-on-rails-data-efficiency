@@ -1,10 +1,18 @@
 class PublisherHotStoreImportWorker
   include Sidekiq::Worker
+  include Utils::Workers
   sidekiq_options queue: :hot_store_application_import, retry: 2
 
-  def perform(platform, publisher_id)
-    @hs ||= PublisherHotStore.new
-    @hs.write(platform, publisher_id)
+  attr_reader :hs
+
+  BATCH_SIZE = 1000
+
+  def initialize
+    @hs = PublisherHotStore.new
+  end
+
+  def perform(platform, publisher_ids)
+    publisher_ids.each { |publisher_id| hs.write(platform, publisher_id) }
   end
 
   def queue_publishers
@@ -16,11 +24,11 @@ class PublisherHotStoreImportWorker
     IosApp.relevant_since(HotStore::TIME_OF_RELEVANCE)
       .joins(:ios_developer)
       .select('DISTINCT ios_developer_id as id')
-      .find_in_batches(start:1, batch_size: 1000) do |group|
+      .find_in_batches(start:1, batch_size: BATCH_SIZE) do |group|
         # Returns [#<IosApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exception: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |iosd| self.class.perform_async('ios', iosd.id) }
+        delegate_perform(self.class, IosApp::PLATFORM_NAME, group.map(&:id))
       end
   end
 
@@ -28,11 +36,11 @@ class PublisherHotStoreImportWorker
     AndroidApp.relevant_since(HotStore::TIME_OF_RELEVANCE)
       .joins(:android_developer)
       .select('DISTINCT android_developer_id as id')
-      .find_in_batches(start:1, batch_size: 1000) do |group|
+      .find_in_batches(start:1, batch_size: BATCH_SIZE) do |group|
         # Returns [#<AndroidApp id: 1>, ...] but that's the developer id, not the app id. Hack to avoid:
         # RuntimeError Exeption: Primary key not included in the custom select clause
         # Trown by find_in_batches since we're only selecting the developer id
-        group.each { |andrd| self.class.perform_async('android', andrd.id) }
+        delegate_perform(self.class, AndroidApp::PLATFORM_NAME, group.map(&:id))
       end
   end
 end
