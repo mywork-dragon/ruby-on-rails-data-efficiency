@@ -5,13 +5,13 @@ describe PublisherHotStoreImportWorker do
 
   describe '.perform' do
     let(:num_of_records){ 5 }
+    let(:ids_array)     { [ *1..num_of_records ] }
     let(:platform)      { 'android' }
     let(:pub_hot_store) { instance_double(PublisherHotStore) }
-    let(:call_method)   { num_of_records.times { |i| subject.perform(platform, i) } }
+    let(:call_method)   { subject.perform(platform, ids_array)}
 
     before do
       allow(PublisherHotStore).to receive(:new) { pub_hot_store }
-      allow(pub_hot_store).to receive(:write)
     end
 
     it 'wites to the hotstore' do
@@ -23,59 +23,74 @@ describe PublisherHotStoreImportWorker do
     end
   end
 
-  describe '.queue_publishers' do
+  context 'queueing' do
 
-    let!(:relevant_ios_apps) do
-      create_list(:ios_app, 2,
-        updated_at: Date.today,
-        ios_developer: build(:ios_developer, id: 998)
-      )
-    end
+    describe '.queue_ios_publishers' do
+      let(:ios_publisers_ids) { [888, 889] }
 
-    let!(:relevant_android_apps) do
-      create_list(:android_app, 2,
-        updated_at: Date.today,
-        android_developer: build(:android_developer, id: 999)
-      )
-    end
+      let!(:relevant_ios_apps) do
+        create_list(:ios_app, 2,
+          updated_at: Date.today,
+          ios_developer: build(:ios_developer, id: ios_publisers_ids.first)
+        ) +
+          create_list(:ios_app, 2,
+            updated_at: Date.today,
+            ios_developer: build(:ios_developer, id: ios_publisers_ids.last)
+        )
+      end
 
-    before do
-      allow(subject).to receive(:perform)
+      before do
+        create_list(:ios_app, 2,
+          updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date,
+          newest_ios_app_snapshot: create(:ios_app_snapshot, updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date),
+          ios_developer: build(:ios_developer, id: 100)
+        )
+      end
 
-      # Not relevant apps. These apps where created and updated before relevance date.
-      create_list(:android_app, 2,
-        updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date,
-        newest_android_app_snapshot: create(:android_app_snapshot, updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date),
-        android_developer: build(:android_developer)
-      )
-
-      create_list(:ios_app, 2,
-        updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date,
-        newest_ios_app_snapshot: create(:ios_app_snapshot, updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date),
-        ios_developer: build(:ios_developer)
-      )
-    end
-
-    context 'ios publishers' do
-      it 'queues only relevant apps' do
-        assert_developer_for('ios')
+      it 'queues only relevant publishers' do
+        assert_developer_for(IosApp::PLATFORM_NAME, ios_publisers_ids)
         Sidekiq::Testing.inline!{ subject.queue_ios_publishers }
       end
     end
 
-    context 'android publishers' do
+
+    describe '.queue_android_publishers' do
+
+      let(:android_publishers_ids) { [998, 999] }
+
+      let!(:relevant_android_apps) do
+        create_list(:android_app, 2,
+          updated_at: Date.today,
+          android_developer: build(:android_developer, id: android_publishers_ids.first)
+        ) +
+          create_list(:android_app, 2,
+            updated_at: Date.today,
+            android_developer: build(:android_developer, id: android_publishers_ids.last)
+        )
+      end
+
+      before do
+        # Not relevant apps. These apps where created and updated before relevance date.
+        create_list(:android_app, 2,
+          updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date,
+          newest_android_app_snapshot: create(:android_app_snapshot, updated_at: (HotStore::TIME_OF_RELEVANCE - 2.days).to_date),
+          android_developer: build(:android_developer, id: 200)
+        )
+      end
+
       it 'queues only relevant apps' do
-        assert_developer_for('android')
+        assert_developer_for(AndroidApp::PLATFORM_NAME, android_publishers_ids)
         Sidekiq::Testing.inline!{ subject.queue_android_publishers }
       end
+
     end
 
-    def assert_developer_for(platform)
-      expect(described_class)
-        .to receive(:perform_async)
-        .with(platform, be >= 998) # makes sure are the right developers
-        .exactly(1).times #only one publisher with relevant apps
+    def assert_developer_for(platform, expected_array)
+      expect_any_instance_of(described_class)
+      .to receive(:perform)
+      .with(platform, expected_array)
     end
 
   end
+
 end
