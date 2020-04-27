@@ -27,8 +27,19 @@ private
     return @platform_to_class[platform]
   end
 
-  def key(type, platform, application_id)
-    "#{type}:#{platform}:#{application_id}"
+  def key(type, platform, key_id)
+    "#{type}:#{platform}:#{key_id}"
+  end
+
+  def write_flat_entry(type, platform, key_id, key_val)
+    entry_key = key(type, platform, key_id)
+
+    with_connection do |connection|
+      if connection.set(entry_key, key_val)
+        connection.expire(entry_key, EXPIRATION_TIME_IN_SECS)
+        true
+      end
+    end
   end
 
   def write_entry(type, platform, id, attributes, override_key: nil)

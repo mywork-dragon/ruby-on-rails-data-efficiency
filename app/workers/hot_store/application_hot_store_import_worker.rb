@@ -9,11 +9,16 @@ class ApplicationHotStoreImportWorker
   BATCH_SIZE = 500
 
   def initialize
-    @hot_store ||= AppHotStore.new
+    @hot_store = AppHotStore.new
   end
 
   def perform(platform, application_ids)
     hot_store.write(platform, application_ids)
+  end
+
+  def queue_apps
+    queue_ios_apps
+    queue_android_apps
   end
 
   def queue_ios_apps
@@ -21,8 +26,8 @@ class ApplicationHotStoreImportWorker
       .relevant_since(HotStore::TIME_OF_RELEVANCE)
       .select("#{IosApp.table_name}.id")
       .find_in_batches(batch_size: BATCH_SIZE) do |group|
-        delegate_perform(self.class, 'ios', group.map(&:id))
-    end
+        delegate_perform(self.class, IosApp::PLATFORM_NAME, group.map(&:id))
+      end
   end
 
   def queue_android_apps
@@ -30,13 +35,8 @@ class ApplicationHotStoreImportWorker
       .relevant_since(HotStore::TIME_OF_RELEVANCE)
       .select("#{AndroidApp.table_name}.id")
       .find_in_batches(batch_size: BATCH_SIZE) do |group|
-        delegate_perform(self.class, 'android', group.map(&:id))
-    end
-  end
-
-  def queue_apps
-    queue_ios_apps
-    queue_android_apps
+        delegate_perform(self.class, AndroidApp::PLATFORM_NAME, group.map(&:id))
+      end
   end
 
 end

@@ -3,9 +3,7 @@ require 'spec_helper'
 describe AppHotStore do
   let(:redis_cli) { Redis.new(:host => ENV['HOT_STORE_REDIS_URL'], :port => ENV['HOT_STORE_REDIS_PORT']) }
 
-  before do
-    redis_cli.flushall
-  end
+  before { redis_cli.flushall }
 
   describe ".write" do
     let(:platform) { 'android' }
@@ -23,6 +21,7 @@ describe AppHotStore do
       sleep(3)
       keys.each do |k|
         delta = redis_cli.ttl(k) - HotStore::EXPIRATION_TIME_IN_SECS
+        #It should be the same EXPIRATION_TIME_IN_SECS (less a minimum margin)
         expect(delta <= margin_error).to be true
       end
     end
