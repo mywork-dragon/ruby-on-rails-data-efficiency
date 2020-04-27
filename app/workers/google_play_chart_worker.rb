@@ -1,6 +1,6 @@
 class GooglePlayChartWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :google_play_charts, retry: false
 
   attr_writer :s3_client
@@ -18,11 +18,11 @@ class GooglePlayChartWorker
 
   def load_top_free
     rankings = latest_rankings
-    
+
     if already_processed?(rankings)
       msg = 'No new Google Play top free scrape available'
       puts msg
-      return Slackiq.message(msg, webhook_name: :main) 
+      return Slackiq.message(msg, webhook_name: :main)
     end
 
     validate!(rankings)
@@ -69,8 +69,9 @@ class GooglePlayChartWorker
   end
 
   def validate!(rankings)
+    list_count = 50
     rankings_list = rankings['rankings'].keys
-    raise InvalidRankings, "Expected >= 200 apps, got #{rankings_list.count}" if rankings_list.count < 50
+    raise InvalidRankings, "Expected >= #{list_count} apps, got #{rankings_list.count}" if rankings_list.count < list_count
   end
 
   def store_rankings(rankings)
@@ -129,5 +130,5 @@ class GooglePlayChartWorker
     android_app_ids = options['android_app_ids'].map(&:to_i)
     update_developers(android_app_ids)
   end
-  
+
 end
