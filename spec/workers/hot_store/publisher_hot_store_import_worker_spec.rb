@@ -23,7 +23,7 @@ describe PublisherHotStoreImportWorker do
     end
   end
 
-  context 'queuing' do
+  context 'queueing' do
 
     describe '.queue_ios_publishers' do
       let(:ios_publisers_ids) { [888, 889] }
@@ -56,16 +56,16 @@ describe PublisherHotStoreImportWorker do
 
     describe '.queue_android_publishers' do
 
-      let(:android_publisers_ids) { [998, 999] }
+      let(:android_publishers_ids) { [998, 999] }
 
       let!(:relevant_android_apps) do
         create_list(:android_app, 2,
           updated_at: Date.today,
-          android_developer: build(:android_developer, id: android_publisers_ids.first)
+          android_developer: build(:android_developer, id: android_publishers_ids.first)
         ) +
           create_list(:android_app, 2,
             updated_at: Date.today,
-            android_developer: build(:android_developer, id: android_publisers_ids.last)
+            android_developer: build(:android_developer, id: android_publishers_ids.last)
         )
       end
 
@@ -79,7 +79,7 @@ describe PublisherHotStoreImportWorker do
       end
 
       it 'queues only relevant apps' do
-        assert_developer_for(AndroidApp::PLATFORM_NAME, android_publisers_ids)
+        assert_developer_for(AndroidApp::PLATFORM_NAME, android_publishers_ids)
         Sidekiq::Testing.inline!{ subject.queue_android_publishers }
       end
 
