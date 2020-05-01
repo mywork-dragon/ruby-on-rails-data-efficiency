@@ -82,7 +82,7 @@
       .description-container.col-md-6.col-xs-12
         h3.app-page-h3 Description
         .description-body
-          = @json_app['description']
+          = @json_app['description'].html_safe
       - if @json_app['publisher'].present?
         .col-md-6.col-xs-12
           .publisher-panel
