@@ -13,7 +13,7 @@ class Activity < ActiveRecord::Base
   has_many :weekly_batches_activities, dependent: :destroy
   has_many :weekly_batches, through: :weekly_batches_activities
 
-  TWITTER_BLACKLIST = Rails.env.production? ? ['IosSdk:200', 'AndroidSdk:442'] : ['IosSdk:2', 'AndroidSdk:4']
+  TWITTER_BLACKLIST = ['AppsFlyer']
 
   def self.log_activity(activity_type, time, *owners)
     # create activity, could pass in data in the future
@@ -81,9 +81,12 @@ class Activity < ActiveRecord::Base
 
   def should_notify?
     should_notify = false
-    blacklist = TWITTER_BLACKLIST.map do |object|
-      class_name,id = object.split(':')
-      class_name.constantize.find(id)
+    blacklist = []
+    TWITTER_BLACKLIST.each do |sdk_name|
+      ['IosSdk', 'AndroidSdk'].map do |class_name|
+        sdk = class_name.constantize.find_by_name(sdk_name)
+        blacklist << sdk if sdk.present?
+      end
     end
 
     self.weekly_batches.each do |batch|
