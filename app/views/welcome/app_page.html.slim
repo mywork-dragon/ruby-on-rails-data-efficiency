@@ -94,7 +94,7 @@
               | Number of Apps: #{@json_publisher['apps'].size}, including
             .pub-apps
               - @top_apps.each do |app|
-                a.app-logo-link href=app_page_path(@platform, app['app_identifier'])
+                a.app-logo-link href=(app_page_path(@platform, app['app_identifier']))
                   img.app-logo.sm-logo src=app['icon_url'].to_s alt=app['name'].to_s
             | Latest Update/Release: #{ @latest_update } days ago
 
