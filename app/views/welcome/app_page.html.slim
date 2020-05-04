@@ -1,6 +1,33 @@
 - provide :title, "#{@json_app['name']} App and SDK intelligence"
 - provide :meta_description, "The #{@json_app['name']} app on #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'} has installed #{@sdks_installed} SDKs and uninstalled #{@sdks_uninstalled} SDKs. MightySignal last scanned it #{ time_ago_in_words(@json_app['last_scanned_date']) } ago."
 
+- content_for :json_ld do
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+      "@type": "MobileApplication",
+      "image": "#{@json_app['icon_url']}",
+      "name": "#{@json_app['name']}",
+      "author": {
+        "@type": "Organization",
+        "url": "#{@json_publisher['websites'].first}",
+        "name": "#{@json_app['publisher']['name']}"
+      },
+    "aggregateRating": {
+      "@type" : "AggregateRating",
+      "ratingValue" : "#{@json_app['all_version_rating']}",
+      "bestRating" : "5",
+      "ratingCount" : "#{@json_app['all_version_ratings_count']}"
+    },
+    "datePublished": "#{@json_app['current_version_release_date'].strftime('%F')",
+    "operatingSystem": "#{@platform}",
+    "interactionCount" : "#{@json_app['downloads_max']",
+    "contentRating" : "#{@json_app['content_rating']",
+    "description" : "#{@json_app['description'].html_safe}",
+    "applicationCategory" : "http://schema.org/GameApplication"
+  }
+  </script>
+
 #large-header.app-page-content
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
