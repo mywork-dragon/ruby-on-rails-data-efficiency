@@ -1,7 +1,7 @@
 - provide :title, "#{@json_app['name']} App and SDK intelligence"
 - provide :meta_description, "The #{@json_app['name']} app on #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'} has installed #{@sdks_installed} SDKs and uninstalled #{@sdks_uninstalled} SDKs. MightySignal last scanned it #{ time_ago_in_words(@json_app['last_scanned_date']) } ago."
 
-- content_for :json_ld do
+- content_for :ld_json do
   <script type="application/ld+json">
   {
     "@context": "http://schema.org",
@@ -10,8 +10,8 @@
       "name": "#{@json_app['name']}",
       "author": {
         "@type": "Organization",
-        "url": "#{@json_publisher['websites'].first}",
-        "name": "#{@json_app['publisher']['name']}"
+        "url": "#{@json_publisher['websites'].present? ? @json_publisher['websites'].first}",
+        "name": "#{@json_app['publisher'].present? ? @json_app['publisher']['name']}"
       },
     "aggregateRating": {
       "@type" : "AggregateRating",
@@ -19,11 +19,11 @@
       "bestRating" : "5",
       "ratingCount" : "#{@json_app['all_version_ratings_count']}"
     },
-    "datePublished": "#{@json_app['current_version_release_date'].strftime('%F')",
+    "datePublished": "#{@json_app['current_version_release_date'].present? ? @json_app['current_version_release_date'].strftime('%F')",
     "operatingSystem": "#{@platform}",
     "interactionCount" : "#{@json_app['downloads_max']",
     "contentRating" : "#{@json_app['content_rating']",
-    "description" : "#{@json_app['description'].html_safe}",
+    "description" : "#{{@json_app['description']}}",
     "applicationCategory" : "http://schema.org/GameApplication"
   }
   </script>
