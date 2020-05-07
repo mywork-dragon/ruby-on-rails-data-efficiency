@@ -5,8 +5,8 @@
   | <script type="application/ld+json">
     { "@context": "http://schema.org",
       "@type": "MobileApplication",
-      "image": "#{@json_app['icon_url']}",
-      "name": "#{@json_app['name']}",
+      "image": "#{@json_app['icon_url'].to_s}",
+      "name": "#{@json_app['name'].to_s}",
       "author": {
         "@type": "Organization",
         "url": "#{@json_publisher['websites'].present? ? @json_publisher['websites'].first.to_s : '' }",
@@ -14,15 +14,15 @@
       },
       "aggregateRating": {
         "@type" : "AggregateRating",
-        "ratingValue" : "#{@json_app['all_version_rating']}",
+        "ratingValue" : "#{@json_app['all_version_rating'].to_s}",
         "bestRating" : "5",
-        "ratingCount" : "#{@json_app['all_version_ratings_count']}"
+        "ratingCount" : "#{@json_app['all_version_ratings_count'].to_s}"
       },
-      "datePublished": "#{@json_app['current_version_release_date']}",
-      "operatingSystem": "#{@platform}",
-      "interactionCount" : "#{@json_app['downloads_max']}",
-      "contentRating" : "#{@json_app['content_rating']}",
-      "description" : "#{@json_app['description']}",
+      "datePublished": "#{@json_app['current_version_release_date'].to_s}",
+      "operatingSystem": "#{@platform.to_s}",
+      "interactionCount" : "#{@json_app['downloads_max'].to_s}",
+      "contentRating" : "#{@json_app['content_rating'].to_s}",
+      "description" : "#{@json_app['description'].to_s}",
       "applicationCategory" : "http://schema.org/GameApplication" }
     </script>
 
@@ -38,13 +38,13 @@
           h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'] 
         .app-header-details
           .col-12
-            | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
+            | Platform: #{@json_app['platform'].to_s == 'ios' ? 'iOS' : 'Android'}
           .col-12
-            | App ID: #{@app.app_identifier}
+            | App ID: #{@app.app_identifier.to_s}
           .col-12
-            | Price: #{(@json_app['price'] > 0 ? @json_app['price'] : 'Free') rescue '' }
+            | Price: #{(@json_app['price'].to_i > 0 ? @json_app['price'].to_s : 'Free') rescue '' }
           .col-12
-            | Category: #{@categories.andand.join(', ')}
+            | Category: #{@categories.andand.join(', ').to_s}
           - if @json_app['taken_down']
             .col-12.taken-down-label
               span.label.label-warning
