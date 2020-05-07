@@ -535,6 +535,10 @@ curl "https://api.mightysignal.com/ios/publisher/207911"
       "http://www.shazam.com",
       "http://www.shazam.com/music/web/faqs.html?platform=iPhone"
    ],
+    "apps" : [
+      { "id" : "234", "bundle_id" : "com.bundle.id1" },
+      { "id" : "567", "bundle_id" : "com.bundle.id2" }
+   ],
    "name" : "Shazam Entertainment Limited",
    "platform" : "ios",
    "id" : 207911,

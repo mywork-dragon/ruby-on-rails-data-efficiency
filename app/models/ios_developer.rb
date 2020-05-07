@@ -39,6 +39,10 @@ class IosDeveloper < ActiveRecord::Base
   def website_urls
     websites.map(&:url).uniq
   end
+  
+  def active_apps
+    ios_apps.normal.map{ |a| { id: a.id, bundle_id: a.app_identifier }}
+  end
 
   def developer_info
     websites.map(&:domain_datum).uniq.compact
@@ -70,6 +74,7 @@ class IosDeveloper < ActiveRecord::Base
     data = developer_json
     data[:details] = developer_info unless options[:short_form]
     data[:websites] = website_urls unless options[:short_form]
+    data[:apps] = active_apps unless options[:short_form]
     data
   end
 
