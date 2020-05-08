@@ -36,13 +36,13 @@ SitemapGenerator::Sitemap.create do
   end
   
   group(:sitemaps_path => 'ios_sdks/', :filename => :ios_sdks, :changefreq => 'monthly', :priority => 0.8) do
-    IosSdk.find_each do |sdk|
+    IosSdk.active.find_each do |sdk|
       add sdk_page_path('ios', sdk.id, sdk.name.to_s.parameterize)
     end
   end
   
   group(:sitemaps_path => 'android_sdks/', :filename => :android_sdks, :changefreq => 'monthly', :priority => 0.8) do
-    AndroidSdk.find_each do |sdk|
+    AndroidSdk.where(flagged: false).find_each do |sdk|
       add sdk_page_path('android', sdk.id, sdk.name.to_s.parameterize)
     end
   end
@@ -55,13 +55,13 @@ SitemapGenerator::Sitemap.create do
   end
   
   group(:sitemaps_path => 'ios_apps/', :filename => :ios_apps, :changefreq => 'weekly', :priority => 0.6) do
-    IosApp.each do |id|
+    IosApp.normal.elite.where.not(newest_ipa_snapshot: nil).find_each do |id|
       add "/a/ios/#{id}"
     end
   end
   
   group(:sitemaps_path => 'android_apps/', :filename => :android_apps, :changefreq => 'weekly', :priority => 0.6) do
-    AndroidApp.each do |id|
+    AndroidApp.normal.elite.where.not(newest_apk_snapshot: nil).find_each do |id|
       add "/a/android/#{id}"
     end
   end

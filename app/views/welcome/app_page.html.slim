@@ -1,3 +1,31 @@
+- provide :title, "#{@json_app['name']} App and SDK intelligence"
+- provide :meta_description, "The #{@json_app['name']} app on #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'} has installed #{@sdks_installed} SDKs and uninstalled #{@sdks_uninstalled} SDKs. MightySignal last scanned it #{ time_ago_in_words(@json_app['last_scanned_date']) } ago."
+
+- content_for :ld_json do
+  | <script type="application/ld+json">
+    { "@context": "http://schema.org",
+      "@type": "MobileApplication",
+      "image": "#{@json_app['icon_url'].to_s}",
+      "name": "#{@json_app['name'].to_s}",
+      "author": {
+        "@type": "Organization",
+        "url": "#{@json_publisher['websites'].present? ? @json_publisher['websites'].first.to_s : '' }",
+        "name": "#{@json_app['publisher'].present? ? @json_app['publisher']['name'].to_s : '' }"
+      },
+      "aggregateRating": {
+        "@type" : "AggregateRating",
+        "ratingValue" : "#{@json_app['all_version_rating'].to_s}",
+        "bestRating" : "5",
+        "ratingCount" : "#{@json_app['all_version_ratings_count'].to_s}"
+      },
+      "datePublished": "#{@json_app['current_version_release_date'].to_s}",
+      "operatingSystem": "#{@platform.to_s}",
+      "interactionCount" : "#{@json_app['downloads_max'].to_s}",
+      "contentRating" : "#{@json_app['content_rating'].to_s}",
+      "description" : "#{@json_app['description'].to_s}",
+      "applicationCategory" : "http://schema.org/GameApplication" }
+    </script>
+
 #large-header.app-page-content
   .container.app-header
     canvas#demo-canvas.app-canvas.hidden-xs
@@ -10,13 +38,13 @@
           h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'] 
         .app-header-details
           .col-12
-            | Platform: #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'}
+            | Platform: #{@json_app['platform'].to_s == 'ios' ? 'iOS' : 'Android'}
           .col-12
-            | App ID: #{@app.app_identifier}
+            | App ID: #{@app.app_identifier.to_s}
           .col-12
-            | Price: #{(@json_app['price'] > 0 ? @json_app['price'] : 'Free') rescue '' }
+            | Price: #{(@json_app['price'].to_i > 0 ? @json_app['price'].to_s : 'Free') rescue '' }
           .col-12
-            | Category: #{@categories.andand.join(', ')}
+            | Category: #{@categories.andand.join(', ').to_s}
           - if @json_app['taken_down']
             .col-12.taken-down-label
               span.label.label-warning
@@ -82,16 +110,16 @@
       .description-container.col-md-6.col-xs-12
         h3.app-page-h3 Description
         .description-body
-          = @json_app['description']
+          = @json_app['description'].to_s.html_safe
       - if @json_app['publisher'].present?
         .col-md-6.col-xs-12
           .publisher-panel
-            h4.app-page-h4 Publisher: #{@json_app['publisher']['name']}
+            h4.app-page-h4 Publisher: #{@json_app['publisher'].present? ? @json_app['publisher']['name'] : ''}
             .pub-app.s-title
               | Number of Apps: #{@json_publisher['apps'].size}, including
             .pub-apps
-              - @top_apps.each do |app|
-                a.app-logo-link href=app['public_link'].to_s
+              - @top_apps.select{ |app| app['app_identifier'].present? }.each do |app|
+                a.app-logo-link href=(app_page_path(@platform, app['app_identifier']))
                   img.app-logo.sm-logo src=app['icon_url'].to_s alt=app['name'].to_s
             | Latest Update/Release: #{ @latest_update } days ago
 
