@@ -5,24 +5,24 @@
   | <script type="application/ld+json">
     { "@context": "http://schema.org",
       "@type": "MobileApplication",
-      "image": @json_app['icon_url'].to_s,
-      "name": @json_app['name'].to_s,
+      "image": "#{@json_app['icon_url'].to_s}",
+      "name": "#{@json_app['name'].to_s}",
       "author": {
         "@type": "Organization",
-        "url": @json_publisher['websites'].present? ? @json_publisher['websites'].first.to_s : '',
-        "name": @json_app['publisher'].present? ? @json_app['publisher']['name'].to_s : ''
+        "url": "#{@json_publisher['websites'].present? ? @json_publisher['websites'].first.to_s : '' }",
+        "name": "#{@json_app['publisher'].present? ? @json_app['publisher']['name'].to_s : '' }"
       },
       "aggregateRating": {
         "@type" : "AggregateRating",
-        "ratingValue" : @json_app['all_version_rating'].to_s,
+        "ratingValue" : "#{@json_app['all_version_rating'].to_s}",
         "bestRating" : "5",
-        "ratingCount" : @json_app['all_version_ratings_count'].to_s
+        "ratingCount" : "#{@json_app['all_version_ratings_count'].to_s}"
       },
-      "datePublished": @json_app['current_version_release_date'].to_s,
-      "operatingSystem": @platform.to_s,
-      "interactionCount" : @json_app['downloads_max'].to_s,
-      "contentRating" : @json_app['content_rating'].to_s,
-      "description" : @json_app['description'].to_s,
+      "datePublished": "#{@json_app['current_version_release_date'].to_s}",
+      "operatingSystem": "#{@platform.to_s}",
+      "interactionCount" : "#{@json_app['downloads_max'].to_s}",
+      "contentRating" : "#{@json_app['content_rating'].to_s}",
+      "description" : "#{@json_app['description'].to_s}",
       "applicationCategory" : "http://schema.org/GameApplication" }
     </script>
 
@@ -35,14 +35,14 @@
         #app-name
           h1.px-3.py-0 = @json_app['name']
         - if @json_app['publisher'].present?
-          h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'].to_s 
+          h3.app-page-h3.px-3.py-0 = @json_app['publisher']['name'] 
         .app-header-details
           .col-12
             | Platform: #{@json_app['platform'].to_s == 'ios' ? 'iOS' : 'Android'}
           .col-12
             | App ID: #{@app.app_identifier.to_s}
           .col-12
-            | Price: #{(@json_app['price'].to_i > 0 ? @json_app['price'].to_s : 'Free') rescue ''}
+            | Price: #{(@json_app['price'].to_i > 0 ? @json_app['price'].to_s : 'Free') rescue '' }
           .col-12
             | Category: #{@categories.andand.join(', ').to_s}
           - if @json_app['taken_down']
