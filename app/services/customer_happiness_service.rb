@@ -1,4 +1,17 @@
 class CustomerHappinessService
+  extend Utils::Workers
+
+  class << self
+
+    def users_last_used_events(how_long_ago)
+      self.new.users_last_used_events(how_long_ago)
+    end
+
+    def pull_mixpanel_data(from_date = 7.days.ago.to_date)
+      delegate_perform(MixpanelPullWorker, from_date)
+    end
+
+  end
 
   # Call this to get the hash of users, their events, and when they were last used
   def users_last_used_events(how_long_ago)
@@ -25,7 +38,7 @@ class CustomerHappinessService
       date = Time.at(epoch_time).to_date
 
       date_current = ulue[email][feature]
-   
+
       ulue[email][feature] = date if date_current.nil? || date > date_current
     end
 
@@ -68,15 +81,4 @@ class CustomerHappinessService
     event_to_feature_h
   end
 
-  class << self
-
-    def users_last_used_events(how_long_ago)
-      self.new.users_last_used_events(how_long_ago)
-    end
-
-    def pull_mixpanel_data(from_date = 7.days.ago.to_date)
-      MixpanelPullWorker.perform_async(from_date)
-    end
-
-  end
 end

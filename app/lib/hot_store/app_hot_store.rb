@@ -1,6 +1,8 @@
 class AppHotStore < HotStore
   class Unexpected < RuntimeError; end
 
+  KEY_TYPE = 'app'.freeze
+
   @@APP_FIELDS_TO_DELETE = {
     "ios" => [ "first_seen_ads_date", "last_seen_ads_date", "has_ad_spend" ],
     "android" => [ "first_seen_ads_date", "last_seen_ads_date" ]
@@ -66,7 +68,7 @@ class AppHotStore < HotStore
       delete_app_fields(platform, app_attributes)
 
       begin
-        write_entry("app", platform, app_id, app_attributes)
+        write_entry(KEY_TYPE, platform, app_id, app_attributes)
       rescue HotStore::MissingHotStoreField => e
         Bugsnag.notify(e)
       end
@@ -83,7 +85,7 @@ class AppHotStore < HotStore
     attributes["platform"] = platform
     attributes["app_identifier"] = app_identifier
 
-    write_entry("app", platform, app_id, attributes)
+    write_entry(KEY_TYPE, platform, app_id, attributes)
   end
 
   def write_ad_summary(app_id, app_identifier, platform, ad_summary)
@@ -95,11 +97,11 @@ class AppHotStore < HotStore
   end
 
   def read(platform, app_id)
-    read_entry("app", platform, app_id)
+    read_entry(KEY_TYPE, platform, app_id)
   end
 
   def delete(platform, app_id)
-    delete_entry("app", platform, app_id)
+    delete_entry(KEY_TYPE, platform, app_id)
   end
 
 private
