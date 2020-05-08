@@ -6,7 +6,8 @@
   meta name="twitter:image:alt" content="#{og_image_url(yield(:og_image))}"
   meta name="keywords" content="SDK intelligence, App insights, App intelligence, App rank, App usage, App revenue, App downloads, App engagement, App advertising, App marketing, App strategy, App competitors, App demographics, App performance, Top app releases, Top new apps, MAU, DAU, App SDK, App attribution, App analytics, App publishers"
   meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token"
-
+  = yield :ld_json
+  
 - content_for :own_links do
   link data-turbolinks-track="true" href="/lib/marketing.css" media="all" rel="stylesheet"
   link data-turbolinks-track="true" href="/lib/cookies_eu.css" media="all" rel="stylesheet"

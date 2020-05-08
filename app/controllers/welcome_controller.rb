@@ -112,10 +112,9 @@ class WelcomeController < ApplicationController
     @app = "#{@platform.capitalize}App".constantize.find_by!(app_identifier: app_identifier)
     @json_app = apps_hot_store.read(@platform, @app.id)
     @json_publisher = publisher_hot_store.read(@platform, @app&.publisher&.id)
-    if @app.present? && !@app.taken_down? && @json_app.present? && @json_publisher.present?
-      @top_apps = select_top_apps_from(@json_publisher['apps'], 5)
-      most_recent_app = select_most_recent_app_from(@json_publisher['apps'])
-      @last_update_date = latest_release_of(most_recent_app).to_date
+    if @app.present? && !@app.taken_down? && @json_app.present?
+      @top_apps = @json_publisher.present? ? select_top_apps_from(@json_publisher['apps'], 5) : []
+      @last_update_date = latest_release_of(@app).to_date
       @latest_update = (Date.current - @last_update_date).to_i
       @sdks = @json_app['sdk_activity']
       @sdk_installed = @sdks.count {|sdk| sdk['installed']}
