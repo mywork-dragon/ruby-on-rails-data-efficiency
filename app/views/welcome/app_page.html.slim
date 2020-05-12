@@ -1,5 +1,5 @@
 - provide :title, "#{@json_app['name']} App and SDK intelligence"
-- provide :meta_description, "The #{@json_app['name']} app on #{@json_app['platform'] == 'ios' ? 'iOS' : 'Android'} has installed #{@sdks_installed} SDKs and uninstalled #{@sdks_uninstalled} SDKs. MightySignal last scanned it #{ time_ago_in_words(@json_app['last_scanned_date']) } ago."
+- provide :meta_description, "The #{@json_app['name']} app on #{@json_app['platform'].to_s == 'ios' ? 'iOS' : 'Android'} has installed #{@sdks_installed} SDKs and uninstalled #{@sdks_uninstalled} SDKs."
 
 - content_for :ld_json do
   | <script type="application/ld+json">
