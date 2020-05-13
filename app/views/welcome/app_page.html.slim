@@ -14,9 +14,9 @@
       },
       "aggregateRating": {
         "@type" : "AggregateRating",
-        "ratingValue" : "#{@json_app['all_version_rating'].to_s}",
-        "bestRating" : "5",
-        "ratingCount" : "#{@json_app['all_version_ratings_count'].to_s}"
+        "ratingValue" : #{@json_app['all_version_rating'].to_i},
+        "bestRating" : 5,
+        "ratingCount" : #{@json_app['all_version_ratings_count'].to_i}
       },
       "datePublished": "#{@json_app['current_version_release_date'].to_s}",
       "operatingSystem": "#{@platform.to_s}",
