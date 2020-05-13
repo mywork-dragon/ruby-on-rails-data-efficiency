@@ -14,9 +14,9 @@
       },
       "aggregateRating": {
         "@type" : "AggregateRating",
-        "ratingValue" : #{@json_app['all_version_rating'].to_i},
+        "ratingValue" : #{@json_app['all_version_rating'].to_i > 0 ? @json_app['all_version_rating'].to_i : 1 },
         "bestRating" : 5,
-        "ratingCount" : #{@json_app['all_version_ratings_count'].to_i}
+        "ratingCount" : #{@json_app['all_version_ratings_count'].to_i > 0 ? @json_app['all_version_ratings_count'].to_i : 1 }
       },
       "datePublished": "#{@json_app['current_version_release_date'].to_s}",
       "operatingSystem": "#{@platform.to_s}",
