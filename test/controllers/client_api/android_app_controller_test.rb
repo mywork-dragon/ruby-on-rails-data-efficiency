@@ -6,6 +6,7 @@ class ClientApi::AndroidAppControllerTest < ActionController::TestCase
   def setup
     ApplicationController.any_instance.stub(:limit_client_api_call) { true }
     ApiRequestAnalytics.any_instance.stub(:log_request) { true }
+    AndroidApp.any_instance.stub(:es_info) { AndroidApp::NoESData }
     @app = AndroidApp.create!(app_identifier: 'com.mighty.fun')
   end
 

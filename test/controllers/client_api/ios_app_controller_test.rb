@@ -6,6 +6,7 @@ class ClientApi::IosAppControllerTest < ActionController::TestCase
   def setup
     ApplicationController.any_instance.stub(:limit_client_api_call) { true }
     ApiRequestAnalytics.any_instance.stub(:log_request) { true }
+    IosApp.any_instance.stub(:es_info) { IosApp::NoESData }
     @app = IosApp.create!(app_identifier: 123)
   end
 
