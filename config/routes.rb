@@ -302,7 +302,7 @@ Rails.application.routes.draw do
       # app
       get 'ios/app' => 'ios_app#filter'
       get 'android/app' => 'android_app#filter'
-      get 'ios/app/id/:app_identifier' => 'ios_app#show'
+      get 'ios/app/id/:id' => 'ios_app#show'
       get 'ios/app/:app_identifier' => 'ios_app#show'
 
       get 'android/app_classes/:id' => 'android_app#show_classes'
