@@ -6,6 +6,23 @@
   script src="//www.gstatic.com/charts/loader.js"
   javascript: 
     Chartkick.CustomChart = function (element, dataSource, options) {};
+    
+- content_for :ld_json do
+  | <script type="application/ld+json">
+    { "@context": "http://schema.org",
+      "@type": "MobileApplication",
+      "image": "#{@json_sdk['icon'].to_s}",
+      "name": "#{@sdk.name.to_s}",
+      "author": {
+        "@type": "Organization",
+        "url": "#{@json_sdk['website']}",
+        "name": "#{@sdk.name.to_s}"
+      },
+      "operatingSystem": "#{@sdk.platform.to_s}",
+      "interactionCount" : #{@apps_installed_now.to_i},
+      "description" : "#{@json_sdk['summary'].to_s}",
+      "applicationCategory" : "http://schema.org/GameApplication" }
+    </script>
 
 #sdk-page.content
   .heading
@@ -41,7 +58,7 @@
         img src="/lib/images/sdk_pages/top-200.png" alt="Top 200 Apps"
         .top-200-stats
           p.total-apps #{number_with_delimiter(@sdk.top_200_apps.size)}
-          p.total-of-top-200 apps in the #{link_to 'top 200', top_ios_apps_path, target: '_blank'} apps
+          p.total-of-top-200 apps in the #{link_to 'top 200', (@sdk.platform=='ios' ? top_ios_apps_path : top_android_apps_path), target: '_blank'} apps
       p.top-200-text #{@sdk.name} has #{number_to_percentage((@sdk.top_200_apps.size/ 200.0) * 100, precision: 0)} of the top 200 apps, for a total of #{@sdk.top_200_apps.size} apps.
     = render "welcome/sdk_pages/list_partial", tag_id: 'top-apps', input_data_type: 'app', title: 'Top Apps', item_list: @top_8_apps, platform: @sdk.platform if @top_8_apps.size > 0
     = render "welcome/sdk_pages/list_partial", tag_id: 'similar-sdk', input_data_type: 'array-sdk', title: "Usually Installed With", item_list: @similar_sdks, platform: @sdk.platform if @similar_sdks.size > 0
