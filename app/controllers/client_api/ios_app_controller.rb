@@ -13,9 +13,16 @@ class ClientApi::IosAppController < ApplicationController
   end
 
   def show
-    app_identifier = params.fetch(:app_identifier)
+    app_identifier = params[:app_identifier]
+    id = params[:id]
     ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('ios_app_show')
-    render json: IosApp.find_by!(app_identifier: app_identifier).api_json
+    if app_identifier.present?
+      return render json: IosApp.find_by!(app_identifier: app_identifier).api_json
+    elsif id.present?
+      return render json: IosApp.find(id).api_json
+    else
+      render :json => {"message" => "Neither app_identifier nor id was provided"},  :status => 400
+    end
   end
 
   def filter

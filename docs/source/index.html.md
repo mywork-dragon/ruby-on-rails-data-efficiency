@@ -47,6 +47,9 @@ You must replace <code>&ltyour-api-token&gt</code> with your personal API token.
 ```bash
 curl "https://api.mightysignal.com/ios/app/401626263"
     -H "MIGHTYSIGNAL-TOKEN: <your-api-token>"
+    
+curl "https://api.mightysignal.com/ios/app/id/258389"
+    -H "MIGHTYSIGNAL-TOKEN: <your-api-token>"
 ```
 
 ```json
@@ -119,7 +122,8 @@ curl "https://api.mightysignal.com/ios/app/401626263"
     ...
    ],
    "all_version_ratings_count" : 181528,
-   "last_scanned_date" : "2018-05-31T00:44:31.000Z"
+   "last_scanned_date" : "2018-05-31T00:44:31.000Z",
+   "icon_url" : "https://robohash.org/Sub-Ex Keylex1350.png?size=350x350\u0026set=set1"
 }
 ```
 
@@ -128,6 +132,12 @@ curl "https://api.mightysignal.com/ios/app/401626263"
 `GET /ios/app/<app_store_id>`
 
 where `<app_store_id>` is the ID from the App Store. For example, Airbnb's App Store ID is `401626263`, which you can find by looking at its iTunes URL: [(https://itunes.apple.com/us/app/airbnb/id401626263)](https://itunes.apple.com/us/app/airbnb/id401626263). If you don't already know the iTunes URL of an app, you can find it on the [app's MightySignal page](http://mightysignal.com/app/app#/app/ios/258389).
+
+If you have the MightySignal App ID, you can instead do 
+
+`GET /ios/app/id/<mightysignal_id>`
+
+where `<mightysignal_id>` is the ID from the MightySignal web portal, data feeds, or Salesforce integration.
 
 ### Response
 
@@ -143,6 +153,7 @@ current_version_ratings_count | Number of ratings for the current version
 all_version_rating | Average rating (out of 5) for all versions
 all_version_ratings_count | Number of ratings for all versions
 has_ad_spend | We have detected this app advertising on Facebook. Note: If this value is not true, that doesn't mean that it's not advertising; it just means we haven't detected an advertisement.
+icon_url | The URL of the app store icon
 last_updated | The last date the app was updated
 first_seen_ads_date | The date we first saw Facebook ads for this app
 last_seen_ads_date | The date we last saw Facebook ads for this app
@@ -276,6 +287,9 @@ apps | An array of iOS apps. You can look at the response format [here](#get-inf
 ```bash
 curl "https://api.mightysignal.com/android/app/com.snapchat.android"
     -H "MIGHTYSIGNAL-TOKEN: <your-api-token>"
+    
+curl "https://api.mightysignal.com/android/app/id/444"
+    -H "MIGHTYSIGNAL-TOKEN: <your-api-token>"
 ```
 
 ```json
@@ -291,6 +305,7 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
   "last_updated" : "2016-08-30",
   "first_scanned_date" : "2016-05-15",
   "last_scanned_date" : "2016-07-08",
+  "icon_url" : "https://robohash.org/Sub-Ex Keylex1350.png?size=350x350\u0026set=set1",
   "seller" : "Snapchat Inc",
   "categories" : [
      {
@@ -336,7 +351,14 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
 
 `GET /android/app/<google_play_id>`
 
-where `<google_play_id>` is the ID from the App Store. For example, Snapchat's App Store ID is `com.snapchat.android`, which you can find by looking at its Google Play URL: [(https://play.google.com/store/apps/details?id=com.snapchat.android)](https://play.google.com/store/apps/details?id=com.snapchat.android). If you don't alreay know the Google Play URL of an app, you can find it on the [app's MightySignal page](https://play.google.com/store/apps/details?id=com.snapchat.android).
+where `<google_play_id>` is the ID from the App Store. For example, Snapchat's App Store ID is `com.snapchat.android`, which you can find by looking at its Google Play URL: [(https://play.google.com/store/apps/details?id=com.snapchat.android)](https://play.google.com/store/apps/details?id=com.snapchat.android). If you don't alreay know the Google Play URL of an app, you can find it on the [app's MightySignal page](https://play.google.com/store/apps/details?id=com.snapchat.android). 
+
+If you have the MightySignal App ID, you can instead do 
+
+`GET /android/app/id/<mightysignal_id>`
+
+where `<mightysignal_id>` is the ID from the MightySignal web portal, data feeds, or Salesforce integration.
+
 
 ### Response
 
@@ -350,6 +372,7 @@ all_version_rating | Average rating (out of 5) for all versions
 all_version_ratings_count | Number of ratings for all versions
 downloads_min | The min estimated downloads
 downloads_max | The max estimated downloads
+icon_url | The URL of the app store icon
 last_updated | The last date the app was updated
 first_scanned_date | The date we first scanned this app for SDKs
 last_scanned_date | The date we last scanned this app for SDKs
@@ -534,6 +557,10 @@ curl "https://api.mightysignal.com/ios/publisher/207911"
       "http://www.shazam.com/iphone",
       "http://www.shazam.com",
       "http://www.shazam.com/music/web/faqs.html?platform=iPhone"
+   ],
+    "apps" : [
+      { "id" : "234", "bundle_id" : "com.bundle.id1" },
+      { "id" : "567", "bundle_id" : "com.bundle.id2" }
    ],
    "name" : "Shazam Entertainment Limited",
    "platform" : "ios",

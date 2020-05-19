@@ -1474,6 +1474,7 @@ class IosApp < ActiveRecord::Base
       original_release_date: released,
       mobile_priority: mobile_priority,
       user_base: user_base,
+      icon_url: icon_url,
       has_ad_spend: ad_spend?,
       bundle_identifier: nil # set default
     }
